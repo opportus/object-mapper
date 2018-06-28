@@ -1,0 +1,24 @@
+{
+    "name": "opportus/object-mapper",
+    "description": "Provides a flexible and extensible object mapping system.",
+    "keywords": ["object mapper", "mapper"],
+    "homepage": "https://opportus.github.io/object-mapper/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Clément Cazaud",
+            "email": "opportus@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1.0"
+    },
+    "autoload": {
+        "psr-4": {"Opportus\\ObjectMapper\\": "src/"}
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
