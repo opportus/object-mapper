@@ -24,7 +24,7 @@ class PropertyPoint extends Point implements SourcePointInterface, TargetPointIn
      */
     public function __construct(string $fqn)
     {
-        $regex = '/([A-Za-z\\\_]+)::\$([A-Za-z_]+)/';
+        $regex = '/([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)/';
 
         if (!preg_match($regex, $fqn, $matches)) {
             throw new InvalidPropertyPointSyntaxException(sprintf(
@@ -38,7 +38,6 @@ class PropertyPoint extends Point implements SourcePointInterface, TargetPointIn
 
         try {
             $this->reflector = new \ReflectionProperty($matchedClassName, $matchedName);
-
         } catch (\ReflectionException $reflectionException) {
             throw new InvalidPropertyPointException(sprintf(
                 '"%s" is not a property point. %s.',
@@ -60,4 +59,3 @@ class PropertyPoint extends Point implements SourcePointInterface, TargetPointIn
         return $this->reflector->getValue($object);
     }
 }
-

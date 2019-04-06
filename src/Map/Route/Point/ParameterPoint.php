@@ -24,7 +24,7 @@ class ParameterPoint extends Point implements TargetPointInterface
      */
     public function __construct(string $fqn)
     {
-        $regex = '/([A-Za-z\\\_]+)::([A-Za-z_]+)\(\)::\$([A-Za-z_]+)/';
+        $regex = '/([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)::\$([A-Za-z0-9_]+)/';
 
         if (!preg_match($regex, $fqn, $matches)) {
             throw new InvalidParameterPointSyntaxException(sprintf(
