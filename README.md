@@ -4,12 +4,14 @@ Provides a flexible and extensible object mapping system.
 
 Contributions are welcome...
 
-To implement before BETA Release:
+To do before BETA Release:
 
-- Tests
+- [ ] Introduce mapping recursion
+- [ ] Turn private (actually protected) a maximum of methods and properties
 
 ## Index
 
+- [Introduction](#introduction)
 - [Integrations](#integrations)
 - [Installation](#installation)
     - [Step 1 - Download the Package](#step-1---download-the-package)
@@ -18,6 +20,45 @@ To implement before BETA Release:
     - [Automatic Mapping](#automatic-mapping)
     - [Manual Mapping](#manual-mapping)
     - [Static Mapping](#static-mapping)
+
+## Introduction
+
+Here's how you can basically use the API:
+
+```php
+class User
+{
+    public $username = 'toto'
+    private $email = 'toto@example.com';
+
+    public function getCountry()
+    {
+        return 'France';
+    }
+}
+
+class Contributor
+{
+    public $username;
+    private $email;
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+}
+
+$contributor = $objectMapper->map(new User(), new Contributor());
+
+echo $contributor->username; // toto
+echo $contributor->getEmail(); // toto@example.com
+echo $contributor->country // France
+```
 
 ## Integrations
 
