@@ -15,21 +15,28 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ObjectMapper implements ObjectMapperInterface
+final class ObjectMapper implements ObjectMapperInterface
 {
     /**
      * @var Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
      */
-    protected $mapBuilder;
+    private $mapBuilder;
 
     /**
-     * Constructs the mapper.
+     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     */
+    private $classCanonicalizer;
+
+    /**
+     * Constructs the object mapper.
      *
      * @param Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
+     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
      */
-    public function __construct(MapBuilderInterface $mapBuilder)
+    public function __construct(MapBuilderInterface $mapBuilder, ClassCanonicalizerInterface $classCanonicalizer)
     {
         $this->mapBuilder = $mapBuilder;
+        $this->classCanonicalizer = $classCanonicalizer;
     }
 
     /**
@@ -54,7 +61,7 @@ class ObjectMapper implements ObjectMapperInterface
         }
 
         $map = $map ?? $this->mapBuilder->buildMap();
-        $routeCollection = $map->getRouteCollection($this->getCanonicalFqcn($source), $this->getCanonicalFqcn($target));
+        $routeCollection = $map->getRouteCollection($this->classCanonicalizer->getCanonicalFqcn($source), $this->classCanonicalizer->getCanonicalFqcn($target));
 
         if (false === $routeCollection->hasRoutes()) {
             return null;
@@ -75,7 +82,7 @@ class ObjectMapper implements ObjectMapperInterface
             }
         }
 
-        $targetClassReflection = new \ReflectionClass($this->getCanonicalFqcn($target));
+        $targetClassReflection = new \ReflectionClass($this->classCanonicalizer->getCanonicalFqcn($target));
 
         if (\is_string($target)) {
             if (isset($targetParameterPointValues['__construct'])) {
@@ -101,36 +108,5 @@ class ObjectMapper implements ObjectMapperInterface
         }
 
         return $target;
-    }
-
-    /**
-     * Gets the canonical FQCN.
-     *
-     * @param  string|object $object
-     * @return string
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
-     */
-    private function getCanonicalFqcn($object): string
-    {
-        if (\is_object($object)) {
-            $class = \get_class($object);
-
-        } elseif (\is_string($object)) {
-            $class = $object;
-
-        } else{
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "object" passed to "%s" is invalid. Expects an argument of type object or string, got an argument of type "%s".',
-                __METHOD__,
-                \gettype($object)
-            ));
-        }
-
-        // Checks for Doctrine2 proxies...
-        if (false !== \strpos($class, "Proxies\\__CG__\\")) {
-            $class = \mb_substr($class, \strlen("Proxies\\__CG__\\"), \strlen($class));
-        }
-
-        return $class;
     }
 }
