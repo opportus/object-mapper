@@ -11,7 +11,6 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 /**
  * The object mapper.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -36,7 +35,7 @@ class ObjectMapper implements ObjectMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function getMapBuilder() : MapBuilderInterface
+    public function getMapBuilder(): MapBuilderInterface
     {
         return $this->mapBuilder;
     }
@@ -44,148 +43,94 @@ class ObjectMapper implements ObjectMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function map($sources, $targets, ?MapInterface $map = null)
+    public function map(object $source, $target, ?MapInterface $map = null): ?object
     {
-        if (empty($sources)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument 2 passed to %s is empty.',
-                __METHOD__
+        if (!\is_string($target) && !\is_object($target)) {
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "target" passed to "%s" is invalid. Expects an argument of type object or string, got an argument of type "%s".',
+                __METHOD__,
+                \gettype($target)
             ));
-        }
-
-        if (empty($targets)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument 3 passed to %s is empty.',
-                __METHOD__
-            ));
-        }
-
-        $sourcesArgumentType = gettype($sources);
-        $targetsArgumentType = gettype($targets);
-
-        $sources = is_array($sources) ? $sources : array($sources);
-        $targets = is_array($targets) ? $targets : array($targets);
-
-        foreach ($sources as $source) {
-            if (!is_object($source)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Argument 2 passed to %s is invalid. Expects a source to be of type object. %s type given.',
-                    __METHOD__,
-                    gettype($source)
-                ));
-            }
-        }
-
-        foreach ($targets as $target) {
-            if ((!is_string($target)) && (!is_object($target))) {
-                throw new InvalidArgumentException(sprintf(
-                    'Argument 3 passed to %s is invalid. Expects a target to be of type object or string. %s type given.',
-                    __METHOD__,
-                    gettype($target)
-                ));
-            }
-
-            if (is_string($target) && !class_exists($this->getCanonicalClassFqn($target))) {
-                throw new InvalidArgumentException(sprintf(
-                    'Argument 3 passed to %s is invalid. Target class "%s" does not exist.',
-                    __METHOD__,
-                    $this->getCanonicalClassFqn($target)
-                ));
-            }
         }
 
         $map = $map ?? $this->mapBuilder->buildMap();
+        $routeCollection = $map->getRouteCollection($this->getCanonicalFqcn($source), $this->getCanonicalFqcn($target));
 
-        foreach ($sources as $sourceKey => $source) {
-            $sourceClassFqn = $this->getCanonicalClassFqn($source);
+        if (false === $routeCollection->hasRoutes()) {
+            return null;
+        }
 
-            foreach ($targets as $targetKey => $target) {
-                $targetClassFqn = $this->getCanonicalClassFqn($target);
+        foreach ($routeCollection as $route) {
+            $sourcePoint = $route->getSourcePoint();
+            $targetPoint = $route->getTargetPoint();
 
-                $routeCollection = $map->getRouteCollection($sourceClassFqn, $targetClassFqn);
+            $targetPointValue = $sourcePoint->getValue($source);
 
-                if (!$routeCollection->hasRoutes()) {
-                    continue;
-                }
+            if ($targetPoint instanceof ParameterPoint) {
+                $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
 
-                foreach ($routeCollection as $route) {
-                    $sourcePoint = $route->getSourcePoint();
-                    $targetPoint = $route->getTargetPoint();
-
-                    $targetPointValue = $sourcePoint->getValue($source);
-
-                    if ($targetPoint instanceof ParameterPoint) {
-                        $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
-
-                    } elseif ($targetPoint instanceof PropertyPoint) {
-                        $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
-                        $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
-                    }
-                }
-
-                $targetClassReflection = new \ReflectionClass($this->getCanonicalClassFqn($target));
-
-                if (is_string($target)) {
-                    if (isset($targetParameterPointValues['__construct'])) {
-                        $targets[$targetKey] = $targetClassReflection->newInstanceArgs($targetParameterPointValues['__construct']);
-
-                        continue;
-
-                    } else {
-                        $target = $targetClassReflection->newInstance();
-                    }
-                }
-
-                if (isset($targetParameterPointValues)) {
-                    unset($targetParameterPointValues['__construct']);
-
-                    foreach ($targetParameterPointValues as $methodName => $methodArguments) {
-                        $targetClassReflection->getMethod($methodName)->invokeArgs($target, $methodArguments);
-                    }
-                }
-
-                if (isset($targetPropertyPoints)) {
-                    foreach ($targetPropertyPoints as $propertyName => $targetPropertyPoint) {
-                        $targetPropertyPoint->setValue($target, $targetPropertyPointValues[$propertyName]);
-                    }
-                }
-
-                $targets[$targetKey] = $target;
+            } elseif ($targetPoint instanceof PropertyPoint) {
+                $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
+                $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
             }
         }
 
-        return ('array' === $targetsArgumentType) ? $targets : array_values($targets)[0];
+        $targetClassReflection = new \ReflectionClass($this->getCanonicalFqcn($target));
+
+        if (\is_string($target)) {
+            if (isset($targetParameterPointValues['__construct'])) {
+                $target = $targetClassReflection->newInstanceArgs($targetParameterPointValues['__construct']);
+
+            } else {
+                $target = $targetClassReflection->newInstance();
+            }
+        }
+
+        if (isset($targetParameterPointValues)) {
+            unset($targetParameterPointValues['__construct']);
+
+            foreach ($targetParameterPointValues as $methodName => $methodArguments) {
+                $targetClassReflection->getMethod($methodName)->invokeArgs($target, $methodArguments);
+            }
+        }
+
+        if (isset($targetPropertyPoints)) {
+            foreach ($targetPropertyPoints as $propertyName => $targetPropertyPoint) {
+                $targetPropertyPoint->setValue($target, $targetPropertyPointValues[$propertyName]);
+            }
+        }
+
+        return $target;
     }
 
     /**
-     * Gets the canonical Fully Qualified Name of the class.
+     * Gets the canonical FQCN.
      *
-     * @param  string|object $canonicalized
+     * @param  string|object $object
      * @return string
      * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
      */
-    protected function getCanonicalClassFqn($canonicalized) : string
+    private function getCanonicalFqcn($object): string
     {
-        if (is_object($canonicalized)) {
-            $class = get_class($canonicalized);
+        if (\is_object($object)) {
+            $class = \get_class($object);
 
-        } elseif (is_string($canonicalized)) {
-            $class = $canonicalized;
+        } elseif (\is_string($object)) {
+            $class = $object;
 
         } else{
-            throw new InvalidArgumentException(sprintf(
-                'Argument 1 passed to %s is invalid. Expects the canonicalized to be of type object or string. %s type given.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "object" passed to "%s" is invalid. Expects an argument of type object or string, got an argument of type "%s".',
                 __METHOD__,
-                gettype($canonicalized)
+                \gettype($object)
             ));
         }
 
         // Checks for Doctrine2 proxies...
-        if (false !== strpos($class, "Proxies\\__CG__\\")) {
-            $class = mb_substr($class, strlen("Proxies\\__CG__\\"), strlen($class));
+        if (false !== \strpos($class, "Proxies\\__CG__\\")) {
+            $class = \mb_substr($class, \strlen("Proxies\\__CG__\\"), \strlen($class));
         }
 
         return $class;
     }
 }
-
