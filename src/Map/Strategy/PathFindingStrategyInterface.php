@@ -7,7 +7,6 @@ use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 /**
  * The path finding strategy interface.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Strategy
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -15,13 +14,12 @@ use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 interface PathFindingStrategyInterface
 {
     /**
-     * Gets a collection of routes connecting the points of the passed source class with the points of the passed target class.
+     * Gets a collection of routes connecting the points of the source with the points of the target.
      *
-     * @param  string $sourceClassFqn
-     * @param  string $targetClassFqn
+     * @param object $source
+     * @param object|string $target
      * @return Opportus\ObjectMapper\Map\Route\RouteCollectionInterface
      * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
      */
-    public function getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollectionInterface;
+    public function getRouteCollection(object $source, $target): RouteCollectionInterface;
 }
-

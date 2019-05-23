@@ -2,6 +2,7 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\ClassCanonicalizerInterface;
 use Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface;
 use Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface;
 use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
@@ -21,6 +22,11 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 class MapBuilder implements MapBuilderInterface
 {
     /**
+     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     */
+    private $classCanonicalizer;
+
+    /**
      * @param Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
      */
     private $mapDefinitionBuilder;
@@ -28,10 +34,12 @@ class MapBuilder implements MapBuilderInterface
     /**
      * Constructs the map builder.
      *
+     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
      * @param Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
      */
-    public function __construct(MapDefinitionBuilderInterface $mapDefinitionBuilder)
+    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapDefinitionBuilderInterface $mapDefinitionBuilder)
     {
+        $this->classCanonicalizer = $classCanonicalizer;
         $this->mapDefinitionBuilder = $mapDefinitionBuilder;
     }
 
@@ -40,7 +48,7 @@ class MapBuilder implements MapBuilderInterface
      */
     public function prepareMap() : MapBuilderInterface
     {
-        return new self($this->mapDefinitionBuilder->prepareMapDefinition());
+        return new self($this->classCanonicalizer, $this->mapDefinitionBuilder->prepareMapDefinition());
     }
 
     /**
@@ -49,7 +57,7 @@ class MapBuilder implements MapBuilderInterface
     public function addRoute(string $sourcePointFqn, string $targetPointFqn) : MapBuilderInterface
     {
         try {
-            return new self($this->mapDefinitionBuilder->addRoute($sourcePointFqn, $targetPointFqn));
+            return new self($this->classCanonicalizer, $this->mapDefinitionBuilder->addRoute($sourcePointFqn, $targetPointFqn));
 
         } catch (InvalidOperationException $exception) {
             throw new InvalidOperationException(sprintf(
@@ -79,7 +87,7 @@ class MapBuilder implements MapBuilderInterface
         }
 
         try {
-            $pathFindingStrategy = new NoPathFindingStrategy($this->mapDefinitionBuilder->buildMapDefinition());
+            $pathFindingStrategy = new NoPathFindingStrategy($this->classCanonicalizer, $this->mapDefinitionBuilder->buildMapDefinition());
 
             if (null !== $parameter) {
                 throw new InvalidArgumentException(sprintf(
@@ -90,7 +98,7 @@ class MapBuilder implements MapBuilderInterface
 
         } catch (InvalidOperationException $exception) {
             if (null === $parameter) {
-                $pathFindingStrategy = new PathFindingStrategy($this->mapDefinitionBuilder);
+                $pathFindingStrategy = new PathFindingStrategy($this->classCanonicalizer, $this->mapDefinitionBuilder);
 
             } elseif ($parameter instanceof MapDefinitionInterface) {
                 $pathFindingStrategy = new NoPathFindingStrategy($parameter);

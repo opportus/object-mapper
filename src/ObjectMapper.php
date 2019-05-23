@@ -18,25 +18,25 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 final class ObjectMapper implements ObjectMapperInterface
 {
     /**
-     * @var Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
-     */
-    private $mapBuilder;
-
-    /**
      * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
      */
     private $classCanonicalizer;
 
     /**
+     * @var Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
+     */
+    private $mapBuilder;
+
+    /**
      * Constructs the object mapper.
      *
-     * @param Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
      * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     * @param Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
      */
-    public function __construct(MapBuilderInterface $mapBuilder, ClassCanonicalizerInterface $classCanonicalizer)
+    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapBuilderInterface $mapBuilder)
     {
-        $this->mapBuilder = $mapBuilder;
         $this->classCanonicalizer = $classCanonicalizer;
+        $this->mapBuilder = $mapBuilder;
     }
 
     /**
@@ -61,7 +61,7 @@ final class ObjectMapper implements ObjectMapperInterface
         }
 
         $map = $map ?? $this->mapBuilder->buildMap();
-        $routeCollection = $map->getRouteCollection($this->classCanonicalizer->getCanonicalFqcn($source), $this->classCanonicalizer->getCanonicalFqcn($target));
+        $routeCollection = $map->getRouteCollection($source, $target);
 
         if (false === $routeCollection->hasRoutes()) {
             return null;

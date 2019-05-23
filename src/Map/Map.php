@@ -8,7 +8,6 @@ use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 /**
  * The map.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -33,17 +32,16 @@ class Map implements MapInterface
     /**
      * {@inheritdoc}
      */
-    public function getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollectionInterface
+    public function getRouteCollection(object $source, $target): RouteCollectionInterface
     {
-        return $this->pathFindingStrategy->getRouteCollection($sourceClassFqn, $targetClassFqn);
+        return $this->pathFindingStrategy->getRouteCollection($source, $target);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPathFindingStrategyType() : string
+    public function getPathFindingStrategyType(): string
     {
         return get_class($this->pathFindingStrategy);
     }
 }
-

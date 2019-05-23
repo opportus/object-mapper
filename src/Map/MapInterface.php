@@ -7,7 +7,6 @@ use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 /**
  * The map interface.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -15,19 +14,18 @@ use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 interface MapInterface
 {
     /**
-     * Gets the route collection connecting the points of the source class with the points of the target class.
+     * Gets a collection of routes connecting the points of the source with the points of the target.
      *
-     * @param  string $sourceClassFqn
-     * @param  string $targetClassFqn
+     * @param object $source
+     * @param object|string $target
      * @return Opportus\ObjectMapper\Map\Route\RouteCollectionInterface
      */
-    public function getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollectionInterface;
+    public function getRouteCollection(object $source, $target): RouteCollectionInterface;
 
     /**
      * Gets the type of the path finding strategy.
      *
      * @return string
      */
-    public function getPathFindingStrategyType() : string;
+    public function getPathFindingStrategyType(): string;
 }
-

@@ -2,6 +2,7 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
+use Opportus\ObjectMapper\ClassCanonicalizerInterface;
 use Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
@@ -10,7 +11,6 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;;
 /**
  * The no path finding strategy.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Strategy
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -18,45 +18,39 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;;
 class NoPathFindingStrategy implements PathFindingStrategyInterface
 {
     /**
+     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     */
+    private $classCanonicalizer;
+
+    /**
      * @var Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface $mapDefinition
      */
-    protected $mapDefinition;
+    private $mapDefinition;
 
     /**
      * Constructs the no path finding strategy.
      *
+     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
      * @param Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface $mapDefinition
      */
-    public function __construct(MapDefinitionInterface $mapDefinition)
+    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapDefinitionInterface $mapDefinition)
     {
+        $this->classCanonicalizer = $classCanonicalizer;
         $this->mapDefinition = $mapDefinition;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollectionInterface
+    public function getRouteCollection(object $source, $target): RouteCollectionInterface
     {
-        if (!class_exists($sourceClassFqn)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument 1 passed to %s is invalid. Class %s does not exist.',
-                __METHOD__,
-                $sourceClassFqn
-            ));
-        }
-
-        if (!class_exists($targetClassFqn)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument 2 passed to %s is invalid. Class %s does not exist.',
-                __METHOD__,
-                $targetClassFqn
-            ));
-        }
+        $sourceFqcn = $this->classCanonicalizer->getCanonicalFqcn($source);
+        $targetFqcn = $this->classCanonicalizer->getCanonicalFqcn($target);
 
         $routeCollection = new RouteCollection();
 
         foreach ($this->mapDefinition->getRouteCollection() as $route) {
-            if ($sourceClassFqn === $route->getSourcePoint()->getClassFqn() && $targetClassFqn === $route->getTargetPoint()->getClassFqn()) {
+            if ($sourceFqcn === $route->getSourcePoint()->getClassFqn() && $targetFqcn === $route->getTargetPoint()->getClassFqn()) {
                 $routeCollection->addRoute($route);
             }
         }
@@ -64,4 +58,3 @@ class NoPathFindingStrategy implements PathFindingStrategyInterface
         return $routeCollection;
     }
 }
-

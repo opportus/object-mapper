@@ -2,6 +2,7 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
+use Opportus\ObjectMapper\ClassCanonicalizerInterface;
 use Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
 use Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface;
@@ -9,12 +10,11 @@ use Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 
 /**
  * The default path finding strategy.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Strategy
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -22,58 +22,54 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;;
 class PathFindingStrategy implements PathFindingStrategyInterface
 {
     /**
+     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     */
+    private $classCanonicalizer;
+
+    /**
      * @var Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
      */
-    protected $mapDefinitionBuilder;
+    private $mapDefinitionBuilder;
 
     /**
      * Constructs the path finding strategy.
      *
-     * @var Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
+     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     * @param Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
      */
-    public function __construct(MapDefinitionBuilderInterface $mapDefinitionBuilder)
+    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapDefinitionBuilderInterface $mapDefinitionBuilder)
     {
+        $this->classCanonicalizer = $classCanonicalizer;
         $this->mapDefinitionBuilder = $mapDefinitionBuilder;
     }
 
     /**
      * {@inheritdoc}
      *
-     * This behavior consists of guessing what is the appropriate point of the source class to connect to each point of the target class.
+     * This behavior consists of guessing which is the appropriate point of the source to connect to each point of the target.
      *
      * A TargetPoint can be:
      *
      * - A public property (PropertyPoint)
      * - A parameter of a public setter or a public constructor (ParameterPoint)
      *
-     * The corresponding SourcePoint can be:
+     * The connectable SourcePoint can be:
      *
      * - A public property having for name the same as the target point (PropertyPoint)
      * - A public getter having for name 'get'.ucfirst($targetPointName) and requiring no argument (MethodPoint)
      */
-    public function getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollectionInterface
+    public function getRouteCollection(object $source, $target): RouteCollectionInterface
     {
-        if (!class_exists($sourceClassFqn)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument 1 passed to %s is invalid. Class %s does not exist.',
-                __METHOD__,
-                $sourceClassFqn
-            ));
-        }
+        $sourceFqcn = $this->classCanonicalizer->getCanonicalFqcn($source);
+        $targetFqcn = $this->classCanonicalizer->getCanonicalFqcn($target);
+        $targetClassReflection = new \ReflectionClass($targetFqcn);
+        $sourceClassReflection = new \ReflectionClass($sourceFqcn);
 
-        if (!class_exists($targetClassFqn)) {
-            throw new InvalidArgumentException(sprintf(
-                'Argument 2 passed to %s is invalid. Class %s does not exist.',
-                __METHOD__,
-                $targetClassFqn
-            ));
-        }
-
-        $targetPoints         = $this->guessTargetPoints($targetClassFqn);
         $mapDefinitionBuilder = $this->mapDefinitionBuilder->prepareMapDefinition();
+        $targetPoints = $this->getTargetPoints($targetClassReflection, \is_object($target));
 
         foreach ($targetPoints as $targetPoint) {
-            $sourcePoint = $this->guessSourcePoint($sourceClassFqn, $targetPoint);
+            $sourcePoint = $this->findSourcePoint($sourceClassReflection, $targetPoint);
 
             if (null !== $sourcePoint) {
                 $mapDefinitionBuilder = $mapDefinitionBuilder->addRoute($sourcePoint, $targetPoint);
@@ -84,29 +80,25 @@ class PathFindingStrategy implements PathFindingStrategyInterface
     }
 
     /**
-     * Guesses the target points.
+     * Gets the target points.
      *
-     * @param  string $targetClassFqn
+     * @param \ReflectionClass $targetClassReflection
+     * @param bool $isTargetInstantiated
      * @return array
      */
-    private function guessTargetPoints(string $targetClassFqn) : array
+    private function getTargetPoints(\ReflectionClass $targetClassReflection, bool $isTargetInstantiated): array
     {
-        $targetPoints          = array();
-        $targetClassReflection = new \ReflectionClass($targetClassFqn);
-
-        foreach ($targetClassReflection->getMethods() as $targetClassMethodReflection) {
-            if ($targetClassMethodReflection->isPublic()) {
-                if (preg_match('/set[A-Z][a-zA-Z]*/', $targetClassMethodReflection->getName()) ||
-                    $targetClassMethodReflection->getName() === '__construct' ||
-                    $targetClassMethodReflection->getName() === 'update'
-                ) {
-                    if ($targetClassMethodReflection->getNumberOfParameters() > 0) {
-                        foreach ($targetClassMethodReflection->getParameters() as $targetClassMethodParameterReflection) {
-                            $targetPoints[] = new ParameterPoint(sprintf(
+        $targetPoints = [];
+        foreach ($targetClassReflection->getMethods() as $targetMethodReflection) {
+            if ($targetMethodReflection->isPublic()) {
+                if (0 === \strpos($targetMethodReflection->getName(), 'set') || (false === $isTargetInstantiated && '__construct' === $targetMethodReflection->getName())) {
+                    if ($targetMethodReflection->getNumberOfParameters() > 0) {
+                        foreach ($targetMethodReflection->getParameters() as $targetParameterReflection) {
+                            $targetPoints[] = new ParameterPoint(\sprintf(
                                 '%s::%s()::$%s',
                                 $targetClassReflection->getName(),
-                                $targetClassMethodReflection->getName(),
-                                $targetClassMethodParameterReflection->getName()
+                                $targetMethodReflection->getName(),
+                                $targetParameterReflection->getName()
                             ));
                         }
                     }
@@ -114,12 +106,12 @@ class PathFindingStrategy implements PathFindingStrategyInterface
             }
         }
 
-        foreach ($targetClassReflection->getProperties() as $targetClassPropertyReflection) {
-            if ($targetClassPropertyReflection->isPublic()) {
-                $targetPoints[] = new PropertyPoint(sprintf(
+        foreach ($targetClassReflection->getProperties() as $targetPropertyReflection) {
+            if ($targetPropertyReflection->isPublic()) {
+                $targetPoints[] = new PropertyPoint(\sprintf(
                     '%s::$%s',
                     $targetClassReflection->getName(),
-                    $targetClassPropertyReflection->getName()
+                    $targetPropertyReflection->getName()
                 ));
             }
         }
@@ -128,37 +120,36 @@ class PathFindingStrategy implements PathFindingStrategyInterface
     }
 
     /**
-     * Guesses the source point to connect to the passed target point.
+     * Finds the source point to connect to the target point.
      *
-     * @param  string $sourceClassFqn
+     * @param \ReflectionClass $sourceClassReflection
      * @param  Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface $targetPoint
      * @return null|Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface $sourcePoint
      */
-    private function guessSourcePoint(string $sourceClassFqn, TargetPointInterface $targetPoint) : ?SourcePointInterface
+    private function findSourcePoint(\ReflectionClass $sourceClassReflection, TargetPointInterface $targetPoint): ?SourcePointInterface
     {
-        $sourceClassReflection = new \ReflectionClass($sourceClassFqn);
 
-        foreach ($sourceClassReflection->getMethods() as $sourceClassMethodReflection) {
-            if ($sourceClassMethodReflection->isPublic()) {
-                if ($sourceClassMethodReflection->getName() === 'get'.ucfirst($targetPoint->getName())) {
-                    if ($sourceClassMethodReflection->getNumberOfRequiredParameters() === 0) {
-                        return new MethodPoint(sprintf(
+        foreach ($sourceClassReflection->getMethods() as $sourceMethodReflection) {
+            if ($sourceMethodReflection->isPublic()) {
+                if ($sourceMethodReflection->getName() === \sprintf('get%s', ucfirst($targetPoint->getName()))) {
+                    if ($sourceMethodReflection->getNumberOfRequiredParameters() === 0) {
+                        return new MethodPoint(\sprintf(
                             '%s::%s()',
                             $sourceClassReflection->getName(),
-                            $sourceClassMethodReflection->getName()
+                            $sourceMethodReflection->getName()
                         ));
                     }
                 }
             }
         }
 
-        foreach ($sourceClassReflection->getProperties() as $sourceClassPropertyReflection) {
-            if ($sourceClassPropertyReflection->isPublic()) {
-                if ($sourceClassPropertyReflection->getName() === $targetPoint->getName()) {
-                    return new PropertyPoint(sprintf(
+        foreach ($sourceClassReflection->getProperties() as $sourcePropertyReflection) {
+            if ($sourcePropertyReflection->isPublic()) {
+                if ($sourcePropertyReflection->getName() === $targetPoint->getName()) {
+                    return new PropertyPoint(\sprintf(
                         '%s::$%s',
                         $sourceClassReflection->getName(),
-                        $sourceClassPropertyReflection->getName()
+                        $sourcePropertyReflection->getName()
                     ));
                 }
             }
@@ -167,4 +158,3 @@ class PathFindingStrategy implements PathFindingStrategyInterface
         return null;
     }
 }
-
