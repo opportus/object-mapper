@@ -1,5 +1,16 @@
+# opportus/object-mapper
+
+Provides a flexible and extensible object mapping system.
+
+Contributions are welcome...
+
+To do before BETA Release:
+
+- [ ] Introduce mapping recursion
+
 ## Index
 
+- [Introduction](#introduction)
 - [Integrations](#integrations)
 - [Installation](#installation)
     - [Step 1 - Download the Package](#step-1---download-the-package)
@@ -8,6 +19,45 @@
     - [Automatic Mapping](#automatic-mapping)
     - [Manual Mapping](#manual-mapping)
     - [Static Mapping](#static-mapping)
+
+## Introduction
+
+Here's how you can basically use the API:
+
+```php
+class User
+{
+    public $username = 'toto'
+    private $email = 'toto@example.com';
+
+    public function getCountry()
+    {
+        return 'France';
+    }
+}
+
+class Contributor
+{
+    public $username;
+    private $email;
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+}
+
+$contributor = $objectMapper->map(new User(), new Contributor());
+
+echo $contributor->username; // toto
+echo $contributor->getEmail(); // toto@example.com
+echo $contributor->country // France
+```
 
 ## Integrations
 
@@ -26,7 +76,7 @@ $ composer require opportus/object-mapper
 
 ### Step 2 - Resolve Services Dependencies
 
-The library contains 6 services. 4 of them require to be instantiated with their respective dependencies which are other lower level services among those 6.
+The library contains 7 services. 4 of them require to be instantiated with their respective dependencies which are other lower level services among those 7.
 
 Below are listed from the lower to the higher level service, their respective dependencies as constructor's parameters:
 
@@ -37,9 +87,9 @@ Map\Route\RouteBuilder::__construct(Map\Route\Point\PointFactoryInterface $point
 
 Map\Definition\MapDefinitionBuilder::__construct(Map\Route\RouteBuilderInterface $routeBuilder);
 
-Map\MapBuilder::__construct(Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder);
+Map\MapBuilder::__construct(ClassCanonicalizerInterface $classCanonicalizer, $classMap\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder);
 
-ObjectMapper::__construct(Map\MapBuilderInterface $mapBuilder);
+ObjectMapper::__construct(ClassCanonicalizerInterface $classCanonicalizer, Map\MapBuilderInterface $mapBuilder);
 ```
 
 In order to achieve this properly, you should use a DI container or instantiate manually the services in your composition root and register them.
@@ -49,35 +99,21 @@ In order to achieve this properly, you should use a DI container or instantiate 
 Mapping objects to objects is done via the main [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) service's method:
 
 ```php
-ObjectMapper::map($sources, $targets, ?MapInterface $map = null)
+ObjectMapper::map($source, $target, ?MapInterface $map = null): ?object
 ```
 
 **Parameters**
 
-The `$sources` parameter can be:
+`$source` must be an object to map data from.
 
-- An *object* holding data to map to the target(s)
-- An *array* of objects holding data to map to the target(s)
+`$target` must be either an object or a fully qualified class name to map data to.
 
-The `$targets` parameter can be:
-
-- An *object* to map the source(s) data to
-- A *string* being the class name of an object to instantiate and to map the source(s) data to
-- An *array* of single or both type of element above
-
-The `$map` parameter can be:
-
-- A *null*
-- An instance of *`MapInterface`*
+`$map` must be a *null* or an instance of *`MapInterface`*.
 
 **Returns**
 
-The return value depends on the type of the `$targets` parameter and on the `$map` parameter:
-
-- If `$targets` is an object, the very same object will be returned
-- If `$targets` is a class name, an object of this type will be returned
-- If `$targets` is an array of single or both type of element above, the same array of both type of return value above will be returned
-- If the map does not contain any route to a target element, the target element will be returned as it has been passed
+- A *null* if no route connecting source points with target points are found.
+- An *object* which is the instantiated/updated target.
 
 ### Automatic Mapping
 
@@ -141,14 +177,15 @@ The corresponding `SourcePoint` can be:
 Sometime, the default `PathFindingStrategy` may not be the most appropriate behavior anymore. In this case, you can implement your own [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), and in order to make it guess the appropriate routes, reverse-engineer the classes passed as argument to the strategy's single method:
 
 ```php
-PathFindingStrategyInterface::getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollection;
+PathFindingStrategyInterface::getRouteCollection(object $source, $target): RouteCollection;
 ```
 
 **Parameters**
 
-`$sourceClassFqn` is the Fully Qualified Name of the source class to map from.
+`$source` must be an object to map data from.
 
-`$targetClassFqn` is the Fully Qualified Name of the target class to map source's data to.
+`$target` must be either an object or a fully qualified class name to map data to.
+
 
 **Returns**
 
@@ -161,7 +198,7 @@ class MyPathFindingStrategy implements PathFindingStrategyInterface
 {
     // ...
 
-    public function getRouteCollection(string $sourceClassFqn, string $targetClassFqn) : RouteCollection
+    public function getRouteCollection(object $source, $target): RouteCollection
     {
         // Custom algorithm...
     }
@@ -196,7 +233,7 @@ class User
         $this->username = $username;
     }
 
-    public function getUsername() : string
+    public function getUsername(): string
     {
         return $this->username;
     }
@@ -242,7 +279,7 @@ Building a map manually requires you to use the [`MapBuilder`](https://github.co
 Building a map manually is actually nothing more than adding routes to a map via the following method:
 
 ```php
-MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn) : MapBuilderInterface
+MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface
 ```
 
 **Parameters**
@@ -302,5 +339,5 @@ $mapDefinition = $mapDefinitionRegistry->getMapDefinition('1'); // Found by its 
 $map = $mapBuilder->buildMap($mapDefinition);
 
 // Use the map...
-$targets = $objectMapper->map($sources, $targets, $map);
+$targets = $objectMapper->map($source, $target, $map);
 ```
