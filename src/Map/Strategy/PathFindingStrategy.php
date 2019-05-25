@@ -71,7 +71,7 @@ class PathFindingStrategy implements PathFindingStrategyInterface
         foreach ($targetPoints as $targetPoint) {
             $sourcePoint = $this->findSourcePoint($sourceClassReflection, $targetPoint);
 
-            if (null !== $sourcePoint) {
+            if (null !== $sourcePoint && null !== $sourcePoint->getValue($source)) {
                 $mapDefinitionBuilder = $mapDefinitionBuilder->addRoute($sourcePoint, $targetPoint);
             }
         }
