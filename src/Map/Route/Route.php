@@ -2,42 +2,64 @@
 
 namespace Opportus\ObjectMapper\Map\Route;
 
-use Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
+use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
+use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 
 /**
  * The route.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Route
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class Route implements RouteInterface
+final class Route
 {
     /**
      * @var string $fqn
      */
-    protected $fqn;
+    private $fqn;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface $sourcePoint
+     * @var Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint $sourcePoint
      */
-    protected $sourcePoint;
+    private $sourcePoint;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface $targetPoint
+     * @var Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint $targetPoint
      */
-    protected $targetPoint;
+    private $targetPoint;
 
     /**
      * Constructs the route.
      *
-     * @param Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface $sourcePoint
-     * @param Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface $targetPoint
+     * @param Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint $sourcePoint
+     * @param Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint $targetPoint
+     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
      */
-    public function __construct(SourcePointInterface $sourcePoint, TargetPointInterface $targetPoint)
+    public function __construct(object $sourcePoint, object $targetPoint)
     {
+        if (!$sourcePoint instanceof PropertyPoint && !$sourcePoint instanceof MethodPoint) {
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "sourcePoint" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
+                __METHOD__,
+                PropertyPoint::class,
+                MethodPoint::class,
+                \get_class($sourcePoint)
+            ));
+        }
+
+        if (!$targetPoint instanceof PropertyPoint && !$targetPoint instanceof ParameterPoint) {
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "targetPoint" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
+                __METHOD__,
+                PropertyPoint::class,
+                ParameterPoint::class,
+                \get_class($targetPoint)
+            ));
+        }
+
         $this->fqn = sprintf('%s=>%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
 
         $this->sourcePoint = $sourcePoint;
@@ -45,36 +67,32 @@ class Route implements RouteInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the Fully Qualified Name of the route.
+     *
+     * @return string
      */
-    public function getFqn() : string
+    public function getFqn(): string
     {
         return $this->fqn;
     }
 
     /**
-     * {@inheritdoc}
+     * Get the source point of the route.
+     *
+     * @return Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint
      */
-    public function getSourcePoint() : SourcePointInterface
+    public function getSourcePoint(): object
     {
         return $this->sourcePoint;
     }
 
     /**
-     * {@inheritdoc}
+     * Get the target point of the route.
+     *
+     * @return Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint
      */
-    public function getTargetPoint() : TargetPointInterface
+    public function getTargetPoint(): object
     {
         return $this->targetPoint;
     }
-
-    /**
-     * Deep clones the route.
-     */
-    public function __clone()
-    {
-        $this->sourcePoint = clone $this->sourcePoint;
-        $this->targetPoint = clone $this->targetPoint;
-    }
 }
-

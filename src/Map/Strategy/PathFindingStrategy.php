@@ -2,15 +2,12 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
-use Opportus\ObjectMapper\ClassCanonicalizerInterface;
-use Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface;
-use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
-use Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface;
-use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
-use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
+use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
+use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
+use Opportus\ObjectMapper\Map\Route\Route;
+use Opportus\ObjectMapper\Map\Route\RouteCollection;
 
 /**
  * The default path finding strategy.
@@ -19,30 +16,8 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PathFindingStrategy implements PathFindingStrategyInterface
+final class PathFindingStrategy implements PathFindingStrategyInterface
 {
-    /**
-     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
-     */
-    private $classCanonicalizer;
-
-    /**
-     * @var Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
-     */
-    private $mapDefinitionBuilder;
-
-    /**
-     * Constructs the path finding strategy.
-     *
-     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
-     * @param Opportus\ObjectMapper\Map\Definition\MapDefinitionBuilderInterface $mapDefinitionBuilder
-     */
-    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapDefinitionBuilderInterface $mapDefinitionBuilder)
-    {
-        $this->classCanonicalizer = $classCanonicalizer;
-        $this->mapDefinitionBuilder = $mapDefinitionBuilder;
-    }
-
     /**
      * {@inheritdoc}
      *
@@ -58,25 +33,21 @@ class PathFindingStrategy implements PathFindingStrategyInterface
      * - A public property having for name the same as the target point (PropertyPoint)
      * - A public getter having for name 'get'.ucfirst($targetPointName) and requiring no argument (MethodPoint)
      */
-    public function getRouteCollection(object $source, $target): RouteCollectionInterface
+    public function getRoutes(Context $context): RouteCollection
     {
-        $sourceFqcn = $this->classCanonicalizer->getCanonicalFqcn($source);
-        $targetFqcn = $this->classCanonicalizer->getCanonicalFqcn($target);
-        $targetClassReflection = new \ReflectionClass($targetFqcn);
-        $sourceClassReflection = new \ReflectionClass($sourceFqcn);
+        $routes = [];
 
-        $mapDefinitionBuilder = $this->mapDefinitionBuilder->prepareMapDefinition();
-        $targetPoints = $this->getTargetPoints($targetClassReflection, \is_object($target));
+        $targetPoints = $this->getTargetPoints($context->getTargetClassReflection(), $context->hasInstantiatedTarget());
 
         foreach ($targetPoints as $targetPoint) {
-            $sourcePoint = $this->findSourcePoint($sourceClassReflection, $targetPoint);
+            $sourcePoint = $this->findSourcePoint($context->getSourceClassReflection(), $targetPoint);
 
-            if (null !== $sourcePoint && null !== $sourcePoint->getValue($source)) {
-                $mapDefinitionBuilder = $mapDefinitionBuilder->addRoute($sourcePoint, $targetPoint);
+            if (null !== $sourcePoint && null !== $sourcePoint->getValue($context->getSource())) {
+                $routes[] = new Route($sourcePoint, $targetPoint);
             }
         }
 
-        return $mapDefinitionBuilder->buildMapDefinition()->getRouteCollection();
+        return new RouteCollection($routes);
     }
 
     /**
@@ -123,15 +94,14 @@ class PathFindingStrategy implements PathFindingStrategyInterface
      * Finds the source point to connect to the target point.
      *
      * @param \ReflectionClass $sourceClassReflection
-     * @param  Opportus\ObjectMapper\Map\Route\Point\TargetPointInterface $targetPoint
-     * @return null|Opportus\ObjectMapper\Map\Route\Point\SourcePointInterface $sourcePoint
+     * @param Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint $targetPoint
+     * @return null|Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint
      */
-    private function findSourcePoint(\ReflectionClass $sourceClassReflection, TargetPointInterface $targetPoint): ?SourcePointInterface
+    private function findSourcePoint(\ReflectionClass $sourceClassReflection, object $targetPoint): ?object
     {
-
         foreach ($sourceClassReflection->getMethods() as $sourceMethodReflection) {
             if ($sourceMethodReflection->isPublic()) {
-                if ($sourceMethodReflection->getName() === \sprintf('get%s', ucfirst($targetPoint->getName()))) {
+                if ($sourceMethodReflection->getName() === \sprintf('get%s', \ucfirst($targetPoint->getName()))) {
                     if ($sourceMethodReflection->getNumberOfRequiredParameters() === 0) {
                         return new MethodPoint(\sprintf(
                             '%s::%s()',

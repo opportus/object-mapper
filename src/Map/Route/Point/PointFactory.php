@@ -2,25 +2,24 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidPointException;
-use Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidPropertyPointSyntaxException;
-use Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidMethodPointSyntaxException;
-use Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidParameterPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidMethodPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidParameterPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidPointException;
+use Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException;
 
 /**
  * The point factory.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Route\Point
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PointFactory implements PointFactoryInterface
+final class PointFactory implements PointFactoryInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function createSourcePoint(string $pointFqn) : SourcePointInterface
+    public function createPoint(string $pointFqn): object
     {
         try {
             return new PropertyPoint($pointFqn);
@@ -32,33 +31,16 @@ class PointFactory implements PointFactoryInterface
 
         } catch (InvalidMethodPointSyntaxException $methodPointException) {}
 
-        throw new InvalidPointException(sprintf(
-            '%s %s',
-            $propertyPointException->getMessage(),
-            $methodPointException->getMessage()
-        ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createTargetPoint(string $pointFqn) : TargetPointInterface
-    {
-        try {
-            return new PropertyPoint($pointFqn);
-
-        } catch (InvalidPropertyPointSyntaxException $propertyPointException) {}
-
         try {
             return new ParameterPoint($pointFqn);
 
         } catch (InvalidParameterPointSyntaxException $parameterPointException) {}
 
-        throw new InvalidPointException(sprintf(
-            '%s %s',
+        throw new InvalidPointException(\sprintf(
+            '%s %s %s',
             $propertyPointException->getMessage(),
+            $methodPointException->getMessage(),
             $parameterPointException->getMessage()
         ));
     }
 }
-

@@ -2,32 +2,33 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidPropertyPointException;
-use Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidPropertyPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidPropertyPointException;
+use Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException;
 
 /**
  * The property point.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Route\Point
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyPoint extends Point implements SourcePointInterface, TargetPointInterface
+final class PropertyPoint
 {
+    use PointTrait;
+    
     /**
      * Constructs the property point.
      *
      * @param  string $fqn
-     * @throws Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidPropertyPointException
-     * @throws Opportus\ObjectMapper\Map\Route\Point\Exception\InvalidPropertyPointSyntaxException
+     * @throws Opportus\ObjectMapper\Exception\InvalidPropertyPointException
+     * @throws Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException
      */
     public function __construct(string $fqn)
     {
-        $regex = '/([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)/';
+        $regex = '/^([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)$/';
 
-        if (!preg_match($regex, $fqn, $matches)) {
-            throw new InvalidPropertyPointSyntaxException(sprintf(
+        if (!\preg_match($regex, $fqn, $matches)) {
+            throw new InvalidPropertyPointSyntaxException(\sprintf(
                 '"%s" is not a property point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 $regex
@@ -38,11 +39,11 @@ class PropertyPoint extends Point implements SourcePointInterface, TargetPointIn
 
         try {
             $this->reflector = new \ReflectionProperty($matchedClassName, $matchedName);
-        } catch (\ReflectionException $reflectionException) {
-            throw new InvalidPropertyPointException(sprintf(
+        } catch (\ReflectionException $exception) {
+            throw new InvalidPropertyPointException(\sprintf(
                 '"%s" is not a property point. %s.',
                 $fqn,
-                $reflectionException->getMessage()
+                $exception->getMessage()
             ));
         }
 
@@ -52,7 +53,10 @@ class PropertyPoint extends Point implements SourcePointInterface, TargetPointIn
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the point value from the passed object.
+     *
+     * @param  null|object $object
+     * @return mixed
      */
     public function getValue($object = null)
     {

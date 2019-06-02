@@ -1,8 +1,9 @@
 {
     "name": "opportus/object-mapper",
-    "description": "Provides a flexible and extensible object mapping system.",
-    "keywords": ["object mapper", "mapper"],
-    "homepage": "https://opportus.github.io/object-mapper/",
+    "description": "Provides a powerful object mapping system.",
+    "type": "library",
+    "keywords": ["object mapper", "mapper", "map", "pathfinding", "filter", "recursion"],
+    "homepage": "https://github.com/opportus/object-mapper",
     "license": "MIT",
     "authors": [
         {

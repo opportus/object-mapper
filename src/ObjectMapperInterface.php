@@ -2,7 +2,7 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Map\MapInterface;
+use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 
 /**
@@ -19,16 +19,15 @@ interface ObjectMapperInterface
      *
      * @return Opportus\ObjectMapper\Map\MapBuilderInterface
      */
-    public function getMapBuilder() : MapBuilderInterface;
+    public function getMapBuilder(): MapBuilderInterface;
 
     /**
-     * Maps source points values to target points following the routes from the map.
+     * Maps source points values to target points following the routes on the map.
      *
      * @param object $source
      * @param object|string $target
-     * @param null|Opportus\ObjectMapper\Map\MapInterface $map
+     * @param null|Opportus\ObjectMapper\Map\Map $map
      * @return null|object
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
      */
-    public function map(object $source, $target, ?MapInterface $map = null): ?object;
+    public function map(object $source, $target, ?Map $map = null): ?object;
 }

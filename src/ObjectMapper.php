@@ -2,11 +2,12 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Map\MapInterface;
+use Opportus\ObjectMapper\Exception\NotSupportedContextException;
+use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
-use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
+use Opportus\ObjectMapper\Map\Route\Route;
 
 /**
  * The object mapper.
@@ -18,11 +19,6 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 final class ObjectMapper implements ObjectMapperInterface
 {
     /**
-     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
-     */
-    private $classCanonicalizer;
-
-    /**
      * @var Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
      */
     private $mapBuilder;
@@ -30,12 +26,10 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * Constructs the object mapper.
      *
-     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
      * @param Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
      */
-    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapBuilderInterface $mapBuilder)
+    public function __construct(MapBuilderInterface $mapBuilder)
     {
-        $this->classCanonicalizer = $classCanonicalizer;
         $this->mapBuilder = $mapBuilder;
     }
 
@@ -50,63 +44,176 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function map(object $source, $target, ?MapInterface $map = null): ?object
+    public function map(object $source, $target, ?Map $map = null): ?object
     {
-        if (!\is_string($target) && !\is_object($target)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "target" passed to "%s" is invalid. Expects an argument of type object or string, got an argument of type "%s".',
-                __METHOD__,
-                \gettype($target)
-            ));
-        }
+        $map = $map ?? $this->mapBuilder->buildMap($defaultPathFindingStrategy = true);
 
-        $map = $map ?? $this->mapBuilder->buildMap();
-        $routeCollection = $map->getRouteCollection($source, $target);
+        $context = new Context($source, $target, $map);
 
-        if (false === $routeCollection->hasRoutes()) {
+        // Returns NULL if nothing to do...
+        if (false === $context->hasRoutes()) {
             return null;
         }
 
-        foreach ($routeCollection as $route) {
-            $sourcePoint = $route->getSourcePoint();
-            $targetPoint = $route->getTargetPoint();
+        $targetClassReflection = $context->getTargetClassReflection();
 
-            $targetPointValue = $sourcePoint->getValue($source);
+        // Instantiates the target...
+        if (false === $context->hasInstantiatedTarget()) {
+            $targetConstructorParameterPointValues = $this->getTargetConstructorParameterPointValues($context);
 
-            if ($targetPoint instanceof ParameterPoint) {
-                $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
-
-            } elseif ($targetPoint instanceof PropertyPoint) {
-                $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
-                $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
-            }
-        }
-
-        $targetClassReflection = new \ReflectionClass($this->classCanonicalizer->getCanonicalFqcn($target));
-
-        if (\is_string($target)) {
-            if (isset($targetParameterPointValues['__construct'])) {
-                $target = $targetClassReflection->newInstanceArgs($targetParameterPointValues['__construct']);
-
+            if ($targetConstructorParameterPointValues) {
+                // Invokes target constructor...
+                $target = $targetClassReflection->newInstanceArgs($targetConstructorParameterPointValues);
             } else {
                 $target = $targetClassReflection->newInstance();
             }
+
+            $context = new Context($source, $target, $map);
         }
 
-        if (isset($targetParameterPointValues)) {
-            unset($targetParameterPointValues['__construct']);
 
-            foreach ($targetParameterPointValues as $methodName => $methodArguments) {
-                $targetClassReflection->getMethod($methodName)->invokeArgs($target, $methodArguments);
-            }
+        $targetParameterPointValues = $this->getTargetParameterPointValues($context);
+        $targetPropertyPointValues  = $this->getTargetPropertyPointValues($context);
+        $targetPropertyPoints       = $this->getTargetPropertyPoints($context);
+
+        // Invokes target methods...
+        foreach ($targetParameterPointValues as $methodName => $methodArguments) {
+            $targetClassReflection->getMethod($methodName)->invokeArgs($target, $methodArguments);
         }
 
-        if (isset($targetPropertyPoints)) {
-            foreach ($targetPropertyPoints as $propertyName => $targetPropertyPoint) {
-                $targetPropertyPoint->setValue($target, $targetPropertyPointValues[$propertyName]);
-            }
+        // Sets target properties...
+        foreach ($targetPropertyPoints as $propertyName => $targetPropertyPoint) {
+            $targetPropertyPoint->setValue($target, $targetPropertyPointValues[$propertyName]);
         }
 
         return $target;
+    }
+
+    /**
+     * Gets target constructor parameter point values.
+     *
+     * @param Opportus\ObjectMapper\Context $context
+     * @return array
+     */
+    private function getTargetConstructorParameterPointValues(Context $context): array
+    {
+        $routes = $context->getRoutes();
+        $targetConstructorParameterPointValues = [];
+
+        foreach ($routes as $route) {
+            $sourcePoint = $route->getSourcePoint();
+            $targetPoint = $route->getTargetPoint();
+
+            if (!$targetPoint instanceof ParameterPoint || '__construct' !== $targetPoint->getMethodName()) {
+                continue;
+            }
+
+            $targetPointValue = $this->getTargetPointValue($context, $route);
+
+            $targetConstructorParameterPointValues[$targetPoint->getPosition()] = $targetPointValue;
+        }
+
+        return $targetConstructorParameterPointValues;
+    }
+
+    /**
+     * Gets target parameter point values.
+     *
+     * @param Opportus\ObjectMapper\Context $context
+     * @return array
+     */
+    private function getTargetParameterPointValues(Context $context): array
+    {
+        $routes = $context->getRoutes();
+        $targetParameterPointValues = [];
+
+        foreach ($routes as $route) {
+            $sourcePoint = $route->getSourcePoint();
+            $targetPoint = $route->getTargetPoint();
+
+            if (!$targetPoint instanceof ParameterPoint || '__construct' === $targetPoint->getMethodName()) {
+                continue;
+            }
+
+            $targetPointValue = $this->getTargetPointValue($context, $route);
+
+            $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
+        }
+
+        return $targetParameterPointValues;
+    }
+
+    /**
+     * Gets target property point values.
+     *
+     * @param Opportus\ObjectMapper\Context $context
+     * @return array
+     */
+    private function getTargetPropertyPointValues(Context $context): array
+    {
+        $routes = $context->getRoutes();
+        $targetPropertyPointValues = [];
+
+        foreach ($routes as $route) {
+            $sourcePoint = $route->getSourcePoint();
+            $targetPoint = $route->getTargetPoint();
+
+            if (!$targetPoint instanceof PropertyPoint) {
+                continue;
+            }
+
+            $targetPointValue = $this->getTargetPointValue($context, $route);
+
+            $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
+        }
+
+        return $targetPropertyPointValues;
+    }
+
+    /**
+     * Gets target property points.
+     *
+     * @param Opportus\ObjectMapper\Context $context
+     * @return array
+     */
+    private function getTargetPropertyPoints(Context $context): array
+    {
+        $routes = $context->getRoutes();
+        $targetPropertyPoints = [];
+
+        foreach ($routes as $route) {
+            $sourcePoint = $route->getSourcePoint();
+            $targetPoint = $route->getTargetPoint();
+
+            if (!$targetPoint instanceof PropertyPoint) {
+                continue;
+            }
+
+            $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
+        }
+
+        return $targetPropertyPoints;
+    }
+
+    /**
+     * Gets target point value.
+     *
+     * @param Opportus\ObjectMapper\Context $context
+     * @param Opportus\ObjectMapper\Map\Route\Route $route
+     * @return mixed
+     */
+    private function getTargetPointValue(Context $context, Route $route)
+    {
+        
+        $filter = $context->getFilterOnRoute($route);
+
+        if (null !== $filter) {
+            try {
+                return $filter->getValue($context, $this);
+
+            } catch (NotSupportedContextException $e) {}
+        }
+
+        return $route->getSourcePoint()->getValue($context->getSource());
     }
 }

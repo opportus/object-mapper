@@ -2,11 +2,8 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
-use Opportus\ObjectMapper\ClassCanonicalizerInterface;
-use Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface;
-use Opportus\ObjectMapper\Map\Route\RouteCollectionInterface;
+use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;;
 
 /**
  * The no path finding strategy.
@@ -15,46 +12,36 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;;
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class NoPathFindingStrategy implements PathFindingStrategyInterface
+final class NoPathFindingStrategy implements PathFindingStrategyInterface
 {
     /**
-     * @var Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
+     * @var Opportus\ObjectMapper\Map\Route\RouteCollection $routes
      */
-    private $classCanonicalizer;
-
-    /**
-     * @var Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface $mapDefinition
-     */
-    private $mapDefinition;
+    private $routes;
 
     /**
      * Constructs the no path finding strategy.
      *
-     * @param Opportus\ObjectMapper\ClassCanonicalizerInterface $classCanonicalizer
-     * @param Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface $mapDefinition
+     * @param Opportus\ObjectMapper\Map\Route\RouteCollection $routes
      */
-    public function __construct(ClassCanonicalizerInterface $classCanonicalizer, MapDefinitionInterface $mapDefinition)
+    public function __construct(RouteCollection $routes)
     {
-        $this->classCanonicalizer = $classCanonicalizer;
-        $this->mapDefinition = $mapDefinition;
+        $this->routes = $routes;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getRouteCollection(object $source, $target): RouteCollectionInterface
+    public function getRoutes(Context $context): RouteCollection
     {
-        $sourceFqcn = $this->classCanonicalizer->getCanonicalFqcn($source);
-        $targetFqcn = $this->classCanonicalizer->getCanonicalFqcn($target);
+        $routes = [];
 
-        $routeCollection = new RouteCollection();
-
-        foreach ($this->mapDefinition->getRouteCollection() as $route) {
-            if ($sourceFqcn === $route->getSourcePoint()->getClassFqn() && $targetFqcn === $route->getTargetPoint()->getClassFqn()) {
-                $routeCollection->addRoute($route);
+        foreach ($this->routes as $route) {
+            if ($context->getSourceClassFqn() === $route->getSourcePoint()->getClassFqn() && $context->getTargetClassFqn() === $route->getTargetPoint()->getClassFqn()) {
+                $routes[] = $route;
             }
         }
 
-        return $routeCollection;
+        return new RouteCollection($routes);
     }
 }

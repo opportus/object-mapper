@@ -3,37 +3,40 @@
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
 /**
- * The base point.
+ * The point trait.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Route\Point
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class Point implements PointInterface
+trait PointTrait
 {
     /**
      * @var \Reflector $reflector
      */
-    protected $reflector;
+    private $reflector;
 
     /**
      * @var string $fqn
      */
-    protected $fqn;
+    private $fqn;
 
     /**
-     * {@inheritdoc}
+     * Gets the Fully Qualified Name of the point.
+     *
+     * @return string
      */
-    public function getFqn() : string
+    public function getFqn(): string
     {
         return $this->fqn;
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the Fully Qualified Name of the class of the point.
+     *
+     * @return string
      */
-    public function getClassFqn() : string
+    public function getClassFqn(): string
     {
         return $this->reflector->getDeclaringClass()->getName();
     }
@@ -47,7 +50,7 @@ abstract class Point implements PointInterface
     }
 
     /**
-     * @param  string $reflectorPropertyName
+     * @param string $reflectorPropertyName
      * @return mixed
      */
     public function __get($reflectorPropertyName)
@@ -56,8 +59,8 @@ abstract class Point implements PointInterface
     }
 
     /**
-     * @param  string $reflectorMethodName
-     * @param  array $reflectorMethodArguments
+     * @param string $reflectorMethodName
+     * @param array $reflectorMethodArguments
      * @return mixed
      */
     public function __call($reflectorMethodName, $reflectorMethodArguments)
@@ -65,4 +68,3 @@ abstract class Point implements PointInterface
         return $this->reflector->$reflectorMethodName(...$reflectorMethodArguments);
     }
 }
-

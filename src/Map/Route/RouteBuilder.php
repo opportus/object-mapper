@@ -7,17 +7,16 @@ use Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface;
 /**
  * The route builder.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map\Route
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RouteBuilder implements RouteBuilderInterface
+final class RouteBuilder implements RouteBuilderInterface
 {
     /**
      * @var Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface $pointFactory
      */
-    protected $pointFactory;
+    private $pointFactory;
 
     /**
      * Constructs the route builder.
@@ -32,12 +31,11 @@ class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function buildRoute(string $sourcePointFqn, string $targetPointFqn) : RouteInterface
+    public function buildRoute(string $sourcePointFqn, string $targetPointFqn): Route
     {
-        $sourcePoint = $this->pointFactory->createSourcePoint($sourcePointFqn);
-        $targetPoint = $this->pointFactory->createTargetPoint($targetPointFqn);
+        $sourcePoint = $this->pointFactory->createPoint($sourcePointFqn);
+        $targetPoint = $this->pointFactory->createPoint($targetPointFqn);
 
         return new Route($sourcePoint, $targetPoint);
     }
 }
-

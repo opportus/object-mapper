@@ -2,10 +2,11 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\Map\Filter\FilterInterface;
+
 /**
  * The map builder interface.
  *
- * @version 1.0.0
  * @package Opportus\ObjectMapper\Map
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -13,45 +14,50 @@ namespace Opportus\ObjectMapper\Map;
 interface MapBuilderInterface
 {
     /**
-     * Prepares a new map.
-     *
-     * @return Opportus\ObjectMapper\Map\MapBuilderInterface
-     */
-    public function prepareMap() : MapBuilderInterface;
-
-    /**
      * Adds a route to the map.
      *
-     * @param  string $sourcePointFqn Representing the Fully Qualified Name of a source point which can be:
+     * @param string $sourcePointFqn Can be either:
      *
-     * - A public, protected or private property (PropertyPoint) represented by its FQN having for syntax 'Class::$property'
-     * - A public, protected or private method requiring no argument (MethodPoint) represented by its FQN having for syntax 'Class::method()'
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
+     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()`
      *
-     * @param  string $targetPointFqn Representing the Fully Qualified Name of a target point which can be:
+     * @param string $targetPointFqn Can be either:
      *
-     * - A public, protected or private property (PropertyPoint) represented by its FQN having for syntax 'Class::$property'
-     * - A parameter of a public, protected or private method (ParameterPoint) represented by its FQN having for syntax 'Class::method()::$parameter'
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
+     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()::$parameter`
+     *
+     * @param null|Callable|Opportus\ObjectMapper\Map\Filter\FilterInterface $filter
+     *
+     * The callable returns a mixed value which will be assigned to the target point by the mapper. The callable takes as arguments:
+     *
+     * - `Opportus\ObjectMapper\Map\Route\Route` The route the filter is on.
+     * - `Opportus\ObjectMapper\Context` The context of the current mapping.
+     * - `Opportus\ObjectMapper\ObjectMapperInterface` The object mapper service, useful for recursion.
      *
      * @return Opportus\ObjectMapper\Map\MapBuilderInterface
-     *
-     * @throws Opportus\ObjectMapper\Exception\InvalidOperationException When the client has not previously called MapBuilderInterface::prepareMap()
+     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
      */
-    public function addRoute(string $sourcePointFqn, string $targetPointFqn) : MapBuilderInterface;
+    public function addRoute(string $sourcePointFqn, string $targetPointFqn, $filter = null): MapBuilderInterface;
+
+    /**
+     * Adds a filter.
+     *
+     * @param Opportus\ObjectMapper\Map\Filter\FilterInterface $filter
+     * @return Opportus\ObjectMapper\Map\MapBuilderInterface
+     */
+    public function addFilter(FilterInterface $filter): MapBuilderInterface;
 
     /**
      * Builds the map.
      *
-     * @param  null|Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface|Opportus\ObjectMapper\Map\Definition\MapDefinitionInterface
+     * @param bool|Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface $pathFindingStrategy
      *
-     * - If the param is null and a map is in preparation, it will build the prepared map
-     * - If the param is null and no map is in preparation, it will build a map having for stratgey the default PathFindingStrategy
-     * - If the param is an instance of PathFindingStrategyInterface and no map is in preparation, it will build a map having for strategy this instance
-     * - If the param is an instance of MapDefinitionInterface and no map is in preparation, it will build a map based on this map definition instance
+     * - If `$pathFindingStrategy` is `false`, this will build a map with `NoPathFindingStrategy` returning as routes those previously manually added via this builder.
+     * - If `$pathFindingStrategy` is `true`, this will build a map with `PathFindingStrategy` returning as routes those dynamically defined by this strategy.
+     * - If `$pathFindingStrategy` is an instance of `PathFindingStrategyInterface`, this will build a map with this instance returning as routes those dynamically defined by this strategy.
      *
-     * @return Opportus\ObjectMapper\Map\MapInterface
-     *
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException When the param !== null and a map is already in preparation
+     * @return Opportus\ObjectMapper\Map\Map
+     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
      */
-    public function buildMap($parameter = null) : MapInterface;
+    public function buildMap($pathFindingStrategy = false): Map;
 }
-
