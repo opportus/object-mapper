@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the opportus/object-mapper package.
+ *
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\NotSupportedContextException;
@@ -204,14 +213,13 @@ final class ObjectMapper implements ObjectMapperInterface
      */
     private function getTargetPointValue(Context $context, Route $route)
     {
-        
         $filter = $context->getFilterOnRoute($route);
 
         if (null !== $filter) {
             try {
                 return $filter->getValue($context, $this);
-
-            } catch (NotSupportedContextException $e) {}
+            } catch (NotSupportedContextException $e) {
+            }
         }
 
         return $route->getSourcePoint()->getValue($context->getSource());

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the opportus/object-mapper package.
+ *
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
@@ -98,7 +107,7 @@ final class Context
 
     /**
      * Checks whether this has the target instantiated.
-     * 
+     *
      * @return bool
      */
     public function hasInstantiatedTarget(): bool
@@ -108,7 +117,7 @@ final class Context
 
     /**
      * Gets the source class Fully Qualified Name.
-     * 
+     *
      * @return string
      */
     public function getSourceClassFqn(): string
@@ -118,7 +127,7 @@ final class Context
 
     /**
      * Gets the source class reflection.
-     * 
+     *
      * @return \ReflectionClass
      */
     public function getSourceClassReflection(): \ReflectionClass
@@ -128,7 +137,7 @@ final class Context
 
     /**
      * Gets the target class Fully Qualified Name.
-     * 
+     *
      * @return string
      */
     public function getTargetClassFqn(): string
@@ -138,7 +147,7 @@ final class Context
 
     /**
      * Gets the target class reflection.
-     * 
+     *
      * @return \ReflectionClass
      */
     public function getTargetClassReflection(): \ReflectionClass
@@ -148,7 +157,7 @@ final class Context
 
     /**
      * Checks whether this has routes.
-     * 
+     *
      * @return bool
      */
     public function hasRoutes(): bool
@@ -158,7 +167,7 @@ final class Context
 
     /**
      * Gets the routes.
-     * 
+     *
      * @return Opportus\ObjectMapper\Map\Route\RouteCollection
      */
     public function getRoutes(): RouteCollection
@@ -168,7 +177,7 @@ final class Context
 
     /**
      * Gets the filter on the passed route.
-     * 
+     *
      * @param Opportus\ObjectMapper\Map\Route\Route $route
      * @return null|Opportus\ObjectMapper\Map\Filter\FilterInterface
      */
@@ -179,7 +188,7 @@ final class Context
 
     /**
      * Gets the Fully Qualified Name of the path finding strategy.
-     * 
+     *
      * @return string
      */
     public function getPathFindingStrategyFqn(): string

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the opportus/object-mapper package.
+ *
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
@@ -20,7 +29,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
 
     /**
      * Constructs the collection.
-     * 
+     *
      * @param array $items
      */
     public function __construct(array $items)
@@ -30,7 +39,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
 
     /**
      * Returns the collection as array.
-     * 
+     *
      * @return array
      */
     public function toArray(): array
@@ -72,7 +81,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
 
     /**
      * {@inheritdoc}
-     * 
+     *
      * @throws Opportus\ObjectMapper\Exception\InvalidOperationException
      */
     public function offsetSet($offset, $value)
@@ -85,7 +94,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
 
     /**
      * {@inheritdoc}
-     * 
+     *
      * @throws Opportus\ObjectMapper\Exception\InvalidOperationException
      */
     public function offsetUnset($offset)
