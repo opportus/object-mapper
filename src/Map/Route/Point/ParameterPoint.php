@@ -26,11 +26,21 @@ use ReflectionParameter;
 final class ParameterPoint
 {
     use PointTrait;
-    
+
+    /**
+     * @var ReflectionParameter $reflector
+     */
+    private $reflector;
+
+    /**
+     * @var string $methodName
+     */
+    private $methodName;
+
     /**
      * Constructs the parameter point.
      *
-     * @param  string $fqn
+     * @param string $fqn
      * @throws InvalidParameterPointException
      * @throws InvalidParameterPointSyntaxException
      */
@@ -49,7 +59,8 @@ final class ParameterPoint
         list($matchedFqn, $matchedClassName, $matchedMethodName, $matchedName) = $matches;
 
         try {
-            $this->reflector = new ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
+            $reflector = new ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
+
         } catch (ReflectionException $exception) {
             throw new InvalidParameterPointException(\sprintf(
                 '"%s" is not a parameter point. %s.',
@@ -58,9 +69,13 @@ final class ParameterPoint
             ));
         }
 
-        $this->fqn = $fqn;
+        $reflector->getDeclaringFunction()->setAccessible(true);
 
-        $this->reflector->getDeclaringFunction()->setAccessible(true);
+        $this->reflector = $reflector;
+        $this->fqn = $fqn;
+        $this->classFqn = $matchedClassName;
+        $this->name = $matchedName;
+        $this->methodName = $matchedMethodName;
     }
 
     /**
@@ -70,6 +85,6 @@ final class ParameterPoint
      */
     public function getMethodName(): string
     {
-        return $this->reflector->getDeclaringFunction()->getName();
+        return $this->methodName;
     }
 }

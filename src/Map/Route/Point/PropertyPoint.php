@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidPropertyPointException;
 use Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use ReflectionException;
 use ReflectionProperty;
 
@@ -26,11 +27,16 @@ use ReflectionProperty;
 final class PropertyPoint
 {
     use PointTrait;
-    
+
+    /**
+     * @var ReflectionProperty $reflector
+     */
+    private $reflector;
+
     /**
      * Constructs the property point.
      *
-     * @param  string $fqn
+     * @param string $fqn
      * @throws InvalidPropertyPointException
      * @throws InvalidPropertyPointSyntaxException
      */
@@ -49,7 +55,8 @@ final class PropertyPoint
         list($matchedFqn, $matchedClassName, $matchedName) = $matches;
 
         try {
-            $this->reflector = new ReflectionProperty($matchedClassName, $matchedName);
+            $reflector = new ReflectionProperty($matchedClassName, $matchedName);
+
         } catch (ReflectionException $exception) {
             throw new InvalidPropertyPointException(\sprintf(
                 '"%s" is not a property point. %s.',
@@ -58,19 +65,56 @@ final class PropertyPoint
             ));
         }
 
-        $this->fqn = $fqn;
+        $reflector->setAccessible(true);
 
-        $this->reflector->setAccessible(true);
+        $this->reflector = $reflector;
+        $this->fqn = $fqn;
+        $this->classFqn = $matchedClassName;
+        $this->name = $matchedName;
     }
 
     /**
      * Gets the point value from the passed object.
      *
-     * @param  null|object $object
+     * @param object $object
      * @return mixed
+     * @throws InvalidOperationException
      */
-    public function getValue($object = null)
+    public function getValue(object $object)
     {
-        return $this->reflector->getValue($object);
+        try {
+            return $this->reflector->getValue($object);
+
+        } catch (ReflectionException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Sets the point value on the passed object.
+     * 
+     * @param object $object
+     * @param mixed $value
+     * @return object
+     * @throws InvalidOperationException
+     */
+    public function setValue(object $object, $value): object
+    {
+        try {
+            $this->reflector->setValue($object, $value);
+
+        } catch (ReflectionException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
+
+        return $object;
     }
 }

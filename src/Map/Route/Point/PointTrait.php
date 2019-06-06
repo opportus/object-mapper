@@ -11,8 +11,6 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Reflector;
-
 /**
  * The point trait.
  *
@@ -23,14 +21,19 @@ use Reflector;
 trait PointTrait
 {
     /**
-     * @var Reflector $reflector
-     */
-    private $reflector;
-
-    /**
      * @var string $fqn
      */
     private $fqn;
+
+    /**
+     * @var string $classFqn
+     */
+    private $classFqn;
+
+    /**
+     * @var string $name
+     */
+    private $name;
 
     /**
      * Gets the Fully Qualified Name of the point.
@@ -49,33 +52,16 @@ trait PointTrait
      */
     public function getClassFqn(): string
     {
-        return $this->reflector->getDeclaringClass()->getName();
+        return $this->classFqn;
     }
 
     /**
+     * Gets the name of the point.
+     * 
      * @return string
      */
-    public function __toString()
+    public function getName(): string
     {
-        return $this->fqn;
-    }
-
-    /**
-     * @param string $reflectorPropertyName
-     * @return mixed
-     */
-    public function __get($reflectorPropertyName)
-    {
-        return $this->reflector->$reflectorPropertyName;
-    }
-
-    /**
-     * @param string $reflectorMethodName
-     * @param array $reflectorMethodArguments
-     * @return mixed
-     */
-    public function __call($reflectorMethodName, $reflectorMethodArguments)
-    {
-        return $this->reflector->$reflectorMethodName(...$reflectorMethodArguments);
+        return $this->name;
     }
 }

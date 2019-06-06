@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidMethodPointException;
 use Opportus\ObjectMapper\Exception\InvalidMethodPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use ReflectionException;
 use ReflectionMethod;
 
@@ -26,11 +27,16 @@ use ReflectionMethod;
 final class MethodPoint
 {
     use PointTrait;
-    
+
+    /**
+     * @var ReflectionMethod $reflector
+     */
+    private $reflector;
+
     /**
      * Constructs the method point.
      *
-     * @param  string $fqn
+     * @param string $fqn
      * @throws InvalidMethodPointException
      * @throws InvalidMethodPointSyntaxException
      */
@@ -49,7 +55,8 @@ final class MethodPoint
         list($matchedFqn, $matchedClassName, $matchedName) = $matches;
 
         try {
-            $this->reflector = new ReflectionMethod($matchedClassName, $matchedName);
+            $reflector = new ReflectionMethod($matchedClassName, $matchedName);
+
         } catch (ReflectionException $exception) {
             throw new InvalidMethodPointException(\sprintf(
                 '"%s" is not a method point. %s.',
@@ -58,26 +65,39 @@ final class MethodPoint
             ));
         }
 
-        if ($this->getNumberOfRequiredParameters() > 0) {
+        if ($reflector->getNumberOfRequiredParameters() > 0) {
             throw new InvalidMethodPointException(\sprintf(
                 '"%s" is not a method point as such cannot have required parameters.',
                 $fqn
             ));
         }
 
-        $this->fqn = $fqn;
+        $reflector->setAccessible(true);
 
-        $this->reflector->setAccessible(true);
+        $this->reflector = $reflector;
+        $this->fqn = $fqn;
+        $this->classFqn = $matchedClassName;
+        $this->name = $matchedName;
     }
 
     /**
      * Gets the point value from the passed object.
      *
-     * @param  null|object $object
+     * @param object $object
      * @return mixed
+     * @throws InvalidOperationException
      */
-    public function getValue($object = null)
+    public function getValue(object $object)
     {
-        return $this->reflector->invoke($object);
+        try {
+            return $this->reflector->invoke($object);
+
+        } catch (ReflectionException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
     }
 }
