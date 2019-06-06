@@ -23,14 +23,14 @@ use Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface;
 final class RouteBuilder implements RouteBuilderInterface
 {
     /**
-     * @var Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface $pointFactory
+     * @var PointFactoryInterface $pointFactory
      */
     private $pointFactory;
 
     /**
      * Constructs the route builder.
      *
-     * @param Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface $pointFactory
+     * @param PointFactoryInterface $pointFactory
      */
     public function __construct(PointFactoryInterface $pointFactory)
     {

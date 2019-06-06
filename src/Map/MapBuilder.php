@@ -31,26 +31,26 @@ use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 final class MapBuilder implements MapBuilderInterface
 {
     /**
-     * @var Opportus\ObjectMapper\Map\Route\RouteBuilderInterface $routeBuilder
+     * @var RouteBuilderInterface $routeBuilder
      */
     private $routeBuilder;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Route\RouteCollection $routes
+     * @var RouteCollection $routes
      */
     private $routes;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Filter\FilterCollection $filters
+     * @var FilterCollection $filters
      */
     private $filters;
 
     /**
      * Constructs the map builder.
      *
-     * @param Opportus\ObjectMapper\Map\Route\RouteBuilderInterface $routeBuilder
-     * @param null|Opportus\ObjectMapper\Map\Route\RouteCollection $routes
-     * @param null|Opportus\ObjectMapper\Map\Filter\FilterCollection $filters
+     * @param RouteBuilderInterface $routeBuilder
+     * @param null|RouteCollection $routes
+     * @param null|FilterCollection $filters
      */
     public function __construct(RouteBuilderInterface $routeBuilder, ?RouteCollection $routes = null, ?FilterCollection $filters = null)
     {

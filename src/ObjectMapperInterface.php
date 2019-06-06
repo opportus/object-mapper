@@ -26,7 +26,7 @@ interface ObjectMapperInterface
     /**
      * Gets the map builder.
      *
-     * @return Opportus\ObjectMapper\Map\MapBuilderInterface
+     * @return MapBuilderInterface
      */
     public function getMapBuilder(): MapBuilderInterface;
 
@@ -35,7 +35,7 @@ interface ObjectMapperInterface
      *
      * @param object $source
      * @param object|string $target
-     * @param null|Opportus\ObjectMapper\Map\Map $map
+     * @param null|Map $map
      * @return null|object
      */
     public function map(object $source, $target, ?Map $map = null): ?object;

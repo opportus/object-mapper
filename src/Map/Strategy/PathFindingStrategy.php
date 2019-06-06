@@ -17,6 +17,7 @@ use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
+use ReflectionClass;
 
 /**
  * The default path finding strategy.
@@ -62,11 +63,11 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     /**
      * Gets the target points.
      *
-     * @param \ReflectionClass $targetClassReflection
+     * @param ReflectionClass $targetClassReflection
      * @param bool $isTargetInstantiated
      * @return array
      */
-    private function getTargetPoints(\ReflectionClass $targetClassReflection, bool $isTargetInstantiated): array
+    private function getTargetPoints(ReflectionClass $targetClassReflection, bool $isTargetInstantiated): array
     {
         $targetPoints = [];
         foreach ($targetClassReflection->getMethods() as $targetMethodReflection) {
@@ -102,11 +103,11 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     /**
      * Finds the source point to connect to the target point.
      *
-     * @param \ReflectionClass $sourceClassReflection
-     * @param Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint $targetPoint
-     * @return null|Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint
+     * @param ReflectionClass $sourceClassReflection
+     * @param PropertyPoint|ParameterPoint $targetPoint
+     * @return null|PropertyPoint|MethodPoint
      */
-    private function findSourcePoint(\ReflectionClass $sourceClassReflection, object $targetPoint): ?object
+    private function findSourcePoint(ReflectionClass $sourceClassReflection, object $targetPoint): ?object
     {
         foreach ($sourceClassReflection->getMethods() as $sourceMethodReflection) {
             if ($sourceMethodReflection->isPublic()) {

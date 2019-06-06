@@ -11,7 +11,9 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Filter\FilterInterface;
+use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 
 /**
  * The map builder interface.
@@ -35,7 +37,7 @@ interface MapBuilderInterface
      * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
      * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()::$parameter`
      *
-     * @param null|Callable|Opportus\ObjectMapper\Map\Filter\FilterInterface $filter
+     * @param null|Callable|FilterInterface $filter
      *
      * The callable returns a mixed value which will be assigned to the target point by the mapper. The callable takes as arguments:
      *
@@ -43,30 +45,30 @@ interface MapBuilderInterface
      * - `Opportus\ObjectMapper\Context` The context of the current mapping.
      * - `Opportus\ObjectMapper\ObjectMapperInterface` The object mapper service, useful for recursion.
      *
-     * @return Opportus\ObjectMapper\Map\MapBuilderInterface
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
+     * @return MapBuilderInterface
+     * @throws InvalidArgumentException
      */
     public function addRoute(string $sourcePointFqn, string $targetPointFqn, $filter = null): MapBuilderInterface;
 
     /**
      * Adds a filter.
      *
-     * @param Opportus\ObjectMapper\Map\Filter\FilterInterface $filter
-     * @return Opportus\ObjectMapper\Map\MapBuilderInterface
+     * @param FilterInterface $filter
+     * @return MapBuilderInterface
      */
     public function addFilter(FilterInterface $filter): MapBuilderInterface;
 
     /**
      * Builds the map.
      *
-     * @param bool|Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface $pathFindingStrategy
+     * @param bool|PathFindingStrategyInterface $pathFindingStrategy
      *
      * - If `$pathFindingStrategy` is `false`, this will build a map with `NoPathFindingStrategy` returning as routes those previously manually added via this builder.
      * - If `$pathFindingStrategy` is `true`, this will build a map with `PathFindingStrategy` returning as routes those dynamically defined by this strategy.
      * - If `$pathFindingStrategy` is an instance of `PathFindingStrategyInterface`, this will build a map with this instance returning as routes those dynamically defined by this strategy.
      *
-     * @return Opportus\ObjectMapper\Map\Map
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
+     * @return Map
+     * @throws InvalidArgumentException
      */
     public function buildMap($pathFindingStrategy = false): Map;
 }

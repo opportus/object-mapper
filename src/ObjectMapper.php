@@ -28,14 +28,14 @@ use Opportus\ObjectMapper\Map\Route\Route;
 final class ObjectMapper implements ObjectMapperInterface
 {
     /**
-     * @var Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
+     * @var MapBuilderInterface $mapBuilder
      */
     private $mapBuilder;
 
     /**
      * Constructs the object mapper.
      *
-     * @param Opportus\ObjectMapper\Map\MapBuilderInterface $mapBuilder
+     * @param MapBuilderInterface $mapBuilder
      */
     public function __construct(MapBuilderInterface $mapBuilder)
     {
@@ -101,7 +101,7 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * Gets target constructor parameter point values.
      *
-     * @param Opportus\ObjectMapper\Context $context
+     * @param Context $context
      * @return array
      */
     private function getTargetConstructorParameterPointValues(Context $context): array
@@ -128,7 +128,7 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * Gets target parameter point values.
      *
-     * @param Opportus\ObjectMapper\Context $context
+     * @param Context $context
      * @return array
      */
     private function getTargetParameterPointValues(Context $context): array
@@ -155,7 +155,7 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * Gets target property point values.
      *
-     * @param Opportus\ObjectMapper\Context $context
+     * @param Context $context
      * @return array
      */
     private function getTargetPropertyPointValues(Context $context): array
@@ -182,7 +182,7 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * Gets target property points.
      *
-     * @param Opportus\ObjectMapper\Context $context
+     * @param Context $context
      * @return array
      */
     private function getTargetPropertyPoints(Context $context): array
@@ -207,8 +207,8 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * Gets target point value.
      *
-     * @param Opportus\ObjectMapper\Context $context
-     * @param Opportus\ObjectMapper\Map\Route\Route $route
+     * @param Context $context
+     * @param Route $route
      * @return mixed
      */
     private function getTargetPointValue(Context $context, Route $route)

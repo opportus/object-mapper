@@ -13,6 +13,8 @@ namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidParameterPointException;
 use Opportus\ObjectMapper\Exception\InvalidParameterPointSyntaxException;
+use ReflectionException;
+use ReflectionParameter;
 
 /**
  * The parameter point.
@@ -29,8 +31,8 @@ final class ParameterPoint
      * Constructs the parameter point.
      *
      * @param  string $fqn
-     * @throws Opportus\ObjectMapper\Exception\InvalidParameterPointException
-     * @throws Opportus\ObjectMapper\Exception\InvalidParameterPointSyntaxException
+     * @throws InvalidParameterPointException
+     * @throws InvalidParameterPointSyntaxException
      */
     public function __construct(string $fqn)
     {
@@ -47,8 +49,8 @@ final class ParameterPoint
         list($matchedFqn, $matchedClassName, $matchedMethodName, $matchedName) = $matches;
 
         try {
-            $this->reflector = new \ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
-        } catch (\ReflectionException $exception) {
+            $this->reflector = new ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
+        } catch (ReflectionException $exception) {
             throw new InvalidParameterPointException(\sprintf(
                 '"%s" is not a parameter point. %s.',
                 $fqn,

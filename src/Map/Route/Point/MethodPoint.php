@@ -13,6 +13,8 @@ namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidMethodPointException;
 use Opportus\ObjectMapper\Exception\InvalidMethodPointSyntaxException;
+use ReflectionException;
+use ReflectionMethod;
 
 /**
  * The method point.
@@ -29,8 +31,8 @@ final class MethodPoint
      * Constructs the method point.
      *
      * @param  string $fqn
-     * @throws Opportus\ObjectMapper\Exception\InvalidMethodPointException
-     * @throws Opportus\ObjectMapper\Exception\InvalidMethodPointSyntaxException
+     * @throws InvalidMethodPointException
+     * @throws InvalidMethodPointSyntaxException
      */
     public function __construct(string $fqn)
     {
@@ -47,8 +49,8 @@ final class MethodPoint
         list($matchedFqn, $matchedClassName, $matchedName) = $matches;
 
         try {
-            $this->reflector = new \ReflectionMethod($matchedClassName, $matchedName);
-        } catch (\ReflectionException $exception) {
+            $this->reflector = new ReflectionMethod($matchedClassName, $matchedName);
+        } catch (ReflectionException $exception) {
             throw new InvalidMethodPointException(\sprintf(
                 '"%s" is not a method point. %s.',
                 $fqn,

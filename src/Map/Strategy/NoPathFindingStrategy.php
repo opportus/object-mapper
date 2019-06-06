@@ -24,14 +24,14 @@ use Opportus\ObjectMapper\Map\Route\RouteCollection;
 final class NoPathFindingStrategy implements PathFindingStrategyInterface
 {
     /**
-     * @var Opportus\ObjectMapper\Map\Route\RouteCollection $routes
+     * @var RouteCollection $routes
      */
     private $routes;
 
     /**
      * Constructs the no path finding strategy.
      *
-     * @param Opportus\ObjectMapper\Map\Route\RouteCollection $routes
+     * @param RouteCollection $routes
      */
     public function __construct(RouteCollection $routes)
     {

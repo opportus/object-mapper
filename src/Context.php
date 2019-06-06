@@ -16,6 +16,7 @@ use Opportus\ObjectMapper\Map\Filter\FilterInterface;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Map\Route\Route;
+use ReflectionClass;
 
 /**
  * The context.
@@ -40,7 +41,7 @@ final class Context
     private $target;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Map $map
+     * @var Map $map
      */
     private $map;
 
@@ -49,8 +50,8 @@ final class Context
      *
      * @param object $source
      * @param object|string $target
-     * @param Opportus\ObjectMapper\Map\Map $map
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
+     * @param Map $map
+     * @throws InvalidArgumentException
      */
     public function __construct(object $source, $target, Map $map)
     {
@@ -98,7 +99,7 @@ final class Context
     /**
      * Gets the map.
      *
-     * @return Opportus\ObjectMapper\Map\Map
+     * @return Map
      */
     public function getMap(): Map
     {
@@ -128,11 +129,11 @@ final class Context
     /**
      * Gets the source class reflection.
      *
-     * @return \ReflectionClass
+     * @return ReflectionClass
      */
-    public function getSourceClassReflection(): \ReflectionClass
+    public function getSourceClassReflection(): ReflectionClass
     {
-        return new \ReflectionClass($this->getSourceClassFqn());
+        return new ReflectionClass($this->getSourceClassFqn());
     }
 
     /**
@@ -148,11 +149,11 @@ final class Context
     /**
      * Gets the target class reflection.
      *
-     * @return \ReflectionClass
+     * @return ReflectionClass
      */
-    public function getTargetClassReflection(): \ReflectionClass
+    public function getTargetClassReflection(): ReflectionClass
     {
-        return new \ReflectionClass($this->getTargetClassFqn());
+        return new ReflectionClass($this->getTargetClassFqn());
     }
 
     /**
@@ -168,7 +169,7 @@ final class Context
     /**
      * Gets the routes.
      *
-     * @return Opportus\ObjectMapper\Map\Route\RouteCollection
+     * @return RouteCollection
      */
     public function getRoutes(): RouteCollection
     {
@@ -178,8 +179,8 @@ final class Context
     /**
      * Gets the filter on the passed route.
      *
-     * @param Opportus\ObjectMapper\Map\Route\Route $route
-     * @return null|Opportus\ObjectMapper\Map\Filter\FilterInterface
+     * @param Route $route
+     * @return null|FilterInterface
      */
     public function getFilterOnRoute(Route $route): ?FilterInterface
     {

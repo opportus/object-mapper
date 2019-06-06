@@ -26,8 +26,8 @@ interface PathFindingStrategyInterface
     /**
      * Gets the routes connecting the points of the source with the points of the target.
      *
-     * @param Opportus\ObjectMapper\Context $context
-     * @return Opportus\ObjectMapper\Map\Route\RouteCollection
+     * @param Context $context
+     * @return RouteCollection
      */
     public function getRoutes(Context $context): RouteCollection;
 }

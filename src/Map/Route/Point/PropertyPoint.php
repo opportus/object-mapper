@@ -13,6 +13,8 @@ namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidPropertyPointException;
 use Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException;
+use ReflectionException;
+use ReflectionProperty;
 
 /**
  * The property point.
@@ -29,8 +31,8 @@ final class PropertyPoint
      * Constructs the property point.
      *
      * @param  string $fqn
-     * @throws Opportus\ObjectMapper\Exception\InvalidPropertyPointException
-     * @throws Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException
+     * @throws InvalidPropertyPointException
+     * @throws InvalidPropertyPointSyntaxException
      */
     public function __construct(string $fqn)
     {
@@ -47,8 +49,8 @@ final class PropertyPoint
         list($matchedFqn, $matchedClassName, $matchedName) = $matches;
 
         try {
-            $this->reflector = new \ReflectionProperty($matchedClassName, $matchedName);
-        } catch (\ReflectionException $exception) {
+            $this->reflector = new ReflectionProperty($matchedClassName, $matchedName);
+        } catch (ReflectionException $exception) {
             throw new InvalidPropertyPointException(\sprintf(
                 '"%s" is not a property point. %s.',
                 $fqn,

@@ -25,7 +25,7 @@ interface RouteBuilderInterface
      *
      * @param string $sourcePointFqn
      * @param string $targetPointFqn
-     * @return Opportus\ObjectMapper\Map\Route\Route
+     * @return Route
      */
     public function buildRoute(string $sourcePointFqn, string $targetPointFqn): Route;
 }

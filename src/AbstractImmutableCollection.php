@@ -11,6 +11,10 @@
 
 namespace Opportus\ObjectMapper;
 
+use ArrayAccess;
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 
 /**
@@ -20,7 +24,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAggregate, \Countable
+abstract class AbstractImmutableCollection implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * @var array $items
@@ -52,7 +56,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->items);
+        return new ArrayIterator($this->items);
     }
 
     /**
@@ -82,7 +86,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
     /**
      * {@inheritdoc}
      *
-     * @throws Opportus\ObjectMapper\Exception\InvalidOperationException
+     * @throws InvalidOperationException
      */
     public function offsetSet($offset, $value)
     {
@@ -95,7 +99,7 @@ abstract class AbstractImmutableCollection implements \ArrayAccess, \IteratorAgg
     /**
      * {@inheritdoc}
      *
-     * @throws Opportus\ObjectMapper\Exception\InvalidOperationException
+     * @throws InvalidOperationException
      */
     public function offsetUnset($offset)
     {

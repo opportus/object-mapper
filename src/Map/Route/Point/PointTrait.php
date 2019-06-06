@@ -11,6 +11,8 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
+use Reflector;
+
 /**
  * The point trait.
  *
@@ -21,7 +23,7 @@ namespace Opportus\ObjectMapper\Map\Route\Point;
 trait PointTrait
 {
     /**
-     * @var \Reflector $reflector
+     * @var Reflector $reflector
      */
     private $reflector;
 

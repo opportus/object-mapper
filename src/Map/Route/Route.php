@@ -31,21 +31,21 @@ final class Route
     private $fqn;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint $sourcePoint
+     * @var PropertyPoint|MethodPoint $sourcePoint
      */
     private $sourcePoint;
 
     /**
-     * @var Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint $targetPoint
+     * @var PropertyPoint|ParameterPoint $targetPoint
      */
     private $targetPoint;
 
     /**
      * Constructs the route.
      *
-     * @param Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint $sourcePoint
-     * @param Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint $targetPoint
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
+     * @param PropertyPoint|MethodPoint $sourcePoint
+     * @param PropertyPoint|ParameterPoint $targetPoint
+     * @throws InvalidArgumentException
      */
     public function __construct(object $sourcePoint, object $targetPoint)
     {
@@ -69,7 +69,7 @@ final class Route
             ));
         }
 
-        $this->fqn = sprintf('%s=>%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
+        $this->fqn = \sprintf('%s=>%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
 
         $this->sourcePoint = $sourcePoint;
         $this->targetPoint = $targetPoint;
@@ -88,7 +88,7 @@ final class Route
     /**
      * Get the source point of the route.
      *
-     * @return Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint
+     * @return PropertyPoint|MethodPoint
      */
     public function getSourcePoint(): object
     {
@@ -98,7 +98,7 @@ final class Route
     /**
      * Get the target point of the route.
      *
-     * @return Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint
+     * @return PropertyPoint|ParameterPoint
      */
     public function getTargetPoint(): object
     {

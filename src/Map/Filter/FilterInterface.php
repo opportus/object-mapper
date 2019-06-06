@@ -11,6 +11,8 @@
 
 namespace Opportus\ObjectMapper\Map\Filter;
 
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Exception\NotSupportedContextException;
 use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\ObjectMapperInterface;
 
@@ -39,11 +41,11 @@ interface FilterInterface
      *
      * `return (bool) $this->route->getSourcePoint()->getValue($context->getSource());`
      *
-     * @param Opportus\ObjectMapper\Context $context
-     * @param Opportus\ObjectMapper\ObjectMapperInterface $objectMapper
+     * @param Context $context
+     * @param ObjectMapperInterface $objectMapper
      * @return mixed
-     * @throws Opportus\ObjectMapper\Exception\NotSupportedContextException When this is thrown, the mapper assigns the original source point value to the target point
-     * @throws Opportus\ObjectMapper\Exception\InvalidOperationException
+     * @throws InvalidOperationException
+     * @throws NotSupportedContextException When this is thrown, the mapper assigns the original source point value to the target point
      */
     public function getValue(Context $context, ObjectMapperInterface $objectMapper);
 }

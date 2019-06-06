@@ -11,6 +11,8 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
+use Opportus\ObjectMapper\Exception\InvalidPointException;
+
 /**
  * The point factory interface.
  *
@@ -24,8 +26,8 @@ interface PointFactoryInterface
      * Creates a point of a certain type which is defined from the passed point FQN.
      *
      * @param string $pointFqn
-     * @return Opportus\ObjectMapper\Map\Route\Point\PropertyPoint|Opportus\ObjectMapper\Map\Route\Point\MethodPoint|Opportus\ObjectMapper\Map\Route\Point\ParameterPoint
-     * @throws Opportus\ObjectMapper\Exception\InvalidPointException
+     * @return PropertyPoint|MethodPoint|ParameterPoint
+     * @throws InvalidPointException
      */
     public function createPoint(string $pointFqn): object;
 }

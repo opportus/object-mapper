@@ -11,6 +11,8 @@
 
 namespace Opportus\ObjectMapper\Exception;
 
+use Exception as BaseException;
+
 /**
  * The exception.
  *
@@ -18,6 +20,6 @@ namespace Opportus\ObjectMapper\Exception;
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class Exception extends \Exception
+class Exception extends BaseException
 {
 }

@@ -26,8 +26,8 @@ final class RouteCollection extends AbstractImmutableCollection
     /**
      * Constructs the route collection.
      *
-     * @param Opportus\ObjectMapper\Map\Route\Route[] $routes
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
+     * @param Route[] $routes
+     * @throws InvalidArgumentException
      */
     public function __construct(array $routes = [])
     {

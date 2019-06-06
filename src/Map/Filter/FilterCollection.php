@@ -26,8 +26,8 @@ final class FilterCollection extends AbstractImmutableCollection
     /**
      * Constructs the filter collection.
      *
-     * @param Opportus\ObjectMapper\Map\Filter\FilterInterface[] $filters
-     * @throws Opportus\ObjectMapper\Exception\InvalidArgumentException
+     * @param FilterInterface[] $filters
+     * @throws InvalidArgumentException
      */
     public function __construct(array $filters = [])
     {

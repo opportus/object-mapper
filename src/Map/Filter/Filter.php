@@ -26,7 +26,7 @@ use Opportus\ObjectMapper\ObjectMapperInterface;
 class Filter implements FilterInterface
 {
     /**
-     * @var Opportus\ObjectMapper\Map\Route\Route $route
+     * @var Route $route
      */
     private $route;
 
@@ -38,9 +38,9 @@ class Filter implements FilterInterface
     /**
      * Constructs the filter.
      *
-     * @param Opportus\ObjectMapper\Map\Route\Route $route
+     * @param Route $route
      *
-     * @param Callable Returns a mixed value which will be assigned to the target point by the mapper. The callable takes 2 arguments:
+     * @param callable Returns a mixed value which will be assigned to the target point by the mapper. The callable takes 2 arguments:
      *
      * - `Opportus\ObjectMapper\Map\Route\Route` The route the filter is on.
      * - `Opportus\ObjectMapper\Context` The context of the current mapping.
