@@ -87,4 +87,14 @@ final class ParameterPoint
     {
         return $this->methodName;
     }
+
+    /**
+     * Gets the position of the point.
+     * 
+     * @return int
+     */
+    public function getPosition(): int
+    {
+        return $this->reflector->getPosition();
+    }
 }
