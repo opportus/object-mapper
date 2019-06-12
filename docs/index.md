@@ -1,8 +1,11 @@
-# Object Mapper
+# opportus/object-mapper
 
-Provides a powerful object mapping system.
+[![License](https://poser.pugx.org/opportus/object-mapper/license)](https://packagist.org/packages/opportus/object-mapper)
+[![Latest Stable Version](https://poser.pugx.org/opportus/object-mapper/v/stable)](https://packagist.org/packages/opportus/object-mapper)
+[![Latest Unstable Version](https://poser.pugx.org/opportus/object-mapper/v/unstable)](https://packagist.org/packages/opportus/object-mapper)
+[![Build Status](https://travis-ci.com/opportus/object-mapper.svg?branch=master)](https://travis-ci.com/opportus/object-mapper)
 
-Contributions are welcome.
+---
 
 ## Index
 
@@ -60,7 +63,7 @@ Services instantiation is handled by you. You may want to achieve that with a DI
 Mapping object to object is done via the main [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) service's method:
 
 ```php
-ObjectMapper::map(object $source, $target, ?MapInterface $map = null): ?object
+ObjectMapper::map(object $source, $target, ?Map $map = null): ?object
 ```
 
 **Parameters**
@@ -133,9 +136,9 @@ echo $user->getUsername(); // 'Toto'
 
 The *automatic routing* allows to map seemlessly objects.
 
-Calling the `ObjectMapper::map(object $source, $target, ?Map $map): ?object` method presented earlier, with its `$map` parameter set on `null` makes the method build then use a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
+Calling the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method presented earlier, with its `$map` parameter set on `null` makes the method build then use a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
-The default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) behavior consists of guessing what is the appropriate point of the source class to connect to each point of the target class. The connected *source point* and *target point* compose then a [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) which is followed by the `ObjectMapper::map(object $source, $target, ?Map $map): ?object` method.
+The default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) behavior consists of guessing what is the appropriate point of the source class to connect to each point of the target class. The connected *source point* and *target point* compose then a [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) which is followed by the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method.
 
 For the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php), a *target point* can be:
 
@@ -157,7 +160,7 @@ PathFindingStrategyInterface::getRoutes(Context $context): RouteCollection;
 
 **Parameters**
 
-`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contains the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method plus their meta information.
+`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contains the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method plus their meta information.
 
 **Returns**
 
@@ -288,7 +291,7 @@ An instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src
 
 A *filter* allows you to filter the *source point* value before it gets assigned to the *target point* by the mapper.
 
-In order to make good use of the *filter* feature, you have to understand what a [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) is. [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) holds the arguments that we inject into the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method, plus their meta information. Furthermore, this [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) validates itself, so you can fully rely on it, working with it and passing it around (*#primitive obsession*).
+In order to make good use of the *filter* feature, you have to understand what a [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) is. [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) holds the arguments that we inject into the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method, plus their meta information. Furthermore, this [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) validates itself, so you can fully rely on it, working with it and passing it around (*#primitive obsession*).
 
 A basic example about how to use a *filter*:
 
@@ -605,7 +608,7 @@ This library aims to remain dependency-less and as much simple as possible, ther
 
 ### Automatic instantiation and injection of filters
 
-For instance, [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does implement such a *mapping predefinition*. For example, this bundle instantiates all services tagged `object_mapper_filter` and inject them into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation. Then the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) injects these aliased filters into the maps that it builds. This way tagged filters are *added automatically* to the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). So you do not need to write:
+For instance, [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does implement such a *mapping predefinition*. For example, this bundle instantiates all services tagged `object_mapper.filter` and inject them into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation. Then the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) injects these tagged filters into the maps that it builds. This way tagged filters are *added automatically* to the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). So you do not need to write:
 
 ```php
 // Define the map *on the go*
