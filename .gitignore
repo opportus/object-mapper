@@ -4,3 +4,6 @@
 # Composer working files
 /composer.lock
 /vendor/
+
+# PHPUnit
+.phpunit.result.cache
