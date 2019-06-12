@@ -38,6 +38,11 @@ final class ParameterPoint
     private $methodName;
 
     /**
+     * @var int $position
+     */
+    private $position;
+
+    /**
      * Constructs the parameter point.
      *
      * @param string $fqn
@@ -60,7 +65,6 @@ final class ParameterPoint
 
         try {
             $reflector = new ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
-
         } catch (ReflectionException $exception) {
             throw new InvalidParameterPointException(\sprintf(
                 '"%s" is not a parameter point. %s.',
@@ -76,6 +80,7 @@ final class ParameterPoint
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;
         $this->methodName = $matchedMethodName;
+        $this->position = $reflector->getPosition();
     }
 
     /**
@@ -90,11 +95,11 @@ final class ParameterPoint
 
     /**
      * Gets the position of the point.
-     * 
+     *
      * @return int
      */
     public function getPosition(): int
     {
-        return $this->reflector->getPosition();
+        return $this->position;
     }
 }
