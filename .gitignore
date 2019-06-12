@@ -1,0 +1,6 @@
+# IDE configuration
+/.idea/
+
+# Composer working files
+/composer.lock
+/vendor/
