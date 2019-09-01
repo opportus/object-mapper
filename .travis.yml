@@ -9,4 +9,4 @@ install:
 
 script:
     - vendor/bin/phpunit
-    - vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
+    - vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no .
