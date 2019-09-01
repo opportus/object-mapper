@@ -1,8 +1,12 @@
 language: php
 
 php:
-  - '7.2'
-  - '7.3'
+    - '7.2'
+    - '7.3'
 
 install:
-  - composer install --prefer-dist --no-interaction --no-progress
+    - composer install --prefer-dist --no-interaction --no-progress
+
+script:
+    - phpunit
+    - php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
