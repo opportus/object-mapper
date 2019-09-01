@@ -66,10 +66,10 @@ class RouteCollectionTest extends TestCase
             ['route'],
             [123],
             [1.23],
-            [function () {}],
+            [function () {
+            }],
             [[]],
             [new \StdClass()]
         ];
     }
 }
-

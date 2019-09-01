@@ -28,4 +28,3 @@ final class BypassFinalHook implements BeforeTestHook
         BypassFinals::enable();
     }
 }
-
