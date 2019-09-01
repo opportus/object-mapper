@@ -8,5 +8,5 @@ install:
     - composer install --prefer-dist --no-interaction --no-progress
 
 script:
-    - phpunit
-    - php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
+    - vendor/bin/phpunit
+    - vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no
