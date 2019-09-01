@@ -56,7 +56,6 @@ final class PropertyPoint
 
         try {
             $reflector = new ReflectionProperty($matchedClassName, $matchedName);
-
         } catch (ReflectionException $exception) {
             throw new InvalidPropertyPointException(\sprintf(
                 '"%s" is not a property point. %s.',
@@ -84,7 +83,6 @@ final class PropertyPoint
     {
         try {
             return $this->reflector->getValue($object);
-
         } catch (ReflectionException $exception) {
             throw new InvalidOperationException(\sprintf(
                 'Invalid "%s" operation. %s',
@@ -96,7 +94,7 @@ final class PropertyPoint
 
     /**
      * Sets the point value on the passed object.
-     * 
+     *
      * @param object $object
      * @param mixed $value
      * @return object
@@ -106,7 +104,6 @@ final class PropertyPoint
     {
         try {
             $this->reflector->setValue($object, $value);
-
         } catch (ReflectionException $exception) {
             throw new InvalidOperationException(\sprintf(
                 'Invalid "%s" operation. %s',

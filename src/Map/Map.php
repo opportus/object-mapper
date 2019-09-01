@@ -51,7 +51,7 @@ final class Map
 
     /**
      * Checks whether the map has any route connecting the points of the passed source with the points of the passed target.
-     * 
+     *
      * @param Context $context
      * @return bool
      */
@@ -73,7 +73,7 @@ final class Map
 
     /**
      * Gets the filter on the passed route.
-     * 
+     *
      * @param Route $route
      * @return null|FilterInterface
      */

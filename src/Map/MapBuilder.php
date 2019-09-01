@@ -74,7 +74,6 @@ final class MapBuilder implements MapBuilderInterface
         if (null !== $filter) {
             if (\is_callable($filter)) {
                 $filter = new Filter($route, $filter);
-
             } elseif (!\is_object($filter) || !$filter instanceof FilterInterface) {
                 throw new InvalidArgumentException(\sprintf(
                     'Argument "filter" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
@@ -83,7 +82,6 @@ final class MapBuilder implements MapBuilderInterface
                     FilterInterface::class,
                     \is_object($filter) ? \get_class($filter) : \gettype($filter)
                 ));
-
             } elseif ($filter->getRouteFqn() !== $route->getFqn()) {
                 throw new InvalidArgumentException(\sprintf(
                     'Argument "filter" passed to "%s" is invalid. Filter route FQN "%s" does not match the added route FQN "%s".',
@@ -118,10 +116,8 @@ final class MapBuilder implements MapBuilderInterface
     {
         if (false === $pathFindingStrategy) {
             $pathFindingStrategy = new NoPathFindingStrategy($this->routes);
-
         } elseif (true === $pathFindingStrategy) {
             $pathFindingStrategy = new PathFindingStrategy();
-
         } elseif (!\is_object($pathFindingStrategy) || !$pathFindingStrategy instanceof PathFindingStrategyInterface) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "pathFindingStrategy" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',

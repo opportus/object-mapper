@@ -19,4 +19,5 @@ namespace Opportus\ObjectMapper\Exception;
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 class InvalidPropertyPointSyntaxException extends InvalidPropertyPointException
-{}
+{
+}

@@ -32,18 +32,18 @@ final class PointFactory implements PointFactoryInterface
     {
         try {
             return new PropertyPoint($pointFqn);
-
-        } catch (InvalidPropertyPointSyntaxException $propertyPointException) {}
+        } catch (InvalidPropertyPointSyntaxException $propertyPointException) {
+        }
 
         try {
             return new MethodPoint($pointFqn);
-
-        } catch (InvalidMethodPointSyntaxException $methodPointException) {}
+        } catch (InvalidMethodPointSyntaxException $methodPointException) {
+        }
 
         try {
             return new ParameterPoint($pointFqn);
-
-        } catch (InvalidParameterPointSyntaxException $parameterPointException) {}
+        } catch (InvalidParameterPointSyntaxException $parameterPointException) {
+        }
 
         throw new InvalidPointException(\sprintf(
             '%s %s %s',

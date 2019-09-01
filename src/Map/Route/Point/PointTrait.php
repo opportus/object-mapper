@@ -57,7 +57,7 @@ trait PointTrait
 
     /**
      * Gets the name of the point.
-     * 
+     *
      * @return string
      */
     public function getName(): string

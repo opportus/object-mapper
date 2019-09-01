@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\ObjectMapperInterface;
 
 /**
  * The filter interface.
- * 
+ *
  * Use this to filter the source point value before it is assigned to the target point.
  *
  * @package Opportus\ObjectMapper\Map\Filter

@@ -56,7 +56,6 @@ final class MethodPoint
 
         try {
             $reflector = new ReflectionMethod($matchedClassName, $matchedName);
-
         } catch (ReflectionException $exception) {
             throw new InvalidMethodPointException(\sprintf(
                 '"%s" is not a method point. %s.',
@@ -91,7 +90,6 @@ final class MethodPoint
     {
         try {
             return $this->reflector->invoke($object);
-
         } catch (ReflectionException $exception) {
             throw new InvalidOperationException(\sprintf(
                 'Invalid "%s" operation. %s',
