@@ -1,10 +1,8 @@
-# IDE configuration
 /.idea/
-
-# Composer working files
 /composer.lock
 /vendor/
-
-# PHPUnit
 .phpunit.result.cache
 phpunit*.phar
+.php_cs.cache
+tags
+
