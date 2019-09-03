@@ -83,6 +83,6 @@ class Filter implements FilterInterface
             ));
         }
 
-        return $this->callable($route, $context, $objectMapper);
+        return ($this->callable)($this->route, $context, $objectMapper);
     }
 }
