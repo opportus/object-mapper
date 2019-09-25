@@ -61,6 +61,8 @@ $ composer require opportus/object-mapper
 
 ### Step 2 - Instantiate the services
 
+This solution can be trusted to remain **simple**, **extensible** and **flexible**. Therefore, it does not ship any main-service instantiator. Rather, it delegates this main-service instantiation to you which you can handle with yourDIC system or manually, such as below, in your composition root.
+
 This library contains 4 services. 3 of them require to be instantiated with their respective dependencies which are other lower level services among those 4.
 
 ```php
@@ -78,8 +80,6 @@ $mapBuilder = new Map\MapBuilder($routeBuilder);
 /** @var ObjectMapperInterface */
 $objectMapper = new ObjectMapper($mapBuilder);
 ```
-
-Services instantiation is handled by you. You may want to achieve that with a DI Container or manually (such as above) in your composition root.
 
 ## Mapping
 
