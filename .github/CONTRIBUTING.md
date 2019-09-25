@@ -20,9 +20,7 @@ Pull requests must address an open bug report or feature request.
 
 Before implementing your feature or fix, make sure you're not going to duplicate anyone's work by checking the current list of open and closed [pull requests](https://github.com/opportus/object-mapper/pulls).
 
-Make your code comply with the [PSR-2 Coding Standards](https://www.php-fig.org/psr/psr-2/).
-
-Make sure your feature or fix doesn't break the project! Test thoroughly.
+Make your code comply with the [PSR-12 Coding Standards](https://www.php-fig.org/psr/psr-12/).
 
 Leave detailed commit messages.
 
