@@ -5,6 +5,8 @@
 
 ## Index
 
+- [Use cases](#use-cases)
+- [Roadmap](#roadmap)
 - [Integrations](#integrations)
 - [Installation](#installation)
 - [Mapping](#mapping)
@@ -16,6 +18,31 @@
 - [Mapping predefinition](#mapping-predefinition)
     - [Automatic instantiation and injection of filters](#automatic-instantiation-and-injection-of-filters)
     - [Configuration](#configuration)
+
+## Use cases
+
+Use this solution for copying state of objects to differently typed objects using extensible controls and mapping strategies.
+
+Simple, flexible, extensible, this tool can be used in many use cases such as:
+
+- Mapping state of objects from/to DTOs.
+- Mapping state of domain model from/to persistance model.
+- Mapping state of domain model to view model.
+- Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
+- As an *object mapping* subsystem to be integrated by systems such as serializers, form handlers, ORMs, etc...
+- And so on...
+
+## Roadmap
+
+To develop this solution faster, [contributions](https://github.com/opportus/object-mapper/blob/master/.github/CONTRIBUTING.md) are welcome...
+
+### v1.0.0 (stable)
+
+- Implement last unit tests
+
+### v1.1.0
+
+- ...
 
 ## Integrations
 
