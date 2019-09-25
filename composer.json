@@ -1,6 +1,6 @@
 {
     "name": "opportus/object-mapper",
-    "description": "Allows copying state of an object to a differently typed object using extendable mapping strategies and controls.",
+    "description": "Allows copying state of objects to differently typed objects using extensible controls and mapping strategies.",
     "type": "library",
     "keywords": ["object mapper", "mapper", "map", "pathfinding", "filter", "recursion", "dto"],
     "homepage": "https://github.com/opportus/object-mapper",
