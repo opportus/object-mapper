@@ -1,8 +1,8 @@
 {
     "name": "opportus/object-mapper",
-    "description": "Provides a powerful object mapping system.",
+    "description": "Allows copying state of an object to a differently typed object using extendable mapping strategies and controls.",
     "type": "library",
-    "keywords": ["object mapper", "mapper", "map", "pathfinding", "filter", "recursion"],
+    "keywords": ["object mapper", "mapper", "map", "pathfinding", "filter", "recursion", "dto"],
     "homepage": "https://github.com/opportus/object-mapper",
     "license": "MIT",
     "authors": [
