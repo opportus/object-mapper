@@ -10,11 +10,11 @@
 - [Integrations](#integrations)
 - [Installation](#installation)
 - [Mapping](#mapping)
-    - [Routing](#routing)
-        - [Automatic routing](#automatic-routing)
-        - [Manual routing](#manual-routing)
+    - [How it works](#how-it-works)
+    - [Automatic mapping](#automatic-mapping)
+    - [Manual mapping](#manual-mapping)
     - [Filtering](#filtering)
-        - [Recursion](#recursion)
+    - [Recursion](#recursion)
 - [Mapping predefinition](#mapping-predefinition)
     - [Automatic instantiation and injection of filters](#automatic-instantiation-and-injection-of-filters)
     - [Configuration](#configuration)
@@ -103,7 +103,7 @@ ObjectMapper::map(object $source, $target, ?Map $map = null): ?object
 - `null` if the map has no route connecting source points with target points.
 - `object` which is the (instantiated and) updated target.
 
-### Routing
+### How it works
 
 A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) is defined by and composed of its *source point* and its *target point*.
 
@@ -117,11 +117,15 @@ A *target point* can be either:
 - A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
 - A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)
 
-The [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) method presented above iterates through each [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) that it gets from the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). Doing so, the method assigns the value of the current [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)'s *source point* to its *target point*.
+The [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) method presented above iterates through each [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) that it gets from the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). Doing so, the method assigns the value of the current [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)'s *source point* to its *target point*, optionally applying your implemented [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) during this value assignment.
 
-### Automatic routing
+How these routes are defined?
 
-A basic example about how to automatically map one `User` to one `UserDto` and vice-versa:
+These routes can be defined either automatically (default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)) or manually ([`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)). 
+
+### Automatic mapping
+
+A basic example of how to automatically map `User`'s state to `UserDto`'s and vice-versa:
 
 ```php
 class User
@@ -158,7 +162,7 @@ $user = $objectMapper->map($userDto, User::class);
 echo $user->getUsername(); // 'Toto'
 ```
 
-The *automatic routing* allows to map seamlessly objects.
+The *automatic mapping* allows to map seamlessly source object's state to the target object.
 
 Calling the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method presented earlier, with its `$map` parameter set on `null` makes the method build then use a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
@@ -174,7 +178,13 @@ The corresponding *source point* can be:
 - A public property having for name the same as the target point ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
 - A public getter having for name `'get'.ucfirst($targetPointName)` and requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php))
 
-Sometime, the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) may not be the most appropriate behavior anymore. In this case, you can implement your own [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), and in order to make it guess the appropriate [`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php), reverse-engineer the classes to map.
+#### Custom automatic mapping
+
+In some cases, with the help of reverse-engineering, you might be able to genericize mapping logic tied to your specific domain.
+
+You can encapsulate that genericized mapping logic into a [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) implementation. In order to make the strategy define an appropriate [`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php), reverse-engineer the source and target classes to map.
+
+Doing so, you can then map seamlessly state of your model's instances such as in the code example above.
 
 Below is described the single method of the [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php):
 
@@ -188,7 +198,7 @@ PathFindingStrategyInterface::getRoutes(Context $context): RouteCollection;
 
 **Returns**
 
-[`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php) connecting the *source points* with the *tagets points*.
+[`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php) connecting the *source points* with the *taget points*.
 
 **Example**
 
@@ -199,6 +209,11 @@ class MyPathFindingStrategy implements PathFindingStrategyInterface
 
     public function getRoutes(Context $context): RouteCollection
     {
+        $context->getSource();
+        $context->getTarget();
+        $context->getSourceClassReflection();
+        $context->getTargetClassReflection();
+
         // Custom algorithm
     }
 
@@ -216,9 +231,9 @@ $user = $objectMapper->map($userDto, User::class, $map);
 // ...
 ```
 
-### Manual routing
+### Manual mapping
 
-A basic example about how to manually map one `User` to one `ContributorDto` and vice-versa:
+A basic example of how to manually map `User`'s state to `ContributorDto` and vice-versa:
 
 ```php
 class User
@@ -267,9 +282,9 @@ $user = $objectMapper->map($contributorDto, User::class, $map);
 echo $user->getUsername(); // 'Toto'
 ```
 
-The *manual routing* requires more work but gives you unlimited control over which *source point* to map to which *target point*.
+Sometime, your domain mapping logic is non genericizable? In that case, the *manual mapping* requires more work but gives you unlimited control over which *source point* to map to which *target point*.
 
-One way to register routes manually is to use the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) is an immutable service which implement a fluent interface.
+One way among others to define routes manually is to use the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) is an immutable service which implement a fluent interface.
 
 Below are described the 2 methods used in the example above:
 
@@ -314,8 +329,6 @@ An instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src
 ### Filtering
 
 A *filter* allows you to filter the *source point* value before it gets assigned to the *target point* by the mapper.
-
-In order to make good use of the *filter* feature, you have to understand what a [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) is. [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) holds the arguments that we inject into the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method, plus their meta information. Furthermore, this [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) validates itself, so you can fully rely on it, working with it and passing it around (*#primitive obsession*).
 
 A basic example about how to use a *filter*:
 
@@ -400,7 +413,7 @@ $userDto = $objectMapper->map($user, $userDto, $map); // The `$context` you get 
 echo $userDto->age; // '31'
 ```
 
-The `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method gets the filtered value by calling on your [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) implementation the method described below:
+The `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method gets the filtered value by calling on your [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) implementation instance the method described below:
 
 ```php
 FilterInterface::getValue(Context $context, ObjectMapperInterface $objectMapper)
@@ -434,195 +447,12 @@ A `string` being the **Fully Qualified Name** of the [`Route`](https://github.co
 
 ### Recursion
 
-You can use the *filter* to recursively map a *source point* to a *target point*. For example:
+Although a recursion dedicated feature may come later, you can use the *filter* to recursively map a *source point* to a *target point*. For example:
 
 - If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and that you want in the same time to map `C` to `D`, AKA *simple recursion*
-- IF you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *iterable recursion* or *in-width recursion*
+- If you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *iterable recursion* or *in-width recursion*
 
 You can achieve *in-depth recursion* naturally, by adding a *filter* to a route of the child type, the grandchild type and so on...
-
-#### Simple recursion
-
-A basic example about how to map `A` (with its `C`) to `B` (and its `D`):
-
-```php
-class User
-{
-    private $company;
-
-    public function __construct(Company $company)
-    {
-        $this->company = $company;
-    }
-
-    public function getCompany(): Company
-    {
-        return $this->company;
-    }
-}
-
-class UserDto
-{
-    /** @var CompanyDto $company */
-    public $conpany; // We want an instance of `CompanyDto` here, NOT an instance of `Company`
-}
-
-class Company
-{
-    private $name;
-
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-}
-
-class CompanyDto
-{
-    public $name;
-}
-
-$user    = new User(new Company('SensioLabs'));
-$userDto = new UserDto();
-
-class SimpleRecursionFilter implements FilterInterface
-{
-    private $route;
-
-    public function __construct(Route $route)
-    {
-        $this->route = $route;
-    }
-
-    /** {@inheritdoc} */
-    public function getRouteFqn(): string
-    {
-        return $this->route->getFqn();
-    }
-
-    /** {@inheritdoc} */
-    public function getValue(Context $context, ObjectMapperInterface $objectMapper)
-    {
-        echo $this->route->getFqn(); // 'User::getCompany()=>UserDto::$company'
-        echo $this->route->getSourcePoint()->getFqn(); // 'User::getCompany()'
-        echo $this->route->getTargetPoint()->getFqn(); // 'UserDto::$company'
-
-        // The `User` instance
-        $parentSource = $user = $context->getSource();
-
-        // The `UserDto` instance
-        $parentTarget = $userDto = $context->getTarget();
-        
-        // The `Company` instance
-        $childSource = $company = $this->route->getSourcePoint()->getValue($user);
-        $childSource = $company = $user->getCompany();
-
-        // The `CompanyDto` class name
-        $childTarget = $companyDto = CompanyDto::class;
-
-        // The `Map` instance
-        $childMap = $context->getMap();
-
-        return $objecMapper->map($childSource, $childTarget, $childMap);
-    }
-}
-
-$route = $routeBuilder->buildRoute('User::getCompany()', 'UserDto::$company');
-
-$map = $mapBuilder
-    ->addFilter(new SimpleRecursionFilter($route))
-    ->buildMap($automaticRouting = $pathFindingStrategy = true)
-;
-
-$userDto = $objectMapper->map($user, $userDto, $map); // The `$context` you get in the `SimpleRecursionFilter` above
-
-echo get_class($userDto->company); // 'CompanyDto'
-echo $userDto->company->name; // 'SensioLabs'
-```
-
-#### Iterable recursion
-
-Use this approach to map objects of an iterable (such as array or collection) of the source to an iterable of the target.
-
-A basic example about how to map `A` (with its many `C`) to `B` (and its many `D`):
-
-```php
-class User
-{
-    /** @var User[] $friends */
-    private $friends;
-
-    public function __construct(array $friends = [])
-    {
-        $this->friends = $friends;
-    }
-
-    public function getFriends(): array
-    {
-        return $this->friends;
-    }
-}
-
-class UserDto
-{
-    /** @var UserDto[] $friends */
-    public $friends; // We want instances of `UserDto` here, NOT instances of `User`
-}
-
-$user    = new User(new User(), new User());
-$userDto = new UserDto();
-
-class IterableRecursionFilter implements FilterInterface
-{
-    private $route;
-
-    public function __construct(Route $route)
-    {
-        $this->route = $route;
-    }
-
-    /** {@inheritdoc} */
-    public function getRouteFqn(): string
-    {
-        return $this->route->getFqn();
-    }
-
-    /** {@inheritdoc} */
-    public function getValue(Context $context, ObjectMapperInterface $objectMapper)
-    {
-        $friends = $this->route->getSourcePoint()->getValue($context->getSource());
-
-        $friendDtoCollection = new FriendDtoCollection();
-        foreach ($friends as $friend) {
-            $friendDtoCollection->addFriend(
-                $objectMapper->map($friend, UserDto::class, $context->getMap())
-            );
-        }
-
-        return $friendDtoCollection;
-    }
-}
-
-$route = $routeBuilder->buildRoute('User::getFriends()', 'UserDto::$friends');
-
-$map = $mapBuilder
-    ->addFilter(new IterableRecursionFilter($route))
-    ->buildMap($automaticRouting = $pathFindingStrategy = true)
-;
-
-$userDto = $objectMapper->map($user, $userDto, $map); // The `$context` you get in the `IterableRecursionFilter` above
-
-echo get_class($userDto->friends) // 'FriendDtoCollection'
-
-foreach ($userDto->friends as $friend) {
-    echo get_class($friend); // 'UserDto'
-}
-```
 
 ## Mapping predefinition
 
