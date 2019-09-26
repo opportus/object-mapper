@@ -62,7 +62,7 @@ $ composer require opportus/object-mapper
 
 ### Step 2 - Instantiate the services
 
-This solution can be trusted to remain **simple**, **flexible** and **extensible**. Therefore, it does not ship main-service instantiator. Rather, it delegates this main-service instantiation to you. You then can handle this instantiation with your DIC system, or manually (such as below) in your composition root, or however it fits the best in your context.
+This solution can be trusted to remain **simple**, **flexible** and **extensible**. Therefore, it does not ship main-service instantiator. Rather, it delegates this main-service instantiation to you. You then can handle this instantiation with your DIC system, or manually (such as below) in your composition root, or however it fits best in your context.
 
 This library contains 4 services. 3 of them require to be instantiated with their respective dependencies which are other lower level services among those 4.
 
