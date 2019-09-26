@@ -61,7 +61,7 @@ $ composer require opportus/object-mapper
 
 ### Step 2 - Instantiate the services
 
-This solution can be trusted to remain **simple**, **extensible** and **flexible**. Therefore, it does not ship any main-service instantiator. Rather, it delegates this main-service instantiation to you which you can handle with yourDIC system or manually, such as below, in your composition root.
+This solution can be trusted to remain **simple**, **extensible** and **flexible**. Therefore, it does not ship any main-service instantiator. Rather, it delegates this main-service instantiation to you which you can handle with your DIC system or manually, such as below, in your composition root.
 
 This library contains 4 services. 3 of them require to be instantiated with their respective dependencies which are other lower level services among those 4.
 
@@ -157,7 +157,7 @@ $user = $objectMapper->map($userDto, User::class);
 echo $user->getUsername(); // 'Toto'
 ```
 
-The *automatic routing* allows to map seemlessly objects.
+The *automatic routing* allows to map seamlessly objects.
 
 Calling the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method presented earlier, with its `$map` parameter set on `null` makes the method build then use a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
