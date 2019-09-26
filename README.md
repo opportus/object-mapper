@@ -119,13 +119,11 @@ A *target point* can be either:
 
 The [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) method presented above iterates through each [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) that it gets from the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). Doing so, the method assigns the value of the current [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)'s *source point* to its *target point*, optionally applying your implemented [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) during this value assignment.
 
-How these routes are defined?
-
 These routes can be defined either automatically (default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)) or manually ([`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)). 
 
 ### Automatic mapping
 
-A basic example of how to automatically map `User`'s state to `UserDto`'s and vice-versa:
+A basic example of how to automatically map `User`'s state to `UserDto` and vice-versa:
 
 ```php
 class User
@@ -182,7 +180,7 @@ The corresponding *source point* can be:
 
 In some cases, with the help of reverse-engineering, you might be able to genericize mapping logic tied to your specific domain.
 
-You can encapsulate that genericized mapping logic into a [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) implementation. In order to make the strategy define an appropriate [`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php), reverse-engineer the source and target classes to map.
+You can encapsulate that genericized mapping logic into a [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) implementation. In order to make your implemented strategy define an appropriate [`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php) to return, reverse-engineer the source and target classes to map.
 
 Doing so, you can then map seamlessly state of your model's instances such as in the code example above.
 
@@ -282,7 +280,7 @@ $user = $objectMapper->map($contributorDto, User::class, $map);
 echo $user->getUsername(); // 'Toto'
 ```
 
-Sometime, your domain mapping logic is non genericizable? In that case, the *manual mapping* requires more work but gives you unlimited control over which *source point* to map to which *target point*.
+Sometime, your domain mapping logic is non genericizable. In that case, the *manual mapping* requires more work but gives you unlimited control over which *source point* to map to which *target point*.
 
 One way among others to define routes manually is to use the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) is an immutable service which implement a fluent interface.
 
