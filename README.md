@@ -42,6 +42,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ### v1.1.0
 
+- Implement *adders* and *removers* support with the default mapping strategy
 - ...
 
 ## Integrations
