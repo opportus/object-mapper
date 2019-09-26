@@ -454,9 +454,13 @@ You can achieve *in-depth recursion* naturally, by adding a *filter* to a route 
 
 ## Mapping predefinition
 
-In the code examples above, we *define the map* (adding to it routes and filters) *on the go*, via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. There is another way to *define the map*, called *mapping PREdefinition*. While this library is designed with *mapping predefinition* in mind, it does not *implement* it.
+In the code examples above, we *define the map* (adding to it routes and filters) *on the go*, via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. There is another way to *define the map*, called *mapping PREdefinition*.
 
-This library aims to remain dependency-less and as much simple as possible, therefore it does not ship any configuration and DIC system necessary for achieving *mapping predefinition*. So this chapter is an attempt to help you implementing *mapping predefinition* making use of your own configuration and DIC systems.
+While this library is designed with *mapping predefinition* in mind, it does not *implement* it.
+
+Indeed, this solution is designed to be simple, flexible and extensible. Therefore it does not ship any DIC and configuration system necessary for achieving *mapping predefinition* which is always better implemented into your specific context.
+
+So this chapter is an attempt to help you implementing *mapping predefinition* making use of your own DIC and configuration systems in order for this solution to be integrated as a subsystem into a wider system such as a framework, serializer, form handle, ORM or whatever.
 
 ### Automatic instantiation and injection of filters
 
