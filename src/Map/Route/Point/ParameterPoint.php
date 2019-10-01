@@ -76,7 +76,7 @@ final class ParameterPoint
         $reflector->getDeclaringFunction()->setAccessible(true);
 
         $this->reflector = $reflector;
-        $this->fqn = $fqn;
+        $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;
         $this->methodName = $matchedMethodName;

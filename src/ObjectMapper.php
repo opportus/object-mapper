@@ -55,7 +55,7 @@ final class ObjectMapper implements ObjectMapperInterface
      */
     public function map(object $source, $target, ?Map $map = null): ?object
     {
-        $map = $map ?? $this->mapBuilder->buildMap($defaultPathFindingStrategy = true);
+        $map = $map ?? $this->mapBuilder->buildMap(true);
 
         $context = new Context($source, $target, $map);
 
@@ -110,7 +110,6 @@ final class ObjectMapper implements ObjectMapperInterface
         $targetConstructorParameterPointValues = [];
 
         foreach ($routes as $route) {
-            $sourcePoint = $route->getSourcePoint();
             $targetPoint = $route->getTargetPoint();
 
             if (!$targetPoint instanceof ParameterPoint || '__construct' !== $targetPoint->getMethodName()) {
@@ -137,7 +136,6 @@ final class ObjectMapper implements ObjectMapperInterface
         $targetParameterPointValues = [];
 
         foreach ($routes as $route) {
-            $sourcePoint = $route->getSourcePoint();
             $targetPoint = $route->getTargetPoint();
 
             if (!$targetPoint instanceof ParameterPoint || '__construct' === $targetPoint->getMethodName()) {
@@ -164,7 +162,6 @@ final class ObjectMapper implements ObjectMapperInterface
         $targetPropertyPointValues = [];
 
         foreach ($routes as $route) {
-            $sourcePoint = $route->getSourcePoint();
             $targetPoint = $route->getTargetPoint();
 
             if (!$targetPoint instanceof PropertyPoint) {
@@ -191,7 +188,6 @@ final class ObjectMapper implements ObjectMapperInterface
         $targetPropertyPoints = [];
 
         foreach ($routes as $route) {
-            $sourcePoint = $route->getSourcePoint();
             $targetPoint = $route->getTargetPoint();
 
             if (!$targetPoint instanceof PropertyPoint) {
