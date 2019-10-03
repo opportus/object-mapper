@@ -16,9 +16,7 @@
     - [Manual mapping](#manual-mapping)
     - [Filtering](#filtering)
     - [Recursion](#recursion)
-- [Mapping predefinition](#mapping-predefinition)
-    - [Automatic instantiation and injection of filters](#automatic-instantiation-and-injection-of-filters)
-    - [Configuration](#configuration)
+- [Mapping autoloading](#mapping-autoloading)
 
 ## Use cases
 
@@ -453,19 +451,17 @@ Although a recursion dedicated feature may come later, you can use the *filter* 
 
 You can achieve *in-depth recursion* naturally, by adding a *filter* to a route of the child type, the grandchild type and so on...
 
-## Mapping predefinition
+## Mapping autoloading
 
-In the code examples above, we *define the map* (adding to it routes and filters) *on the go*, via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. There is another way to *define the map*, called *mapping PREdefinition*.
+In the code examples above, we *define the map* (adding to it routes and filters) *on the go*, via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. There is another way to *define the map*, *mapping autoloading*.
 
-While this library is designed with *mapping predefinition* in mind, it does not *implement* it.
+While this library is designed with *mapping autoloading* in mind, it does not *implement* it.
 
-Indeed, this solution is designed to be simple, flexible and extensible. Therefore it does not ship any DIC and configuration system necessary for achieving *mapping predefinition* which is always better implemented into your specific context.
+Indeed, this solution is designed to be simple, flexible and extensible, as a core. Therefore it does not ship any DIC and configuration system necessary for achieving *mapping autoloading* which is better implemented into your specific context.
 
-So this chapter is an attempt to help you implementing *mapping predefinition* making use of your own DIC and configuration systems in order for this solution to be integrated as a subsystem into a wider system such as a framework, serializer, form handle, ORM or whatever.
+So this chapter is an attempt to help you implementing *mapping autoloading* making use of your own DIC and configuration systems in order for this solution to be integrated seamlessly as a subsystem into a wider system such as a framework, serializer, form handler, ORM or whatever.
 
-### Automatic instantiation and injection of filters
-
-For instance, [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does implement such a *mapping predefinition*. For example, this bundle instantiates all services tagged `object_mapper.filter` and inject them into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation. Then the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) injects these tagged filters into the maps that it builds. This way tagged filters are *added automatically* to the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). So you do not need to write:
+For instance, [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does implement to some extend such *mapping autoloading*. For example, this bundle instantiates all services tagged `object_mapper.filter` and inject them into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation. Then the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) injects these tagged filters into the maps that it builds. This way tagged filters are *added automatically* to the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). So you do not need to do:
 
 ```php
 // Define the map *on the go*
@@ -482,32 +478,62 @@ $map = $mapBuilder
 $target = $objectMapper->map($source, $target, $map);
 ```
 
-Instead you can simply write:
+Instead you can simply do:
 
 ```php
-// The map is PREdefined, filters are added automatically to the map
+// The map is PREloaded, filters are added automatically to the map
 
 $target = $objectMapper->map($source, $target);
 ```
 
-### Configuration
-
-You can predefine a map statically, via a configuration file:
+For its next release, the [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) project may implement configuration (config file, annotation) autoloading, leveraging *Injection* and *Configuration* Symfony's components and Doctrine's *Annotations*. So that you do not need to do:
 
 ```php
-// object-mapping.php
+// Mapping state of `User` object to `UserDto` object
 
-return [
-    [
-        'source' => 'User::getUsername()',
-        'target' => 'UserDto::$username',
-    ],
-    [
-        'source' => 'User::getAge()',
-        'target' => 'UserDto::$age',
-        'filter' => $filter,
-    ],
-]
+$map = $mapBuilder
+    ->addRoute('User::getUserame()', 'User::$username')
+    ->addRoute('User::getAge()', 'User::$age', $filter)
+    ->buildMap($automaticRouting = $pathFindingStrategy = false)
+;
+
+$objectMapper->map($source, $target, $map);
 ```
 
-Then, such as the [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does with filters, inject these loaded and parsed configurations into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) in order for it to build aware maps.
+Instead you can do:
+
+```php
+UserDto
+{
+    /**
+     * @ObjectMapperRoute(sources="User::getUsername()")
+     */
+    public $username;
+
+    /**
+     * @ObjectMapperRoute(sources="User::getAge()")
+     */
+    public $age;
+}
+```
+
+Or:
+
+```yaml
+# user-dto-map.yaml
+
+-
+source: User::getUsername()
+target: UserDto::$username
+-
+source: User::getAge()
+target: UserDto::$age
+filter: MyFilter
+```
+
+The [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) can then build from this autoloaded mapping configuration routes and filters to inject into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation in order for it to build aware maps. So that the user can then map seamlessly state of the typed objects such as defined into the mapping configuration above:
+
+```php
+// Mapping state of `User` object to `UserDto` object
+$objectMapper->map($source, $target);
+```
