@@ -45,14 +45,6 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function getMapBuilder(): MapBuilderInterface
-    {
-        return $this->mapBuilder;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function map(object $source, $target, ?Map $map = null): ?object
     {
         $map = $map ?? $this->mapBuilder->buildMap(true);

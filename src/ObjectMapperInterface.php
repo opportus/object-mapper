@@ -24,13 +24,6 @@ use Opportus\ObjectMapper\Map\MapBuilderInterface;
 interface ObjectMapperInterface
 {
     /**
-     * Gets the map builder.
-     *
-     * @return MapBuilderInterface
-     */
-    public function getMapBuilder(): MapBuilderInterface;
-
-    /**
      * Maps source points values to target points following the routes on the map.
      *
      * @param object $source
