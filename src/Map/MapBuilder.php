@@ -98,10 +98,8 @@ final class MapBuilder implements MapBuilderInterface
     {
         if (false === $pathFindingStrategy) {
             $pathFindingStrategy = new NoPathFindingStrategy($this->routes);
-
         } elseif (true === $pathFindingStrategy) {
             $pathFindingStrategy = new PathFindingStrategy();
-
         } elseif (!\is_object($pathFindingStrategy) || !$pathFindingStrategy instanceof PathFindingStrategyInterface) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "pathFindingStrategy" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
