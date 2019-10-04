@@ -284,7 +284,7 @@ echo $user->getUsername(); // 'Toto'
 Add routes to the map with the method described below:
 
 ```php
-MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn, $filter = null): MapBuilderInterface
+MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface
 ```
 
 **Parameters**
@@ -298,8 +298,6 @@ MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn, $filter = n
 
   - A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class::$property'`.
   - A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class::method()::$parameter'`.
-
-`$filter` parameter must be either a `null`, a `callable` or an instance of [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php). See the [filtering](#filtering) section.
 
 **Returns**
 
@@ -358,14 +356,18 @@ $userDto = new UserDto();
 *********************************************************************************************************/
 
 $map = $mapBuilder
-    ->addRoute('User::getAge()', 'UserDto::$age', function ($route, $context, $objectMapper) {
-        return $route->getSourcePoint()->getValue($context->getSource()) + 1;
-    })
-    ->buildMap($automaticRouting = $pathFindingStrategy = true)
+    ->addFilterOnRoute(
+        function ($route, $context, $objectMapper) {
+            return $route->getSourcePoint()->getValue($context->getSource()) + 1;
+        },
+        'User::getAge()',
+        'UserDto::$age'
+    )
+    ->buildMap($pathFindingStrategy = true)
 ;
 
 /********************************************************************************************************
-    Solution 2: build a map adding a filter implemeting `FilterInterface` on a specific route
+    Solution 2: build a map adding a filter implemeting `FilterInterface`
 *********************************************************************************************************/
 
 class Filter implements FilterInterface
@@ -396,7 +398,7 @@ $filter = new Filter($route);
 
 $map = $mapBuilder
     ->addFilter($filter)
-    ->buildMap($automaticRouting = $pathFindingStrategy = true)
+    ->buildMap($pathFindingStrategy = true)
 ;
 
 /*********************************************************************************************
@@ -470,7 +472,7 @@ $filterB = new FilterB($route);
 $map = $mapBuilder
     ->addFilter($filterA)
     ->addFilter($filterB)
-    ->buildMap($automaticRouting = $pathFindingStrategy = true)
+    ->buildMap($pathFindingStrategy = true)
 ;
 
 $target = $objectMapper->map($source, $target, $map);
@@ -491,8 +493,8 @@ For its next release, the [ObjectMapperBundle](https://github.com/opportus/Objec
 
 $map = $mapBuilder
     ->addRoute('User::getUserame()', 'User::$username')
-    ->addRoute('User::getAge()', 'User::$age', $filter)
-    ->buildMap($automaticRouting = $pathFindingStrategy = false)
+    ->addRoute('User::getAge()', 'User::$age')
+    ->buildMap($pathFindingStrategy = false)
 ;
 
 $objectMapper->map($source, $target, $map);
@@ -526,7 +528,6 @@ target: UserDto::$username
 -
 source: User::getAge()
 target: UserDto::$age
-filter: MyFilter
 ```
 
 The [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) can then build from this autoloaded mapping configuration routes and filters to inject into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation in order for it to build aware maps. So that the user can then map seamlessly state of the typed objects such as defined into the mapping configuration above:

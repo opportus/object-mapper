@@ -25,7 +25,7 @@ use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 interface MapBuilderInterface
 {
     /**
-     * Adds a route to the map.
+     * Adds a route.
      *
      * @param string $sourcePointFqn Can be either:
      *
@@ -37,18 +37,10 @@ interface MapBuilderInterface
      * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
      * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()::$parameter`
      *
-     * @param null|Callable|FilterInterface $filter
-     *
-     * The callable returns a mixed value which will be assigned to the target point by the mapper. The callable takes as arguments:
-     *
-     * - `Opportus\ObjectMapper\Map\Route\Route` The route the filter is on.
-     * - `Opportus\ObjectMapper\Context` The context of the current mapping.
-     * - `Opportus\ObjectMapper\ObjectMapperInterface` The object mapper service, useful for recursion.
-     *
      * @return MapBuilderInterface
      * @throws InvalidArgumentException
      */
-    public function addRoute(string $sourcePointFqn, string $targetPointFqn, $filter = null): MapBuilderInterface;
+    public function addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface;
 
     /**
      * Adds a filter.
@@ -57,6 +49,31 @@ interface MapBuilderInterface
      * @return MapBuilderInterface
      */
     public function addFilter(FilterInterface $filter): MapBuilderInterface;
+
+    /**
+     * Adds a filter on a specific route.
+     *
+     * @param Callable $callable
+     *
+     * The callable returns a mixed value which will be assigned to the target point by the mapper. The callable takes as arguments:
+     *
+     * - `Opportus\ObjectMapper\Map\Route\Route` The route the filter is on.
+     * - `Opportus\ObjectMapper\Context` The context of the current mapping.
+     * - `Opportus\ObjectMapper\ObjectMapperInterface` The object mapper service, useful for recursion.
+     *
+     * @param string $sourcePointFqn Can be either:
+     *
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
+     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()`
+     *
+     * @param string $targetPointFqn Can be either:
+     *
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
+     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()::$parameter`
+     *
+     * @return MapBuilderInterface
+     */
+    public function addFilterOnRoute(callable $callable, string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface;
 
     /**
      * Builds the map.
