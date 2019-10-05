@@ -31,8 +31,6 @@ final class FilterCollection extends AbstractImmutableCollection
      */
     public function __construct(array $filters = [])
     {
-        $indexedFilters = [];
-        
         foreach ($filters as $filter) {
             if (!\is_object($filter) || !$filter instanceof FilterInterface) {
                 throw new InvalidArgumentException(\sprintf(
@@ -42,10 +40,8 @@ final class FilterCollection extends AbstractImmutableCollection
                     \is_object($filter) ? \get_class($filter) : \gettype($filter)
                 ));
             }
-
-            $indexedFilters[$filter->getRouteFqn()] = $filter;
         }
 
-        parent::__construct($indexedFilters);
+        parent::__construct($filters);
     }
 }

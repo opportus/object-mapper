@@ -34,11 +34,8 @@ class FilterCollectionTest extends TestCase
                 ->disableOriginalConstructor()
                 ->getMock()
             ;
-            $route->method('getFqn')
-                ->willReturn(\sprintf('route_%d', $i))
-            ;
 
-            $filters[$route->getFqn()] = new Filter($route, function () {
+            $filters[$i] = new Filter($route, function () {
             });
         }
 
@@ -46,9 +43,9 @@ class FilterCollectionTest extends TestCase
 
         $this->assertContainsOnlyInstancesOf(Filter::class, $filterCollection);
 
-        foreach ($filters as $filterId => $filter) {
-            $this->assertArrayHasKey($filterId, $filterCollection);
-            $this->assertSame($filter, $filterCollection[$filterId]);
+        foreach ($filters as $filterIndex => $filter) {
+            $this->assertArrayHasKey($filterIndex, $filterCollection);
+            $this->assertSame($filter, $filterCollection[$filterIndex]);
         }
     }
 

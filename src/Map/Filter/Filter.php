@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Map\Filter;
 
 use Opportus\ObjectMapper\Context;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\ObjectMapperInterface;
 
@@ -40,9 +39,9 @@ class Filter implements FilterInterface
      *
      * @param Route $route
      *
-     * @param callable Returns a mixed value which will be assigned to the target point by the mapper. The callable takes 2 arguments:
+     * @param callable Returns a mixed value which will be assigned to the target point by the mapper. The callable takes 3 arguments:
      *
-     * - `Opportus\ObjectMapper\Map\Route\Route` The route the filter is on.
+     * - `Opportus\ObjectMapper\Map\Route\Route` The route that the filter supports.
      * - `Opportus\ObjectMapper\Context` The context of the current mapping.
      * - `Opportus\ObjectMapper\ObjectMapperInterface` The object mapper service, useful for recursion.
      */
@@ -55,34 +54,16 @@ class Filter implements FilterInterface
     /**
      * {@inheritdoc}
      */
-    public function getRouteFqn(): string
+    public function supportRoute(Route $route): bool
     {
-        return $this->route->getFqn();
+        return $route->getFqn() === $this->route->getFqn();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getValue(Context $context, ObjectMapperInterface $objectMapper)
+    public function getValue(Route $route, Context $context, ObjectMapperInterface $objectMapper)
     {
-        if ($context->getSourceClassFqn() !== $this->route->getSourcePoint()->getClassFqn()) {
-            throw new InvalidOperationException(\sprintf(
-                'Operation "%s" is invalid. Expecting the source class FQN "%s" to match the source point class FQN "%s".',
-                __METHOD__,
-                $context->getSourceClassFqn(),
-                $this->route->getSourcePoint()->getClassFqn()
-            ));
-        }
-
-        if ($context->getTargetClassFqn() !== $this->route->getTargetPoint()->getClassFqn()) {
-            throw new InvalidOperationException(\sprintf(
-                'Operation "%s" is invalid. Expecting the target class FQN "%s" to match the target point class FQN "%s".',
-                __METHOD__,
-                $context->getTargetClassFqn(),
-                $this->route->getTargetPoint()->getClassFqn()
-            ));
-        }
-
-        return ($this->callable)($this->route, $context, $objectMapper);
+        return ($this->callable)($route, $context, $objectMapper);
     }
 }

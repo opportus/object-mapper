@@ -79,7 +79,13 @@ final class Map
      */
     public function getFilterOnRoute(Route $route): ?FilterInterface
     {
-        return $this->filters[$route->getFqn()] ?? null;
+        foreach ($this->filters as $filter) {
+            if ($filter->supportRoute($route)) {
+                return $filter;
+            }
+        }
+
+        return null;
     }
 
     /**

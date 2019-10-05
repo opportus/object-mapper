@@ -11,7 +11,6 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Exception\NotSupportedContextException;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
@@ -204,10 +203,7 @@ final class ObjectMapper implements ObjectMapperInterface
         $filter = $context->getFilterOnRoute($route);
 
         if (null !== $filter) {
-            try {
-                return $filter->getValue($context, $this);
-            } catch (NotSupportedContextException $e) {
-            }
+            return $filter->getValue($route, $context, $this);
         }
 
         return $route->getSourcePoint()->getValue($context->getSource());

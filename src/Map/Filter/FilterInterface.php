@@ -11,41 +11,36 @@
 
 namespace Opportus\ObjectMapper\Map\Filter;
 
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Exception\NotSupportedContextException;
 use Opportus\ObjectMapper\Context;
+use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\ObjectMapperInterface;
 
 /**
  * The filter interface.
  *
- * Use this to filter the source point value before it is assigned to the target point.
+ * Implement this to filter the source point value before it is assigned to the target point.
  *
  * @package Opportus\ObjectMapper\Map\Filter
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 interface FilterInterface
 {
     /**
-     * Gets the Fully Qualified Name of the route.
+     * Checks whether this filter supports the passed route or not.
      *
-     * @return string
+     * @param Route $route
+     * @return bool
      */
-    public function getRouteFqn(): string;
+    public function supportRoute(Route $route): bool;
 
     /**
-     * Gets the value.
+     * Gets the value to assign to the target point.
      *
-     * Usage example:
-     *
-     * `return (bool) $this->route->getSourcePoint()->getValue($context->getSource());`
-     *
+     * @param Route $route
      * @param Context $context
      * @param ObjectMapperInterface $objectMapper
      * @return mixed
-     * @throws InvalidOperationException
-     * @throws NotSupportedContextException When this is thrown, the mapper assigns the original source point value to the target point
      */
-    public function getValue(Context $context, ObjectMapperInterface $objectMapper);
+    public function getValue(Route $route, Context $context, ObjectMapperInterface $objectMapper);
 }

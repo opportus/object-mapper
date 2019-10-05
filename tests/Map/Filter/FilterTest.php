@@ -28,18 +28,21 @@ use PHPUnit\Framework\TestCase;
  */
 class FilterTest extends TestCase
 {
-    public function testGetRouteFqn(): void
+    public function testSupportRouteIsTrue(): void
     {
-        $filter = new Filter($this->buildRoute(), function () {
+        $filter = new Filter($this->buildRoute(0), function () {
         });
 
-        $this->assertEquals('route_1', $filter->getRouteFqn());
+        $this->assertTrue($filter->supportRoute($this->buildRoute(0)));
+
+        $filter = new Filter($this->buildRoute(0), function () {
+        });
+
+        $this->assertFalse($filter->supportRoute($this->buildRoute(1)));
     }
 
     public function testGetValue(): void
     {
-        $objectMapper = $this->buildObjectMapper();
-        $route = $this->buildRoute();
         $callable = function ($route, $context, $objectMapper) {
             return
                 $route instanceof Route &&
@@ -48,30 +51,7 @@ class FilterTest extends TestCase
             ;
         };
 
-        $filter = new Filter($route, $callable);
-
-        $context = $this->getMockBuilder(Context::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $context
-            ->method('getSourceClassFqn')
-            ->willReturn('TestSourceClass')
-        ;
-        $context
-            ->method('getTargetClassFqn')
-            ->willReturn('TestTargetClass')
-        ;
-
-        $this->assertTrue($filter->getValue($context, $objectMapper));
-    }
-
-    public function testGetValueInvalidSourceClassException(): void
-    {
-        $objectMapper = $this->buildObjectMapper();
-        $route = $this->buildRoute();
-        $callable = function ($route, $context, $objectMapper) {
-        };
+        $route = $this->buildRoute(0);
 
         $filter = new Filter($route, $callable);
 
@@ -79,92 +59,26 @@ class FilterTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock()
         ;
-        $context
-            ->method('getSourceClassFqn')
-            ->willReturn('invalid_source_class')
-        ;
-        $context
-            ->method('getTargetClassFqn')
-            ->willReturn('TestTargetClass')
+
+        $objectMapper = $this->getMockBuilder(ObjectMapper::class)
+            ->disableOriginalConstructor()
+            ->getMock()
         ;
 
-        $this->expectException(InvalidOperationException::class);
-
-        $filter->getValue($context, $objectMapper);
+        $this->assertTrue($filter->getValue($route, $context, $objectMapper));
     }
 
-    public function testGetValueInvalidTargetClassException(): void
+    private function buildRoute(int $id): Route
     {
-        $objectMapper = $this->buildObjectMapper();
-        $route = $this->buildRoute();
-        $callable = function ($route, $context, $objectMapper) {
-        };
-
-        $filter = new Filter($route, $callable);
-
-        $context = $this->getMockBuilder(Context::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $context
-            ->method('getSourceClassFqn')
-            ->willReturn('TestSourceClass')
-        ;
-        $context
-            ->method('getTargetClassFqn')
-            ->willReturn('invalid_source_class')
-        ;
-
-        $this->expectException(InvalidOperationException::class);
-
-        $filter->getValue($context, $objectMapper);
-    }
-
-    private function buildRoute(): Route
-    {
-        $sourcePoint = $this->getMockBuilder(PropertyPoint::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $sourcePoint
-            ->method('getClassFqn')
-            ->willReturn('TestSourceClass')
-        ;
-
-        $targetPoint = $this->getMockBuilder(PropertyPoint::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-        $targetPoint
-            ->method('getClassFqn')
-            ->willReturn('TestTargetClass')
-        ;
-
         $route = $this->getMockBuilder(Route::class)
             ->disableOriginalConstructor()
             ->getMock()
         ;
         $route
             ->method('getFqn')
-            ->willReturn('route_1')
-        ;
-        $route
-            ->method('getSourcePoint')
-            ->willReturn($sourcePoint)
-        ;
-        $route
-            ->method('getTargetPoint')
-            ->willReturn($targetPoint)
+            ->willReturn(\sprintf('%d', $id))
         ;
 
         return $route;
-    }
-
-    private function buildObjectMapper(): ObjectMapper
-    {
-        return $this->getMockBuilder(ObjectMapper::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
     }
 }

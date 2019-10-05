@@ -372,32 +372,21 @@ $map = $mapBuilder
 
 class Filter implements FilterInterface
 {
-    private $route;
-
-    public function __construct(Route $route)
+    /** {@inheritdoc} */
+    public function supportRoute(Route $route): bool
     {
-        $this->route = $route;
+        return $route->getFqn() === 'User::getAge()=>UserDto::$age';
     }
 
     /** {@inheritdoc} */
-    public function getRouteFqn(): string
+    public function getValue(Route $route, Context $context, ObjectMapperInterface $objectMapper)
     {
-        return $this->route->getFqn();
-    }
-
-    /** {@inheritdoc} */
-    public function getValue(Context $context, ObjectMapperInterface $objectMapper)
-    {
-        return $this->route->getSourcePoint()->getValue($context->getSource()) + 1;
+        return $route->getSourcePoint()->getValue($context->getSource()) + 1;
     }
 }
 
-$route = $routeBuilder->buildRoute('User::getAge()', 'UserDto::$age');
-
-$filter = new Filter($route);
-
 $map = $mapBuilder
-    ->addFilter($filter)
+    ->addFilter(new Filter())
     ->buildMap($pathFindingStrategy = true)
 ;
 
@@ -413,34 +402,32 @@ echo $userDto->age; // '31'
 The `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method gets the filtered value by calling on your [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) implementation instance the method described below:
 
 ```php
-FilterInterface::getValue(Context $context, ObjectMapperInterface $objectMapper)
+FilterInterface::getValue(Route $route, Context $context, ObjectMapperInterface $objectMapper)
 ```
 
 **Parameters**
 
-`$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php).
+`$route` is an instance of the [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method is currently working on.
 
-`$objectMapper` is the instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php).
+`$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) containing the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method.
+
+`$objectMapper` is the instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php) which can be useful for [recursion](#recursion).
 
 **Returns**
 
 A `mixed` value.
 
-**Throws**
+Keep in mind that a *filter* *supports* instance(s) of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php).
 
-A [`NotSupportedContextException`](https://github.com/opportus/object-mapper/blob/master/src/Exception/NotSupportedContextException.php) signaling to the mapper to assign the ***original*** value of the *source point* to the *target point*.
-
-Keep in mind that a *filter* is *attached to* a specific [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php).
-
-You define the [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) to which to *attach* your *filter* in the method described below:
+You have to define the supported routes by implementing the method described below:
 
 ```php
-FilterInterface::getRouteFqn(): string
+FilterInterface::supportRoute(Route $route): bool
 ```
 
 **Returns**
 
-A `string` being the **Fully Qualified Name** of the [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) this *filter* is on.
+A `bool` defining whether the passed [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) is supported by this *filter*.
 
 ### Recursion
 
@@ -449,7 +436,7 @@ Although a recursion dedicated feature may come later, you can use the *filter* 
   - If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and that you want in the same time to map `C` to `D`, AKA *simple recursion*
   - If you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *iterable recursion* or *in-width recursion*
 
-You can achieve *in-depth recursion* naturally, by adding a *filter* to a route of the child type, the grandchild type and so on...
+You can achieve *in-depth recursion* by adding a *filter* to a route of the child type, the grandchild type and so on...
 
 ## Mapping autoloading
 
