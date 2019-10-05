@@ -38,20 +38,20 @@ class RouteBuilderTest extends TestCase
 
         $cases = [
             [
-                \sprintf('%s::$privatePropertyToTest', PropertyPointTest::class),
-                \sprintf('%s::$privatePropertyToTest', PropertyPointTest::class),
+                \sprintf('%s.$privatePropertyToTest', PropertyPointTest::class),
+                \sprintf('%s.$privatePropertyToTest', PropertyPointTest::class),
             ],
             [
-                \sprintf('%s::$privatePropertyToTest', PropertyPointTest::class),
-                \sprintf('%s::privateMethodToTest()::$parameter', ParameterPointTest::class),
+                \sprintf('%s.$privatePropertyToTest', PropertyPointTest::class),
+                \sprintf('%s.privateMethodToTest().$parameter', ParameterPointTest::class),
             ],
             [
-                \sprintf('%s::privateMethodToTest()', MethodPointTest::class),
-                \sprintf('%s::$privatePropertyToTest', PropertyPointTest::class),
+                \sprintf('%s.privateMethodToTest()', MethodPointTest::class),
+                \sprintf('%s.$privatePropertyToTest', PropertyPointTest::class),
             ],
             [
-                \sprintf('%s::privateMethodToTest()', MethodPointTest::class),
-                \sprintf('%s::privateMethodToTest()::$parameter', ParameterPointTest::class),
+                \sprintf('%s.privateMethodToTest()', MethodPointTest::class),
+                \sprintf('%s.privateMethodToTest().$parameter', ParameterPointTest::class),
             ],
         ];
 
@@ -62,7 +62,7 @@ class RouteBuilderTest extends TestCase
             $route = $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);
             
             $this->assertInstanceOf(Route::class, $route);
-            $this->assertEquals(\sprintf('%s=>%s', $sourcePointFqn, $targetPointFqn), $route->getFqn());
+            $this->assertEquals(\sprintf('%s:%s', $sourcePointFqn, $targetPointFqn), $route->getFqn());
         }
     }
 
@@ -70,8 +70,8 @@ class RouteBuilderTest extends TestCase
     {
         $routeBuilder = new RouteBuilder(new PointFactory());
 
-        $sourcePointFqn = \sprintf('%s::privateMethodToTest()::$parameter', ParameterPointTest::class);
-        $targetPointFqn = \sprintf('%s::$privatePropertyToTest', PropertyPointTest::class);
+        $sourcePointFqn = \sprintf('%s.privateMethodToTest().$parameter', ParameterPointTest::class);
+        $targetPointFqn = \sprintf('%s.$privatePropertyToTest', PropertyPointTest::class);
 
         $this->expectException(InvalidArgumentException::class);
         $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);
@@ -81,8 +81,8 @@ class RouteBuilderTest extends TestCase
     {
         $routeBuilder = new RouteBuilder(new PointFactory());
 
-        $sourcePointFqn = \sprintf('%s::$privatePropertyToTest', PropertyPointTest::class);
-        $targetPointFqn = \sprintf('%s::privateMethodToTest()', MethodPointTest::class);
+        $sourcePointFqn = \sprintf('%s.$privatePropertyToTest', PropertyPointTest::class);
+        $targetPointFqn = \sprintf('%s.privateMethodToTest()', MethodPointTest::class);
 
         $this->expectException(InvalidArgumentException::class);
         $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);

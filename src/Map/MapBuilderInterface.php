@@ -29,13 +29,13 @@ interface MapBuilderInterface
      *
      * @param string $sourcePointFqn Can be either:
      *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
-     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()`
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
+     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method()`
      *
      * @param string $targetPointFqn Can be either:
      *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
-     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()::$parameter`
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
+     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method().$parameter`
      *
      * @return MapBuilderInterface
      * @throws InvalidArgumentException
@@ -63,13 +63,13 @@ interface MapBuilderInterface
      *
      * @param string $sourcePointFqn Can be either:
      *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
-     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()`
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
+     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method()`
      *
      * @param string $targetPointFqn Can be either:
      *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class::$property`
-     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class::method()::$parameter`
+     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
+     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method().$parameter`
      *
      * @return MapBuilderInterface
      */

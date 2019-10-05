@@ -76,7 +76,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
                     if ($targetMethodReflection->getNumberOfParameters() > 0) {
                         foreach ($targetMethodReflection->getParameters() as $targetParameterReflection) {
                             $targetPoints[] = new ParameterPoint(\sprintf(
-                                '%s::%s()::$%s',
+                                '%s.%s().$%s',
                                 $targetClassReflection->getName(),
                                 $targetMethodReflection->getName(),
                                 $targetParameterReflection->getName()
@@ -90,7 +90,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
         foreach ($targetClassReflection->getProperties() as $targetPropertyReflection) {
             if ($targetPropertyReflection->isPublic()) {
                 $targetPoints[] = new PropertyPoint(\sprintf(
-                    '%s::$%s',
+                    '%s.$%s',
                     $targetClassReflection->getName(),
                     $targetPropertyReflection->getName()
                 ));
@@ -114,7 +114,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
                 if ($sourceMethodReflection->getName() === \sprintf('get%s', \ucfirst($targetPoint->getName()))) {
                     if ($sourceMethodReflection->getNumberOfRequiredParameters() === 0) {
                         return new MethodPoint(\sprintf(
-                            '%s::%s()',
+                            '%s.%s()',
                             $sourceClassReflection->getName(),
                             $sourceMethodReflection->getName()
                         ));
@@ -127,7 +127,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
             if ($sourcePropertyReflection->isPublic()) {
                 if ($sourcePropertyReflection->getName() === $targetPoint->getName()) {
                     return new PropertyPoint(\sprintf(
-                        '%s::$%s',
+                        '%s.$%s',
                         $sourceClassReflection->getName(),
                         $sourcePropertyReflection->getName()
                     ));

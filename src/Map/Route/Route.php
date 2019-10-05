@@ -69,7 +69,7 @@ final class Route
             ));
         }
 
-        $this->fqn = \sprintf('%s=>%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
+        $this->fqn = \sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
 
         $this->sourcePoint = $sourcePoint;
         $this->targetPoint = $targetPoint;

@@ -26,7 +26,7 @@ class ParameterPointTest extends TestCase
     public function testParameterPointConstruction(): void
     {
         foreach ($this->getParametersToTest() as $methodName => $parameterName) {
-            $fqn = \sprintf('%s::%s()::$%s', self::class, $methodName, $parameterName);
+            $fqn = \sprintf('%s.%s().$%s', self::class, $methodName, $parameterName);
             $parameterPoint = new ParameterPoint($fqn);
 
             $this->assertEquals($parameterName, $parameterPoint->getName());

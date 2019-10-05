@@ -42,7 +42,7 @@ final class MethodPoint
      */
     public function __construct(string $fqn)
     {
-        $regex = '/^([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)$/';
+        $regex = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\)$/';
 
         if (!\preg_match($regex, $fqn, $matches)) {
             throw new InvalidMethodPointSyntaxException(\sprintf(

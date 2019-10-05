@@ -260,7 +260,7 @@ $contributorDto = new ContributorDto();
 
 // Define *on the go* the route
 $map = $mapBuilder
-    ->addRoute('User::getUsername()', 'ContributorDto::$name')
+    ->addRoute('User.getUsername()', 'ContributorDto.$name')
     ->buildMap()
 ;
 
@@ -271,7 +271,7 @@ echo $contributorDto->name; // 'Toto'
 
 // Define *on the go* the route
 $map = $mapBuilder
-    ->addRoute('ContributorDto::$name', 'User::__construct()::$username')
+    ->addRoute('ContributorDto.$name', 'User.__construct().$username')
     ->buildMap()
 ;
 
@@ -291,13 +291,13 @@ MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilder
 
 `$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a *source point* which can be:
 
-  - A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class::$property'`.
-  - A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class::method()'`.
+  - A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
+  - A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class.method()'`.
 
 `$targetPointFqn` must be a `string` representing the Fully Qualified Name of a *target point* which can be:
 
-  - A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class::$property'`.
-  - A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class::method()::$parameter'`.
+  - A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
+  - A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
 **Returns**
 
@@ -360,8 +360,8 @@ $map = $mapBuilder
         function ($route, $context, $objectMapper) {
             return $route->getSourcePoint()->getValue($context->getSource()) + 1;
         },
-        'User::getAge()',
-        'UserDto::$age'
+        'User.getAge()',
+        'UserDto.$age'
     )
     ->buildMap($pathFindingStrategy = true)
 ;
@@ -375,7 +375,7 @@ class Filter implements FilterInterface
     /** {@inheritdoc} */
     public function supportRoute(Route $route): bool
     {
-        return $route->getFqn() === 'User::getAge()=>UserDto::$age';
+        return $route->getFqn() === 'User.getAge():UserDto.$age';
     }
 
     /** {@inheritdoc} */
@@ -479,8 +479,8 @@ For its next release, the [ObjectMapperBundle](https://github.com/opportus/Objec
 // Mapping state of `User` object to `UserDto` object
 
 $map = $mapBuilder
-    ->addRoute('User::getUserame()', 'User::$username')
-    ->addRoute('User::getAge()', 'User::$age')
+    ->addRoute('User.getUserame()', 'User.$username')
+    ->addRoute('User.getAge()', 'User.$age')
     ->buildMap($pathFindingStrategy = false)
 ;
 
@@ -493,12 +493,12 @@ Instead you can do:
 UserDto
 {
     /**
-     * @ObjectMapperRoute(sources="User::getUsername()")
+     * @ObjectMapperRoute(sources="User.getUsername()")
      */
     public $username;
 
     /**
-     * @ObjectMapperRoute(sources="User::getAge()")
+     * @ObjectMapperRoute(sources="User.getAge()")
      */
     public $age;
 }
@@ -510,11 +510,11 @@ Or:
 # user-dto-map.yaml
 
 -
-source: User::getUsername()
-target: UserDto::$username
+source: User.getUsername()
+target: UserDto.$username
 -
-source: User::getAge()
-target: UserDto::$age
+source: User.getAge()
+target: UserDto.$age
 ```
 
 The [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) can then build from this autoloaded mapping configuration routes and filters to inject into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation in order for it to build aware maps. So that the user can then map seamlessly state of the typed objects such as defined into the mapping configuration above:

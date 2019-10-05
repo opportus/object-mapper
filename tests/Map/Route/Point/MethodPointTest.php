@@ -26,7 +26,7 @@ class MethodPointTest extends TestCase
     public function testMethodPointConstruction(): void
     {
         foreach ($this->getMethodsToTest() as $methodName) {
-            $fqn = \sprintf('%s::%s()', self::class, $methodName);
+            $fqn = \sprintf('%s.%s()', self::class, $methodName);
             $methodPoint = new MethodPoint($fqn);
 
             $this->assertEquals($methodName, $methodPoint->getName());
@@ -40,7 +40,7 @@ class MethodPointTest extends TestCase
         $object = new self();
 
         foreach ($this->getMethodsToTest() as $methodValue => $methodName) {
-            $fqn = \sprintf('%s::%s()', self::class, $methodName);
+            $fqn = \sprintf('%s.%s()', self::class, $methodName);
             $methodPoint = new MethodPoint($fqn);
 
             $this->assertEquals($methodValue, $methodPoint->getValue($object));

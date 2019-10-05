@@ -30,7 +30,7 @@ class PropertyPointTest extends TestCase
     public function testPropertyPointConstruction(): void
     {
         foreach ($this->getPropertiesToTest() as $propertyName) {
-            $fqn = \sprintf('%s::$%s', self::class, $propertyName);
+            $fqn = \sprintf('%s.$%s', self::class, $propertyName);
             $propertyPoint = new PropertyPoint($fqn);
 
             $this->assertEquals($propertyName, $propertyPoint->getName());
@@ -44,7 +44,7 @@ class PropertyPointTest extends TestCase
         $object = new self();
 
         foreach ($this->getPropertiesToTest() as $propertyValue => $propertyName) {
-            $fqn = \sprintf('%s::$%s', self::class, $propertyName);
+            $fqn = \sprintf('%s.$%s', self::class, $propertyName);
             $propertyPoint = new PropertyPoint($fqn);
 
             $this->assertEquals($propertyValue, $propertyPoint->getValue($object));

@@ -33,7 +33,7 @@ class PointFactoryTest extends TestCase
         $methodPointTest = new MethodPointTest();
 
         foreach ($methodPointTest->getMethodsToTest() as $methodName) {
-            $pointFqn = \sprintf('%s::%s()', MethodPointTest::class, $methodName);
+            $pointFqn = \sprintf('%s.%s()', MethodPointTest::class, $methodName);
 
             $this->assertInstanceOf(MethodPoint::class, $pointFactory->createPoint($pointFqn));
         }
@@ -45,7 +45,7 @@ class PointFactoryTest extends TestCase
         $parameterPointTest = new ParameterPointTest();
 
         foreach ($parameterPointTest->getParametersToTest() as $methodName => $parameterName) {
-            $pointFqn = \sprintf('%s::%s()::$%s', ParameterPointTest::class, $methodName, $parameterName);
+            $pointFqn = \sprintf('%s.%s().$%s', ParameterPointTest::class, $methodName, $parameterName);
 
             $this->assertInstanceOf(ParameterPoint::class, $pointFactory->createPoint($pointFqn));
         }
@@ -57,7 +57,7 @@ class PointFactoryTest extends TestCase
         $propertyPointTest = new PropertyPointTest();
 
         foreach ($propertyPointTest->getPropertiesToTest() as $propertyName) {
-            $pointFqn = \sprintf('%s::$%s', PropertyPointTest::class, $propertyName);
+            $pointFqn = \sprintf('%s.$%s', PropertyPointTest::class, $propertyName);
 
             $this->assertInstanceOf(PropertyPoint::class, $pointFactory->createPoint($pointFqn));
         }
