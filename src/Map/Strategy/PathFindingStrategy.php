@@ -124,7 +124,6 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
         } catch (ReflectionException $e) {
             try {
                 $sourcePropertyReflection = $sourceClassReflection->getProperty($targetPoint->getName());
-
             } catch (ReflectionException $e) {
                 return null;
             }
