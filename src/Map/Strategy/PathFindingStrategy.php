@@ -17,7 +17,7 @@ use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
-use ReflectionClass;
+use ReflectionException;
 
 /**
  * The default path finding strategy.
@@ -31,7 +31,8 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     /**
      * {@inheritdoc}
      *
-     * This behavior consists of guessing which is the appropriate point of the source to connect to each point of the target.
+     * This behavior consists of guessing which is the appropriate point of the source
+     * to connect to each point of the target following the rules below.
      *
      * A TargetPoint can be:
      *
@@ -47,10 +48,10 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     {
         $routes = [];
 
-        $targetPoints = $this->getTargetPoints($context->getTargetClassReflection(), $context->hasInstantiatedTarget());
+        $targetPoints = $this->buildConventionalTargetPoints($context);
 
         foreach ($targetPoints as $targetPoint) {
-            $sourcePoint = $this->findSourcePoint($context->getSourceClassReflection(), $targetPoint);
+            $sourcePoint = $this->buildConventionalSourcePoint($context, $targetPoint);
 
             if (null !== $sourcePoint && null !== $sourcePoint->getValue($context->getSource())) {
                 $routes[] = new Route($sourcePoint, $targetPoint);
@@ -61,80 +62,88 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     }
 
     /**
-     * Gets the target points.
+     * Builds conventional target points.
      *
-     * @param ReflectionClass $targetClassReflection
-     * @param bool $isTargetInstantiated
+     * @param Context $context
      * @return array
      */
-    private function getTargetPoints(ReflectionClass $targetClassReflection, bool $isTargetInstantiated): array
+    private function buildConventionalTargetPoints(Context $context): array
     {
+        $targetClassReflection = $context->getTargetClassReflection();
         $targetPoints = [];
-        foreach ($targetClassReflection->getMethods() as $targetMethodReflection) {
-            if ($targetMethodReflection->isPublic()) {
-                if (0 === \strpos($targetMethodReflection->getName(), 'set') || (false === $isTargetInstantiated && '__construct' === $targetMethodReflection->getName())) {
-                    if ($targetMethodReflection->getNumberOfParameters() > 0) {
-                        foreach ($targetMethodReflection->getParameters() as $targetParameterReflection) {
-                            $targetPoints[] = new ParameterPoint(\sprintf(
-                                '%s.%s().$%s',
-                                $targetClassReflection->getName(),
-                                $targetMethodReflection->getName(),
-                                $targetParameterReflection->getName()
-                            ));
-                        }
-                    }
-                }
+
+        foreach ($targetClassReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $targetMethodReflection) {
+            if ($targetMethodReflection->getNumberOfParameters() === 0) {
+                continue;
+            }
+
+            if (0 !== \strpos($targetMethodReflection->getName(), 'set') &&
+                (true === $context->hasInstantiatedTarget() || '__construct' !== $targetMethodReflection->getName())
+            ) {
+                continue;
+            }
+
+            foreach ($targetMethodReflection->getParameters() as $targetParameterReflection) {
+                $targetPoints[] = new ParameterPoint(\sprintf(
+                    '%s.%s().$%s',
+                    $targetClassReflection->getName(),
+                    $targetMethodReflection->getName(),
+                    $targetParameterReflection->getName()
+                ));
             }
         }
 
-        foreach ($targetClassReflection->getProperties() as $targetPropertyReflection) {
-            if ($targetPropertyReflection->isPublic()) {
-                $targetPoints[] = new PropertyPoint(\sprintf(
-                    '%s.$%s',
-                    $targetClassReflection->getName(),
-                    $targetPropertyReflection->getName()
-                ));
-            }
+        foreach ($targetClassReflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $targetPropertyReflection) {
+            $targetPoints[] = new PropertyPoint(\sprintf(
+                '%s.$%s',
+                $targetClassReflection->getName(),
+                $targetPropertyReflection->getName()
+            ));
         }
 
         return $targetPoints;
     }
 
     /**
-     * Finds the source point to connect to the target point.
+     * Builds conventional source point to connect to the passed target point.
      *
-     * @param ReflectionClass $sourceClassReflection
+     * @param Context $context
      * @param PropertyPoint|ParameterPoint $targetPoint
      * @return null|PropertyPoint|MethodPoint
      */
-    private function findSourcePoint(ReflectionClass $sourceClassReflection, object $targetPoint): ?object
+    private function buildConventionalSourcePoint(Context $context, object $targetPoint): ?object
     {
-        foreach ($sourceClassReflection->getMethods() as $sourceMethodReflection) {
-            if ($sourceMethodReflection->isPublic()) {
-                if ($sourceMethodReflection->getName() === \sprintf('get%s', \ucfirst($targetPoint->getName()))) {
-                    if ($sourceMethodReflection->getNumberOfRequiredParameters() === 0) {
-                        return new MethodPoint(\sprintf(
-                            '%s.%s()',
-                            $sourceClassReflection->getName(),
-                            $sourceMethodReflection->getName()
-                        ));
-                    }
-                }
+        $sourceClassReflection = $context->getSourceClassReflection();
+
+        try {
+            $sourceMethodReflection = $sourceClassReflection->getMethod(\sprintf('get%s', \ucfirst($targetPoint->getName())));
+
+            if (false === $sourceMethodReflection->isPublic() || $sourceMethodReflection->getNumberOfRequiredParameters() > 0) {
+                throw ReflectionException();
             }
+        } catch (ReflectionException $e) {
+            try {
+                $sourcePropertyReflection = $sourceClassReflection->getProperty($targetPoint->getName());
+
+            } catch (ReflectionException $e) {
+                return null;
+            }
+
+            if (false === $sourcePropertyReflection->isPublic()) {
+                return null;
+            }
+
+            return new PropertyPoint(\sprintf(
+                '%s.$%s',
+                $sourceClassReflection->getName(),
+                $sourcePropertyReflection->getName()
+            ));
         }
 
-        foreach ($sourceClassReflection->getProperties() as $sourcePropertyReflection) {
-            if ($sourcePropertyReflection->isPublic()) {
-                if ($sourcePropertyReflection->getName() === $targetPoint->getName()) {
-                    return new PropertyPoint(\sprintf(
-                        '%s.$%s',
-                        $sourceClassReflection->getName(),
-                        $sourcePropertyReflection->getName()
-                    ));
-                }
-            }
-        }
-
-        return null;
+        return new MethodPoint(\sprintf(
+            '%s.%s()',
+            $sourceClassReflection->getName(),
+            $sourceMethodReflection->getName()
+        ));
     }
 }
