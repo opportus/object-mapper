@@ -18,8 +18,7 @@
         "phpunit/phpunit": "^8.2",
         "phpbench/phpbench": "^0.16.10",
         "friendsofphp/php-cs-fixer": "^2.15",
-        "dg/bypass-finals": "^1.1",
-        "symfony/property-access": "^4.3"
+        "dg/bypass-finals": "^1.1"
     },
     "autoload": {
         "classmap": [
