@@ -64,6 +64,6 @@ class ObjectMapperBench
      */
     public function benchMapWithNoPathFindingStrategy()
     {
-        $this->objectMapper->map($this->source, BenchObject::class, $this->noPathFindingStrategy);
+        $this->objectMapper->map($this->source, BenchObject::class, $this->noPathFindingStrategyMap);
     }
 }
