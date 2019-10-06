@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\PhpUnitHook;
+namespace Opportus\ObjectMapper\Tests;
 
 use DG\BypassFinals;
 use PHPUnit\Runner\BeforeTestHook;
@@ -17,7 +17,7 @@ use PHPUnit\Runner\BeforeTestHook;
 /**
  * The Bypass final hook.
  *
- * @package Opportus\ObjectMapper\Tests\Tests\PhpUnitHook
+ * @package Opportus\ObjectMapper\Tests\Tests
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

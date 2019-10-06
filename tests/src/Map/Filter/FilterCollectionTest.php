@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Map\Filter;
+namespace Opportus\ObjectMapper\Tests\Src\Map\Filter;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Filter\Filter;
@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * The filter collection test.
  *
- * @package Opportus\ObjectMapper\Tests\Map\Filter
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Filter
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

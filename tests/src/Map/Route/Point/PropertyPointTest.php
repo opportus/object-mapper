@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Map\Route\Point;
+namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
 
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * The property point test.
  *
- * @package Opportus\ObjectMapper\Tests\Map\Route\Point
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Map\Strategy;
+namespace Opportus\ObjectMapper\Tests\Src\Map\Strategy;
 
 use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * The no path finding strategy test.
  *
- * @package Opportus\ObjectMapper\Tests\Map\Strategy
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Strategy
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

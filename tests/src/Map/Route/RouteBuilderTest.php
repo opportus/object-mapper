@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Map\Route;
+namespace Opportus\ObjectMapper\Tests\Src\Map\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
@@ -18,15 +18,15 @@ use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
-use Opportus\ObjectMapper\Tests\Map\Route\Point\MethodPointTest;
-use Opportus\ObjectMapper\Tests\Map\Route\Point\ParameterPointTest;
-use Opportus\ObjectMapper\Tests\Map\Route\Point\PropertyPointTest;
+use Opportus\ObjectMapper\Tests\Src\Map\Route\Point\MethodPointTest;
+use Opportus\ObjectMapper\Tests\Src\Map\Route\Point\ParameterPointTest;
+use Opportus\ObjectMapper\Tests\Src\Map\Route\Point\PropertyPointTest;
 use PHPUnit\Framework\TestCase;
 
 /**
  * The route builder test.
  *
- * @package Opportus\ObjectMapper\Tests\Map\Route
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Route
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Map\Route;
+namespace Opportus\ObjectMapper\Tests\Src\Map\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Route;
@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * The route collection test.
  *
- * @package Opportus\ObjectMapper\Tests\Map\Route
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Route
  * @author  Clément Cazaud <opportus@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

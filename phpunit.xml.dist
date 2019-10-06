@@ -21,7 +21,7 @@
     </filter>
 
     <extensions>
-        <extension class="Opportus\ObjectMapper\Tests\PhpUnitHook\BypassFinalHook"/>
+        <extension class="Opportus\ObjectMapper\Tests\BypassFinalHook"/>
     </extensions>
 
 </phpunit>
