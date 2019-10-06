@@ -11,10 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Exception\InvalidMethodPointSyntaxException;
-use Opportus\ObjectMapper\Exception\InvalidParameterPointSyntaxException;
-use Opportus\ObjectMapper\Exception\InvalidPointException;
-use Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 
 /**
  * The point factory.
@@ -30,26 +27,17 @@ final class PointFactory implements PointFactoryInterface
      */
     public function createPoint(string $pointFqn): object
     {
-        try {
-            return new PropertyPoint($pointFqn);
-        } catch (InvalidPropertyPointSyntaxException $propertyPointException) {
-        }
-
-        try {
+        if (\preg_match(MethodPoint::SYNTAX_PATTERN, $pointFqn)) {
             return new MethodPoint($pointFqn);
-        } catch (InvalidMethodPointSyntaxException $methodPointException) {
-        }
-
-        try {
+        } elseif (\preg_match(ParameterPoint::SYNTAX_PATTERN, $pointFqn)) {
             return new ParameterPoint($pointFqn);
-        } catch (InvalidParameterPointSyntaxException $parameterPointException) {
+        } elseif (\preg_match(PropertyPoint::SYNTAX_PATTERN, $pointFqn)) {
+            return new PropertyPoint($pointFqn);
         }
 
-        throw new InvalidPointException(\sprintf(
-            '%s %s %s',
-            $propertyPointException->getMessage(),
-            $methodPointException->getMessage(),
-            $parameterPointException->getMessage()
+        throw new InvalidArgumentException(\sprintf(
+            'Argument "pointFqn" passed to "%s" is invalid. Expecting the argument to match a valid point FQN syntax pattern.',
+            $pointFqn
         ));
     }
 }

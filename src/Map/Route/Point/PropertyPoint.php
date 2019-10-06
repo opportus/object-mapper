@@ -28,6 +28,8 @@ final class PropertyPoint
 {
     use PointTrait;
 
+    const SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).\$([A-Za-z0-9_]+)$/';
+
     /**
      * @var ReflectionProperty $reflector
      */
@@ -42,9 +44,7 @@ final class PropertyPoint
      */
     public function __construct(string $fqn)
     {
-        $regex = '/^([A-Za-z0-9\\\_]+).\$([A-Za-z0-9_]+)$/';
-
-        if (!\preg_match($regex, $fqn, $matches)) {
+        if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
             throw new InvalidPropertyPointSyntaxException(\sprintf(
                 '"%s" is not a property point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,

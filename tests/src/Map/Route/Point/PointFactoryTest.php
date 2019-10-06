@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
 
-use Opportus\ObjectMapper\Exception\InvalidPointException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
@@ -67,7 +67,7 @@ class PointFactoryTest extends TestCase
     {
         $pointFactory = new PointFactory();
 
-        $this->expectException(InvalidPointException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $pointFactory->createPoint('test');
     }

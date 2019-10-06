@@ -27,6 +27,8 @@ final class ParameterPoint
 {
     use PointTrait;
 
+    const SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\).\$([A-Za-z0-9_]+)$/';
+
     /**
      * @var ReflectionParameter $reflector
      */
@@ -51,9 +53,7 @@ final class ParameterPoint
      */
     public function __construct(string $fqn)
     {
-        $regex = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\).\$([A-Za-z0-9_]+)$/';
-
-        if (!\preg_match($regex, $fqn, $matches)) {
+        if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
             throw new InvalidParameterPointSyntaxException(\sprintf(
                 '"%s" is not a parameter point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
