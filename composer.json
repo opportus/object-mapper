@@ -14,6 +14,13 @@
     "require": {
         "php": "^7.2"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^8.2",
+        "phpbench/phpbench": "^0.16.10",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "dg/bypass-finals": "^1.1",
+        "symfony/property-access": "^4.3"
+    },
     "autoload": {
         "classmap": [
             "src/"
@@ -22,19 +29,15 @@
             "Opportus\\ObjectMapper\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Opportus\\ObjectMapper\\Tests\\": "tests/",
+            "Opportus\\ObjectMapper\\Benchmarks\\": "benchmarks/"
+        }
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^8.2",
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "dg/bypass-finals": "^1.1"
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Opportus\\ObjectMapper\\Tests\\": "tests/"
         }
     }
 }
