@@ -47,34 +47,46 @@ final class ObjectMapper implements ObjectMapperInterface
     public function map(object $source, $target, ?Map $map = null): ?object
     {
         $map = $map ?? $this->mapBuilder->buildMap(true);
-
         $context = new Context($source, $target, $map);
+        $routes = $context->getRoutes();
 
         // Returns NULL if nothing to do...
-        if (false === $context->hasRoutes()) {
+        if (\count($routes) === 0) {
             return null;
+        }
+
+        $targetConstructorParameterPointValues = [];
+        $targetParameterPointValues = [];
+        $targetPropertyPointValues = [];
+        $targetPropertyPoints = [];
+
+        foreach ($routes as $route) {
+            $targetPoint = $route->getTargetPoint();
+            $targetPointValue = $this->getTargetPointValueToAssign($context, $route);
+
+            if ($targetPoint instanceof ParameterPoint) {
+                if ('__construct' === $targetPoint->getMethodName()) {
+                    $targetConstructorParameterPointValues[$targetPoint->getPosition()] = $targetPointValue;
+                } else {
+                    $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
+                }
+            } elseif ($targetPoint instanceof PropertyPoint) {
+                $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
+                $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
+            }
         }
 
         $targetClassReflection = $context->getTargetClassReflection();
 
         // Instantiates the target...
         if (false === $context->hasInstantiatedTarget()) {
-            $targetConstructorParameterPointValues = $this->getTargetConstructorParameterPointValues($context);
-
             if ($targetConstructorParameterPointValues) {
                 // Invokes target constructor...
                 $target = $targetClassReflection->newInstanceArgs($targetConstructorParameterPointValues);
             } else {
-                $target = $targetClassReflection->newInstance();
+                $target = new $target();
             }
-
-            $context = new Context($source, $target, $map);
         }
-
-
-        $targetParameterPointValues = $this->getTargetParameterPointValues($context);
-        $targetPropertyPointValues  = $this->getTargetPropertyPointValues($context);
-        $targetPropertyPoints       = $this->getTargetPropertyPoints($context);
 
         // Invokes target methods...
         foreach ($targetParameterPointValues as $methodName => $methodArguments) {
@@ -90,115 +102,13 @@ final class ObjectMapper implements ObjectMapperInterface
     }
 
     /**
-     * Gets target constructor parameter point values.
-     *
-     * @param Context $context
-     * @return array
-     */
-    private function getTargetConstructorParameterPointValues(Context $context): array
-    {
-        $routes = $context->getRoutes();
-        $targetConstructorParameterPointValues = [];
-
-        foreach ($routes as $route) {
-            $targetPoint = $route->getTargetPoint();
-
-            if (!$targetPoint instanceof ParameterPoint || '__construct' !== $targetPoint->getMethodName()) {
-                continue;
-            }
-
-            $targetPointValue = $this->getTargetPointValue($context, $route);
-
-            $targetConstructorParameterPointValues[$targetPoint->getPosition()] = $targetPointValue;
-        }
-
-        return $targetConstructorParameterPointValues;
-    }
-
-    /**
-     * Gets target parameter point values.
-     *
-     * @param Context $context
-     * @return array
-     */
-    private function getTargetParameterPointValues(Context $context): array
-    {
-        $routes = $context->getRoutes();
-        $targetParameterPointValues = [];
-
-        foreach ($routes as $route) {
-            $targetPoint = $route->getTargetPoint();
-
-            if (!$targetPoint instanceof ParameterPoint || '__construct' === $targetPoint->getMethodName()) {
-                continue;
-            }
-
-            $targetPointValue = $this->getTargetPointValue($context, $route);
-
-            $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
-        }
-
-        return $targetParameterPointValues;
-    }
-
-    /**
-     * Gets target property point values.
-     *
-     * @param Context $context
-     * @return array
-     */
-    private function getTargetPropertyPointValues(Context $context): array
-    {
-        $routes = $context->getRoutes();
-        $targetPropertyPointValues = [];
-
-        foreach ($routes as $route) {
-            $targetPoint = $route->getTargetPoint();
-
-            if (!$targetPoint instanceof PropertyPoint) {
-                continue;
-            }
-
-            $targetPointValue = $this->getTargetPointValue($context, $route);
-
-            $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
-        }
-
-        return $targetPropertyPointValues;
-    }
-
-    /**
-     * Gets target property points.
-     *
-     * @param Context $context
-     * @return array
-     */
-    private function getTargetPropertyPoints(Context $context): array
-    {
-        $routes = $context->getRoutes();
-        $targetPropertyPoints = [];
-
-        foreach ($routes as $route) {
-            $targetPoint = $route->getTargetPoint();
-
-            if (!$targetPoint instanceof PropertyPoint) {
-                continue;
-            }
-
-            $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
-        }
-
-        return $targetPropertyPoints;
-    }
-
-    /**
-     * Gets target point value.
+     * Gets the target point value to assign.
      *
      * @param Context $context
      * @param Route $route
      * @return mixed
      */
-    private function getTargetPointValue(Context $context, Route $route)
+    private function getTargetPointValueToAssign(Context $context, Route $route)
     {
         $filter = $context->getFilterOnRoute($route);
 
