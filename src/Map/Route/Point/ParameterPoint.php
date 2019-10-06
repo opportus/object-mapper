@@ -57,7 +57,7 @@ final class ParameterPoint
             throw new InvalidParameterPointSyntaxException(\sprintf(
                 '"%s" is not a parameter point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                $regex
+                self::SYNTAX_PATTERN
             ));
         }
 

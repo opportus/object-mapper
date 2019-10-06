@@ -48,7 +48,7 @@ final class MethodPoint
             throw new InvalidMethodPointSyntaxException(\sprintf(
                 '"%s" is not a method point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                $regex
+                self::SYNTAX_PATTERN
             ));
         }
 

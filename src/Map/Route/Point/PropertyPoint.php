@@ -48,7 +48,7 @@ final class PropertyPoint
             throw new InvalidPropertyPointSyntaxException(\sprintf(
                 '"%s" is not a property point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                $regex
+                self::SYNTAX_PATTERN
             ));
         }
 
