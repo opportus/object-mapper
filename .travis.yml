@@ -10,3 +10,6 @@ install:
 script:
     - vendor/bin/phpunit
     - vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no .
+
+after_script:
+    - vendor/bin/phpbench run --report=aggregate --retry-threshold=2
