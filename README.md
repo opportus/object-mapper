@@ -6,17 +6,17 @@
 
 ## Index
 
--  [Use cases](#use-cases)
--  [Roadmap](#roadmap)
--  [Integrations](#integrations)
--  [Installation](#installation)
--  [Mapping](#mapping)
-  -  [How it works](#how-it-works)
-  -  [Automatic mapping (AKA dynamic mapping)](#automatic-mapping-aka-dynamic-mapping)
-  -  [Manual mapping (AKA static mapping)](#manual-mapping-aka-static-mapping)
-  -  [Filtering](#filtering)
-  -  [Recursion](#recursion)
--  [Mapping preloading](#mapping-preloading)
+-   [Use cases](#use-cases)
+-   [Roadmap](#roadmap)
+-   [Integrations](#integrations)
+-   [Installation](#installation)
+-   [Mapping](#mapping)
+  -   [How it works](#how-it-works)
+  -   [Automatic mapping (AKA dynamic mapping)](#automatic-mapping-aka-dynamic-mapping)
+  -   [Manual mapping (AKA static mapping)](#manual-mapping-aka-static-mapping)
+  -   [Filtering](#filtering)
+  -   [Recursion](#recursion)
+-   [Mapping preloading](#mapping-preloading)
 
 ## Use cases
 
@@ -24,12 +24,12 @@ Use this solution for copying state of objects to differently typed objects usin
 
 Simple, flexible, extensible, optimized, this tool can be used in many use cases such as:
 
--  Mapping state of objects from/to DTOs.
--  Mapping state of domain model from/to persistance model.
--  Mapping state of domain model to view model.
--  Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
--  As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, DICs, etc...
--  And so on...
+-   Mapping state of objects from/to DTOs.
+-   Mapping state of domain model from/to persistance model.
+-   Mapping state of domain model to view model.
+-   Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
+-   As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, DICs, etc...
+-   And so on...
 
 ## Roadmap
 
@@ -37,17 +37,17 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ### v1.0.0 (stable)
 
--  Implement last unit tests
+-   Implement last unit tests
 
 ### v1.1.0
 
--  Implement *adders*, *removers*, *isers*, *hasers* support with the default PathFindingStrategy
--  ...
+-   Implement *adders*, *removers*, *isers*, *hasers* support with the default PathFindingStrategy
+-   ...
 
 ## Integrations
 
--  Symfony 4 => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
--  Reference here your own integrations
+-   Symfony 4 => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
+-   Reference here your own integrations
 
 ## Installation
 
@@ -114,13 +114,13 @@ A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/
 
 A *source point* can be either:
 
--  A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
--  A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
+-   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)
 
 A *target point* can be either:
 
--  A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
--  A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
+-   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)
 
 Routes can be defined either [automatically](#automatic-mapping-aka-dynamic-mapping) (default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)) or [manually](#manual-mapping-aka-static-mapping) ([`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)). In the former case, routes are defined dynamically while in the later case, routes are defined statically.
 
@@ -171,13 +171,13 @@ The default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/bl
 
 For the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php), a *target point* can be:
 
--  A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
--  A parameter of a public method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php))
+-   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
+-   A parameter of a public method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php))
 
 The corresponding *source point* can be:
 
--  A public property having for name the same as the target point ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
--  A public getter having for name `'get'.ucfirst($targetPointName)` and requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php))
+-   A public property having for name the same as the target point ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
+-   A public getter having for name `'get'.ucfirst($targetPointName)` and requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php))
 
 #### Custom automatic mapping
 
@@ -295,13 +295,13 @@ MapBuilderInterface::addRoute(string $sourcePointFqn, string $targetPointFqn): M
 
 `$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a *source point* which can be:
 
--  A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
--  A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class.method()'`.
+-   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
+-   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class.method()'`.
 
 `$targetPointFqn` must be a `string` representing the Fully Qualified Name of a *target point* which can be:
 
--  A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
--  A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
+-   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
+-   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
 **Returns**
 
@@ -319,9 +319,9 @@ MapBuilderInterface::buildMap($pathFindingStrategy = false): Map
 
 `$pathFindingStrategy` must be either a `boolean` or an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php).
 
--  If it is `false`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the [`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php) will be built.
--  If it is `true`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) with the [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) is built. Note that in our context of *manual mapping*, `$pathFindingStrategy = true` does not make sense since the map would just ignore the routes you previously defined.
--  If it is an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of this instance is built.
+-   If it is `false`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the [`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php) will be built.
+-   If it is `true`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) with the [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) is built. Note that in our context of *manual mapping*, `$pathFindingStrategy = true` does not make sense since the map would just ignore the routes you previously defined.
+-   If it is an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of this instance is built.
 
 **Returns**
 
@@ -386,19 +386,19 @@ MapBuilderInterface::addFilterOnRoute(callable $callable, string $sourcePointFqn
 
 `$callable` must be a `callable` containing the filtering logic. This `callable` returns a `mixed` value which will be assigned to the target point by the mapper. This `callable` takes as arguments:
 
--  `$route` is an instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) the filter is on.
--  `$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer contextual helper methods manipulating these arguments.
--  `$objectMapper` is an instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php) which is useful for recursion.
+-   `$route` is an instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) the filter is on.
+-   `$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer contextual helper methods manipulating these arguments.
+-   `$objectMapper` is an instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php) which is useful for recursion.
 
 `$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a *source point* which can be:
 
--  A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
--  A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class.method()'`.
+-   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
+-   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class.method()'`.
 
 `$targetPointFqn` must be a `string` representing the Fully Qualified Name of a *target point* which can be:
 
--  A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
--  A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
+-   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
+-   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
 **Returns**
 
@@ -487,9 +487,9 @@ A `bool` defining whether the passed [`Route`](https://github.com/opportus/objec
 
 Although a recursion dedicated feature may come later, you can use the *filtering* feature [introduced previously](#filtering) to recursively map a *source point* to a *target point*. For example:
 
--  If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and that you want in the same time to map `C` to `D`, AKA *simple recursion*.
--  If you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *in-width recursion* or *iterable recursion*.
--  If you map an instance of `A` (that *has* `C` which *has* `E`) to `B` (that *has* `D` which *has* `F`) and that you want in the same time to map `C` and `E` to `D` and `F`, AKA *in-depth recursion*.
+-   If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and that you want in the same time to map `C` to `D`, AKA *simple recursion*.
+-   If you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *in-width recursion* or *iterable recursion*.
+-   If you map an instance of `A` (that *has* `C` which *has* `E`) to `B` (that *has* `D` which *has* `F`) and that you want in the same time to map `C` and `E` to `D` and `F`, AKA *in-depth recursion*.
 
 ## Mapping preloading
 
