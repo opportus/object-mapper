@@ -65,7 +65,8 @@ By design, this solution does not implement "helpers" for the instantiation of i
 
 The rational behind this design is:
 
-In any use case context, there is **already** a dedicated solution for handling **properly** instantiation of services **because** that is not a problem an *object mapper* is meant to solve. This problem is also know as *#dependency-injection*, *#lazy-loading*, *#inversion-of-control*, and so on... So that delegating the instantiation of its services to its client, this solution becomes more **simple**, **flexible**, **extensible**, **performant**, and **integrable**.
+In any use case context, there is already a dedicated solution for handling properly instantiation of services, because this is not a problem an *object mapper* is meant to solve... Such dedicated solutions handle properly instantiation of services, because those make use of *Dependency Injection*, *Inversion Of Control*, *lazy loading* and so on. So that delegating the instantiation of its services to such solution, the *object mapper* becomes more simple, flexible, extensible, performant, and integrable...
+
 
 This library contains 4 services. 3 of them require a single dependency which is another lower level service among those 4:
 
@@ -80,6 +81,8 @@ $routeBuilder = new RouteBuilder($pointFactory);
 $mapBuilder   = new MapBuilder($routeBuilder);
 $objectMapper = new ObjectMapper($mapBuilder);
 ```
+
+In order to make full use of this library, each of its services must be instantiated and usable such as above.
 
 ## Mapping
 
