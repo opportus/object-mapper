@@ -6,17 +6,17 @@
 
 ## Index
 
-  - [Use cases](#use-cases)
-  - [Roadmap](#roadmap)
-  - [Integrations](#integrations)
-  - [Installation](#installation)
-  - [Mapping](#mapping)
-    - [How it works](#how-it-works)
-    - [Automatic mapping](#automatic-mapping)
-    - [Manual mapping](#manual-mapping)
-    - [Filtering](#filtering)
-    - [Recursion](#recursion)
-  - [Mapping autoloading](#mapping-autoloading)
+- [Use cases](#use-cases)
+- [Roadmap](#roadmap)
+- [Integrations](#integrations)
+- [Installation](#installation)
+- [Mapping](#mapping)
+  - [How it works](#how-it-works)
+  - [Automatic mapping](#automatic-mapping)
+  - [Manual mapping](#manual-mapping)
+  - [Filtering](#filtering)
+  - [Recursion](#recursion)
+- [Mapping autoloading](#mapping-autoloading)
 
 ## Use cases
 
@@ -24,12 +24,12 @@ Use this solution for copying state of objects to differently typed objects usin
 
 Simple, flexible, extensible, this tool can be used in many use cases such as:
 
-  - Mapping state of objects from/to DTOs.
-  - Mapping state of domain model from/to persistance model.
-  - Mapping state of domain model to view model.
-  - Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
-  - As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, etc...
-  - And so on...
+- Mapping state of objects from/to DTOs.
+- Mapping state of domain model from/to persistance model.
+- Mapping state of domain model to view model.
+- Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
+- As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, etc...
+- And so on...
 
 ## Roadmap
 
@@ -37,17 +37,17 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ### v1.0.0 (stable)
 
-  - Implement last unit tests
+- Implement last unit tests
 
 ### v1.1.0
 
-  - Implement *adders* and *removers* support with the default mapping strategy
-  - ...
+- Implement *adders*, *removers*, *isers*, *hasers* support with the default PathFindingStrategy
+- ...
 
 ## Integrations
 
-  - Symfony 4 => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
-  - Reference here your own integrations
+- Symfony 4 => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
+- Reference here your own integrations
 
 ## Installation
 
@@ -61,23 +61,23 @@ $ composer require opportus/object-mapper
 
 ### Step 2 - Instantiate the services
 
-This solution is designed to be **simple**, **flexible** and **extensible**. Therefore, it does not ship main-service instantiator. Rather, it delegates this main-service instantiation to you. You then can handle this instantiation with your DIC system, or manually (such as below) in your composition root, or however it fits best your context.
+By design, this solution does not implement "helpers" for the instantiation of its services which is better handled directly the way you're already instantiating your own services, with a DIC system or whatever.
 
-This library contains 4 services. 3 of them require to be instantiated with their respective dependencies which are other lower level services among those 4.
+The rational behind this design is:
+
+In any use case context, there is **already** a dedicated solution for handling **properly** instantiation of services **because** that is not a problem an *object mapper* is meant to solve. This problem is also know as *#dependency-injection*, *#lazy-loading*, *#inversion-of-control*, and so on... So that delegating the instantiation of its services to its client, this solution becomes more **simple**, **flexible**, **extensible**, **performant**, and **integrable**.
+
+This library contains 4 services. 3 of them require a single dependency which is another lower level service among those 4:
 
 ```php
-namespace Opportus\ObjectMapper;
+use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
+use Opportus\ObjectMapper\Map\Route\RouteBuilder;
+use Opportus\ObjectMapper\Map\MapBuilder;
+use Opportus\ObjectMapper\ObjectMapper;
 
-/** @var Map\Route\Point\PointFactoryInterface */
-$pointFactory = new Map\Route\Point\PointFactory();
-
-/** @var Map\Route\RouteBuilderInterface */
-$routeBuilder = new Map\Route\RouteBuilder($pointFactory);
-
-/** @var Map\MapBuilderInterface */
-$mapBuilder = new Map\MapBuilder($routeBuilder);
-
-/** @var ObjectMapperInterface */
+$pointFactory = new PointFactory();
+$routeBuilder = new RouteBuilder($pointFactory);
+$mapBuilder   = new MapBuilder($routeBuilder);
 $objectMapper = new ObjectMapper($mapBuilder);
 ```
 
