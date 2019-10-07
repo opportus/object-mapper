@@ -195,7 +195,7 @@ PathFindingStrategyInterface::getRoutes(Context $context): RouteCollection
 
 **Parameters**
 
-`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer contextual helper methods manipulating these arguments.
+`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer helper methods manipulating these arguments.
 
 **Returns**
 
@@ -232,7 +232,7 @@ $user = $objectMapper->map($userDto, User::class, $map);
 
 If custom mapping strategy definition such as walked through in the previous "[custom automatic mapping](#custom-automatic-mapping)" chapter is impossible or unworthy, you can manually map the *source* to the *target*.
 
-There are two ways of defining manually the mapping. One way is [pretoloading mapping definitions](#mapping-preloading) and the second way is defining routes *on the go* via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API.
+There are two ways of defining manually the mapping. One way is [preloading mapping definitions](#mapping-preloading) and the second way is defining routes *on the go* via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API.
 
 The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) is an immutable service which implement a fluent interface.
 
@@ -506,7 +506,7 @@ For instance, the Symfony [ObjectMapperBundle](https://github.com/opportus/Objec
 ```php
 // Define the map *on the go*
 
-// Instantiate the implmented filters
+// Instantiate the implemented filters
 $filterA = new FilterA($route);
 $filterB = new FilterB($route);
 
@@ -551,12 +551,12 @@ Instead you can do:
 UserDto
 {
     /**
-     * @HighLevelSystemRoute(sources={"User.getUsername()"})
+     * @HighLevelSystemRouteAnnotation(sources={"User.getUsername()"})
      */
     public $username;
 
     /**
-     * @HighLevelSystemRoute(sources={"User.getAge()"})
+     * @HighLevelSystemRouteAnnotation(sources={"User.getAge()"})
      */
     public $age;
 }
