@@ -11,8 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Exception\InvalidPropertyPointException;
-use Opportus\ObjectMapper\Exception\InvalidPropertyPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use ReflectionException;
 use ReflectionProperty;
@@ -39,14 +38,14 @@ final class PropertyPoint
      * Constructs the property point.
      *
      * @param string $fqn
-     * @throws InvalidPropertyPointException
-     * @throws InvalidPropertyPointSyntaxException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $fqn)
     {
         if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
-            throw new InvalidPropertyPointSyntaxException(\sprintf(
-                '"%s" is not a property point as FQN of such is expected to have the following syntax: %s.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a property point as FQN of such is expected to have the following syntax: %s.',
+                __METHOD__,
                 $fqn,
                 self::SYNTAX_PATTERN
             ));
@@ -57,8 +56,9 @@ final class PropertyPoint
         try {
             $reflector = new ReflectionProperty($matchedClassName, $matchedName);
         } catch (ReflectionException $exception) {
-            throw new InvalidPropertyPointException(\sprintf(
-                '"%s" is not a property point. %s.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a property point. %s.',
+                __METHOD__,
                 $fqn,
                 $exception->getMessage()
             ));

@@ -11,8 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Exception\InvalidParameterPointException;
-use Opportus\ObjectMapper\Exception\InvalidParameterPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use ReflectionException;
 use ReflectionParameter;
 
@@ -48,14 +47,14 @@ final class ParameterPoint
      * Constructs the parameter point.
      *
      * @param string $fqn
-     * @throws InvalidParameterPointException
-     * @throws InvalidParameterPointSyntaxException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $fqn)
     {
         if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
-            throw new InvalidParameterPointSyntaxException(\sprintf(
-                '"%s" is not a parameter point as FQN of such is expected to have the following syntax: %s.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a parameter point as FQN of such is expected to have the following syntax: %s.',
+                __METHOD__,
                 $fqn,
                 self::SYNTAX_PATTERN
             ));
@@ -66,8 +65,9 @@ final class ParameterPoint
         try {
             $reflector = new ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
         } catch (ReflectionException $exception) {
-            throw new InvalidParameterPointException(\sprintf(
-                '"%s" is not a parameter point. %s.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a parameter point. %s.',
+                __METHOD__,
                 $fqn,
                 $exception->getMessage()
             ));

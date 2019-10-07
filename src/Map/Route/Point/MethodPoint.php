@@ -11,8 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Exception\InvalidMethodPointException;
-use Opportus\ObjectMapper\Exception\InvalidMethodPointSyntaxException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use ReflectionException;
 use ReflectionMethod;
@@ -39,14 +38,14 @@ final class MethodPoint
      * Constructs the method point.
      *
      * @param string $fqn
-     * @throws InvalidMethodPointException
-     * @throws InvalidMethodPointSyntaxException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $fqn)
     {
         if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
-            throw new InvalidMethodPointSyntaxException(\sprintf(
-                '"%s" is not a method point as FQN of such is expected to have the following syntax: %s.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a method point as FQN of such is expected to have the following syntax: %s.',
+                __METHOD__,
                 $fqn,
                 self::SYNTAX_PATTERN
             ));
@@ -57,16 +56,18 @@ final class MethodPoint
         try {
             $reflector = new ReflectionMethod($matchedClassName, $matchedName);
         } catch (ReflectionException $exception) {
-            throw new InvalidMethodPointException(\sprintf(
-                '"%s" is not a method point. %s.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a method point. %s.',
+                __METHOD__,
                 $fqn,
                 $exception->getMessage()
             ));
         }
 
         if ($reflector->getNumberOfRequiredParameters() > 0) {
-            throw new InvalidMethodPointException(\sprintf(
-                '"%s" is not a method point as such cannot have required parameters.',
+            throw new InvalidArgumentException(\sprintf(
+                'Argument "fqn" passed to "%s" is invalid. "%s" is not a method point as such cannot have required parameters.',
+                __METHOD__,
                 $fqn
             ));
         }
