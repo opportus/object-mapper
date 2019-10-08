@@ -127,16 +127,6 @@ final class Context
     }
 
     /**
-     * Gets the source class reflection.
-     *
-     * @return ReflectionClass
-     */
-    public function getSourceClassReflection(): ReflectionClass
-    {
-        return new ReflectionClass($this->getSourceClassFqn());
-    }
-
-    /**
      * Gets the target class Fully Qualified Name.
      *
      * @return string
@@ -144,6 +134,16 @@ final class Context
     public function getTargetClassFqn(): string
     {
         return $this->hasInstantiatedTarget() ? \get_class($this->target) : $this->target;
+    }
+
+    /**
+     * Gets the source class reflection.
+     *
+     * @return ReflectionClass
+     */
+    public function getSourceClassReflection(): ReflectionClass
+    {
+        return new ReflectionClass($this->getSourceClassFqn());
     }
 
     /**
