@@ -11,11 +11,11 @@
 -   [Integrations](#integrations)
 -   [Installation](#installation)
 -   [Mapping](#mapping)
-  -   [How it works](#how-it-works)
-  -   [Automatic mapping](#automatic-mapping)
-  -   [Manual mapping](#manual-mapping)
-  -   [Filtering](#filtering)
-  -   [Recursion](#recursion)
+    -   [How it works](#how-it-works)
+    -   [Automatic mapping](#automatic-mapping)
+    -   [Manual mapping](#manual-mapping)
+    -   [Filtering](#filtering)
+    -   [Recursion](#recursion)
 -   [Mapping preloading](#mapping-preloading)
 
 ## Use cases
@@ -499,7 +499,7 @@ While this library is definitely designed with *mapping preloading* in mind, it 
 
 Indeed, this solution is designed as a core for higher level systems to integrate it as an *object mapper* subsystem. Therefore it does not ship any DIC and configuration system necessary for achieving *mapping preloading* which is better implemented into your specific context.
 
-So this chapter is an attempt to help you to implement *mapping preloading*, making use of your own DIC and configuration systems in order for this solution to be integrated seamlessly as a subsystem into a wider system such as a framework, serializer, form handler, ORM, DIC or whatever.
+So this chapter is an attempt to help you to implement *mapping preloading*, making use of your own DIC and configuration systems in order for this solution to be integrated seamlessly as a subsystem into a wider system such as a framework, serializer, form handler, ORM, or whatever.
 
 For instance, the Symfony [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does implement to some extend such *mapping preloading*. For example, this bundle instantiates all services tagged `object_mapper.filter` and inject them into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation. Then the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) injects these tagged filters into the maps that it builds. This way tagged filters are *added automatically* to the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). So you do not need to do:
 
