@@ -50,17 +50,6 @@ final class Map
     }
 
     /**
-     * Checks whether the map has any route connecting the points of the passed source with the points of the passed target.
-     *
-     * @param Context $context
-     * @return bool
-     */
-    public function hasRoutes(Context $context): bool
-    {
-        return (bool) \count($this->getRoutes($context));
-    }
-
-    /**
      * Gets the routes connecting the points of the source with the points of the target.
      *
      * @param Context $context

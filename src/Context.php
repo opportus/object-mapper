@@ -157,16 +157,6 @@ final class Context
     }
 
     /**
-     * Checks whether this has routes.
-     *
-     * @return bool
-     */
-    public function hasRoutes(): bool
-    {
-        return $this->map->hasRoutes($this);
-    }
-
-    /**
      * Gets the routes.
      *
      * @return RouteCollection
