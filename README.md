@@ -12,8 +12,8 @@
 -   [Installation](#installation)
 -   [Mapping](#mapping)
   -   [How it works](#how-it-works)
-  -   [Automatic mapping (AKA dynamic mapping)](#automatic-mapping-aka-dynamic-mapping)
-  -   [Manual mapping (AKA static mapping)](#manual-mapping-aka-static-mapping)
+  -   [Automatic mapping](#automatic-mapping)
+  -   [Manual mapping](#manual-mapping)
   -   [Filtering](#filtering)
   -   [Recursion](#recursion)
 -   [Mapping preloading](#mapping-preloading)
@@ -28,7 +28,7 @@ Simple, flexible, extensible, optimized, this tool can be used in many use cases
 -   Mapping state of domain model from/to persistance model.
 -   Mapping state of domain model to view model.
 -   Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
--   As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, DICs, etc...
+-   As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, etc...
 -   And so on...
 
 ## Roadmap
@@ -122,9 +122,9 @@ A *target point* can be either:
 -   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
 -   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)
 
-Routes can be defined either [automatically](#automatic-mapping-aka-dynamic-mapping) (default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)) or [manually](#manual-mapping-aka-static-mapping) ([`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)). In the former case, routes are defined dynamically while in the later case, routes are defined statically.
+Routes can be defined either [automatically](#automatic-mapping) (default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)) or [manually](#manual-mapping) ([`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)).
 
-### Automatic mapping AKA dynamic mapping
+### Automatic mapping
 
 A basic example of how to automatically map `User`'s state to `UserDto` and vice-versa:
 
@@ -183,7 +183,7 @@ The corresponding *source point* can be:
 
 The default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) presented above is based on one particular *convention* that the *source* and the *target* have to comply with in order for this strategy to automatically map those for you. However, you may want to automatically map *source* and *target* not complying with this particular *convention*...
 
-One solution is to implement a custom [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) based on another *convention* which your *source* and *target* can comply with in order for this custom strategy to "automatically" map those for you.
+One solution is to implement a custom [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) based on another *convention* which your *source* and *target* can comply with in order for this custom strategy to "automatically" map those for you the way you need.
 
 For concrete example of how to implement a [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), refer to the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
@@ -228,9 +228,9 @@ echo $map->getPathFindingStrategyFqn(); // 'MyPathFindingStrategy'
 $user = $objectMapper->map($userDto, User::class, $map);
 ```
 
-### Manual mapping AKA static mapping
+### Manual mapping
 
-If custom mapping strategy definition such as walked through in the previous "[custom automatic mapping](#custom-automatic-mapping)" chapter is impossible or unworthy, you can manually map the *source* to the *target*.
+If custom mapping strategy definition such as walked through in the previous "[custom automatic mapping](#custom-automatic-mapping)" chapter is impossible or overkill, you can manually map the *source* to the *target*.
 
 There are two ways of defining manually the mapping. One way is [preloading mapping definitions](#mapping-preloading) and the second way is defining routes *on the go* via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API.
 
