@@ -84,7 +84,7 @@ final class ObjectMapper implements ObjectMapperInterface
                 // Invokes target constructor...
                 $target = $targetClassReflection->newInstanceArgs($targetConstructorParameterPointValues);
             } else {
-                $target = new $context->getSourceClassFqn();
+                $target = new $context->getTargetClassFqn();
             }
         }
 
