@@ -50,26 +50,20 @@ final class ObjectMapper implements ObjectMapperInterface
         $context = new Context($source, $target, $map);
         $routes = $context->getRoutes();
 
-        // Returns NULL if nothing to do...
         if (\count($routes) === 0) {
             return null;
         }
 
-        $targetConstructorParameterPointValues = [];
         $targetParameterPointValues = [];
         $targetPropertyPointValues = [];
         $targetPropertyPoints = [];
 
         foreach ($routes as $route) {
             $targetPoint = $route->getTargetPoint();
-            $targetPointValue = $this->getTargetPointValueToAssign($context, $route);
+            $targetPointValue = $this->getTargetPointValue($context, $route);
 
             if ($targetPoint instanceof ParameterPoint) {
-                if ('__construct' === $targetPoint->getMethodName()) {
-                    $targetConstructorParameterPointValues[$targetPoint->getPosition()] = $targetPointValue;
-                } else {
-                    $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
-                }
+                $targetParameterPointValues[$targetPoint->getMethodName()][$targetPoint->getPosition()] = $targetPointValue;
             } elseif ($targetPoint instanceof PropertyPoint) {
                 $targetPropertyPointValues[$targetPoint->getName()] = $targetPointValue;
                 $targetPropertyPoints[$targetPoint->getName()] = $targetPoint;
@@ -78,22 +72,20 @@ final class ObjectMapper implements ObjectMapperInterface
 
         $targetClassReflection = $context->getTargetClassReflection();
 
-        // Instantiates the target...
         if (false === $context->hasInstantiatedTarget()) {
-            if ($targetConstructorParameterPointValues) {
-                // Invokes target constructor...
-                $target = $targetClassReflection->newInstanceArgs($targetConstructorParameterPointValues);
+            if (isset($targetParameterPointValues['__construct'])) {
+                $target = $targetClassReflection->newInstanceArgs($targetParameterPointValues['__construct']);
+
+                unset($targetParameterPointValues['__construct']);
             } else {
                 $target = new $context->getTargetClassFqn();
             }
         }
 
-        // Invokes target methods...
         foreach ($targetParameterPointValues as $methodName => $methodArguments) {
             $targetClassReflection->getMethod($methodName)->invokeArgs($target, $methodArguments);
         }
 
-        // Sets target properties...
         foreach ($targetPropertyPoints as $propertyName => $targetPropertyPoint) {
             $targetPropertyPoint->setValue($target, $targetPropertyPointValues[$propertyName]);
         }
@@ -102,13 +94,13 @@ final class ObjectMapper implements ObjectMapperInterface
     }
 
     /**
-     * Gets the target point value to assign.
+     * Gets the target point value.
      *
      * @param Context $context
      * @param Route $route
      * @return mixed
      */
-    private function getTargetPointValueToAssign(Context $context, Route $route)
+    private function getTargetPointValue(Context $context, Route $route)
     {
         $filter = $context->getFilterOnRoute($route);
 
