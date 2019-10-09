@@ -3,7 +3,7 @@
 /**
  * This file is part of the opportus/object-mapper package.
  *
- * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,63 +11,140 @@
 
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
  * The method point test.
  *
  * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodPointTest extends TestCase
+class MethodPointTest extends FinalBypassTestCase
 {
-    public function testMethodPointConstruction(): void
+    /**
+     * @dataProvider provideInvalidMethodPointFqns
+     */
+    public function testConstructException($invalidMethodPointFqn): void
     {
-        foreach ($this->getMethodsToTest() as $methodName) {
-            $fqn = \sprintf('%s.%s()', self::class, $methodName);
-            $methodPoint = new MethodPoint($fqn);
-
-            $this->assertEquals($methodName, $methodPoint->getName());
-            $this->assertEquals($fqn, $methodPoint->getFqn());
-            $this->assertEquals(self::class, $methodPoint->getClassFqn());
-        }
+        $this->expectException(InvalidArgumentException::class);
+        new MethodPoint($invalidMethodPointFqn);
     }
 
-    public function testMethodPointValue(): void
+    /**
+     * @dataProvider provideMethodPointFqnTokens
+     */
+    public function testConstruct(string $className, string $methodName): void
     {
-        $object = new self();
-
-        foreach ($this->getMethodsToTest() as $methodValue => $methodName) {
-            $fqn = \sprintf('%s.%s()', self::class, $methodName);
-            $methodPoint = new MethodPoint($fqn);
-
-            $this->assertEquals($methodValue, $methodPoint->getValue($object));
-        }
+        $this->assertInstanceOf(MethodPoint::class, new MethodPoint(\sprintf('%s.%s()', $className, $methodName)));
     }
 
-    public function getMethodsToTest(): array
+    /**
+     * @dataProvider provideMethodPointFqnTokens
+     */
+    public function testGetFqn(string $className, string $methodName): void
+    {
+        $methodPoint = $this->buildMethodPoint($className, $methodName);
+
+        $this->assertSame(\sprintf('%s.%s()', $className, $methodName), $methodPoint->getFqn());
+    }
+
+    /**
+     * @dataProvider provideMethodPointFqnTokens
+     */
+    public function testGetClassFqn(string $className, string $methodName): void
+    {
+        $methodPoint = $this->buildMethodPoint($className, $methodName);
+
+        $this->assertSame($className, $methodPoint->getClassFqn());
+    }
+
+    /**
+     * @dataProvider provideMethodPointFqnTokens
+     */
+    public function testGetName(string $className, string $methodName): void
+    {
+        $methodPoint = $this->buildMethodPoint($className, $methodName);
+
+        $this->assertSame($methodName, $methodPoint->getName());
+    }
+
+    /**
+     * @dataProvider provideMethodPointFqnTokens
+     */
+    public function testGetValue(string $className, string $methodName): void
+    {
+        $methodPoint = $this->buildMethodPoint($className, $methodName);
+
+        $this->assertSame(1, $methodPoint->getValue(new MethodPointTestClass()));
+
+        $this->expectException(InvalidOperationException::class);
+        $methodPoint->getValue($this);
+    }
+
+    public function provideMethodPointFqnTokens(): array
     {
         return [
-            'privateMethodToTest',
-            'protectedMethodToTest',
-            'publicMethodToTest',
+            [MethodPointTestClass::class, 'privateMethod'],
+            [MethodPointTestClass::class, 'protectedMethod'],
+            [MethodPointTestClass::class, 'publicMethod'],
         ];
     }
 
-    private function privateMethodToTest(): int
+    public function provideInvalidMethodPointFqns(): array
     {
-        return 0;
+        return [
+            // Invalid syntax...
+            [\sprintf('%s.%s', MethodPointTestClass::class, 'publicMethod')],
+            [\sprintf('%s%s()', MethodPointTestClass::class, 'publicMethod')],
+            [\sprintf('%s.', MethodPointTestClass::class, 'publicMethod')],
+
+            // Invalid reflection...
+            [\sprintf('%s.%s()', 'InvalidClass', 'publicMethod')],
+            [\sprintf('%s.%s()', MethodPointTestClass::class, 'invalidMethod')],
+
+            // Invalid method...
+            [\sprintf('%s.%s()', MethodPointTestClass::class, 'parameterableMethod')],
+        ];
     }
 
-    protected function protectedMethodToTest(): int
+    private function buildMethodPoint(string $className, string $methodName): MethodPoint
+    {
+        $methodPointFqn = \sprintf('%s.%s()', $className, $methodName);
+
+        return new MethodPoint($methodPointFqn);
+    }
+}
+
+/**
+ * The method point test class.
+ *
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class MethodPointTestClass
+{
+    private function privateMethod(): int
     {
         return 1;
     }
 
-    public function publicMethodToTest(): int
+    protected function protectedMethod(): int
     {
-        return 2;
+        return 1;
+    }
+
+    public function publicMethod(): int
+    {
+        return 1;
+    }
+
+    public function parameterableMethod($parameterableMethodParameter): int
+    {
+        return 1;
     }
 }

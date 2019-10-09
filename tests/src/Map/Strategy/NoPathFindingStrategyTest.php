@@ -3,7 +3,7 @@
 /**
  * This file is part of the opportus/object-mapper package.
  *
- * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -16,65 +16,66 @@ use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Map\Strategy\NoPathFindingStrategy;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
+use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use TypeError;
 
 /**
  * The no path finding strategy test.
  *
  * @package Opportus\ObjectMapper\Tests\Src\Map\Strategy
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class NoPathFindingStrategyTest extends TestCase
+class NoPathFindingStrategyTest extends FinalBypassTestCase
 {
-    private $strategy = null;
+    /**
+     * @dataProvider provideRouteCollections
+     */
+    public function testConstruct(RouteCollection $routeCollection): void
+    {
+        $strategy = new NoPathFindingStrategy($routeCollection);
+
+        $this->assertInstanceOf(NoPathFindingStrategy::class, $strategy);
+        $this->assertInstanceOf(PathFindingStrategyInterface::class, $strategy);
+    }
+
+    public function testConstructException(): void
+    {
+        $this->expectException(TypeError::class);
+        new NoPathFindingStrategy(new \StdClass());
+    }
 
     /**
-     * @dataProvider provideSourceAndTargetClassFqn
+     * @dataProvider provideRouteCollections
      */
-    public function testGetRoutes(string $sourceClassFqn, string $targetClassFqn): void
+    public function testGetRoutes(RouteCollection $routeCollection): void
     {
-        $this->strategy = $this->strategy ?? $this->buildStrategy();
+        $strategy = new NoPathFindingStrategy($routeCollection);
+        $context = $this->buildContext();
 
-        $context = $this->buildContext($sourceClassFqn, $targetClassFqn);
+        $routes = $strategy->getRoutes($context);
 
-        foreach ($this->strategy->getRoutes($context) as $route) {
-            $this->assertEquals($context->getSourceClassFqn(), $route->getSourcePoint()->getClassFqn());
-            $this->assertEquals($context->getTargetClassFqn(), $route->getTargetPoint()->getClassFqn());
-        }
-
-        if (\count($this->strategy->getRoutes($context)) === 0) {
-            $this->assertEquals('TestSourceClass5', $context->getSourceClassFqn());
-            $this->assertEquals('TestTargetClass5', $context->getTargetClassFqn());
-        }
+        $this->assertInstanceOf(RouteCollection::class, $routes);
+        $this->assertSame(1, \count($routes));
+        $this->assertArrayHasKey('Class1.$property:Class1.$property', $routes);
     }
 
-    public function provideSourceAndTargetClassFqn(): array
-    {
-        $sourceAndTargetClassFqn = [];
-
-        for ($i = 1; $i <= 5; $i++) {
-            $sourceAndTargetClassFqn[$i] = [
-                \sprintf('TestSourceClass%d', $i),
-                \sprintf('TestTargetClass%d', $i),
-            ];
-        }
-
-        return $sourceAndTargetClassFqn;
-    }
-
-    private function buildStrategy(): NoPathFindingStrategy
+    public function provideRouteCollections(): array
     {
         $routes = [];
-
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $sourcePoint = $this->getMockBuilder(PropertyPoint::class)
                 ->disableOriginalConstructor()
                 ->getMock()
             ;
             $sourcePoint
+                ->method('getFqn')
+                ->willReturn(\sprintf('Class%d.$property', $i))
+            ;
+            $sourcePoint
                 ->method('getClassFqn')
-                ->willReturn(\sprintf('TestSourceClass%d', $i))
+                ->willReturn(\sprintf('Class%d', $i))
             ;
 
             $targetPoint = $this->getMockBuilder(PropertyPoint::class)
@@ -82,34 +83,23 @@ class NoPathFindingStrategyTest extends TestCase
                 ->getMock()
             ;
             $targetPoint
-                ->method('getClassFqn')
-                ->willReturn(\sprintf('TestTargetClass%d', $i))
-            ;
-
-            $route = $this->getMockBuilder(Route::class)
-                ->disableOriginalConstructor()
-                ->getMock()
-            ;
-            $route
                 ->method('getFqn')
-                ->willReturn(\sprintf('route_%d', $i))
+                ->willReturn(\sprintf('Class%d.$property', $i))
             ;
-            $route
-                ->method('getSourcePoint')
-                ->willReturn($sourcePoint)
-            ;
-            $route
-                ->method('getTargetPoint')
-                ->willReturn($targetPoint)
+            $targetPoint
+                ->method('getClassFqn')
+                ->willReturn(\sprintf('Class%d', $i))
             ;
 
-            $routes[$i] = $route;
+            $route = new Route($sourcePoint, $targetPoint);
+
+            $routes[$route->getFqn()] = $route;
         }
 
-        return new NoPathFindingStrategy(new RouteCollection($routes));
+        return [[new RouteCollection($routes)]];
     }
 
-    private function buildContext(string $sourceClassFqn, string $targetClassFqn): Context
+    private function buildContext(): Context
     {
         $context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
@@ -117,11 +107,11 @@ class NoPathFindingStrategyTest extends TestCase
         ;
         $context
             ->method('getSourceClassFqn')
-            ->willReturn($sourceClassFqn)
+            ->willReturn('Class1')
         ;
         $context
             ->method('getTargetClassFqn')
-            ->willReturn($targetClassFqn)
+            ->willReturn('Class1')
         ;
 
         return $context;

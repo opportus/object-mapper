@@ -3,7 +3,7 @@
 /**
  * This file is part of the opportus/object-mapper package.
  *
- * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,60 +15,62 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
+use Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
  * The point factory test.
  *
  * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PointFactoryTest extends TestCase
+class PointFactoryTest extends FinalBypassTestCase
 {
-    public function testMethodPointCreation(): void
+    public function testConstruct(): void
     {
         $pointFactory = new PointFactory();
-        $methodPointTest = new MethodPointTest();
 
-        foreach ($methodPointTest->getMethodsToTest() as $methodName) {
-            $pointFqn = \sprintf('%s.%s()', MethodPointTest::class, $methodName);
-
-            $this->assertInstanceOf(MethodPoint::class, $pointFactory->createPoint($pointFqn));
-        }
+        $this->assertInstanceOf(PointFactory::class, $pointFactory);
+        $this->assertInstanceOf(PointFactoryInterface::class, $pointFactory);
     }
 
-    public function testParameterPointCreation(): void
+    public function testCreatePoint(): void
     {
         $pointFactory = new PointFactory();
-        $parameterPointTest = new ParameterPointTest();
 
-        foreach ($parameterPointTest->getParametersToTest() as $methodName => $parameterName) {
-            $pointFqn = \sprintf('%s.%s().$%s', ParameterPointTest::class, $methodName, $parameterName);
+        $pointFqns =  [
+            PropertyPoint::class =>  \sprintf('%s.$%s', PointFactoryTestClass::class, 'property'),
+            MethodPoint::class =>    \sprintf('%s.%s()', PointFactoryTestClass::class, 'method'),
+            ParameterPoint::class => \sprintf('%s.%s().$%s', PointFactoryTestClass::class, 'method', 'parameter'),
+        ];
 
-            $this->assertInstanceOf(ParameterPoint::class, $pointFactory->createPoint($pointFqn));
+
+        foreach ($pointFqns as $pointType => $pointFqn) {
+            $point = $pointFactory->createPoint($pointFqn);
+
+            $this->assertInstanceOf($pointType, $point);
+            $this->assertSame($pointFqn, $point->getFqn());
         }
-    }
-
-    public function testPropertyPointCreation(): void
-    {
-        $pointFactory = new PointFactory();
-        $propertyPointTest = new PropertyPointTest();
-
-        foreach ($propertyPointTest->getPropertiesToTest() as $propertyName) {
-            $pointFqn = \sprintf('%s.$%s', PropertyPointTest::class, $propertyName);
-
-            $this->assertInstanceOf(PropertyPoint::class, $pointFactory->createPoint($pointFqn));
-        }
-    }
-
-    public function testInvalidPointCreation(): void
-    {
-        $pointFactory = new PointFactory();
 
         $this->expectException(InvalidArgumentException::class);
-
         $pointFactory->createPoint('test');
+    }
+}
+
+/**
+ * The point factory test class.
+ *
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class PointFactoryTestClass
+{
+    public $property;
+
+    public function method($parameter = null)
+    {
     }
 }

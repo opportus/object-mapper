@@ -4,7 +4,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.5/phpunit.xsd"
          backupGlobals="false"
-         colors="false"
+         colors="true"
          bootstrap="vendor/autoload.php"
 >
 
@@ -19,10 +19,6 @@
             <directory>src</directory>
         </whitelist>
     </filter>
-
-    <extensions>
-        <extension class="Opportus\ObjectMapper\Tests\BypassFinalHook"/>
-    </extensions>
 
 </phpunit>
 

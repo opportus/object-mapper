@@ -3,7 +3,7 @@
 /**
  * This file is part of the opportus/object-mapper package.
  *
- * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -11,56 +11,135 @@
 
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
  * The property point test.
  *
  * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyPointTest extends TestCase
+class PropertyPointTest extends FinalBypassTestCase
 {
-    private $privatePropertyToTest = 0;
-    protected $protectedPropertyToTest = 1;
-    public $publicPropertyToTest = 2;
-
-    public function testPropertyPointConstruction(): void
+    /**
+     * @dataProvider provideInvalidPropertyPointFqns
+     */
+    public function testConstructException($invalidPropertyPointFqn): void
     {
-        foreach ($this->getPropertiesToTest() as $propertyName) {
-            $fqn = \sprintf('%s.$%s', self::class, $propertyName);
-            $propertyPoint = new PropertyPoint($fqn);
-
-            $this->assertEquals($propertyName, $propertyPoint->getName());
-            $this->assertEquals($fqn, $propertyPoint->getFqn());
-            $this->assertEquals(self::class, $propertyPoint->getClassFqn());
-        }
+        $this->expectException(InvalidArgumentException::class);
+        new PropertyPoint($invalidPropertyPointFqn);
     }
 
-    public function testPropertyPointValue(): void
+    /**
+     * @dataProvider providePropertyPointFqnTokens
+     */
+    public function testConstruct(string $className, string $propertyName): void
     {
-        $object = new self();
-
-        foreach ($this->getPropertiesToTest() as $propertyValue => $propertyName) {
-            $fqn = \sprintf('%s.$%s', self::class, $propertyName);
-            $propertyPoint = new PropertyPoint($fqn);
-
-            $this->assertEquals($propertyValue, $propertyPoint->getValue($object));
-
-            $propertyPoint->setValue($object, $propertyName);
-
-            $this->assertEquals($propertyName, $propertyPoint->getValue($object));
-        }
+        $this->assertInstanceOf(PropertyPoint::class, new PropertyPoint(\sprintf('%s.$%s', $className, $propertyName)));
     }
 
-    public function getPropertiesToTest(): array
+    /**
+     * @dataProvider providePropertyPointFqnTokens
+     */
+    public function testGetFqn(string $className, string $propertyName): void
+    {
+        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
+
+        $this->assertSame(\sprintf('%s.$%s', $className, $propertyName), $propertyPoint->getFqn());
+    }
+
+    /**
+     * @dataProvider providePropertyPointFqnTokens
+     */
+    public function testGetClassFqn(string $className, string $propertyName): void
+    {
+        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
+
+        $this->assertSame($className, $propertyPoint->getClassFqn());
+    }
+
+    /**
+     * @dataProvider providePropertyPointFqnTokens
+     */
+    public function testGetName(string $className, string $propertyName): void
+    {
+        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
+
+        $this->assertSame($propertyName, $propertyPoint->getName());
+    }
+
+    /**
+     * @dataProvider providePropertyPointFqnTokens
+     */
+    public function testGetValue(string $className, string $propertyName): void
+    {
+        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
+
+        $this->assertSame(1, $propertyPoint->getValue(new PropertyPointTestClass()));
+
+        $this->expectException(InvalidOperationException::class);
+        $propertyPoint->getValue($this);
+    }
+
+    /**
+     * @dataProvider providePropertyPointFqnTokens
+     */
+    public function testSetValue(string $className, string $propertyName): void
+    {
+        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
+
+        $object = new PropertyPointTestClass();
+
+        $propertyPoint->setValue($object, 11);
+
+        $this->assertSame(11, $propertyPoint->getValue($object));
+    }
+
+    public function providePropertyPointFqnTokens(): array
     {
         return [
-            'privatePropertyToTest',
-            'protectedPropertyToTest',
-            'publicPropertyToTest',
+            [PropertyPointTestClass::class, 'privateProperty'],
+            [PropertyPointTestClass::class, 'protectedProperty'],
+            [PropertyPointTestClass::class, 'publicProperty'],
         ];
     }
+
+    public function provideInvalidPropertyPointFqns(): array
+    {
+        return [
+            // Invalid syntax...
+            [\sprintf('%s.%s', PropertyPointTestClass::class, 'publicProperty')],
+            [\sprintf('%s$%s', PropertyPointTestClass::class, 'publicProperty')],
+            [\sprintf('%s.$', PropertyPointTestClass::class, 'publicProperty')],
+
+            // Invalid reflection...
+            [\sprintf('%s.$%s', 'InvalidClass', 'publicProperty')],
+            [\sprintf('%s.$%s', PropertyPointTestClass::class, 'invalidProperty')],
+        ];
+    }
+
+    private function buildPropertyPoint(string $className, string $propertyName): PropertyPoint
+    {
+        $propertyPointFqn = \sprintf('%s.$%s', $className, $propertyName);
+
+        return new PropertyPoint($propertyPointFqn);
+    }
+}
+
+/**
+ * The property point test class.
+ *
+ * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class PropertyPointTestClass
+{
+    private $privateProperty = 1;
+    protected $protectedProperty = 1;
+    public $publicProperty = 1;
 }
