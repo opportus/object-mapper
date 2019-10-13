@@ -61,12 +61,6 @@ $ composer require opportus/object-mapper
 
 ### Step 2 - Instantiate the services
 
-By design, this solution does not implement "helpers" for the instantiation of its services which is better handled directly the way you're already instantiating your own services, with a DIC system or whatever.
-
-The rational behind this design is that:
-
-In any use case context, there is already a dedicated solution for handling properly instantiation of services, because this is not a problem that an *object mapper* is meant to solve... Such dedicated solutions handle properly instantiation of services because they implement *Dependency Injection*, *Inversion of Control*, *lazy loading*, and many other features. So that delegating the instantiation of its services to such solution, the *object mapper* becomes more simple, flexible, extensible, performant, and integrable into its use case context...
-
 This library contains 4 services. 3 of them require a single dependency which is another lower level service among those 4:
 
 ```php
@@ -81,7 +75,13 @@ $mapBuilder   = new MapBuilder($routeBuilder);
 $objectMapper = new ObjectMapper($mapBuilder);
 ```
 
-In order to make full use of this library, each of its services must be instantiated and usable such as above.
+In order to make full use of this library, each of its services must be instantiated and *usable* such as above.
+
+By design, this solution does not implement "helpers" for the instantiation of its services which is better handled directly the way you're already instantiating your own services, with a DIC system or whatever.
+
+The rational behind this design is that:
+
+In any use case context, there is already a dedicated solution for handling properly instantiation of services, because this is not a problem that an *object mapper* is meant to solve... Such dedicated solutions handle properly instantiation of services because they implement *Dependency Injection*, *Inversion of Control*, *lazy loading*, and many other features. So that delegating the instantiation of its services to such solution, the *object mapper* becomes more simple, flexible, extensible, performant, and integrable into its use case context...
 
 ## Mapping
 
