@@ -78,7 +78,7 @@ final class ObjectMapper implements ObjectMapperInterface
 
                 unset($targetParameterPointValues['__construct']);
             } else {
-                $target = new $context->getTargetClassFqn();
+                $target = $targetClassReflection->newInstance();
             }
         }
 
