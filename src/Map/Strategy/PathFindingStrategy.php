@@ -70,9 +70,24 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     private function buildConventionalTargetPoints(Context $context): array
     {
         $targetClassReflection = $context->getTargetClassReflection();
+
+        $methodBlackList = [];
+        $propertyBlackList = [];
+
+        if (false === $context->hasInstantiatedTarget() && $targetClassReflection->hasMethod('__construct')) {
+            foreach ($targetClassReflection->getMethod('__construct')->getParameters() as $targetConstructParameterReflection) {
+                $methodBlackList[] = \sprintf('set%s', \ucfirst($targetConstructParameterReflection->getName()));
+                $propertyBlackList[] = $targetConstructParameterReflection->getName();
+            }
+        }
+
         $targetPoints = [];
 
         foreach ($targetClassReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $targetMethodReflection) {
+            if (\in_array($targetMethodReflection->getName(), $methodBlackList)) {
+                continue;
+            }
+
             if ($targetMethodReflection->getNumberOfParameters() === 0) {
                 continue;
             }
@@ -94,6 +109,10 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
         }
 
         foreach ($targetClassReflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $targetPropertyReflection) {
+            if (\in_array($targetPropertyReflection->getName(), $propertyBlackList)) {
+                continue;
+            }
+
             $targetPoints[] = new PropertyPoint(\sprintf(
                 '%s.$%s',
                 $targetClassReflection->getName(),

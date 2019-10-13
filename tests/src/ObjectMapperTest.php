@@ -34,8 +34,18 @@ class ObjectMapperTest extends FinalBypassTestCase
         $routeBuilder = new RouteBuilder($pointFactory);
         $mapBuilder = new MapBuilder($routeBuilder);
         $objectMapper = new ObjectMapper($mapBuilder);
+        $map = $mapBuilder
+            ->addFilterOnRoute(
+                function ($route, $context, $objectMapper) {
+                    return 2;
+                },
+                \sprintf('%s.getA()', ObjectMapperTestClass::class),
+                \sprintf('%s.setA().$a', ObjectMapperTestClass::class)
+            )
+            ->buildMap(true)
+        ;
 
-        $target = $objectMapper->map($this->buildSource(), ObjectMapperTestClass::class);
+        $target = $objectMapper->map($this->buildSource(), ObjectMapperTestClass::class, $map);
 
         $this->assertEquals(1, $target->getA());
         $this->assertEquals(11, $target->getB());
@@ -70,6 +80,11 @@ class ObjectMapperTestClass
     public function getA(): int
     {
         return $this->a;
+    }
+
+    public function setA(int $a)
+    {
+        $this->a = $a;
     }
 
     public function getB(): int
