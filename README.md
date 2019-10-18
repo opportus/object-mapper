@@ -198,7 +198,7 @@ PathFindingStrategyInterface::getRoutes(Context $context): RouteCollection
 
 **Parameters**
 
-`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer helper methods manipulating these arguments.
+`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which implement helper methods related to the `source` and the `target` being mapped.
 
 **Returns**
 
@@ -445,7 +445,7 @@ CheckPointInterface::control($value, Route $route, Context $context, ObjectMappe
 
 `$route` is the instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) which the `ObjectMapper` is currently on, containing the *source point* which the `$value` comes from, the *target point* which the `$value` goes to, and the [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointCollection.php) which contain your current `CheckPointInterface` instance.
 
-`$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer helper methods manipulating these arguments.
+`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which implement helper methods related to the `source` and the `target` being mapped.
 
 `$objectMapper` is an instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php), useful for recursion.
 

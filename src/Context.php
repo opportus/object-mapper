@@ -12,15 +12,10 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Map;
-use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use ReflectionClass;
 
 /**
  * The context.
- *
- * This represents the context of a mapping.
- * This contains arguments that are injected to `ObjectMapper::map(object $source, $target, ?Map $map): ?object` with their meta information.
  *
  * @package Opportus\ObjectMapper
  * @author  Clément Cazaud <opportus@gmail.com>
@@ -39,19 +34,13 @@ final class Context
     private $target;
 
     /**
-     * @var Map $map
-     */
-    private $map;
-
-    /**
      * Constructs the context.
      *
      * @param object $source
      * @param object|string $target
-     * @param Map $map
      * @throws InvalidArgumentException
      */
-    public function __construct(object $source, $target, Map $map)
+    public function __construct(object $source, $target)
     {
         if (!\is_string($target) && !\is_object($target)) {
             throw new InvalidArgumentException(\sprintf(
@@ -71,7 +60,6 @@ final class Context
 
         $this->source = $source;
         $this->target = $target;
-        $this->map = $map;
     }
 
     /**
@@ -92,16 +80,6 @@ final class Context
     public function getTarget()
     {
         return $this->target;
-    }
-
-    /**
-     * Gets the map.
-     *
-     * @return Map
-     */
-    public function getMap(): Map
-    {
-        return $this->map;
     }
 
     /**
@@ -152,25 +130,5 @@ final class Context
     public function getTargetClassReflection(): ReflectionClass
     {
         return new ReflectionClass($this->getTargetClassFqn());
-    }
-
-    /**
-     * Gets the routes.
-     *
-     * @return RouteCollection
-     */
-    public function getRoutes(): RouteCollection
-    {
-        return $this->map->getRoutes($this);
-    }
-
-    /**
-     * Gets the Fully Qualified Name of the path finding strategy.
-     *
-     * @return string
-     */
-    public function getPathFindingStrategyFqn(): string
-    {
-        return $this->map->getPathFindingStrategyFqn();
     }
 }

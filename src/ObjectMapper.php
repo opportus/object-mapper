@@ -48,7 +48,7 @@ final class ObjectMapper implements ObjectMapperInterface
     {
         $map = $map ?? $this->mapBuilder->buildMap(true);
         $context = new Context($source, $target, $map);
-        $routes = $context->getRoutes();
+        $routes = $map->getRoutes($context);
 
         if (\count($routes) === 0) {
             return null;
