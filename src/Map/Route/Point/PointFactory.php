@@ -36,7 +36,8 @@ final class PointFactory implements PointFactoryInterface
         }
 
         throw new InvalidArgumentException(\sprintf(
-            'Argument "pointFqn" passed to "%s" is invalid. Expecting the argument to match a valid point FQN syntax pattern.',
+            'Argument "pointFqn" passed to "%s" is invalid. Expecting the argument to match a valid point FQN syntax pattern. Got "%s".',
+            __METHOD__,
             $pointFqn
         ));
     }
