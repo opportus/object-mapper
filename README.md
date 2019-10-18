@@ -168,11 +168,11 @@ $user = $objectMapper->map($userDto, User::class);
 echo $user->getUsername(); // 'Toto'
 ```
 
-Calling the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method presented earlier, with its `$map` parameter set on `null`, makes the method build then use a `Map` composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
+Calling the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method presented earlier, with its `$map` parameter set on `null`, makes the method build then use a `Map` composed of the default `PathFindingStrategy`.
 
 The default `PathFindingStrategy` behavior consists of guessing what is the appropriate point of the source class to connect to each point of the target class. The connected *source point* and *target point* compose then a `Route` which is followed by the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method.
 
-For the default `PathFindingStrategy`, a *target point* can be:
+For the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php), a *target point* can be:
 
 -   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
 -   A parameter of a public method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php))
@@ -186,11 +186,11 @@ The corresponding *source point* can be:
 
 The default `PathFindingStrategy` presented above is based on one particular *convention* that the *source* and the *target* have to comply with in order for this strategy to automatically map those for you. However, you may want to automatically map *source* and *target* not complying with this particular *convention*...
 
-One solution is to implement [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) defining another *convention* which your *source* and *target* can comply with in order for this custom strategy to "automatically" map those for you the way you need.
+One solution is to implement `PathFindingStrategyInterface` defining another *convention* which your *source* and *target* can comply with in order for this custom strategy to "automatically" map those for you the way you need.
 
 For concrete example of how to implement a `PathFindingStrategyInterface`, refer to the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
-Below is described the single method of the `PathFindingStrategyInterface`:
+Below is described the single method of the [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php):
 
 ```php
 PathFindingStrategyInterface::getRoutes(Context $context): RouteCollection
@@ -433,9 +433,29 @@ $objectMapper->map($contributor, ContributorView::class, $map);
 echo $contributorView->bio; // <b>Hello World!</b>'
 ```
 
+Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointInterface.php):
+
+```php
+CheckPointInterface::control($value, Route $route, Context $context, ObjectMapperInterface $objectMapper)
+```
+
+**Parameters**
+
+`$value` is the subject that `CheckPointInterface` implementation is meant to control.
+
+`$route` is the instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) which the `ObjectMapper` is currently on, containing the *source point* which the `$value` comes from, the *target point* which the `$value` goes to, and the [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointCollection.php) which contain your current `CheckPointInterface` instance.
+
+`$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer helper methods manipulating these arguments.
+
+`$objectMapper` is an instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php), useful for recursion.
+
+**Returns**
+
+A `mixed` value to get assigned to the *target point*.
+
 ### Recursion
 
-Although a recursion dedicated feature may come later, you can use a *check point* such as [introduced previously](#check-point) to recursively map a *source point* to a *target point*. For example:
+Although a recursion dedicated feature may come later, you can implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) such as [introduced previously](#check-point) to recursively map a *source point* to a *target point*. For example:
 
 -   If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and that you want in the same time to map `C` to `D`, AKA *simple recursion*.
 -   If you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *in-width recursion* or *iterable recursion*.
