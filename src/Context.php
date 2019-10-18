@@ -12,10 +12,8 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Filter\FilterInterface;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
-use Opportus\ObjectMapper\Map\Route\Route;
 use ReflectionClass;
 
 /**
@@ -164,17 +162,6 @@ final class Context
     public function getRoutes(): RouteCollection
     {
         return $this->map->getRoutes($this);
-    }
-
-    /**
-     * Gets the filter on the passed route.
-     *
-     * @param Route $route
-     * @return null|FilterInterface
-     */
-    public function getFilterOnRoute(Route $route): ?FilterInterface
-    {
-        return $this->map->getFilterOnRoute($route);
     }
 
     /**

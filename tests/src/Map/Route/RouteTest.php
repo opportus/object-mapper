@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
@@ -39,9 +40,9 @@ class RouteTest extends FinalBypassTestCase
     /**
      * @dataProvider providePoints
      */
-    public function testConstruct(object $sourcePoint, object $targetPoint): void
+    public function testConstruct(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints): void
     {
-        $route = new Route($sourcePoint, $targetPoint);
+        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
         $this->assertInstanceOf(Route::class, $route);
     }
@@ -49,9 +50,9 @@ class RouteTest extends FinalBypassTestCase
     /**
      * @dataProvider providePoints
      */
-    public function testGetFqn(object $sourcePoint, object $targetPoint): void
+    public function testGetFqn(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints): void
     {
-        $route = new Route($sourcePoint, $targetPoint);
+        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
         $this->assertSame(\sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn()), $route->getFqn());
     }
@@ -59,9 +60,9 @@ class RouteTest extends FinalBypassTestCase
     /**
      * @dataProvider providePoints
      */
-    public function testGetSourcePoint(object $sourcePoint, object $targetPoint): void
+    public function testGetSourcePoint(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints): void
     {
-        $route = new Route($sourcePoint, $targetPoint);
+        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
         $this->assertInstanceOf(\get_class($sourcePoint), $route->getSourcePoint());
     }
@@ -69,11 +70,26 @@ class RouteTest extends FinalBypassTestCase
     /**
      * @dataProvider providePoints
      */
-    public function testGetTargetPoint(object $sourcePoint, object $targetPoint): void
+    public function testGetTargetPoint(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints): void
     {
-        $route = new Route($sourcePoint, $targetPoint);
+        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
         $this->assertInstanceOf(\get_class($targetPoint), $route->getTargetPoint());
+    }
+
+    /**
+     * @dataProvider providePoints
+     */
+    public function testGetCheckPoints(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints): void
+    {
+        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
+
+        if (null === $checkPoints) {
+            $this->assertInstanceOf(CheckPointCollection::class, $route->getCheckPoints());
+            $this->assertCount(0, $route->getCheckPoints());
+        } else {
+            $this->assertSame($checkPoints, $route->getCheckPoints());
+        }
     }
 
     public function providePoints(): array
@@ -82,18 +98,22 @@ class RouteTest extends FinalBypassTestCase
             [
                 $this->buildPoint(PropertyPoint::class, 'Class.$property'),
                 $this->buildPoint(PropertyPoint::class, 'Class.$property'),
+                new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(PropertyPoint::class, 'Class.$property'),
                 $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
+                null,
             ],
             [
                 $this->buildPoint(MethodPoint::class, 'Class.method()'),
                 $this->buildPoint(PropertyPoint::class, 'Class.$property'),
+                new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(MethodPoint::class, 'Class.method()'),
                 $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
+                null,
             ],
         ];
     }

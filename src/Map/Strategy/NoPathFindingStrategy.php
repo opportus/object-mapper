@@ -24,33 +24,10 @@ use Opportus\ObjectMapper\Map\Route\RouteCollection;
 final class NoPathFindingStrategy implements PathFindingStrategyInterface
 {
     /**
-     * @var RouteCollection $routes
-     */
-    private $routes;
-
-    /**
-     * Constructs the no path finding strategy.
-     *
-     * @param RouteCollection $routes
-     */
-    public function __construct(RouteCollection $routes)
-    {
-        $this->routes = $routes;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getRoutes(Context $context): RouteCollection
     {
-        $routes = [];
-
-        foreach ($this->routes as $route) {
-            if ($context->getSourceClassFqn() === $route->getSourcePoint()->getClassFqn() && $context->getTargetClassFqn() === $route->getTargetPoint()->getClassFqn()) {
-                $routes[] = $route;
-            }
-        }
-
-        return new RouteCollection($routes);
+        return new RouteCollection();
     }
 }

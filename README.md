@@ -13,16 +13,18 @@
 -   [Mapping](#mapping)
     -   [How it works](#how-it-works)
     -   [Automatic mapping](#automatic-mapping)
+        - [Custom automatic mapping](#custom-automatic-mapping)
     -   [Manual mapping](#manual-mapping)
-    -   [Filtering](#filtering)
+        - [Via map builder API](#via-map-builder-api)
+        - [Via source and target classes annotations](#via-source-and-target-classes-annotations)
+    -   [Check point](#check-point)
     -   [Recursion](#recursion)
--   [Mapping preloading](#mapping-preloading)
 
 ## Use cases
 
-Use this solution for copying state of objects to differently typed objects using extensible controls and mapping strategies.
+Use this solution for mapping data of objects to differently typed objects using extensible strategies and controls.
 
-Simple, flexible, extensible, optimized, this tool can be used in many use cases such as:
+Flexible, extensible, optimized, tested, this tool can be used in many use cases such as:
 
 -   Mapping state of objects from/to DTOs.
 -   Mapping state of domain model from/to persistance model.
@@ -37,6 +39,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ### v1.0.0 (stable)
 
+-   Implement source and taget class mapping annotations loading system
 -   Implement last unit tests
 
 ### v1.1.0
@@ -81,7 +84,7 @@ By design, this solution does not implement "helpers" for the instantiation of i
 
 The rational behind this design is that:
 
-In any use case context, there is already a dedicated solution for handling properly instantiation of services, because this is not a problem that an *object mapper* is meant to solve... Such dedicated solutions handle properly instantiation of services because they implement *Dependency Injection*, *Inversion of Control*, *lazy loading*, and many other features. So that delegating the instantiation of its services to such solution, the *object mapper* becomes more simple, flexible, extensible, performant, and integrable into its use case context...
+In any use case context, there is already a dedicated solution for handling **properly** instantiation of services, because this is not a problem that an *object mapper* is meant to solve... Such dedicated solutions handle properly instantiation of services because they implement *Dependency Injection*, *Inversion of Control*, *lazy loading*, and many other features. So that delegating the instantiation of its services to such solution, the *object mapper* becomes more simple, flexible, extensible, performant, and integrable into its use case context...
 
 ## Mapping
 
@@ -103,30 +106,32 @@ ObjectMapperInterface::map(object $source, $target, ?Map $map = null): ?object
 
 Either:
 
--  `null` if the map has no route connecting source points with target points.
--  `object` which is the (instantiated and) updated target.
+-   `null` if the map has no route connecting source points with target points.
+-   `object` which is the (instantiated and) updated target.
 
 ### How it works
 
-The [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) method presented above iterates through each [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) that it gets from the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). Doing so, the method assigns the value of the current [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)'s *source point* to its *target point*, optionally applying your [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) instance during this value assignment.
+The [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php) method presented above iterates through each [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) that it gets from the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). Doing so, the method assigns the value of the current [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)'s *source point* to its *target point*. Optionally, on the route, you can define *check points* in order for the value from the *source point* to get controlled (or transformed) before it riches the *target point*.
 
-A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) is defined by and composed of its *source point* and its *target point*.
+A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) is defined by and composed of its *source point*, its *target point*, and its *check points*.
 
 A *source point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
--   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php).
+-   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php).
 
 A *target point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)
--   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php).
+-   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php).
 
-Routes can be defined either [automatically](#automatic-mapping) (default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)) or [manually](#manual-mapping) ([`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)).
+A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointInterface.php).
+
+These routes can be defined [automatically](#automatic-mapping) via the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php)'s [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) and/or [manually](#manual-mapping) [via the map builder's API](#via-map-builder-api) and [source and target classes annotations](#via-source-and-target-classes-annotations).
 
 ### Automatic mapping
 
-A basic example of how to automatically map `User`'s state to `UserDto` and vice-versa:
+A basic example of how to automatically map `User`'s data to `UserDto` and vice-versa:
 
 ```php
 class User
@@ -163,8 +168,6 @@ $user = $objectMapper->map($userDto, User::class);
 echo $user->getUsername(); // 'Toto'
 ```
 
-The *automatic mapping* allows seamless mapping of source object's state to the target object.
-
 Calling the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method presented earlier, with its `$map` parameter set on `null`, makes the method build then use a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
 The default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) behavior consists of guessing what is the appropriate point of the source class to connect to each point of the target class. The connected *source point* and *target point* compose then a [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) which is followed by the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method.
@@ -183,7 +186,7 @@ The corresponding *source point* can be:
 
 The default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) presented above is based on one particular *convention* that the *source* and the *target* have to comply with in order for this strategy to automatically map those for you. However, you may want to automatically map *source* and *target* not complying with this particular *convention*...
 
-One solution is to implement a custom [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) based on another *convention* which your *source* and *target* can comply with in order for this custom strategy to "automatically" map those for you the way you need.
+One solution is to implement a custom [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) defining another *convention* which your *source* and *target* can comply with in order for this custom strategy to "automatically" map those for you the way you need.
 
 For concrete example of how to implement a [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), refer to the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
 
@@ -213,7 +216,7 @@ class MyPathFindingStrategy implements PathFindingStrategyInterface
         $context->getSourceClassReflection();
         $context->getTargetClassReflection();
 
-        // Custom mapping logic
+        // Custom mapping algorithm
 
         return $routeCollection;
     }
@@ -230,13 +233,18 @@ $user = $objectMapper->map($userDto, User::class, $map);
 
 ### Manual mapping
 
-If custom mapping strategy definition such as walked through in the previous "[custom automatic mapping](#custom-automatic-mapping)" chapter is impossible or overkill, you can manually map the *source* to the *target*.
+If in your context, such as walked through in the previous "[custom automatic mapping](#custom-automatic-mapping)" chapter, a custom mapping strategy definition does not scale well, or is either impossible or overkill, you can manually map the *source* to the *target*.
 
-There are two ways of defining manually the mapping. One way is [preloading mapping definitions](#mapping-preloading) and the second way is defining routes *on the go* via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API.
+There are multiple ways to define manually the mapping such as introduced in the 2 next subchapters:
+
+-   [Via the map builder API](via-map-builder-api).
+-   [Via source and target classes annotations](via-source-and-target-classes-annotations) (incoming feature).
+
+#### Via map builder API
 
 The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) is an immutable service which implement a fluent interface.
 
-A basic example of how to manually map `User`'s state to `ContributorDto` and vice-versa with the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php):
+A basic example of how to manually map `User`'s data to `ContributorDto` and vice-versa with the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php):
 
 ```php
 class User
@@ -303,13 +311,15 @@ MapBuilderInterface::addRoute(string $sourcePointFqn, string $targetPointFqn): M
 -   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
 -   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
+`$checkPoints` must be an instance of [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointCollection.php). See the [check point](#check-point) chapter.
+
 **Returns**
 
 A **new** instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
 
 ---
 
-Once routes are defined, build the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) with the method described below:
+Once routes are defined with the method described above, build the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) with the method described below:
 
 ```php
 MapBuilderInterface::buildMap($pathFindingStrategy = false): Map
@@ -320,264 +330,113 @@ MapBuilderInterface::buildMap($pathFindingStrategy = false): Map
 `$pathFindingStrategy` must be either a `boolean` or an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php).
 
 -   If it is `false`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of the [`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php) will be built.
--   If it is `true`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) with the [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) is built. Note that in our context of *manual mapping*, `$pathFindingStrategy = true` does not make sense since the map would just ignore the routes you previously defined.
+-   If it is `true`, a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) with the [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php) is built.
 -   If it is an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php), a [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php) composed of this instance is built.
 
 **Returns**
 
 An instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
 
-### Filtering
+#### Via source and target classes annotations
 
-A *filter* allows filtering the *source point* value before it gets assigned to the *target point* by the mapper.
+Incoming feature...
 
-A basic example of how to use a *filter*:
+### Check point
+
+A *check point*, added to a route, allows you to control (or transform) the value from the *source point* before it reaches the *target point*.
+
+You can add multiple *check points* to a route. In this case, these *check points* form a chain. The first *check point* controls the original value from the *source point* and returns the value (transformed or not) to the object mapper. Then, the object mapper passes the value to the next checkpoint and so on... Until the last checkpoint returns the final value to be assigned to the *target point* by the object mapper.
+
+So it is important to keep in mind that each *check point* has an unique position (priority) on a route. The routed value goes through each of the *check points* from the lowest to the highest positioned ones such as shematized below:
+
+```
+SourcePoint --> $value\' --> CheckPoint1 --> $value\'\' --> CheckPoint2 --> $value\'\'\' --> TargetPoint
+```
+
+An example of how to use *check points*:
 
 ```php
-class User
+class Contributor
 {
-    private $age;
+    private $bio;
 
-    public function __construct(int $age)
+    public function __construct(string $bio)
     {
-        $this->age = $age;
+        $this->bio = $bio;
     }
 
-    public function getAge(): int
+    public function getBio(): string
     {
-        return $this->age;
+        return $this->bio;
     }
 }
 
-class UserDto
+class ContributorView
 {
-    public $age;
-}
+    private $bio;
 
-$user    = new User(29);
-$userDto = new UserDto();
-```
-
-#### Solution 1: implement a callable
-
-```php
-$map = $mapBuilder
-    ->addFilterOnRoute(
-        function ($route, $context, $objectMapper) {
-            return $route->getSourcePoint()->getValue($context->getSource()) + 1;
-        },
-        'User.getAge()',
-        'UserDto.$age'
-    )
-    ->buildMap($pathFindingStrategy = true)
-;
-
-$objectMapper->map($user, $userDto, $map); // The `$context` you get in the `Filter` above
-echo $userDto->age; // '30'
-```
-
-Build a map adding a `callable` filter on a specific route with the method described below:
-
-```php
-MapBuilderInterface::addFilterOnRoute(callable $callable, string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface
-```
-
-**Parameters**
-
-`$callable` must be a `callable` containing the filtering logic. This `callable` returns a `mixed` value which will be assigned to the target point by the mapper. This `callable` takes as arguments:
-
--   `$route` is an instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) the filter is on.
--   `$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which contain the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method and offer contextual helper methods manipulating these arguments.
--   `$objectMapper` is an instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php) which is useful for recursion.
-
-`$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a *source point* which can be:
-
--   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
--   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php)) represented by its FQN having for syntax `'My\Class.method()'`.
-
-`$targetPointFqn` must be a `string` representing the Fully Qualified Name of a *target point* which can be:
-
--   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php)) represented by its FQN having for syntax `'My\Class.$property'`.
--   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php)) represented by its FQN having for syntax `'My\Class.method().$parameter'`.
-
-**Returns**
-
-A **new** instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
-
-#### Solution 2: implement FilterInterface
-
-```php
-class Filter implements FilterInterface
-{
-    /** {@inheritdoc} */
-    public function supportRoute(Route $route): bool
+    public function __construct(string $bio)
     {
-        return $route->getFqn() === 'User.getAge():UserDto.$age';
+        $this->bio = $bio;
     }
 
-    /** {@inheritdoc} */
-    public function getValue(Route $route, Context $context, ObjectMapperInterface $objectMapper)
+    public function getBio(): string
     {
-        return $route->getSourcePoint()->getValue($context->getSource()) + 1;
+        return $this->bio;
     }
 }
+
+class ContributorViewHtmlTagStripper implements CheckPointInterface
+{
+    public function control($value, Route $route, Context $context, ObjectMapperInterface $objectMapper)
+    {
+        if (ContributorView::class === $route->getTargetPoint()->getClassFqn() &&
+            \is_string($value)
+        ) {
+            return \strip_tags($value);
+        }
+
+        return $value;
+    }
+}
+
+class ContributorViewMarkdownTransformer implements CheckPointInterface
+{
+    // ...
+
+    public function control($value, Route $route, Context $context, ObjectMapperInterface $objectMapper)
+    {
+        if (ContributorView::class === $route->getTargetPoint()->getClassFqn() &&
+            \is_string($value)
+        ) {
+            return $this->markdownParser->transform($value);
+        }
+
+        return $value;
+    }
+}
+
+$contributor = new Contributor('<script>**Hello World!**</script>', true);
+
+$checkPoints = new CheckPointCollection([
+    10 => new ContributorViewHtmlTagStripper(),     // Index 10 represents the position of this checkpoint on the route
+    20 => new ContributorViewMarkdownTransformer(), // Index 20 represents the position of this checkpoint on the route
+]);
 
 $map = $mapBuilder
-    ->addFilter(new Filter())
-    ->buildMap($pathFindingStrategy = true)
+    ->addRoute('Contributor.getBio()', 'ContributorView.__construct().$bio', $checkPoints)
+    ->buildMap()
 ;
 
-$objectMapper->map($user, $userDto, $map); // The `$context` you get in the `Filter` above
-echo $userDto->age; // '30'
+$objectMapper->map($contributor, ContributorView::class, $map);
+
+echo $contributorView->bio; // 'Hello World' (bolded)
 ```
-
-Build a map adding to it a filter implemeting [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) with the method described below:
-
-```php
-MapBuilderInterface::AddFilter(FilterInterface $filter): MapBuilderInterface
-```
-
-**Parameters**
-
-`$filter` must be an instance of [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php).
-
-**Returns**
-
-A **new** instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
-
----
-
-Then, the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method gets the filtered value to assign to the *target point* by calling on your [`FilterInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Filter/FilterInterface.php) implementation instance the method described below:
-
-```php
-FilterInterface::getValue(Route $route, Context $context, ObjectMapperInterface $objectMapper)
-```
-
-**Parameters**
-
-`$route` is an instance of the [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method is currently working on.
-
-`$context` is an instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) containing the arguments passed to the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method.
-
-`$objectMapper` is the instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php) which can be useful for [recursion](#recursion).
-
-**Returns**
-
-A `mixed` value.
-
----
-
-Keep in mind that a *filter* *supports* instance(s) of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php).
-
-You have to define the supported routes by implementing the method described below:
-
-```php
-FilterInterface::supportRoute(Route $route): bool
-```
-
-**Parameters**
-
-`$route` is an instance of the [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) the `ObjectMapper::map(object $source, $target, ?Map $map =null): ?object` method is currently working on.
-
-**Returns**
-
-A `bool` defining whether the passed [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) is supported by this *filter*.
 
 ### Recursion
 
-Although a recursion dedicated feature may come later, you can use the *filtering* feature [introduced previously](#filtering) to recursively map a *source point* to a *target point*. For example:
+Although a recursion dedicated feature may come later, you can use a *check point* such as [introduced previously](#check-point) to recursively map a *source point* to a *target point*. For example:
 
 -   If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and that you want in the same time to map `C` to `D`, AKA *simple recursion*.
 -   If you map an instance of `A` (that *has many* `C`) to `B` (that *has many* `D`) and that you want in the same time to map many `C` to many `D`, AKA *in-width recursion* or *iterable recursion*.
 -   If you map an instance of `A` (that *has* `C` which *has* `E`) to `B` (that *has* `D` which *has* `F`) and that you want in the same time to map `C` and `E` to `D` and `F`, AKA *in-depth recursion*.
-
-## Mapping preloading
-
-In the code examples above, we *define the map* (adding to it routes and filters) *on the go*, via the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) API. There is another way to *define the map*, preloading its definition.
-
-While this library is definitely designed with *mapping preloading* in mind, it does not *provide* a way to implement preloadable definitions and effectively preload them.
-
-Indeed, this solution is designed as a core for higher level systems to integrate it as an *object mapper* subsystem. Therefore it does not ship any DIC and configuration system necessary for achieving *mapping preloading* which is better implemented into your specific context.
-
-So this chapter is an attempt to help you to implement *mapping preloading*, making use of your own DIC and configuration systems in order for this solution to be integrated seamlessly as a subsystem into a wider system such as a framework, serializer, form handler, ORM, or whatever.
-
-For instance, the Symfony [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) does implement to some extend such *mapping preloading*. For example, this bundle instantiates all services tagged `object_mapper.filter` and inject them into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation. Then the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) injects these tagged filters into the maps that it builds. This way tagged filters are *added automatically* to the [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php). So you do not need to do:
-
-```php
-// Define the map *on the go*
-
-// Instantiate the implemented filters
-$filterA = new FilterA($route);
-$filterB = new FilterB($route);
-
-// Add the filters to the map
-$map = $mapBuilder
-    ->addFilter($filterA)
-    ->addFilter($filterB)
-    ->buildMap($pathFindingStrategy = true)
-;
-
-// Map source to the target
-$objectMapper->map($source, $target, $map);
-```
-
-Instead you can simply do:
-
-```php
-// The map is PREloaded, the implemented filters are added automatically to the map
-
-// Map the source to the target
-$target = $objectMapper->map($source, $target);
-```
-
-For its next release, the [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) project may implement more *mapping preloading* features such as configuration files and annotations preloading, making use of *Injection* and *Configuration* Symfony's components and Doctrine's *Annotations*. So that you do not need to do:
-
-```php
-
-// Define *on the go* the route
-$map = $mapBuilder
-    ->addRoute('User.getUserame()', 'User.$username')
-    ->addRoute('User.getAge()', 'User.$age')
-    ->buildMap($pathFindingStrategy = false)
-;
-
-// Map the source to the target
-$objectMapper->map($source, $target, $map);
-```
-
-Instead you can do:
-
-```php
-UserDto
-{
-    /**
-     * @HighLevelSystemRouteAnnotation(sources={"User.getUsername()"})
-     */
-    public $username;
-
-    /**
-     * @HighLevelSystemRouteAnnotation(sources={"User.getAge()"})
-     */
-    public $age;
-}
-
-$objectMapper->map($source, $target);
-```
-
-Or for example with a global map configuration file instead:
-
-```yaml
-# user-dto-map.yaml
-
--
-source: User.getUsername()
-target: UserDto.$username
--
-source: User.getAge()
-target: UserDto.$age
-```
-```php
-$objectMapper->map($source, $target);
-```
-
-With the help of this library's [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteBuilder.php) service, the [ObjectMapperBundle](https://github.com/opportus/ObjectMapperBundle) can then build from this preloaded mapping configuration routes to inject into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php) during its initial instantiation in order for it to build aware maps.

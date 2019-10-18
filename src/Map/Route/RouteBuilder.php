@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map\Route;
 
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactoryInterface;
 
 /**
@@ -40,11 +41,11 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function buildRoute(string $sourcePointFqn, string $targetPointFqn): Route
+    public function buildRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints = null): Route
     {
         $sourcePoint = $this->pointFactory->createPoint($sourcePointFqn);
         $targetPoint = $this->pointFactory->createPoint($targetPointFqn);
 
-        return new Route($sourcePoint, $targetPoint);
+        return new Route($sourcePoint, $targetPoint, $checkPoints);
     }
 }

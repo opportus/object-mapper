@@ -102,12 +102,12 @@ final class ObjectMapper implements ObjectMapperInterface
      */
     private function getTargetPointValue(Context $context, Route $route)
     {
-        $filter = $context->getFilterOnRoute($route);
+        $value = $route->getSourcePoint()->getValue($context->getSource());
 
-        if (null !== $filter) {
-            return $filter->getValue($route, $context, $this);
+        foreach ($route->getCheckPoints() as $checkPoint) {
+            $value = $checkPoint->control($value, $route, $context, $this);
         }
 
-        return $route->getSourcePoint()->getValue($context->getSource());
+        return $value;
     }
 }

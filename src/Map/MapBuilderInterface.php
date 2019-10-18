@@ -12,7 +12,7 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Filter\FilterInterface;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 
 /**
@@ -37,54 +37,31 @@ interface MapBuilderInterface
      * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
      * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method().$parameter`
      *
-     * @return MapBuilderInterface
-     * @throws InvalidArgumentException
-     */
-    public function addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface;
-
-    /**
-     * Adds a filter.
+     * @param null|CheckPointCollection $checkPoints
      *
-     * @param FilterInterface $filter
-     * @return MapBuilderInterface
-     */
-    public function addFilter(FilterInterface $filter): MapBuilderInterface;
-
-    /**
-     * Adds a filter on a specific route.
-     *
-     * @param Callable $callable
-     *
-     * The callable returns a mixed value which will be assigned to the target point by the mapper. The callable takes as arguments:
-     *
-     * - `Opportus\ObjectMapper\Map\Route\Route` The route the filter is on.
-     * - `Opportus\ObjectMapper\Context` The context of the current mapping.
-     * - `Opportus\ObjectMapper\ObjectMapperInterface` The object mapper service, useful for recursion.
-     *
-     * @param string $sourcePointFqn Can be either:
-     *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
-     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method()`
-     *
-     * @param string $targetPointFqn Can be either:
-     *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
-     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method().$parameter`
+     * A check point, added to a route, allows you to control (or transform) the value from the source point before it reaches the target point.
+     * You can add multiple *check points* to a route. In this case, these *check points* form a chain.
+     * The first *check point* controls the original value from the *source point* and returns the value (transformed or not) to the object mapper.
+     * Then, the object mapper passes the value to the next checkpoint and so on...
+     * Until the last checkpoint returns the final value to be assigned to the *target point* by the object mapper.
+     * So it is important to keep in mind that each *check point* has an unique position (priority) on a route.
+     * The routed value goes through each of the *check points* from the lowest to the highest positioned ones.
      *
      * @return MapBuilderInterface
      */
-    public function addFilterOnRoute(callable $callable, string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface;
+    public function addRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints = null): MapBuilderInterface;
 
     /**
      * Builds the map.
      *
      * @param bool|PathFindingStrategyInterface $pathFindingStrategy
      *
-     * - If `$pathFindingStrategy` is `false`, this will build a map with `NoPathFindingStrategy` returning as routes those previously manually added via this builder.
-     * - If `$pathFindingStrategy` is `true`, this will build a map with `PathFindingStrategy` returning as routes those dynamically defined by this strategy.
-     * - If `$pathFindingStrategy` is an instance of `PathFindingStrategyInterface`, this will build a map with this instance returning as routes those dynamically defined by this strategy.
+     * - If `$pathFindingStrategy` is `false`, this method will build a map with `NoPathFindingStrategy`.
+     * - If `$pathFindingStrategy` is `true`, this method will build a map with `PathFindingStrategy`.
+     * - If `$pathFindingStrategy` is an instance of `PathFindingStrategyInterface`, this method will build a map with this instance.
      *
      * @return Map
+     *
      * @throws InvalidArgumentException
      */
     public function buildMap($pathFindingStrategy = false): Map;

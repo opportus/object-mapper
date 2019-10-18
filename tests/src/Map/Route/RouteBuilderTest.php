@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
@@ -45,15 +46,22 @@ class RouteBuilderTest extends FinalBypassTestCase
     /**
      * @dataProvider providePointFqns
      */
-    public function testBuildRoute(string $sourcePointFqn, string $targetPointFqn): void
+    public function testBuildRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints): void
     {
         $routeBuilder = $this->buildRouteBuilder();
 
-        $route = $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);
+        $route = $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn, $checkPoints);
 
         $this->assertInstanceOf(Route::class, $route);
         $this->assertSame($sourcePointFqn, $route->getSourcePoint()->getFqn());
         $this->assertSame($targetPointFqn, $route->getTargetPoint()->getFqn());
+
+        if (null === $checkPoints) {
+            $this->assertInstanceOf(CheckPointCollection::class, $route->getCheckPoints());
+            $this->assertCount(0, $route->getCheckPoints());
+        } else {
+            $this->assertSame($checkPoints, $route->getCheckPoints());
+        }
     }
 
     /**
@@ -73,18 +81,22 @@ class RouteBuilderTest extends FinalBypassTestCase
             [
                 \sprintf('%s.$property', RouteBuilderTestClass::class),
                 \sprintf('%s.$property', RouteBuilderTestClass::class),
+                new CheckPointCollection(),
             ],
             [
                 \sprintf('%s.$property', RouteBuilderTestClass::class),
                 \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
+                null,
             ],
             [
                 \sprintf('%s.method()', RouteBuilderTestClass::class),
                 \sprintf('%s.$property', RouteBuilderTestClass::class),
+                new CheckPointCollection(),
             ],
             [
                 \sprintf('%s.method()', RouteBuilderTestClass::class),
                 \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
+                null,
             ],
         ];
     }

@@ -12,9 +12,7 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Filter\Filter;
-use Opportus\ObjectMapper\Map\Filter\FilterCollection;
-use Opportus\ObjectMapper\Map\Filter\FilterInterface;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Map\Strategy\NoPathFindingStrategy;
@@ -41,54 +39,27 @@ final class MapBuilder implements MapBuilderInterface
     private $routes;
 
     /**
-     * @var FilterCollection $filters
-     */
-    private $filters;
-
-    /**
      * Constructs the map builder.
      *
      * @param RouteBuilderInterface $routeBuilder
      * @param null|RouteCollection $routes
-     * @param null|FilterCollection $filters
      */
-    public function __construct(RouteBuilderInterface $routeBuilder, ?RouteCollection $routes = null, ?FilterCollection $filters = null)
+    public function __construct(RouteBuilderInterface $routeBuilder, ?RouteCollection $routes = null)
     {
         $this->routeBuilder = $routeBuilder;
         $this->routes = $routes ?? new RouteCollection();
-        $this->filters = $filters ?? new FilterCollection();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface
+    public function addRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints = null): MapBuilderInterface
     {
         $routes = $this->routes->toArray();
 
-        $routes[] = $this->routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);
+        $routes[] = $this->routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn, $checkPoints);
 
-        return new self($this->routeBuilder, new RouteCollection($routes), $this->filters);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addFilter(FilterInterface $filter): MapBuilderInterface
-    {
-        $filters = $this->filters->toArray();
-
-        $filters[] = $filter;
-
-        return new self($this->routeBuilder, $this->routes, new FilterCollection($filters));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addFilterOnRoute(callable $callable, string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface
-    {
-        return $this->addFilter(new Filter($this->routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn), $callable));
+        return new self($this->routeBuilder, new RouteCollection($routes));
     }
 
     /**
@@ -97,7 +68,7 @@ final class MapBuilder implements MapBuilderInterface
     public function buildMap($pathFindingStrategy = false): Map
     {
         if (false === $pathFindingStrategy) {
-            $pathFindingStrategy = new NoPathFindingStrategy($this->routes);
+            $pathFindingStrategy = new NoPathFindingStrategy();
         } elseif (true === $pathFindingStrategy) {
             $pathFindingStrategy = new PathFindingStrategy();
         } elseif (!\is_object($pathFindingStrategy) || !$pathFindingStrategy instanceof PathFindingStrategyInterface) {
@@ -110,6 +81,6 @@ final class MapBuilder implements MapBuilderInterface
             ));
         }
 
-        return new Map($pathFindingStrategy, $this->filters);
+        return new Map($pathFindingStrategy, $this->routes);
     }
 }

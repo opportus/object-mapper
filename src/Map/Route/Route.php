@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Map\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
 use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
@@ -41,13 +42,19 @@ final class Route
     private $targetPoint;
 
     /**
+     * @var CheckPointCollection $checkPoints
+     */
+    private $checkPoints;
+
+    /**
      * Constructs the route.
      *
      * @param PropertyPoint|MethodPoint $sourcePoint
      * @param PropertyPoint|ParameterPoint $targetPoint
+     * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
-    public function __construct(object $sourcePoint, object $targetPoint)
+    public function __construct(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints = null)
     {
         if (!$sourcePoint instanceof PropertyPoint && !$sourcePoint instanceof MethodPoint) {
             throw new InvalidArgumentException(\sprintf(
@@ -70,9 +77,9 @@ final class Route
         }
 
         $this->fqn = \sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
-
         $this->sourcePoint = $sourcePoint;
         $this->targetPoint = $targetPoint;
+        $this->checkPoints = $checkPoints ?? new CheckPointCollection();
     }
 
     /**
@@ -103,5 +110,15 @@ final class Route
     public function getTargetPoint(): object
     {
         return $this->targetPoint;
+    }
+
+    /**
+     * Gets the checkpoints of the route.
+     *
+     * @return CheckPointCollection
+     */
+    public function getCheckPoints(): CheckPointCollection
+    {
+        return $this->checkPoints;
     }
 }

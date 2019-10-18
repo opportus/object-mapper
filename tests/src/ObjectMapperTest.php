@@ -11,10 +11,15 @@
 
 namespace Opportus\ObjectMapper\Tests\Src;
 
+use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\MapBuilder;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
+use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
+use Opportus\ObjectMapper\ObjectMapperInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -34,26 +39,25 @@ class ObjectMapperTest extends FinalBypassTestCase
         $routeBuilder = new RouteBuilder($pointFactory);
         $mapBuilder = new MapBuilder($routeBuilder);
         $objectMapper = new ObjectMapper($mapBuilder);
+
         $map = $mapBuilder
-            ->addFilterOnRoute(
-                function ($route, $context, $objectMapper) {
-                    return 2;
-                },
-                \sprintf('%s.getA()', ObjectMapperTestClass::class),
-                \sprintf('%s.setA().$a', ObjectMapperTestClass::class)
+            ->addRoute(
+                \sprintf('%s.getA()', ObjectMapperTestObjectClass::class),
+                \sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class),
+                new CheckPointCollection([new ObjectMapperTestCheckPointClass()])
             )
             ->buildMap(true)
         ;
 
-        $target = $objectMapper->map($this->buildSource(), ObjectMapperTestClass::class, $map);
+        $target = $objectMapper->map($this->buildSource(), ObjectMapperTestObjectClass::class, $map);
 
-        $this->assertEquals(1, $target->getA());
+        $this->assertEquals(2, $target->getA());
         $this->assertEquals(11, $target->getB());
     }
 
-    private function buildSource(): ObjectMapperTestClass
+    private function buildSource(): ObjectMapperTestObjectClass
     {
-        $source = new ObjectMapperTestClass(1);
+        $source = new ObjectMapperTestObjectClass(1);
         $source->setB(11);
 
         return $source;
@@ -61,13 +65,13 @@ class ObjectMapperTest extends FinalBypassTestCase
 }
 
 /**
- * The object mapper test class.
+ * The object mapper test object class.
  *
  * @package Opportus\ObjectMapper\Tests\Src
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ObjectMapperTestClass
+class ObjectMapperTestObjectClass
 {
     private $a;
     private $b;
@@ -95,5 +99,20 @@ class ObjectMapperTestClass
     public function setB(int $b)
     {
         $this->b = $b;
+    }
+}
+
+/**
+ * The object mapper test check point class.
+ *
+ * @package Opportus\ObjectMapper\Tests\Src
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class ObjectMapperTestCheckPointClass implements CheckPointInterface
+{
+    public function control($value, Route $route, Context $context, ObjectMapperInterface $objectMapper)
+    {
+        return 2;
     }
 }

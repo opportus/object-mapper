@@ -12,10 +12,7 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Context;
-use Opportus\ObjectMapper\Map\Filter\FilterCollection;
-use Opportus\ObjectMapper\Map\Filter\FilterInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
-use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 
 /**
@@ -33,20 +30,20 @@ final class Map
     private $pathFindingStrategy;
 
     /**
-     * @var FilterCollection $filters
+     * @var RouteCollection $routes
      */
-    private $filters;
+    private $routes;
 
     /**
      * Constructs the map.
      *
      * @param PathFindingStrategyInterface $pathFindingStrategy
-     * @param null|FilterCollection $filters
+     * @param null|RouteCollection $routes
      */
-    public function __construct(PathFindingStrategyInterface $pathFindingStrategy, ?FilterCollection $filters = null)
+    public function __construct(PathFindingStrategyInterface $pathFindingStrategy, ?RouteCollection $routes = null)
     {
         $this->pathFindingStrategy = $pathFindingStrategy;
-        $this->filters = $filters ?? new FilterCollection();
+        $this->routes = $routes ?? new RouteCollection();
     }
 
     /**
@@ -57,24 +54,17 @@ final class Map
      */
     public function getRoutes(Context $context): RouteCollection
     {
-        return $this->pathFindingStrategy->getRoutes($context);
-    }
+        $routes = $this->pathFindingStrategy->getRoutes($context)->toArray();
 
-    /**
-     * Gets the filter on the passed route.
-     *
-     * @param Route $route
-     * @return null|FilterInterface
-     */
-    public function getFilterOnRoute(Route $route): ?FilterInterface
-    {
-        foreach ($this->filters as $filter) {
-            if ($filter->supportRoute($route)) {
-                return $filter;
+        foreach ($this->routes as $route) {
+            if ($context->getSourceClassFqn() === $route->getSourcePoint()->getClassFqn() &&
+                $context->getTargetClassFqn() === $route->getTargetPoint()->getClassFqn()
+            ) {
+                $routes[] = $route;
             }
         }
 
-        return null;
+        return new RouteCollection($routes);
     }
 
     /**
