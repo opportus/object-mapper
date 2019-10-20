@@ -22,7 +22,7 @@
 
 ## Use cases
 
-Use this solution for mapping data of objects to differently typed objects using extensible strategies and controls.
+Use this solution for mapping data of objects to differently typed objects via extensible strategies and controls.
 
 Flexible, extensible, optimized, tested, this tool can be used in many use cases such as:
 
@@ -430,7 +430,7 @@ $map = $mapBuilder
 
 $objectMapper->map($contributor, ContributorView::class, $map);
 
-echo $contributorView->bio; // <b>Hello World!</b>'
+echo $contributorView->getBio(); // '<b>Hello World!</b>'
 ```
 
 Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointInterface.php):
