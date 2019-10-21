@@ -16,7 +16,7 @@
         - [Custom automatic mapping](#custom-automatic-mapping)
     -   [Manual mapping](#manual-mapping)
         - [Via map builder API](#via-map-builder-api)
-        - [Via route definitions preloading](#via-route-definitions-preloading)
+        - [Via map definition preloading](#via-map-definition-preloading)
     -   [Check point](#check-point)
     -   [Recursion](#recursion)
 
