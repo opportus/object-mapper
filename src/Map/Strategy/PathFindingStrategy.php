@@ -3,7 +3,7 @@
 /**
  * This file is part of the opportus/object-mapper package.
  *
- * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@outlook.com>
+ * Copyright (c) 2018-2019 Clément Cazaud <clement.cazaud@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,22 +12,38 @@
 namespace Opportus\ObjectMapper\Map\Strategy;
 
 use Opportus\ObjectMapper\Context;
-use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
-use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
-use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
-use Opportus\ObjectMapper\Map\Route\Route;
+use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use ReflectionException;
+use ReflectionMethod;
+use ReflectionParameter;
+use ReflectionProperty;
+use Reflector;
 
 /**
  * The default path finding strategy.
  *
  * @package Opportus\ObjectMapper\Map\Strategy
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class PathFindingStrategy implements PathFindingStrategyInterface
 {
+    /**
+     * @var RouteBuilderInterface $souteBuilder
+     */
+    private $routeBuilder;
+
+    /**
+     * Constructs the default path finding strategy.
+     *
+     * @param RouteBuilderInterface $routeBuilder
+     */
+    public function __construct(RouteBuilderInterface $routeBuilder)
+    {
+        $this->routeBuilder = $routeBuilder;
+    }
+
     /**
      * {@inheritdoc}
      *
@@ -48,13 +64,25 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     {
         $routes = [];
 
-        $targetPoints = $this->buildConventionalTargetPoints($context);
+        $targetPointReflections = $this->getConventionalTargetPointReflections($context);
 
-        foreach ($targetPoints as $targetPoint) {
-            $sourcePoint = $this->buildConventionalSourcePoint($context, $targetPoint);
+        foreach ($targetPointReflections as $targetPointReflection) {
+            $sourcePointReflection = $this->getConventionalSourcePointReflection($context, $targetPointReflection);
 
-            if (null !== $sourcePoint && null !== $sourcePoint->getValue($context->getSource())) {
-                $routes[] = new Route($sourcePoint, $targetPoint);
+            if (null !== $sourcePointReflection) {
+                if ($sourcePointReflection instanceof ReflectionMethod) {
+                    $sourcePointFqn = \sprintf('%s.%s()', $sourcePointReflection->getDeclaringClass()->getName(), $sourcePointReflection->getName());
+                } elseif ($sourcePointReflection instanceof ReflectionProperty) {
+                    $sourcePointFqn = \sprintf('%s.$%s', $sourcePointReflection->getDeclaringClass()->getName(), $sourcePointReflection->getName());
+                }
+
+                if ($targetPointReflection instanceof ReflectionParameter) {
+                    $targetPointFqn = \sprintf('%s.%s().$%s', $targetPointReflection->getDeclaringClass()->getName(), $targetPointReflection->getDeclaringFunction()->getName(), $targetPointReflection->getName());
+                } elseif ($targetPointReflection instanceof ReflectionProperty) {
+                    $targetPointFqn = \sprintf('%s.$%s', $targetPointReflection->getDeclaringClass()->getName(), $targetPointReflection->getName());
+                }
+
+                $routes[] = $this->routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);
             }
         }
 
@@ -62,12 +90,12 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     }
 
     /**
-     * Builds conventional target points.
+     * Gets conventional target point reflections.
      *
      * @param Context $context
-     * @return array
+     * @return Reflector[]
      */
-    private function buildConventionalTargetPoints(Context $context): array
+    private function getConventionalTargetPointReflections(Context $context): array
     {
         $targetClassReflection = $context->getTargetClassReflection();
 
@@ -81,7 +109,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
             }
         }
 
-        $targetPoints = [];
+        $targetPointReflections = [];
 
         foreach ($targetClassReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $targetMethodReflection) {
             if (\in_array($targetMethodReflection->getName(), $methodBlackList)) {
@@ -99,12 +127,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
             }
 
             foreach ($targetMethodReflection->getParameters() as $targetParameterReflection) {
-                $targetPoints[] = new ParameterPoint(\sprintf(
-                    '%s.%s().$%s',
-                    $targetClassReflection->getName(),
-                    $targetMethodReflection->getName(),
-                    $targetParameterReflection->getName()
-                ));
+                $targetPointReflections[] = $targetParameterReflection;
             }
         }
 
@@ -113,55 +136,42 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
                 continue;
             }
 
-            $targetPoints[] = new PropertyPoint(\sprintf(
-                '%s.$%s',
-                $targetClassReflection->getName(),
-                $targetPropertyReflection->getName()
-            ));
+            $targetPointReflections[] = $targetPropertyReflection;
         }
 
-        return $targetPoints;
+        return $targetPointReflections;
     }
 
     /**
-     * Builds conventional source point to connect to the passed target point.
+     * Gets a conventional source point reflection to pair with the passed target point reflection.
      *
      * @param Context $context
-     * @param PropertyPoint|ParameterPoint $targetPoint
-     * @return null|PropertyPoint|MethodPoint
+     * @param ReflectionProperty|ReflectionParameter $targetPointReflection
+     * @return null|ReflectionProperty|ReflectionMethod
      */
-    private function buildConventionalSourcePoint(Context $context, object $targetPoint): ?object
+    private function getConventionalSourcePointReflection(Context $context, Reflector $targetPointReflection): ?Reflector
     {
         $sourceClassReflection = $context->getSourceClassReflection();
 
-        try {
-            $sourceMethodReflection = $sourceClassReflection->getMethod(\sprintf('get%s', \ucfirst($targetPoint->getName())));
+        if ($sourceClassReflection->hasMethod(\sprintf('get%s', \ucfirst($targetPointReflection->getName())))) {
+            $sourceMethodReflection = $sourceClassReflection->getMethod(\sprintf('get%s', \ucfirst($targetPointReflection->getName())));
 
-            if (false === $sourceMethodReflection->isPublic() || $sourceMethodReflection->getNumberOfRequiredParameters() > 0) {
-                throw ReflectionException();
+            if (true === $sourceMethodReflection->isPublic() &&
+                0    === $sourceMethodReflection->getNumberOfRequiredParameters() &&
+                null !== $sourceMethodReflection->invoke($context->getSource())
+            ) {
+                return $sourceMethodReflection;
             }
-        } catch (ReflectionException $e) {
-            try {
-                $sourcePropertyReflection = $sourceClassReflection->getProperty($targetPoint->getName());
-            } catch (ReflectionException $e) {
-                return null;
-            }
+        } elseif ($sourceClassReflection->hasProperty($targetPointReflection->getName())) {
+            $sourcePropertyReflection = $sourceClassReflection->getProperty($targetPointReflection->getName());
 
-            if (false === $sourcePropertyReflection->isPublic()) {
-                return null;
+            if (true === $sourcePropertyReflection->isPublic() &&
+                null !== $sourcePropertyReflection->getValue($context->getSource())
+            ) {
+                return $sourcePropertyReflection;
             }
-
-            return new PropertyPoint(\sprintf(
-                '%s.$%s',
-                $sourceClassReflection->getName(),
-                $sourcePropertyReflection->getName()
-            ));
         }
 
-        return new MethodPoint(\sprintf(
-            '%s.%s()',
-            $sourceClassReflection->getName(),
-            $sourceMethodReflection->getName()
-        ));
+        return null;
     }
 }
