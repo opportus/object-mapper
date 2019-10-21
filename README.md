@@ -16,7 +16,7 @@
         - [Custom automatic mapping](#custom-automatic-mapping)
     -   [Manual mapping](#manual-mapping)
         - [Via map builder API](#via-map-builder-api)
-        - [Via source and target classes annotations](#via-source-and-target-classes-annotations)
+        - [Via route definitions preloading](#via-route-definitions-preloading)
     -   [Check point](#check-point)
     -   [Recursion](#recursion)
 
@@ -39,13 +39,10 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ### v1.0.0 (stable)
 
--   Implement source and taget class mapping annotations loading system
--   Implement last unit tests
-
-### v1.1.0
-
+-   Implement recursion system
+-   Implement point creation from `Reflector`
 -   Implement *adders*, *removers*, *isers*, *hasers* support with the default PathFindingStrategy
--   ...
+-   Implement last unit tests
 
 ## Integrations
 
@@ -127,7 +124,10 @@ A *target point* can be either:
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointInterface.php).
 
-These routes can be defined [automatically](#automatic-mapping) via the `Map`'s [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) and/or [manually](#manual-mapping) [via the map builder's API](#via-map-builder-api) and [source and target classes annotations](#via-source-and-target-classes-annotations).
+These routes can be defined [automatically](#automatic-mapping) via the `Map`'s [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php) and/or [manually](#manual-mapping):
+
+-   [Via map builder API](#via-map-builder-api).
+-   [Via map definition preloading](#via-map-definition-preloading).
 
 ### Automatic mapping
 
@@ -198,7 +198,7 @@ PathFindingStrategyInterface::getRoutes(Context $context): RouteCollection
 
 **Parameters**
 
-`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which implement helper methods related to the `source` and the `target` being mapped.
+`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which implement helper methods related to the *source* and the *target* being mapped.
 
 **Returns**
 
@@ -233,12 +233,12 @@ $user = $objectMapper->map($userDto, User::class, $map);
 
 ### Manual mapping
 
-If in your context, such as walked through in the previous "[custom automatic mapping](#custom-automatic-mapping)" chapter, a custom mapping strategy definition does not scale well, or is either impossible or overkill, you can manually map the *source* to the *target*.
+If in your context, such as walked through in the previous "[automatic mapping](#automatic-mapping)" chapter, a mapping strategy definition does not scale well, or is either impossible or overkill, you can manually map the *source* to the *target*.
 
 There are multiple ways to define manually the mapping such as introduced in the 2 next subchapters:
 
--   [Via the map builder API](#via-map-builder-api).
--   [Via source and target classes annotations](#via-source-and-target-classes-annotations) (incoming feature).
+-   [Via map builder API](#via-map-builder-api).
+-   [Via map definition preloading](#via-map-definition-preloading).
 
 #### Via map builder API
 
@@ -337,9 +337,17 @@ MapBuilderInterface::buildMap($pathFindingStrategy = false): Map
 
 An instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
 
-#### Via source and target classes annotations
+#### Via map definition preloading
 
-Incoming feature...
+[Via the map builder API](#via-map-builder-api) presented above, we define the map (adding to it routes) *on the go*. There is another way to define the map, preloading its definition.
+
+While this library is definitely designed with *mapping definition preloading* in mind, it does not provide a way to effectively preload a *map definition* which could be:
+
+-   Any type of file commonly used for configuration (XML, YAML, JSON, etc...), defining statically a map.
+-   Any type of PHP class instance defining dynamically a map.
+-   And maybe more...
+
+Indeed, this solution is designed as a core for higher level systems to integrate it **seamlessly** as an *object mapper* subsystem, hence the [integrations index](#integrations). This library delegates *mapping definition preloading* to the higher level system which can make use contextually of its DIC and configuration systems, both required for achieving *mapping definition preloading*.
 
 ### Check point
 
@@ -445,7 +453,7 @@ CheckPointInterface::control($value, Route $route, Context $context, ObjectMappe
 
 `$route` is the instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php) which the `ObjectMapper` is currently on, containing the *source point* which the `$value` comes from, the *target point* which the `$value` goes to, and the [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointCollection.php) which contain your current `CheckPointInterface` instance.
 
-`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which implement helper methods related to the `source` and the `target` being mapped.
+`$context` An instance of [`Context`](https://github.com/opportus/object-mapper/blob/master/src/Context.php) which implement helper methods related to the *source* and the *target* being mapped.
 
 `$objectMapper` is an instance of [`ObjectMapperInterface`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapperInterface.php), useful for recursion.
 
