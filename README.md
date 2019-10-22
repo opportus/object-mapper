@@ -24,13 +24,13 @@
 
 Use this solution for mapping data of objects to differently typed objects via extensible strategies and controls.
 
-Flexible, extensible, optimized, tested, this tool can be used in many use cases such as:
+Simple, flexible, extensible, optimized, and tested, this tool can be used in many cases such as:
 
 -   Mapping state of objects from/to DTOs.
 -   Mapping state of domain model from/to persistance model.
 -   Mapping state of domain model to view model.
 -   Mapping state of objects to differently typed objects to get operated on, so that these operations don't mess with the state of the source objects.
--   As an *object mapping* subsystem to be integrated by systems such as frameworks, serializers, form handlers, ORMs, etc...
+-   Integrating *object mapping* system seamlessly into any higher level systems such as frameworks, serializers, ORMs, form handlers, etc...
 -   And so on...
 
 ## Roadmap
@@ -46,7 +46,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ## Integrations
 
--   Symfony 4 => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
+-   Symfony 4 application => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
 -   Reference here your own integrations
 
 ## Installation
@@ -341,13 +341,20 @@ An instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the map (adding to it routes) *on the go*. There is another way to define the map, preloading its definition.
 
-While this library is definitely designed with *mapping definition preloading* in mind, it does not provide a way to effectively preload a *map definition* which could be:
+While this library is definitely designed with *map definition preloading* in mind, it does not provide a way to effectively preload a *map definition* which could be:
 
--   Any type of file commonly used for configuration (XML, YAML, JSON, etc...), defining statically a map.
--   Any type of PHP class instance defining dynamically a map.
--   And maybe more...
+-   Any type of file, commonly used for configuration (XML, YAML, JSON, etc...), defining statically a map.
+-   Any type of PHP subroutine defining dynamically a map.
+-   ...
 
-Indeed, this solution is designed as a core for higher level systems to integrate it **seamlessly** as an *object mapper* subsystem, hence the [integrations index](#integrations). This library delegates *mapping definition preloading* to the higher level system which can make use contextually of its DIC and configuration systems, both required for achieving *mapping definition preloading*.
+So in order to create routes to compose the map of, you can:
+
+-   Parse your map configuration files, extract from them *source point* and *target point* tokens and inject them as is into the [`MapBuilder::addRoute(string $sourcePointFqn, string $targetPointFqn)`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilderInterface.php) method.
+-   Implement some sort of map generator subroutine making use itself of the `MapBuilder` service.
+
+Because an *object mapper* has a wide range of different use case contexts, this solution is designed as a minimalist, flexible, and extensible core in order to get **integrated**, **adapted**, and **extended** seamlessly into any of these contexts. Therefore, this solution delegates *map definition preloading* to the integrating higher level system which can make use contextually of its own DIC, configuration, and cache systems required for achieving *map definition preloading*.
+
+[opportus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle) is one system integrating this library (into Symfony 4 application context). You can refer to it for concrete examples of how to implement *map definition preloading*.
 
 ### Check point
 
