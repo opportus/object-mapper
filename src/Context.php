@@ -18,7 +18,7 @@ use ReflectionClass;
  * The context.
  *
  * @package Opportus\ObjectMapper
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class Context

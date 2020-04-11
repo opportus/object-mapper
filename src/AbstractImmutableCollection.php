@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
  * The abstract immutable collection.
  *
  * @package Opportus\ObjectMapper
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 abstract class AbstractImmutableCollection implements ArrayAccess, Countable, IteratorAggregate

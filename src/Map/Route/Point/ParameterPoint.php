@@ -19,7 +19,7 @@ use ReflectionParameter;
  * The parameter point.
  *
  * @package Opportus\ObjectMapper\Map\Route\Point
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class ParameterPoint

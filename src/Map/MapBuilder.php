@@ -23,7 +23,7 @@ use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
  * The map builder.
  *
  * @package Opportus\ObjectMapper\Map
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class MapBuilder implements MapBuilderInterface

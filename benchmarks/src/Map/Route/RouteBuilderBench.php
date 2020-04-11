@@ -19,7 +19,7 @@ use Opportus\ObjectMapper\Map\Route\RouteBuilder;
  * The route builder bench.
  *
  * @package Opportus\ObjectMapper\Benchmarks\Src\Map\Route
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 class RouteBuilderBench

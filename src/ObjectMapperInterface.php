@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\Map\MapBuilderInterface;
  * The object mapper interface.
  *
  * @package Opportus\ObjectMapper
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 interface ObjectMapperInterface

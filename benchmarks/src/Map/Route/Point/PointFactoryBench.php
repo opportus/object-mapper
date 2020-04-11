@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
  * The point factory bench.
  *
  * @package Opportus\ObjectMapper\Benchmarks\Src\Map\Route\Point
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 class PointFactoryBench

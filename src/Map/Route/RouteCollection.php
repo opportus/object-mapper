@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * The route collection.
  *
  * @package Opportus\ObjectMapper\Map\Route
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class RouteCollection extends AbstractImmutableCollection

@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\Map\Route\RouteCollection;
  * The no path finding strategy.
  *
  * @package Opportus\ObjectMapper\Map\Strategy
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class NoPathFindingStrategy implements PathFindingStrategyInterface

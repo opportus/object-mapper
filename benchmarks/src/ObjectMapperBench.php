@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\ObjectMapper;
  * The object mapper bench.
  *
  * @package Opportus\ObjectMapper\Benchmarks\Src
- * @author  Clément Cazaud <opportus@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 class ObjectMapperBench
