@@ -1,8 +1,7 @@
-/.idea/
-/composer.lock
-/vendor/
-.phpunit.result.cache
-phpunit*.phar
-.php_cs.cache
+.idea
 tags
-
+vendor
+composer.lock
+phpunit*.phar
+.phpunit.result.cache
+.php_cs.cache
