@@ -76,7 +76,7 @@ final class MapBuilder implements MapBuilderInterface
         $routes[] = $this->routeBuilder->buildRoute(
             $sourcePointFqn,
             $targetPointFqn,
-            $checkPoints
+            $checkPoints ?? new CheckPointCollection()
         );
 
         return new self($this->routeBuilder, new RouteCollection($routes));
