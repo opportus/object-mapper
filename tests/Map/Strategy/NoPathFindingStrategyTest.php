@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Src\Map\Strategy;
+namespace Opportus\ObjectMapper\Tests\Map\Strategy;
 
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Map\Strategy\NoPathFindingStrategy;
@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 /**
  * The no path finding strategy test.
  *
- * @package Opportus\ObjectMapper\Tests\Src\Map\Strategy
+ * @package Opportus\ObjectMapper\Tests\Map\Strategy
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

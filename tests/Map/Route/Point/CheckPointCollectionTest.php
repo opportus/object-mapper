@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
+namespace Opportus\ObjectMapper\Tests\Map\Route\Point;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -25,7 +25,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 /**
  * The check point collection test.
  *
- * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
+ * @package Opportus\ObjectMapper\Tests\Map\Route\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

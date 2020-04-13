@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Src;
+namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
@@ -20,14 +20,13 @@ use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
  * The object mapper test.
  *
  * Temporary test waiting for lower level unit tests.
  *
- * @package Opportus\ObjectMapper\Tests\Src
+ * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
@@ -78,7 +77,7 @@ class ObjectMapperTest extends FinalBypassTestCase
 /**
  * The object mapper test object class.
  *
- * @package Opportus\ObjectMapper\Tests\Src
+ * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
@@ -116,7 +115,7 @@ class ObjectMapperTestObjectClass
 /**
  * The object mapper test check point class.
  *
- * @package Opportus\ObjectMapper\Tests\Src
+ * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

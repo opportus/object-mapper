@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
+namespace Opportus\ObjectMapper\Tests\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 /**
  * The point factory test.
  *
- * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
+ * @package Opportus\ObjectMapper\Tests\Map\Route\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
@@ -62,7 +62,7 @@ class PointFactoryTest extends FinalBypassTestCase
 /**
  * The point factory test class.
  *
- * @package Opportus\ObjectMapper\Tests\Src\Map\Route\Point
+ * @package Opportus\ObjectMapper\Tests\Map\Route\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
