@@ -34,10 +34,11 @@ class RouteTest extends FinalBypassTestCase
      */
     public function testConstructException(
         AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint
+        AbstractPoint $targetPoint,
+        CheckPointCollection $checkPoints
     ): void {
         $this->expectException(InvalidArgumentException::class);
-        new Route($sourcePoint, $targetPoint);
+        new Route($sourcePoint, $targetPoint, $checkPoints);
     }
 
     /**

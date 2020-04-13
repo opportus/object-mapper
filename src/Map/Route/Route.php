@@ -57,7 +57,7 @@ final class Route
     public function __construct(
         AbstractPoint $sourcePoint,
         AbstractPoint $targetPoint,
-        ?CheckPointCollection $checkPoints = null
+        CheckPointCollection $checkPoints
     ) {
         if (false === Source::isValidPoint($sourcePoint)) {
             throw new InvalidArgumentException(\sprintf(
