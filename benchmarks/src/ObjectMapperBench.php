@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Benchmarks\Src;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
@@ -40,8 +41,16 @@ class ObjectMapperBench
         $this->objectMapper = $objectMapper;
 
         $this->noPathFindingStrategyMap = $mapBuilder
-            ->addRoute(\sprintf('%s.getA()', BenchObject::class), \sprintf('%s.__construct().$a', BenchObject::class))
-            ->addRoute(\sprintf('%s.getB()', BenchObject::class), \sprintf('%s.setB().$b', BenchObject::class))
+            ->addRoute(
+                \sprintf('%s.getA()', BenchObject::class),
+                \sprintf('%s.__construct().$a', BenchObject::class),
+                new CheckPointCollection()
+            )
+            ->addRoute(
+                \sprintf('%s.getB()', BenchObject::class),
+                \sprintf('%s.setB().$b', BenchObject::class),
+                new CheckPointCollection()
+            )
             ->buildMap()
         ;
 
@@ -64,6 +73,10 @@ class ObjectMapperBench
      */
     public function benchMapWithNoPathFindingStrategy()
     {
-        $this->objectMapper->map($this->source, BenchObject::class, $this->noPathFindingStrategyMap);
+        $this->objectMapper->map(
+            $this->source,
+            BenchObject::class,
+            $this->noPathFindingStrategyMap
+        );
     }
 }

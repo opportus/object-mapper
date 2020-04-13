@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Benchmarks\Src\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
-use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
@@ -46,8 +45,14 @@ class MapBuilderBench
     public function benchBuildMapWithNoPathFindingStrategy()
     {
         $this->mapBuilder
-            ->addRoute(\sprintf('%s.getA()', BenchObject::class), \sprintf('%s.__construct().$a', BenchObject::class))
-            ->addRoute(\sprintf('%s.getB()', BenchObject::class), \sprintf('%s.setB().$b', BenchObject::class))
+            ->addRoute(
+                \sprintf('%s.getA()', BenchObject::class),
+                \sprintf('%s.__construct().$a', BenchObject::class)
+            )
+            ->addRoute(
+                \sprintf('%s.getB()', BenchObject::class),
+                \sprintf('%s.setB().$b', BenchObject::class)
+            )
             ->buildMap()
         ;
     }
