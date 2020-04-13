@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Benchmarks\Src\Map\Route\Point;
+namespace Opportus\ObjectMapper\Benchmarks\Map\Route\Point;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
 /**
  * The point bench.
  *
- * @package Opportus\ObjectMapper\Benchmarks\Src\Map\Route\Point
+ * @package Opportus\ObjectMapper\Benchmarks\Map\Route\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */

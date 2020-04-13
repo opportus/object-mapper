@@ -9,36 +9,46 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Benchmarks\Src;
+namespace Opportus\ObjectMapper\Benchmarks\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
-use Opportus\ObjectMapper\ObjectMapper;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 
 /**
- * The object mapper bench.
+ * The map bench.
  *
- * @package Opportus\ObjectMapper\Benchmarks\Src
+ * @package Opportus\ObjectMapper\Benchmarks\Map
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ObjectMapperBench
+class MapBench
 {
-    private $objectMapper;
+    private $pathFindingStrategyMap;
+    private $pathFindingStrategySource;
+    private $pathFindingStrategyTarget;
+
     private $noPathFindingStrategyMap;
-    private $source;
+    private $noPathFindingStrategySource;
+    private $noPathFindingStrategyTarget;
 
     public function __construct()
     {
         $pointFactory = new PointFactory();
         $routeBuilder = new RouteBuilder($pointFactory);
         $mapBuilder = new MapBuilder($routeBuilder);
-        $objectMapper = new ObjectMapper($mapBuilder);
 
-        $this->objectMapper = $objectMapper;
+        $source = new BenchObject(1);
+        $source->setB(11);
+
+        $this->pathFindingStrategyMap = $mapBuilder->buildMap(true);
+
+        $this->pathFindingStrategySource = new Source($source);
+        $this->pathFindingStrategyTarget = new Target(BenchObject::class);
 
         $this->noPathFindingStrategyMap = $mapBuilder
             ->addRoute(
@@ -51,32 +61,33 @@ class ObjectMapperBench
                 \sprintf('%s.setB().$b', BenchObject::class),
                 new CheckPointCollection()
             )
-            ->buildMap()
-        ;
+            ->buildMap();
 
-        $this->source = new BenchObject(1);
-        $this->source->setB(11);
+        $this->noPathFindingStrategySource = new Source($source);
+        $this->noPathFindingStrategyTarget = new Target(BenchObject::class);
     }
 
     /**
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchMapWithPathFindingStrategy()
+    public function benchGetRoutesWithPathFindingStrategy()
     {
-        $this->objectMapper->map($this->source, BenchObject::class);
+        $this->pathFindingStrategyMap->getRoutes(
+            $this->pathFindingStrategySource,
+            $this->pathFindingStrategyTarget
+        );
     }
 
     /**
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchMapWithNoPathFindingStrategy()
+    public function benchGetRoutesWithNoPathFindingStrategy()
     {
-        $this->objectMapper->map(
-            $this->source,
-            BenchObject::class,
-            $this->noPathFindingStrategyMap
+        $this->noPathFindingStrategyMap->getRoutes(
+            $this->noPathFindingStrategySource,
+            $this->noPathFindingStrategyTarget
         );
     }
 }
