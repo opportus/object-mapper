@@ -11,9 +11,9 @@
 
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
-use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\Route\Route;
-use Opportus\ObjectMapper\ObjectMapperInterface;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 
 /**
  * The check point interface.
@@ -27,11 +27,16 @@ interface CheckPointInterface
     /**
      * Controls the value.
      *
-     * @param mixed $value
-     * @param Route $route
-     * @param Context $context
-     * @param ObjectMapperInterface $objectMapper
-     * @return mixed
+     * @param mixed $value The value going to be assigned to the target point
+     * @param Route $route The route which the mapper is currently on
+     * @param Source $source The source which the point value comes from
+     * @param Target $target The target which the point value goes to
+     * @return mixed The value going to be assigned to the target point
      */
-    public function control($value, Route $route, Context $context, ObjectMapperInterface $objectMapper);
+    public function control(
+        $value,
+        Route $route,
+        Source $source,
+        Target $target
+    );
 }

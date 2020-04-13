@@ -11,8 +11,9 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
-use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 
 /**
  * The no path finding strategy.
@@ -26,7 +27,7 @@ final class NoPathFindingStrategy implements PathFindingStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function getRoutes(Context $context): RouteCollection
+    public function getRoutes(Source $source, Target $target): RouteCollection
     {
         return new RouteCollection();
     }

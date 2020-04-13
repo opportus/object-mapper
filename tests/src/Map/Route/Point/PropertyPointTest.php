@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
@@ -72,33 +71,6 @@ class PropertyPointTest extends FinalBypassTestCase
         $this->assertSame($propertyName, $propertyPoint->getName());
     }
 
-    /**
-     * @dataProvider providePropertyPointFqnTokens
-     */
-    public function testGetValue(string $className, string $propertyName): void
-    {
-        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
-
-        $this->assertSame(1, $propertyPoint->getValue(new PropertyPointTestClass()));
-
-        $this->expectException(InvalidOperationException::class);
-        $propertyPoint->getValue($this);
-    }
-
-    /**
-     * @dataProvider providePropertyPointFqnTokens
-     */
-    public function testSetValue(string $className, string $propertyName): void
-    {
-        $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
-
-        $object = new PropertyPointTestClass();
-
-        $propertyPoint->setValue($object, 11);
-
-        $this->assertSame(11, $propertyPoint->getValue($object));
-    }
-
     public function providePropertyPointFqnTokens(): array
     {
         return [
@@ -114,7 +86,7 @@ class PropertyPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf('%s.%s', PropertyPointTestClass::class, 'publicProperty')],
             [\sprintf('%s$%s', PropertyPointTestClass::class, 'publicProperty')],
-            [\sprintf('%s.$', PropertyPointTestClass::class, 'publicProperty')],
+            [\sprintf('%s.$', PropertyPointTestClass::class)],
 
             // Invalid reflection...
             [\sprintf('%s.$%s', 'InvalidClass', 'publicProperty')],

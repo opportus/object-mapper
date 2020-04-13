@@ -41,8 +41,8 @@ class PointFactoryTest extends FinalBypassTestCase
         $pointFactory = new PointFactory();
 
         $pointFqns =  [
-            PropertyPoint::class =>  \sprintf('%s.$%s', PointFactoryTestClass::class, 'property'),
-            MethodPoint::class =>    \sprintf('%s.%s()', PointFactoryTestClass::class, 'method'),
+            PropertyPoint::class  =>  \sprintf('%s.$%s', PointFactoryTestClass::class, 'property'),
+            MethodPoint::class    =>    \sprintf('%s.%s()', PointFactoryTestClass::class, 'method'),
             ParameterPoint::class => \sprintf('%s.%s().$%s', PointFactoryTestClass::class, 'method', 'parameter'),
         ];
 

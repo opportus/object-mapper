@@ -11,9 +11,13 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
-use Opportus\ObjectMapper\Context;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -47,8 +51,8 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     /**
      * {@inheritdoc}
      *
-     * This behavior consists of guessing which is the appropriate point of the source
-     * to connect to each point of the target following the rules below.
+     * This behavior consists of guessing which is the appropriate point of the
+     * source to connect to each point of the target following the rules below.
      *
      * A TargetPoint can be:
      *
@@ -57,62 +61,147 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
      *
      * The connectable SourcePoint can be:
      *
-     * - A public property having for name the same as the target point (PropertyPoint)
-     * - A public getter having for name 'get'.ucfirst($targetPointName) and requiring no argument (MethodPoint)
+     * - A public property having for name the same as the target point
+     * (PropertyPoint)
+     * - A public getter having for name `'get'.ucfirst($targetPointName)` and
+     * requiring no argument (MethodPoint)
      */
-    public function getRoutes(Context $context): RouteCollection
+    public function getRoutes(Source $source, Target $target): RouteCollection
     {
         $routes = [];
 
-        $targetPointReflections = $this->getConventionalTargetPointReflections($context);
+        try {
+            $targetPointReflections = $this->getTargetPointReflections($target);
+        } catch (ReflectionException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
 
         foreach ($targetPointReflections as $targetPointReflection) {
-            $sourcePointReflection = $this->getConventionalSourcePointReflection($context, $targetPointReflection);
+            try {
+                $sourcePointReflection = $this->getSourcePointReflection(
+                    $source,
+                    $targetPointReflection
+                );
+            } catch (ReflectionException $exception) {
+                throw new InvalidOperationException(\sprintf(
+                    'Invalid "%s" operation. %s',
+                    __METHOD__,
+                    $exception->getMessage()
+                ));
+            }
 
-            if (null !== $sourcePointReflection) {
-                if ($sourcePointReflection instanceof ReflectionMethod) {
-                    $sourcePointFqn = \sprintf('%s.%s()', $sourcePointReflection->getDeclaringClass()->getName(), $sourcePointReflection->getName());
-                } elseif ($sourcePointReflection instanceof ReflectionProperty) {
-                    $sourcePointFqn = \sprintf('%s.$%s', $sourcePointReflection->getDeclaringClass()->getName(), $sourcePointReflection->getName());
-                }
+            if (null === $sourcePointReflection) {
+                continue;
+            }
 
-                if ($targetPointReflection instanceof ReflectionParameter) {
-                    $targetPointFqn = \sprintf('%s.%s().$%s', $targetPointReflection->getDeclaringClass()->getName(), $targetPointReflection->getDeclaringFunction()->getName(), $targetPointReflection->getName());
-                } elseif ($targetPointReflection instanceof ReflectionProperty) {
-                    $targetPointFqn = \sprintf('%s.$%s', $targetPointReflection->getDeclaringClass()->getName(), $targetPointReflection->getName());
-                }
+            $sourcePointFqn = '';
+            $targetPointFqn = '';
 
-                $routes[] = $this->routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn);
+            if ($sourcePointReflection instanceof ReflectionMethod) {
+                $sourcePointFqn = \sprintf(
+                    '%s.%s()',
+                    $sourcePointReflection->getDeclaringClass()->getName(),
+                    $sourcePointReflection->getName()
+                );
+            } elseif ($sourcePointReflection instanceof ReflectionProperty) {
+                $sourcePointFqn = \sprintf(
+                    '%s.$%s',
+                    $sourcePointReflection->getDeclaringClass()->getName(),
+                    $sourcePointReflection->getName()
+                );
+            }
+
+            if ($targetPointReflection instanceof ReflectionParameter) {
+                $targetPointFqn = \sprintf(
+                    '%s.%s().$%s',
+                    $targetPointReflection->getDeclaringClass()->getName(),
+                    $targetPointReflection->getDeclaringFunction()->getName(),
+                    $targetPointReflection->getName()
+                );
+            } elseif ($targetPointReflection instanceof ReflectionProperty) {
+                $targetPointFqn = \sprintf(
+                    '%s.$%s',
+                    $targetPointReflection->getDeclaringClass()->getName(),
+                    $targetPointReflection->getName()
+                );
+            }
+
+            try {
+                $routes[] = $this->routeBuilder->buildRoute(
+                    $sourcePointFqn,
+                    $targetPointFqn,
+                    new CheckPointCollection()
+                );
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidOperationException(\sprintf(
+                    'Invalid "%s" operation. %s',
+                    __METHOD__,
+                    $exception->getMessage()
+                ));
             }
         }
 
-        return new RouteCollection($routes);
+        try {
+            return new RouteCollection($routes);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
     }
 
     /**
-     * Gets conventional target point reflections.
+     * Gets target point reflections.
      *
-     * @param Context $context
+     * @param Target $target
      * @return Reflector[]
+     * @throws InvalidOperationException
+     * @throws ReflectionException
      */
-    private function getConventionalTargetPointReflections(Context $context): array
+    private function getTargetPointReflections(Target $target): array
     {
-        $targetClassReflection = $context->getTargetClassReflection();
+        $targetClassReflection = $target->getClassReflection();
 
         $methodBlackList = [];
         $propertyBlackList = [];
 
-        if (false === $context->hasInstantiatedTarget() && $targetClassReflection->hasMethod('__construct')) {
-            foreach ($targetClassReflection->getMethod('__construct')->getParameters() as $targetConstructParameterReflection) {
-                $methodBlackList[] = \sprintf('set%s', \ucfirst($targetConstructParameterReflection->getName()));
-                $propertyBlackList[] = $targetConstructParameterReflection->getName();
+        if (
+            $target->isInstantiated() === false &&
+            $targetClassReflection->hasMethod('__construct')
+        ) {
+            $targetConstructorReflection = $targetClassReflection
+                ->getMethod('__construct');
+
+            foreach (
+                $targetConstructorReflection->getParameters() as
+                $targetConstructorParameterReflection
+            ) {
+                $methodBlackList[] = \sprintf(
+                    'set%s',
+                    \ucfirst($targetConstructorParameterReflection->getName())
+                );
+
+                $propertyBlackList[] = $targetConstructorParameterReflection
+                    ->getName();
             }
         }
 
         $targetPointReflections = [];
 
-        foreach ($targetClassReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $targetMethodReflection) {
-            if (\in_array($targetMethodReflection->getName(), $methodBlackList)) {
+        foreach (
+            $targetClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
+            $targetMethodReflection
+        ) {
+            if (\in_array(
+                $targetMethodReflection->getName(),
+                $methodBlackList
+            )) {
                 continue;
             }
 
@@ -120,19 +209,33 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
                 continue;
             }
 
-            if (0 !== \strpos($targetMethodReflection->getName(), 'set') &&
-                (true === $context->hasInstantiatedTarget() || '__construct' !== $targetMethodReflection->getName())
+            if (
+                \strpos($targetMethodReflection->getName(), 'set') !== 0 &&
+                (
+                    $target->isInstantiated() === true ||
+                    $targetMethodReflection->getName() !== '__construct'
+                )
             ) {
                 continue;
             }
 
-            foreach ($targetMethodReflection->getParameters() as $targetParameterReflection) {
+            foreach (
+                $targetMethodReflection->getParameters() as
+                $targetParameterReflection
+            ) {
                 $targetPointReflections[] = $targetParameterReflection;
             }
         }
 
-        foreach ($targetClassReflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $targetPropertyReflection) {
-            if (\in_array($targetPropertyReflection->getName(), $propertyBlackList)) {
+        foreach (
+            $targetClassReflection
+                ->getProperties(ReflectionProperty::IS_PUBLIC) as
+            $targetPropertyReflection
+        ) {
+            if (\in_array(
+                $targetPropertyReflection->getName(),
+                $propertyBlackList
+            )) {
                 continue;
             }
 
@@ -143,30 +246,44 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     }
 
     /**
-     * Gets a conventional source point reflection to pair with the passed target point reflection.
+     * Gets a source point to pair with the passed target point.
      *
-     * @param Context $context
-     * @param ReflectionProperty|ReflectionParameter $targetPointReflection
-     * @return null|ReflectionProperty|ReflectionMethod
+     * @param Source $source
+     * @param Reflector $targetPointReflection
+     * @return null|Reflector
+     * @throws InvalidOperationException
+     * @throws ReflectionException
      */
-    private function getConventionalSourcePointReflection(Context $context, Reflector $targetPointReflection): ?Reflector
-    {
-        $sourceClassReflection = $context->getSourceClassReflection();
+    private function getSourcePointReflection(
+        Source $source,
+        Reflector $targetPointReflection
+    ): ?Reflector {
+        $sourceClassReflection = $source->getClassReflection();
 
-        if ($sourceClassReflection->hasMethod(\sprintf('get%s', \ucfirst($targetPointReflection->getName())))) {
-            $sourceMethodReflection = $sourceClassReflection->getMethod(\sprintf('get%s', \ucfirst($targetPointReflection->getName())));
+        if ($sourceClassReflection->hasMethod(
+            \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
+        )) {
+            $sourceMethodReflection = $sourceClassReflection->getMethod(
+                \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
+            );
 
-            if (true === $sourceMethodReflection->isPublic() &&
-                0    === $sourceMethodReflection->getNumberOfRequiredParameters() &&
-                null !== $sourceMethodReflection->invoke($context->getSource())
+            if (
+                $sourceMethodReflection->isPublic() === true &&
+                $sourceMethodReflection->getNumberOfRequiredParameters() === 0&&
+                $sourceMethodReflection->invoke($source->getInstance()) !== null
             ) {
                 return $sourceMethodReflection;
             }
-        } elseif ($sourceClassReflection->hasProperty($targetPointReflection->getName())) {
-            $sourcePropertyReflection = $sourceClassReflection->getProperty($targetPointReflection->getName());
+        } elseif ($sourceClassReflection->hasProperty(
+            $targetPointReflection->getName()
+        )) {
+            $sourcePropertyReflection = $sourceClassReflection
+                ->getProperty($targetPointReflection->getName());
 
-            if (true === $sourcePropertyReflection->isPublic() &&
-                null !== $sourcePropertyReflection->getValue($context->getSource())
+            if (
+                $sourcePropertyReflection->isPublic() === true &&
+                $sourcePropertyReflection
+                    ->getValue($source->getInstance()) !== null
             ) {
                 return $sourcePropertyReflection;
             }

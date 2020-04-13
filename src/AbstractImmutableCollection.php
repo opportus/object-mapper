@@ -24,7 +24,10 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class AbstractImmutableCollection implements ArrayAccess, Countable, IteratorAggregate
+abstract class AbstractImmutableCollection implements
+    ArrayAccess,
+    Countable,
+    IteratorAggregate
 {
     /**
      * @var array $items
@@ -91,7 +94,7 @@ abstract class AbstractImmutableCollection implements ArrayAccess, Countable, It
     public function offsetSet($offset, $value)
     {
         throw new InvalidOperationException(\sprintf(
-            'Operation "%s" is invalid: attempting to set an element of an immutable array.',
+            'Invalid operation "%s". Attempting to set an element of an immutable array.',
             __METHOD__
         ));
     }
@@ -104,8 +107,9 @@ abstract class AbstractImmutableCollection implements ArrayAccess, Countable, It
     public function offsetUnset($offset)
     {
         throw new InvalidOperationException(\sprintf(
-            'Operation "%s" is invalid: attempting to unset an element of an immutable array.',
+            'Invalid operation "%s". Attempting to unset an element of an immutable array.',
             __METHOD__
         ));
     }
 }
+

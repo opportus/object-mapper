@@ -11,8 +11,9 @@
 
 namespace Opportus\ObjectMapper;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Map;
-use Opportus\ObjectMapper\Map\MapBuilderInterface;
 
 /**
  * The object mapper interface.
@@ -24,12 +25,18 @@ use Opportus\ObjectMapper\Map\MapBuilderInterface;
 interface ObjectMapperInterface
 {
     /**
-     * Maps source points values to target points following the routes on the map.
+     * Maps source points values to target points following routes on the map.
      *
-     * @param object $source
-     * @param object|string $target
-     * @param null|Map $map
-     * @return null|object
+     * @param object $source The instance to map data from
+     * @param object|string $target The instance (or the Fully Qualified Name of
+     *                              the class to instantiate and) to map data to
+     * @param null|Map $map The instance of Map. If it is null,
+     *                      the method builds and uses a map composed of
+     *                      the default `PathFindingStrategy`
+     * @return null|object The instantiated and/or updated target or null if
+     *                     the map has no route
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
      */
     public function map(object $source, $target, ?Map $map = null): ?object;
 }

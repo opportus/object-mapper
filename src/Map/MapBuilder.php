@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
@@ -43,21 +44,40 @@ final class MapBuilder implements MapBuilderInterface
      *
      * @param RouteBuilderInterface $routeBuilder
      * @param null|RouteCollection $routes
+     * @throws InvalidOperationException
      */
-    public function __construct(RouteBuilderInterface $routeBuilder, ?RouteCollection $routes = null)
-    {
+    public function __construct(
+        RouteBuilderInterface $routeBuilder,
+        ?RouteCollection $routes = null
+    ) {
         $this->routeBuilder = $routeBuilder;
-        $this->routes = $routes ?? new RouteCollection();
+
+        try {
+            $this->routes = $routes ?? new RouteCollection();
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints = null): MapBuilderInterface
-    {
+    public function addRoute(
+        string $sourcePointFqn,
+        string $targetPointFqn,
+        ?CheckPointCollection $checkPoints = null
+    ): MapBuilderInterface {
         $routes = $this->routes->toArray();
 
-        $routes[] = $this->routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn, $checkPoints);
+        $routes[] = $this->routeBuilder->buildRoute(
+            $sourcePointFqn,
+            $targetPointFqn,
+            $checkPoints
+        );
 
         return new self($this->routeBuilder, new RouteCollection($routes));
     }
@@ -71,13 +91,18 @@ final class MapBuilder implements MapBuilderInterface
             $pathFindingStrategy = new NoPathFindingStrategy();
         } elseif (true === $pathFindingStrategy) {
             $pathFindingStrategy = new PathFindingStrategy($this->routeBuilder);
-        } elseif (!\is_object($pathFindingStrategy) || !$pathFindingStrategy instanceof PathFindingStrategyInterface) {
+        } elseif (
+            !\is_object($pathFindingStrategy) ||
+            !$pathFindingStrategy instanceof PathFindingStrategyInterface
+        ) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "pathFindingStrategy" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
                 __METHOD__,
                 'boolean',
                 PathFindingStrategyInterface::class,
-                \is_object($pathFindingStrategy) ? \get_class($pathFindingStrategy) : \gettype($pathFindingStrategy)
+                \is_object($pathFindingStrategy) ?
+                    \get_class($pathFindingStrategy) :
+                    \gettype($pathFindingStrategy)
             ));
         }
 

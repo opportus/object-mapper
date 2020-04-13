@@ -22,11 +22,9 @@ use ReflectionParameter;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class ParameterPoint
+final class ParameterPoint extends AbstractPoint
 {
-    use PointTrait;
-
-    const SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\).\$([A-Za-z0-9_]+)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\).\$([A-Za-z0-9_]+)$/';
 
     /**
      * @var ReflectionParameter $reflector
@@ -51,19 +49,27 @@ final class ParameterPoint
      */
     public function __construct(string $fqn)
     {
-        if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
+        if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "fqn" passed to "%s" is invalid. "%s" is not a parameter point as FQN of such is expected to have the following syntax: %s.',
                 __METHOD__,
                 $fqn,
-                self::SYNTAX_PATTERN
+                self::FQN_SYNTAX_PATTERN
             ));
         }
 
-        list($matchedFqn, $matchedClassName, $matchedMethodName, $matchedName) = $matches;
+        [
+            $matchedFqn,
+            $matchedClassName,
+            $matchedMethodName,
+            $matchedName
+        ] = $matches;
 
         try {
-            $reflector = new ReflectionParameter([$matchedClassName, $matchedMethodName], $matchedName);
+            $reflector = new ReflectionParameter(
+                [$matchedClassName, $matchedMethodName],
+                $matchedName
+            );
         } catch (ReflectionException $exception) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "fqn" passed to "%s" is invalid. "%s" is not a parameter point. %s.',

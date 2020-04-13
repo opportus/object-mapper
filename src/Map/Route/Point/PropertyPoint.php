@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use ReflectionException;
 use ReflectionProperty;
 
@@ -23,11 +22,9 @@ use ReflectionProperty;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class PropertyPoint
+final class PropertyPoint extends AbstractPoint
 {
-    use PointTrait;
-
-    const SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).\$([A-Za-z0-9_]+)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).\$([A-Za-z0-9_]+)$/';
 
     /**
      * @var ReflectionProperty $reflector
@@ -42,19 +39,22 @@ final class PropertyPoint
      */
     public function __construct(string $fqn)
     {
-        if (!\preg_match(self::SYNTAX_PATTERN, $fqn, $matches)) {
+        if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "fqn" passed to "%s" is invalid. "%s" is not a property point as FQN of such is expected to have the following syntax: %s.',
                 __METHOD__,
                 $fqn,
-                self::SYNTAX_PATTERN
+                self::FQN_SYNTAX_PATTERN
             ));
         }
 
-        list($matchedFqn, $matchedClassName, $matchedName) = $matches;
+        [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
         try {
-            $reflector = new ReflectionProperty($matchedClassName, $matchedName);
+            $reflector = new ReflectionProperty(
+                $matchedClassName,
+                $matchedName
+            );
         } catch (ReflectionException $exception) {
             throw new InvalidArgumentException(\sprintf(
                 'Argument "fqn" passed to "%s" is invalid. "%s" is not a property point. %s.',
@@ -70,48 +70,5 @@ final class PropertyPoint
         $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;
-    }
-
-    /**
-     * Gets the point value from the passed object.
-     *
-     * @param object $object
-     * @return mixed
-     * @throws InvalidOperationException
-     */
-    public function getValue(object $object)
-    {
-        try {
-            return $this->reflector->getValue($object);
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
-    }
-
-    /**
-     * Sets the point value on the passed object.
-     *
-     * @param object $object
-     * @param mixed $value
-     * @return object
-     * @throws InvalidOperationException
-     */
-    public function setValue(object $object, $value): object
-    {
-        try {
-            $this->reflector->setValue($object, $value);
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
-
-        return $object;
     }
 }

@@ -11,10 +11,11 @@
 
 namespace Opportus\ObjectMapper\Tests\Src\Map\Strategy;
 
-use Opportus\ObjectMapper\Context;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Map\Strategy\NoPathFindingStrategy;
 use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -37,19 +38,28 @@ class NoPathFindingStrategyTest extends FinalBypassTestCase
     public function testGetRoutes(): void
     {
         $strategy = new NoPathFindingStrategy();
-        $context = $this->buildContext();
+        $source = $this->buildSource();
+        $target = $this->buildTarget();
 
-        $routes = $strategy->getRoutes($context);
+        $routes = $strategy->getRoutes($source, $target);
 
         $this->assertInstanceOf(RouteCollection::class, $routes);
         $this->assertCount(0, $routes);
     }
 
-    private function buildContext(): Context
+    private function buildSource(): Source
     {
-        return $this->getMockBuilder(Context::class)
+        return $this->getMockBuilder(Source::class)
             ->disableOriginalConstructor()
             ->getMock()
         ;
+    }
+
+    private function buildTarget(): Target
+    {
+        return $this->getMockBuilder(Target::class)
+            ->disableOriginalConstructor()
+            ->getMock()
+            ;
     }
 }

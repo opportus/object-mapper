@@ -12,10 +12,10 @@
 namespace Opportus\ObjectMapper\Map\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Map\Route\Point\AbstractPoint;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
-use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
-use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 
 /**
  * The route.
@@ -32,12 +32,12 @@ final class Route
     private $fqn;
 
     /**
-     * @var PropertyPoint|MethodPoint $sourcePoint
+     * @var AbstractPoint $sourcePoint
      */
     private $sourcePoint;
 
     /**
-     * @var PropertyPoint|ParameterPoint $targetPoint
+     * @var AbstractPoint $targetPoint
      */
     private $targetPoint;
 
@@ -49,37 +49,40 @@ final class Route
     /**
      * Constructs the route.
      *
-     * @param PropertyPoint|MethodPoint $sourcePoint
-     * @param PropertyPoint|ParameterPoint $targetPoint
-     * @param null|CheckPointCollection $checkPoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
-    public function __construct(object $sourcePoint, object $targetPoint, ?CheckPointCollection $checkPoints = null)
-    {
-        if (!$sourcePoint instanceof PropertyPoint && !$sourcePoint instanceof MethodPoint) {
+    public function __construct(
+        AbstractPoint $sourcePoint,
+        AbstractPoint $targetPoint,
+        ?CheckPointCollection $checkPoints = null
+    ) {
+        if (false === Source::isValidPoint($sourcePoint)) {
             throw new InvalidArgumentException(\sprintf(
-                'Argument "sourcePoint" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
+                'Argument "sourcePoint" passed to "%s" is invalid. "%s" cannot be a source point.',
                 __METHOD__,
-                PropertyPoint::class,
-                MethodPoint::class,
                 \get_class($sourcePoint)
             ));
         }
 
-        if (!$targetPoint instanceof PropertyPoint && !$targetPoint instanceof ParameterPoint) {
+        if (false === Target::isValidPoint($targetPoint)) {
             throw new InvalidArgumentException(\sprintf(
-                'Argument "targetPoint" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
+                'Argument "targetPoint" passed to "%s" is invalid. "%s" cannot be a target point.',
                 __METHOD__,
-                PropertyPoint::class,
-                ParameterPoint::class,
                 \get_class($targetPoint)
             ));
         }
 
-        $this->fqn = \sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn());
         $this->sourcePoint = $sourcePoint;
         $this->targetPoint = $targetPoint;
-        $this->checkPoints = $checkPoints ?? new CheckPointCollection();
+        $this->checkPoints = $checkPoints;
+        $this->fqn = \sprintf(
+            '%s:%s',
+            $sourcePoint->getFqn(),
+            $targetPoint->getFqn()
+        );
     }
 
     /**
@@ -95,9 +98,9 @@ final class Route
     /**
      * Get the source point of the route.
      *
-     * @return PropertyPoint|MethodPoint
+     * @return AbstractPoint
      */
-    public function getSourcePoint(): object
+    public function getSourcePoint(): AbstractPoint
     {
         return $this->sourcePoint;
     }
@@ -105,9 +108,9 @@ final class Route
     /**
      * Get the target point of the route.
      *
-     * @return PropertyPoint|ParameterPoint
+     * @return AbstractPoint
      */
-    public function getTargetPoint(): object
+    public function getTargetPoint(): AbstractPoint
     {
         return $this->targetPoint;
     }

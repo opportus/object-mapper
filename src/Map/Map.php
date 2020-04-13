@@ -11,7 +11,10 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\Context;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 
@@ -39,32 +42,56 @@ final class Map
      *
      * @param PathFindingStrategyInterface $pathFindingStrategy
      * @param null|RouteCollection $routes
+     * @throws InvalidOperationException
      */
-    public function __construct(PathFindingStrategyInterface $pathFindingStrategy, ?RouteCollection $routes = null)
-    {
+    public function __construct(
+        PathFindingStrategyInterface $pathFindingStrategy,
+        ?RouteCollection $routes = null
+    ) {
         $this->pathFindingStrategy = $pathFindingStrategy;
-        $this->routes = $routes ?? new RouteCollection();
+
+        try {
+            $this->routes = $routes ?? new RouteCollection();
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
     }
 
     /**
-     * Gets the routes connecting the points of the source with the points of the target.
+     * Gets the routes connecting the source points with the target points.
      *
-     * @param Context $context
+     * @param Source $source
+     * @param Target $target
      * @return RouteCollection
+     * @throws InvalidOperationException
      */
-    public function getRoutes(Context $context): RouteCollection
+    public function getRoutes(Source $source, Target $target): RouteCollection
     {
-        $routes = $this->pathFindingStrategy->getRoutes($context)->toArray();
+        $routes = $this->pathFindingStrategy
+            ->getRoutes($source, $target)->toArray();
 
         foreach ($this->routes as $route) {
-            if ($context->getSourceClassFqn() === $route->getSourcePoint()->getClassFqn() &&
-                $context->getTargetClassFqn() === $route->getTargetPoint()->getClassFqn()
+            if (
+                $source->hasPoint($route->getSourcePoint()) &&
+                $target->hasPoint($route->getTargetPoint())
             ) {
                 $routes[] = $route;
             }
         }
 
-        return new RouteCollection($routes);
+        try {
+            return new RouteCollection($routes);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidOperationException(\sprintf(
+                'Invalid "%s" operation. %s',
+                __METHOD__,
+                $exception->getMessage()
+            ));
+        }
     }
 
     /**

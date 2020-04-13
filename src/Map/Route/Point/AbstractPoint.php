@@ -12,28 +12,28 @@
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
 /**
- * The point trait.
+ * The abstract point.
  *
  * @package Opportus\ObjectMapper\Map\Route\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-trait PointTrait
+abstract class AbstractPoint
 {
     /**
      * @var string $fqn
      */
-    private $fqn;
+    protected $fqn;
 
     /**
      * @var string $classFqn
      */
-    private $classFqn;
+    protected $classFqn;
 
     /**
      * @var string $name
      */
-    private $name;
+    protected $name;
 
     /**
      * Gets the Fully Qualified Name of the point.

@@ -11,8 +11,10 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
-use Opportus\ObjectMapper\Context;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 
 /**
  * The path finding strategy interface.
@@ -24,10 +26,12 @@ use Opportus\ObjectMapper\Map\Route\RouteCollection;
 interface PathFindingStrategyInterface
 {
     /**
-     * Gets the routes connecting the points of the source with the points of the target.
+     * Gets the routes, each connecting a source point to a target point.
      *
-     * @param Context $context
+     * @param Source $source
+     * @param Target $target
      * @return RouteCollection
+     * @throws InvalidOperationException
      */
-    public function getRoutes(Context $context): RouteCollection;
+    public function getRoutes(Source $source, Target $target): RouteCollection;
 }

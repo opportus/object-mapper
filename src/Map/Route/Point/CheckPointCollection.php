@@ -32,12 +32,16 @@ final class CheckPointCollection extends AbstractImmutableCollection
     public function __construct(array $checkPoints = [])
     {
         foreach ($checkPoints as $checkPoint) {
-            if (!\is_object($checkPoint) || !$checkPoint instanceof CheckPointInterface) {
+            if (
+                !\is_object($checkPoint) ||
+                !$checkPoint instanceof CheckPointInterface
+            ) {
                 throw new InvalidArgumentException(\sprintf(
                     'Argument "checkPoints" passed to "%s" is invalid. Expects the array to contain elements of type "%s". Got an element of type "%s".',
                     __METHOD__,
                     CheckPointInterface::class,
-                    \is_object($checkPoint) ? \get_class($checkPoint) : \gettype($checkPoint)
+                    \is_object($checkPoint) ?
+                        \get_class($checkPoint) : \gettype($checkPoint)
                 ));
             }
         }

@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map\Route;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 
 /**
@@ -25,27 +26,15 @@ interface RouteBuilderInterface
     /**
      * Builds a route.
      *
-     * @param string $sourcePointFqn Can be either:
-     *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
-     * - A public, protected or private method requiring no argument (`MethodPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method()`
-     *
-     * @param string $targetPointFqn Can be either:
-     *
-     * - A public, protected or private property (`PropertyPoint`) represented by its Fully Qualified Name having for syntax `My\Class.$property`
-     * - A parameter of a public, protected or private method (`ParameterPoint`) represented by its Fully Qualified Name having for syntax `My\Class.method().$parameter`
-     *
-     * @param null|CheckPointCollection $checkPoints
-     *
-     * A check point, added to a route, allows you to control (or transform) the value from the source point before it reaches the target point.
-     * You can add multiple *check points* to a route. In this case, these *check points* form a chain.
-     * The first *check point* controls the original value from the *source point* and returns the value (transformed or not) to the object mapper.
-     * Then, the object mapper passes the value to the next checkpoint and so on...
-     * Until the last checkpoint returns the final value to be assigned to the *target point* by the object mapper.
-     * So it is important to keep in mind that each *check point* has an unique position (priority) on a route.
-     * The routed value goes through each of the *check points* from the lowest to the highest positioned ones.
-     *
+     * @param string $sourcePointFqn
+     * @param string $targetPointFqn
+     * @param CheckPointCollection $checkPoints
      * @return Route
+     * @throws InvalidArgumentException
      */
-    public function buildRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints = null): Route;
+    public function buildRoute(
+        string $sourcePointFqn,
+        string $targetPointFqn,
+        CheckPointCollection $checkPoints
+    ): Route;
 }

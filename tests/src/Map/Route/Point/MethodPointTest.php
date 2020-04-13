@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Tests\Src\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
@@ -72,19 +71,6 @@ class MethodPointTest extends FinalBypassTestCase
         $this->assertSame($methodName, $methodPoint->getName());
     }
 
-    /**
-     * @dataProvider provideMethodPointFqnTokens
-     */
-    public function testGetValue(string $className, string $methodName): void
-    {
-        $methodPoint = $this->buildMethodPoint($className, $methodName);
-
-        $this->assertSame(1, $methodPoint->getValue(new MethodPointTestClass()));
-
-        $this->expectException(InvalidOperationException::class);
-        $methodPoint->getValue($this);
-    }
-
     public function provideMethodPointFqnTokens(): array
     {
         return [
@@ -100,7 +86,7 @@ class MethodPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf('%s.%s', MethodPointTestClass::class, 'publicMethod')],
             [\sprintf('%s%s()', MethodPointTestClass::class, 'publicMethod')],
-            [\sprintf('%s.', MethodPointTestClass::class, 'publicMethod')],
+            [\sprintf('%s.', MethodPointTestClass::class)],
 
             // Invalid reflection...
             [\sprintf('%s.%s()', 'InvalidClass', 'publicMethod')],
