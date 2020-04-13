@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Benchmarks\Src\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
+use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 
@@ -47,11 +48,13 @@ class MapBuilderBench
         $this->mapBuilder
             ->addRoute(
                 \sprintf('%s.getA()', BenchObject::class),
-                \sprintf('%s.__construct().$a', BenchObject::class)
+                \sprintf('%s.__construct().$a', BenchObject::class),
+                new CheckPointCollection()
             )
             ->addRoute(
                 \sprintf('%s.getB()', BenchObject::class),
-                \sprintf('%s.setB().$b', BenchObject::class)
+                \sprintf('%s.setB().$b', BenchObject::class),
+                new CheckPointCollection()
             )
             ->buildMap()
         ;
