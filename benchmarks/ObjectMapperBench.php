@@ -11,12 +11,12 @@
 
 namespace Opportus\ObjectMapper\Benchmarks;
 
-use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
-use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
+use PhpBench\Benchmark\Metadata\Annotations\Iterations;
+use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
 /**
  * The object mapper bench.
@@ -43,16 +43,13 @@ class ObjectMapperBench
         $this->noPathFindingStrategyMap = $mapBuilder
             ->addRoute(
                 \sprintf('%s.getA()', BenchObject::class),
-                \sprintf('%s.__construct().$a', BenchObject::class),
-                new CheckPointCollection()
+                \sprintf('%s.__construct().$a', BenchObject::class)
             )
             ->addRoute(
                 \sprintf('%s.getB()', BenchObject::class),
-                \sprintf('%s.setB().$b', BenchObject::class),
-                new CheckPointCollection()
+                \sprintf('%s.setB().$b', BenchObject::class)
             )
-            ->buildMap()
-        ;
+            ->buildMap();
 
         $this->source = new BenchObject(1);
         $this->source->setB(11);

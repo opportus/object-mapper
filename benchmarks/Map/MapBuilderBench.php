@@ -9,13 +9,15 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Benchmarks\Src\Map;
+namespace Opportus\ObjectMapper\Benchmarks\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
-use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
+use PhpBench\Benchmark\Metadata\Annotations\BeforeMethods;
+use PhpBench\Benchmark\Metadata\Annotations\Iterations;
+use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
 /**
  * The map builder bench.
@@ -48,16 +50,13 @@ class MapBuilderBench
         $this->mapBuilder
             ->addRoute(
                 \sprintf('%s.getA()', BenchObject::class),
-                \sprintf('%s.__construct().$a', BenchObject::class),
-                new CheckPointCollection()
+                \sprintf('%s.__construct().$a', BenchObject::class)
             )
             ->addRoute(
                 \sprintf('%s.getB()', BenchObject::class),
-                \sprintf('%s.setB().$b', BenchObject::class),
-                new CheckPointCollection()
+                \sprintf('%s.setB().$b', BenchObject::class)
             )
-            ->buildMap()
-        ;
+            ->buildMap();
     }
 
     public function buildMapBuilder()

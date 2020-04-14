@@ -13,6 +13,8 @@ namespace Opportus\ObjectMapper\Benchmarks\Map\Route\Point;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
+use PhpBench\Benchmark\Metadata\Annotations\Iterations;
+use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
 /**
  * The point factory bench.
