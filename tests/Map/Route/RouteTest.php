@@ -144,7 +144,6 @@ class RouteTest extends FinalBypassTestCase
 
             static::assertCount(0, $route->getCheckPoints());
         } else {
-
             static::assertSame($checkPoints, $route->getCheckPoints());
         }
     }
