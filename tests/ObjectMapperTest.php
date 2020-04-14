@@ -52,8 +52,7 @@ class ObjectMapperTest extends FinalBypassTestCase
                 new CheckPointCollection(
                     [new ObjectMapperTestCheckPointClass()]
                 )
-            )->buildMap(true)
-        ;
+            )->buildMap(true);
 
         $target = $objectMapper->map(
             $this->buildSource(),
@@ -61,10 +60,13 @@ class ObjectMapperTest extends FinalBypassTestCase
             $map
         );
 
-        $this->assertEquals(2, $target->getA());
-        $this->assertEquals(11, $target->getB());
+        static::assertEquals(2, $target->getA());
+        static::assertEquals(11, $target->getB());
     }
 
+    /**
+     * @return ObjectMapperTestObjectClass
+     */
     private function buildSource(): ObjectMapperTestObjectClass
     {
         $source = new ObjectMapperTestObjectClass(1);

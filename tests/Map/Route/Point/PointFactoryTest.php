@@ -32,8 +32,8 @@ class PointFactoryTest extends FinalBypassTestCase
     {
         $pointFactory = new PointFactory();
 
-        $this->assertInstanceOf(PointFactory::class, $pointFactory);
-        $this->assertInstanceOf(PointFactoryInterface::class, $pointFactory);
+        static::assertInstanceOf(PointFactory::class, $pointFactory);
+        static::assertInstanceOf(PointFactoryInterface::class, $pointFactory);
     }
 
     public function testCreatePoint(): void
@@ -41,17 +41,30 @@ class PointFactoryTest extends FinalBypassTestCase
         $pointFactory = new PointFactory();
 
         $pointFqns =  [
-            PropertyPoint::class  =>  \sprintf('%s.$%s', PointFactoryTestClass::class, 'property'),
-            MethodPoint::class    =>    \sprintf('%s.%s()', PointFactoryTestClass::class, 'method'),
-            ParameterPoint::class => \sprintf('%s.%s().$%s', PointFactoryTestClass::class, 'method', 'parameter'),
+            PropertyPoint::class => \sprintf(
+                '%s.$%s',
+                PointFactoryTestClass::class,
+                'property'
+            ),
+            MethodPoint::class => \sprintf(
+                '%s.%s()',
+                PointFactoryTestClass::class,
+                'method'
+            ),
+            ParameterPoint::class => \sprintf(
+                '%s.%s().$%s',
+                PointFactoryTestClass::class,
+                'method',
+                'parameter'
+            ),
         ];
 
 
         foreach ($pointFqns as $pointType => $pointFqn) {
             $point = $pointFactory->createPoint($pointFqn);
 
-            $this->assertInstanceOf($pointType, $point);
-            $this->assertSame($pointFqn, $point->getFqn());
+            static::assertInstanceOf($pointType, $point);
+            static::assertSame($pointFqn, $point->getFqn());
         }
 
         $this->expectException(InvalidArgumentException::class);
@@ -70,6 +83,9 @@ class PointFactoryTestClass
 {
     public $property;
 
+    /**
+     * @param null $parameter
+     */
     public function method($parameter = null)
     {
     }

@@ -21,6 +21,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use stdClass;
 
 /**
  * The check point collection test.
@@ -33,27 +34,65 @@ class CheckPointCollectionTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testConstruct(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
-        $this->assertInstanceOf(CheckPointCollection::class, $checkPointCollection);
-        $this->assertInstanceOf(AbstractImmutableCollection::class, $checkPointCollection);
-        $this->assertInstanceOf(ArrayAccess::class, $checkPointCollection);
-        $this->assertInstanceOf(Countable::class, $checkPointCollection);
-        $this->assertInstanceOf(IteratorAggregate::class, $checkPointCollection);
-        $this->assertContainsOnlyInstancesOf(CheckPointInterface::class, $checkPointCollection);
-        $this->assertSame(\count($checkPoints), \count($checkPointCollection));
+        static::assertInstanceOf(
+            CheckPointCollection::class,
+            $checkPointCollection
+        );
+
+        static::assertInstanceOf(
+            AbstractImmutableCollection::class,
+            $checkPointCollection
+        );
+
+        static::assertInstanceOf(
+            ArrayAccess::class,
+            $checkPointCollection
+        );
+
+        static::assertInstanceOf(
+            Countable::class,
+            $checkPointCollection
+        );
+
+        static::assertInstanceOf(
+            IteratorAggregate::class,
+            $checkPointCollection
+        );
+
+        static::assertContainsOnlyInstancesOf(
+            CheckPointInterface::class,
+            $checkPointCollection
+        );
+
+        static::assertSame(
+            \count($checkPoints),
+            \count($checkPointCollection)
+        );
 
         foreach ($checkPoints as $checkPointPosition=> $checkPoint) {
-            $this->assertArrayHasKey($checkPointPosition, $checkPointCollection);
-            $this->assertSame($checkPoint, $checkPointCollection[$checkPointPosition]);
+            static::assertArrayHasKey(
+                $checkPointPosition,
+                $checkPointCollection
+            );
+
+            static::assertSame(
+                $checkPoint,
+                $checkPointCollection[$checkPointPosition]
+            );
         }
     }
 
     /**
      * @dataProvider provideInvalidCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testConstructException(array $checkPoints): void
     {
@@ -64,69 +103,90 @@ class CheckPointCollectionTest extends FinalBypassTestCase
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testToArray(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
-        $this->assertSame($checkPoints, $checkPointCollection->toArray());
+        static::assertSame($checkPoints, $checkPointCollection->toArray());
     }
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testGetIterator(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
         $iterator = $checkPointCollection->getIterator();
 
-        $this->assertInstanceOf(ArrayIterator::class, $iterator);
-        $this->assertSame(\count($checkPoints), \count($iterator));
+        static::assertInstanceOf(ArrayIterator::class, $iterator);
+        static::assertSame(\count($checkPoints), \count($iterator));
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
-            $this->assertArrayHasKey($checkPointPosition, $iterator);
-            $this->assertSame($checkPoint, $iterator[$checkPointPosition]);
+            static::assertArrayHasKey($checkPointPosition, $iterator);
+            static::assertSame($checkPoint, $iterator[$checkPointPosition]);
         }
     }
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testCount(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
-        $this->assertSame(\count($checkPoints), $checkPointCollection->count());
+        static::assertSame(
+            \count($checkPoints),
+            $checkPointCollection->count()
+        );
     }
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testOffsetExists(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
-            $this->assertTrue($checkPointCollection->offsetExists($checkPointPosition));
+            static::assertTrue(
+                $checkPointCollection->offsetExists($checkPointPosition)
+            );
         }
 
-        $this->assertFalse($checkPointCollection->offsetExists(4));
+        static::assertFalse($checkPointCollection->offsetExists(4));
     }
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testOffsetGet(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
-            $this->assertSame($checkPoint, $checkPointCollection->offsetGet($checkPointPosition));
+            static::assertSame(
+                $checkPoint,
+                $checkPointCollection->offsetGet($checkPointPosition)
+            );
         }
     }
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
      */
     public function testOffsetSet(array $checkPoints): void
     {
@@ -138,6 +198,9 @@ class CheckPointCollectionTest extends FinalBypassTestCase
 
     /**
      * @dataProvider provideCheckPoints
+     * @param array $checkPoints
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
      */
     public function testOffsetUnset(array $checkPoints): void
     {
@@ -147,6 +210,9 @@ class CheckPointCollectionTest extends FinalBypassTestCase
         $checkPointCollection->offsetUnset(0);
     }
 
+    /**
+     * @return array|\array[][]
+     */
     public function provideCheckPoints(): array
     {
         $checkPoints = [];
@@ -161,6 +227,9 @@ class CheckPointCollectionTest extends FinalBypassTestCase
         return [[$checkPoints]];
     }
 
+    /**
+     * @return array|\array[][]
+     */
     public function provideInvalidCheckPoints(): array
     {
         return [[
@@ -171,7 +240,7 @@ class CheckPointCollectionTest extends FinalBypassTestCase
                 function () {
                 },
                 [],
-                new \StdClass(),
+                new stdClass(),
             ]
         ]];
     }

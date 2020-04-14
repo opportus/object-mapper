@@ -26,6 +26,8 @@ class MethodPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidMethodPointFqns
+     * @param $invalidMethodPointFqn
+     * @throws InvalidArgumentException
      */
     public function testConstructException($invalidMethodPointFqn): void
     {
@@ -35,42 +37,63 @@ class MethodPointTest extends FinalBypassTestCase
 
     /**
      * @dataProvider provideMethodPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @throws InvalidArgumentException
      */
     public function testConstruct(string $className, string $methodName): void
     {
-        $this->assertInstanceOf(MethodPoint::class, new MethodPoint(\sprintf('%s.%s()', $className, $methodName)));
+        static::assertInstanceOf(
+            MethodPoint::class,
+            new MethodPoint(\sprintf('%s.%s()', $className, $methodName))
+        );
     }
 
     /**
      * @dataProvider provideMethodPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @throws InvalidArgumentException
      */
     public function testGetFqn(string $className, string $methodName): void
     {
         $methodPoint = $this->buildMethodPoint($className, $methodName);
 
-        $this->assertSame(\sprintf('%s.%s()', $className, $methodName), $methodPoint->getFqn());
+        static::assertSame(
+            \sprintf('%s.%s()', $className, $methodName),
+            $methodPoint->getFqn()
+        );
     }
 
     /**
      * @dataProvider provideMethodPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @throws InvalidArgumentException
      */
     public function testGetClassFqn(string $className, string $methodName): void
     {
         $methodPoint = $this->buildMethodPoint($className, $methodName);
 
-        $this->assertSame($className, $methodPoint->getClassFqn());
+        static::assertSame($className, $methodPoint->getClassFqn());
     }
 
     /**
      * @dataProvider provideMethodPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @throws InvalidArgumentException
      */
     public function testGetName(string $className, string $methodName): void
     {
         $methodPoint = $this->buildMethodPoint($className, $methodName);
 
-        $this->assertSame($methodName, $methodPoint->getName());
+        static::assertSame($methodName, $methodPoint->getName());
     }
 
+    /**
+     * @return array|string[][]
+     */
     public function provideMethodPointFqnTokens(): array
     {
         return [
@@ -80,25 +103,59 @@ class MethodPointTest extends FinalBypassTestCase
         ];
     }
 
+    /**
+     * @return array|array[]
+     */
     public function provideInvalidMethodPointFqns(): array
     {
         return [
             // Invalid syntax...
-            [\sprintf('%s.%s', MethodPointTestClass::class, 'publicMethod')],
-            [\sprintf('%s%s()', MethodPointTestClass::class, 'publicMethod')],
-            [\sprintf('%s.', MethodPointTestClass::class)],
+            [\sprintf(
+                '%s.%s',
+                MethodPointTestClass::class,
+                'publicMethod'
+            )],
+            [\sprintf(
+                '%s%s()',
+                MethodPointTestClass::class,
+                'publicMethod'
+            )],
+            [\sprintf(
+                '%s.',
+                MethodPointTestClass::class
+            )],
 
             // Invalid reflection...
-            [\sprintf('%s.%s()', 'InvalidClass', 'publicMethod')],
-            [\sprintf('%s.%s()', MethodPointTestClass::class, 'invalidMethod')],
+            [\sprintf(
+                '%s.%s()',
+                'InvalidClass',
+                'publicMethod'
+            )],
+            [\sprintf(
+                '%s.%s()',
+                MethodPointTestClass::class,
+                'invalidMethod'
+            )],
 
             // Invalid method...
-            [\sprintf('%s.%s()', MethodPointTestClass::class, 'parameterableMethod')],
+            [\sprintf(
+                '%s.%s()',
+                MethodPointTestClass::class,
+                'parameterableMethod'
+            )],
         ];
     }
 
-    private function buildMethodPoint(string $className, string $methodName): MethodPoint
-    {
+    /**
+     * @param string $className
+     * @param string $methodName
+     * @return MethodPoint
+     * @throws InvalidArgumentException
+     */
+    private function buildMethodPoint(
+        string $className,
+        string $methodName
+    ): MethodPoint {
         $methodPointFqn = \sprintf('%s.%s()', $className, $methodName);
 
         return new MethodPoint($methodPointFqn);
@@ -114,21 +171,34 @@ class MethodPointTest extends FinalBypassTestCase
  */
 class MethodPointTestClass
 {
+    /**
+     * @return int
+     */
     private function privateMethod(): int
     {
         return 1;
     }
 
+    /**
+     * @return int
+     */
     protected function protectedMethod(): int
     {
         return 1;
     }
 
+    /**
+     * @return int
+     */
     public function publicMethod(): int
     {
         return 1;
     }
 
+    /**
+     * @param $parameterableMethodParameter
+     * @return int
+     */
     public function parameterableMethod($parameterableMethodParameter): int
     {
         return 1;

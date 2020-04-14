@@ -26,6 +26,8 @@ class ParameterPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidParameterPointFqns
+     * @param $invalidParameterPointFqn
+     * @throws InvalidArgumentException
      */
     public function testConstructException($invalidParameterPointFqn): void
     {
@@ -35,88 +37,227 @@ class ParameterPointTest extends FinalBypassTestCase
 
     /**
      * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
      */
-    public function testConstruct(string $className, string $methodName, string $parameterName): void
-    {
-        $this->assertInstanceOf(ParameterPoint::class, new ParameterPoint(\sprintf('%s.%s().$%s', $className, $methodName, $parameterName)));
+    public function testConstruct(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        static::assertInstanceOf(
+            ParameterPoint::class,
+            new ParameterPoint(
+                \sprintf(
+                    '%s.%s().$%s',
+                    $className,
+                    $methodName,
+                    $parameterName
+                )
+            )
+        );
     }
 
     /**
      * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
      */
-    public function testGetFqn(string $className, string $methodName, string $parameterName): void
-    {
-        $parameterPoint = $this->buildParameterPoint($className, $methodName, $parameterName);
+    public function testGetFqn(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        $parameterPoint = $this->buildParameterPoint(
+            $className,
+            $methodName,
+            $parameterName
+        );
 
-        $this->assertSame(\sprintf('%s.%s().$%s', $className, $methodName, $parameterName), $parameterPoint->getFqn());
+        static::assertSame(
+            \sprintf('%s.%s().$%s', $className, $methodName, $parameterName),
+            $parameterPoint->getFqn()
+        );
     }
 
     /**
      * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
      */
-    public function testGetClassFqn(string $className, string $methodName, string $parameterName): void
-    {
-        $parameterPoint = $this->buildParameterPoint($className, $methodName, $parameterName);
+    public function testGetClassFqn(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        $parameterPoint = $this->buildParameterPoint(
+            $className,
+            $methodName,
+            $parameterName
+        );
 
-        $this->assertSame($className, $parameterPoint->getClassFqn());
+        static::assertSame($className, $parameterPoint->getClassFqn());
     }
 
     /**
      * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
      */
-    public function testGetName(string $className, string $methodName, string $parameterName): void
-    {
-        $parameterPoint = $this->buildParameterPoint($className, $methodName, $parameterName);
+    public function testGetName(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        $parameterPoint = $this->buildParameterPoint(
+            $className,
+            $methodName,
+            $parameterName
+        );
 
-        $this->assertSame($parameterName, $parameterPoint->getName());
+        static::assertSame($parameterName, $parameterPoint->getName());
     }
 
     /**
      * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
      */
-    public function testGetMethodName(string $className, string $methodName, string $parameterName): void
-    {
-        $parameterPoint = $this->buildParameterPoint($className, $methodName, $parameterName);
+    public function testGetMethodName(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        $parameterPoint = $this->buildParameterPoint(
+            $className,
+            $methodName,
+            $parameterName
+        );
 
-        $this->assertSame($methodName, $parameterPoint->getMethodName());
+        static::assertSame($methodName, $parameterPoint->getMethodName());
     }
+
     /**
      * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
      */
-    public function testGetPosition(string $className, string $methodName, string $parameterName): void
-    {
-        $parameterPoint = $this->buildParameterPoint($className, $methodName, $parameterName);
+    public function testGetPosition(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        $parameterPoint = $this->buildParameterPoint(
+            $className,
+            $methodName,
+            $parameterName
+        );
 
-        $this->assertSame(0, $parameterPoint->getPosition());
+        static::assertSame(0, $parameterPoint->getPosition());
     }
 
+    /**
+     * @return array|string[][]
+     */
     public function provideParameterPointFqnTokens(): array
     {
         return [
-            [ParameterPointTestClass::class, 'privateMethod',   'privateMethodParameter'],
-            [ParameterPointTestClass::class, 'protectedMethod', 'protectedMethodParameter'],
-            [ParameterPointTestClass::class, 'publicMethod',    'publicMethodParameter'],
+            [
+                ParameterPointTestClass::class,
+                'privateMethod',
+                'privateMethodParameter',
+            ],
+            [
+                ParameterPointTestClass::class,
+                'protectedMethod',
+                'protectedMethodParameter',
+            ],
+            [
+                ParameterPointTestClass::class,
+                'publicMethod',
+                'publicMethodParameter',
+            ],
         ];
     }
 
+    /**
+     * @return array|array[]
+     */
     public function provideInvalidParameterPointFqns(): array
     {
         return [
             // Invalid syntax...
-            [\sprintf('%s.%s.$%s', ParameterPointTestClass::class, 'publicMethod', 'publicMethodParameter')],
-            [\sprintf('%s.%s().%s', ParameterPointTestClass::class, 'publicMethod', 'publicMethodParameter')],
-            [\sprintf('%s.%s.%s', ParameterPointTestClass::class, 'publicMethod', 'publicMethodParameter')],
+            [\sprintf(
+                '%s.%s.$%s',
+                ParameterPointTestClass::class,
+                'publicMethod',
+                'publicMethodParameter'
+            )],
+            [\sprintf(
+                '%s.%s().%s',
+                ParameterPointTestClass::class,
+                'publicMethod',
+                'publicMethodParameter'
+            )],
+            [\sprintf(
+                '%s.%s.%s',
+                ParameterPointTestClass::class,
+                'publicMethod',
+                'publicMethodParameter'
+            )],
 
             // Invalid reflection...
-            [\sprintf('%s.%s().$%s', 'InvalidClass', 'publicMethod', 'publicMethodParameter')],
-            [\sprintf('%s.%s().$%s', ParameterPointTestClass::class, 'invalidMethod', 'publicMethodParameter')],
-            [\sprintf('%s.%s().$%s', ParameterPointTestClass::class, 'publicMethod', 'invalidParameter')],
+            [\sprintf(
+                '%s.%s().$%s',
+                'InvalidClass',
+                'publicMethod',
+                'publicMethodParameter'
+            )],
+            [\sprintf(
+                '%s.%s().$%s',
+                ParameterPointTestClass::class,
+                'invalidMethod',
+                'publicMethodParameter'
+            )],
+            [\sprintf(
+                '%s.%s().$%s',
+                ParameterPointTestClass::class,
+                'publicMethod',
+                'invalidParameter'
+            )],
         ];
     }
 
-    private function buildParameterPoint(string $className, string $methodName, string $parameterName): ParameterPoint
-    {
-        $parameterPointFqn = \sprintf('%s.%s().$%s', $className, $methodName, $parameterName);
+    /**
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @return ParameterPoint
+     * @throws InvalidArgumentException
+     */
+    private function buildParameterPoint(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): ParameterPoint {
+        $parameterPointFqn = \sprintf(
+            '%s.%s().$%s',
+            $className,
+            $methodName,
+            $parameterName
+        );
 
         return new ParameterPoint($parameterPointFqn);
     }
@@ -131,12 +272,23 @@ class ParameterPointTest extends FinalBypassTestCase
  */
 class ParameterPointTestClass
 {
+    /**
+     * @param $privateMethodParameter
+     */
     private function privateMethod($privateMethodParameter)
     {
     }
+
+    /**
+     * @param $protectedMethodParameter
+     */
     protected function protectedMethod($protectedMethodParameter)
     {
     }
+
+    /**
+     * @param $publicMethodParameter
+     */
     public function publicMethod($publicMethodParameter)
     {
     }

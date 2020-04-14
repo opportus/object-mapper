@@ -31,8 +31,14 @@ class NoPathFindingStrategyTest extends FinalBypassTestCase
     {
         $strategy = new NoPathFindingStrategy();
 
-        $this->assertInstanceOf(NoPathFindingStrategy::class, $strategy);
-        $this->assertInstanceOf(PathFindingStrategyInterface::class, $strategy);
+        static::assertInstanceOf(
+            NoPathFindingStrategy::class,
+            $strategy
+        );
+        static::assertInstanceOf(
+            PathFindingStrategyInterface::class,
+            $strategy
+        );
     }
 
     public function testGetRoutes(): void
@@ -41,25 +47,27 @@ class NoPathFindingStrategyTest extends FinalBypassTestCase
         $source = $this->buildSource();
         $target = $this->buildTarget();
 
+        /**
+         * @var Source $source
+         * @var Target $target
+         */
         $routes = $strategy->getRoutes($source, $target);
 
-        $this->assertInstanceOf(RouteCollection::class, $routes);
-        $this->assertCount(0, $routes);
+        static::assertInstanceOf(RouteCollection::class, $routes);
+        static::assertCount(0, $routes);
     }
 
-    private function buildSource(): Source
+    private function buildSource()
     {
         return $this->getMockBuilder(Source::class)
             ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            ->getMock();
     }
 
-    private function buildTarget(): Target
+    private function buildTarget()
     {
         return $this->getMockBuilder(Target::class)
             ->disableOriginalConstructor()
-            ->getMock()
-            ;
+            ->getMock();
     }
 }

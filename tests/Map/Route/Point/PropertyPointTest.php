@@ -26,6 +26,8 @@ class PropertyPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidPropertyPointFqns
+     * @param $invalidPropertyPointFqn
+     * @throws InvalidArgumentException
      */
     public function testConstructException($invalidPropertyPointFqn): void
     {
@@ -35,42 +37,65 @@ class PropertyPointTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePropertyPointFqnTokens
+     * @param string $className
+     * @param string $propertyName
+     * @throws InvalidArgumentException
      */
     public function testConstruct(string $className, string $propertyName): void
     {
-        $this->assertInstanceOf(PropertyPoint::class, new PropertyPoint(\sprintf('%s.$%s', $className, $propertyName)));
+        static::assertInstanceOf(
+            PropertyPoint::class,
+            new PropertyPoint(\sprintf('%s.$%s', $className, $propertyName))
+        );
     }
 
     /**
      * @dataProvider providePropertyPointFqnTokens
+     * @param string $className
+     * @param string $propertyName
+     * @throws InvalidArgumentException
      */
     public function testGetFqn(string $className, string $propertyName): void
     {
         $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
 
-        $this->assertSame(\sprintf('%s.$%s', $className, $propertyName), $propertyPoint->getFqn());
+        static::assertSame(
+            \sprintf('%s.$%s', $className, $propertyName),
+            $propertyPoint->getFqn()
+        );
     }
 
     /**
      * @dataProvider providePropertyPointFqnTokens
+     * @param string $className
+     * @param string $propertyName
+     * @throws InvalidArgumentException
      */
-    public function testGetClassFqn(string $className, string $propertyName): void
-    {
+    public function testGetClassFqn(
+        string $className,
+        string $propertyName
+    ): void {
         $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
 
-        $this->assertSame($className, $propertyPoint->getClassFqn());
+        static::assertSame($className, $propertyPoint->getClassFqn());
     }
 
     /**
      * @dataProvider providePropertyPointFqnTokens
+     * @param string $className
+     * @param string $propertyName
+     * @throws InvalidArgumentException
      */
     public function testGetName(string $className, string $propertyName): void
     {
         $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
 
-        $this->assertSame($propertyName, $propertyPoint->getName());
+        static::assertSame($propertyName, $propertyPoint->getName());
     }
 
+    /**
+     * @return array|string[][]
+     */
     public function providePropertyPointFqnTokens(): array
     {
         return [
@@ -80,22 +105,52 @@ class PropertyPointTest extends FinalBypassTestCase
         ];
     }
 
+    /**
+     * @return array|array[]
+     */
     public function provideInvalidPropertyPointFqns(): array
     {
         return [
             // Invalid syntax...
-            [\sprintf('%s.%s', PropertyPointTestClass::class, 'publicProperty')],
-            [\sprintf('%s$%s', PropertyPointTestClass::class, 'publicProperty')],
-            [\sprintf('%s.$', PropertyPointTestClass::class)],
+            [\sprintf(
+                '%s.%s',
+                PropertyPointTestClass::class,
+                'publicProperty'
+            )],
+            [\sprintf(
+                '%s$%s',
+                PropertyPointTestClass::class,
+                'publicProperty'
+            )],
+            [\sprintf(
+                '%s.$',
+                PropertyPointTestClass::class
+            )],
 
             // Invalid reflection...
-            [\sprintf('%s.$%s', 'InvalidClass', 'publicProperty')],
-            [\sprintf('%s.$%s', PropertyPointTestClass::class, 'invalidProperty')],
+            [\sprintf(
+                '%s.$%s',
+                'InvalidClass',
+                'publicProperty'
+            )],
+            [\sprintf(
+                '%s.$%s',
+                PropertyPointTestClass::class,
+                'invalidProperty'
+            )],
         ];
     }
 
-    private function buildPropertyPoint(string $className, string $propertyName): PropertyPoint
-    {
+    /**
+     * @param string $className
+     * @param string $propertyName
+     * @return PropertyPoint
+     * @throws InvalidArgumentException
+     */
+    private function buildPropertyPoint(
+        string $className,
+        string $propertyName
+    ): PropertyPoint {
         $propertyPointFqn = \sprintf('%s.$%s', $className, $propertyName);
 
         return new PropertyPoint($propertyPointFqn);

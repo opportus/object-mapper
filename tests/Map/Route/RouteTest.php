@@ -31,6 +31,10 @@ class RouteTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidPoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testConstructException(
         AbstractPoint $sourcePoint,
@@ -43,6 +47,10 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param null|CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testConstruct(
         AbstractPoint $sourcePoint,
@@ -51,11 +59,15 @@ class RouteTest extends FinalBypassTestCase
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
-        $this->assertInstanceOf(Route::class, $route);
+        static::assertInstanceOf(Route::class, $route);
     }
 
     /**
      * @dataProvider providePoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param null|CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testGetFqn(
         AbstractPoint $sourcePoint,
@@ -64,11 +76,18 @@ class RouteTest extends FinalBypassTestCase
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
-        $this->assertSame(\sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn()), $route->getFqn());
+        static::assertSame(
+            \sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn()),
+            $route->getFqn()
+        );
     }
 
     /**
      * @dataProvider providePoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param null|CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testGetSourcePoint(
         AbstractPoint $sourcePoint,
@@ -77,11 +96,18 @@ class RouteTest extends FinalBypassTestCase
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
-        $this->assertInstanceOf(\get_class($sourcePoint), $route->getSourcePoint());
+        static::assertInstanceOf(
+            \get_class($sourcePoint),
+            $route->getSourcePoint()
+        );
     }
 
     /**
      * @dataProvider providePoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testGetTargetPoint(
         AbstractPoint $sourcePoint,
@@ -90,11 +116,18 @@ class RouteTest extends FinalBypassTestCase
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
-        $this->assertInstanceOf(\get_class($targetPoint), $route->getTargetPoint());
+        static::assertInstanceOf(
+            \get_class($targetPoint),
+            $route->getTargetPoint()
+        );
     }
 
     /**
      * @dataProvider providePoints
+     * @param AbstractPoint $sourcePoint
+     * @param AbstractPoint $targetPoint
+     * @param CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testGetCheckPoints(
         AbstractPoint $sourcePoint,
@@ -104,65 +137,129 @@ class RouteTest extends FinalBypassTestCase
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
         if (null === $checkPoints) {
-            $this->assertInstanceOf(CheckPointCollection::class, $route->getCheckPoints());
-            $this->assertCount(0, $route->getCheckPoints());
+            static::assertInstanceOf(
+                CheckPointCollection::class,
+                $route->getCheckPoints()
+            );
+
+            static::assertCount(0, $route->getCheckPoints());
         } else {
-            $this->assertSame($checkPoints, $route->getCheckPoints());
+
+            static::assertSame($checkPoints, $route->getCheckPoints());
         }
     }
 
+    /**
+     * @return array|array[]
+     */
     public function providePoints(): array
     {
         return [
             [
-                $this->buildPoint(PropertyPoint::class, 'Class.$property'),
-                $this->buildPoint(PropertyPoint::class, 'Class.$property'),
+                $this->buildPoint(
+                    PropertyPoint::class,
+                    'Class.$property'
+                ),
+                $this->buildPoint(
+                    PropertyPoint::class,
+                    'Class.$property'
+                ),
                 new CheckPointCollection(),
             ],
             [
-                $this->buildPoint(PropertyPoint::class, 'Class.$property'),
-                $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
+                $this->buildPoint(
+                    PropertyPoint::class,
+                    'Class.$property'
+                ),
+                $this->buildPoint(
+                    ParameterPoint::class,
+                    'Class.method().$parameter'
+                ),
                 new CheckPointCollection(),
             ],
             [
-                $this->buildPoint(MethodPoint::class, 'Class.method()'),
-                $this->buildPoint(PropertyPoint::class, 'Class.$property'),
+                $this->buildPoint(
+                    MethodPoint::class,
+                    'Class.method()'
+                ),
+                $this->buildPoint(
+                    PropertyPoint::class,
+                    'Class.$property'
+                ),
                 new CheckPointCollection(),
             ],
             [
-                $this->buildPoint(MethodPoint::class, 'Class.method()'),
-                $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
+                $this->buildPoint(
+                    MethodPoint::class,
+                    'Class.method()'
+                ),
+                $this->buildPoint(
+                    ParameterPoint::class,
+                    'Class.method().$parameter'
+                ),
                 new CheckPointCollection(),
             ],
         ];
     }
 
+    /**
+     * @return array|array[]
+     */
     public function provideInvalidPoints(): array
     {
         return [
             [
-                $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
-                $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
+                $this->buildPoint(
+                    ParameterPoint::class,
+                    'Class.method().$parameter'
+                ),
+                $this->buildPoint(
+                    ParameterPoint::class,
+                    'Class.method().$parameter'
+                ),
                 new CheckPointCollection(),
             ],
             [
-                $this->buildPoint(ParameterPoint::class, 'Class.method().$parameter'),
-                $this->buildPoint(PropertyPoint::class, 'Class.$property'),
+                $this->buildPoint(
+                    ParameterPoint::class,
+                    'Class.method().$parameter'
+                ),
+                $this->buildPoint(
+                    PropertyPoint::class,
+                    'Class.$property'
+                ),
                 new CheckPointCollection(),
             ],
             [
-                $this->buildPoint(PropertyPoint::class, 'Class.$property'),
-                $this->buildPoint(MethodPoint::class, 'Class.method()'),
+                $this->buildPoint(
+                    PropertyPoint::class,
+                    'Class.$property'
+                ),
+                $this->buildPoint(
+                    MethodPoint::class,
+                    'Class.method()'
+                ),
                 new CheckPointCollection(),
             ],
             [
-                $this->buildPoint(MethodPoint::class, 'Class.method()'),
-                $this->buildPoint(MethodPoint::class, 'Class.method()'),
+                $this->buildPoint(
+                    MethodPoint::class,
+                    'Class.method()'
+                ),
+                $this->buildPoint(
+                    MethodPoint::class,
+                    'Class.method()'
+                ),
                 new CheckPointCollection(),
             ],
         ];
     }
 
+    /**
+     * @param string $pointType
+     * @param string $pointFqn
+     * @return object
+     */
     private function buildPoint(string $pointType, string $pointFqn): object
     {
         $point = $this->getMockBuilder($pointType)

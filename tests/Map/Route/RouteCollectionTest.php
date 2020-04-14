@@ -21,6 +21,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use stdClass;
 
 /**
  * The route collection test.
@@ -33,27 +34,58 @@ class RouteCollectionTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testConstruct(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
-        $this->assertInstanceOf(RouteCollection::class, $routeCollection);
-        $this->assertInstanceOf(AbstractImmutableCollection::class, $routeCollection);
-        $this->assertInstanceOf(ArrayAccess::class, $routeCollection);
-        $this->assertInstanceOf(Countable::class, $routeCollection);
-        $this->assertInstanceOf(IteratorAggregate::class, $routeCollection);
-        $this->assertContainsOnlyInstancesOf(Route::class, $routeCollection);
-        $this->assertSame(\count($routes), \count($routeCollection));
+        static::assertInstanceOf(
+            RouteCollection::class,
+            $routeCollection
+        );
+
+        static::assertInstanceOf(
+            AbstractImmutableCollection::class,
+            $routeCollection
+        );
+
+        static::assertInstanceOf(
+            ArrayAccess::class,
+            $routeCollection
+        );
+
+        static::assertInstanceOf(
+            Countable::class,
+            $routeCollection
+        );
+
+        static::assertInstanceOf(
+            IteratorAggregate::class,
+            $routeCollection
+        );
+
+        static::assertContainsOnlyInstancesOf(
+            Route::class,
+            $routeCollection
+        );
+
+        static::assertSame(
+            \count($routes),
+            \count($routeCollection)
+        );
 
         foreach ($routes as $routeFqn => $route) {
-            $this->assertArrayHasKey($routeFqn, $routeCollection);
-            $this->assertSame($route, $routeCollection[$routeFqn]);
+            static::assertArrayHasKey($routeFqn, $routeCollection);
+            static::assertSame($route, $routeCollection[$routeFqn]);
         }
     }
 
     /**
      * @dataProvider provideInvalidRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testConstructException(array $routes): void
     {
@@ -64,69 +96,82 @@ class RouteCollectionTest extends FinalBypassTestCase
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testToArray(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
-        $this->assertSame($routes, $routeCollection->toArray());
+        static::assertSame($routes, $routeCollection->toArray());
     }
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testGetIterator(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
         $iterator = $routeCollection->getIterator();
 
-        $this->assertInstanceOf(ArrayIterator::class, $iterator);
-        $this->assertSame(\count($routes), \count($iterator));
+        static::assertInstanceOf(ArrayIterator::class, $iterator);
+        static::assertSame(\count($routes), \count($iterator));
 
         foreach ($routes as $routeFqn => $route) {
-            $this->assertArrayHasKey($routeFqn, $iterator);
-            $this->assertSame($route, $iterator[$routeFqn]);
+            static::assertArrayHasKey($routeFqn, $iterator);
+            static::assertSame($route, $iterator[$routeFqn]);
         }
     }
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testCount(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
-        $this->assertSame(\count($routes), $routeCollection->count());
+        static::assertSame(\count($routes), $routeCollection->count());
     }
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testOffsetExists(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
-            $this->assertTrue($routeCollection->offsetExists($routeFqn));
+            static::assertTrue($routeCollection->offsetExists($routeFqn));
         }
 
-        $this->assertFalse($routeCollection->offsetExists('route_4'));
+        static::assertFalse($routeCollection->offsetExists('route_4'));
     }
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
      */
     public function testOffsetGet(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
-            $this->assertSame($route, $routeCollection->offsetGet($routeFqn));
+            static::assertSame($route, $routeCollection->offsetGet($routeFqn));
         }
     }
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
      */
     public function testOffsetSet(array $routes): void
     {
@@ -138,6 +183,9 @@ class RouteCollectionTest extends FinalBypassTestCase
 
     /**
      * @dataProvider provideRoutes
+     * @param array $routes
+     * @throws InvalidArgumentException
+     * @throws InvalidOperationException
      */
     public function testOffsetUnset(array $routes): void
     {
@@ -175,7 +223,7 @@ class RouteCollectionTest extends FinalBypassTestCase
                 function () {
                 },
                 [],
-                new \StdClass(),
+                new stdClass(),
             ]
         ]];
     }

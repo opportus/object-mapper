@@ -18,7 +18,6 @@ use Opportus\ObjectMapper\Map\Route\Route;
 use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
-use TypeError;
 
 /**
  * The route builder test.
@@ -29,43 +28,64 @@ use TypeError;
  */
 class RouteBuilderTest extends FinalBypassTestCase
 {
-    public function testConstructException()
-    {
-        $this->expectException(TypeError::class);
-        new RouteBuilder(new RouteBuilderTestClass());
-    }
-
     public function testConstruct()
     {
         $routeBuilder = new RouteBuilder(new PointFactory());
 
-        $this->assertInstanceOf(RouteBuilder::class, $routeBuilder);
-        $this->assertInstanceOf(RouteBuilderInterface::class, $routeBuilder);
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder);
+        static::assertInstanceOf(RouteBuilderInterface::class, $routeBuilder);
     }
 
     /**
      * @dataProvider providePointFqns
+     * @param string $sourcePointFqn
+     * @param string $targetPointFqn
+     * @param CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
-    public function testBuildRoute(string $sourcePointFqn, string $targetPointFqn, CheckPointCollection $checkPoints): void
-    {
+    public function testBuildRoute(
+        string $sourcePointFqn,
+        string $targetPointFqn,
+        CheckPointCollection $checkPoints
+    ): void {
         $routeBuilder = $this->buildRouteBuilder();
 
-        $route = $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn, $checkPoints);
+        $route = $routeBuilder->buildRoute(
+            $sourcePointFqn,
+            $targetPointFqn,
+            $checkPoints
+        );
 
-        $this->assertInstanceOf(Route::class, $route);
-        $this->assertSame($sourcePointFqn, $route->getSourcePoint()->getFqn());
-        $this->assertSame($targetPointFqn, $route->getTargetPoint()->getFqn());
+        static::assertInstanceOf(Route::class, $route);
+
+        static::assertSame(
+            $sourcePointFqn,
+            $route->getSourcePoint()->getFqn()
+        );
+
+        static::assertSame(
+            $targetPointFqn,
+            $route->getTargetPoint()->getFqn()
+        );
 
         if (null === $checkPoints) {
-            $this->assertInstanceOf(CheckPointCollection::class, $route->getCheckPoints());
-            $this->assertCount(0, $route->getCheckPoints());
+            static::assertInstanceOf(
+                CheckPointCollection::class,
+                $route->getCheckPoints()
+            );
+
+            static::assertCount(0, $route->getCheckPoints());
         } else {
-            $this->assertSame($checkPoints, $route->getCheckPoints());
+            static::assertSame($checkPoints, $route->getCheckPoints());
         }
     }
 
     /**
      * @dataProvider provideInvalidPointFqns
+     * @param string $sourcePointFqn
+     * @param string $targetPointFqn
+     * @param CheckPointCollection $checkPoints
+     * @throws InvalidArgumentException
      */
     public function testBuildRouteException(
         string $sourcePointFqn,
@@ -75,61 +95,123 @@ class RouteBuilderTest extends FinalBypassTestCase
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
-        $routeBuilder->buildRoute($sourcePointFqn, $targetPointFqn, $checkPoints);
+
+        $routeBuilder->buildRoute(
+            $sourcePointFqn,
+            $targetPointFqn,
+            $checkPoints
+        );
     }
 
+    /**
+     * @return array|array[]
+     */
     public function providePointFqns(): array
     {
         return [
             [
-                \sprintf('%s.$property', RouteBuilderTestClass::class),
-                \sprintf('%s.$property', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.$property',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.$property',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
             [
-                \sprintf('%s.$property', RouteBuilderTestClass::class),
-                \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.$property',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.method().$parameter',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
             [
-                \sprintf('%s.method()', RouteBuilderTestClass::class),
-                \sprintf('%s.$property', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.method()',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.$property',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
             [
-                \sprintf('%s.method()', RouteBuilderTestClass::class),
-                \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.method()',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.method().$parameter',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
         ];
     }
 
+    /**
+     * @return array|array[]
+     */
     public function provideInvalidPointFqns(): array
     {
         return [
             [
-                \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
-                \sprintf('%s.$property', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.method().$parameter',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.$property',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
             [
-                \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
-                \sprintf('%s.method().$parameter', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.method().$parameter',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.method().$parameter',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
             [
-                \sprintf('%s.$property', RouteBuilderTestClass::class),
-                \sprintf('%s.method()', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.$property',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.method()',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
             [
-                \sprintf('%s.method()', RouteBuilderTestClass::class),
-                \sprintf('%s.method()', RouteBuilderTestClass::class),
+                \sprintf(
+                    '%s.method()',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s.method()',
+                    RouteBuilderTestClass::class
+                ),
                 new CheckPointCollection(),
             ],
         ];
     }
 
+    /**
+     * @return RouteBuilder
+     */
     private function buildRouteBuilder(): RouteBuilder
     {
         return new RouteBuilder(new PointFactory());
