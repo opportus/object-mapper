@@ -44,10 +44,11 @@ final class RouteBuilder implements RouteBuilderInterface
     public function buildRoute(
         string $sourcePointFqn,
         string $targetPointFqn,
-        CheckPointCollection $checkPoints
+        ?CheckPointCollection $checkPoints = null
     ): Route {
         $sourcePoint = $this->pointFactory->createPoint($sourcePointFqn);
         $targetPoint = $this->pointFactory->createPoint($targetPointFqn);
+        $checkPoints = $checkPoints ?? new CheckPointCollection();
 
         return new Route($sourcePoint, $targetPoint, $checkPoints);
     }
