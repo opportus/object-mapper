@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
@@ -44,7 +43,6 @@ final class MapBuilder implements MapBuilderInterface
      *
      * @param RouteBuilderInterface $routeBuilder
      * @param null|RouteCollection $routes
-     * @throws InvalidOperationException
      */
     public function __construct(
         RouteBuilderInterface $routeBuilder,
@@ -52,15 +50,7 @@ final class MapBuilder implements MapBuilderInterface
     ) {
         $this->routeBuilder = $routeBuilder;
 
-        try {
-            $this->routes = $routes ?? new RouteCollection();
-        } catch (InvalidArgumentException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
+        $this->routes = $routes ?? new RouteCollection();
     }
 
     /**
