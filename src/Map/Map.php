@@ -42,7 +42,6 @@ final class Map
      *
      * @param PathFindingStrategyInterface $pathFindingStrategy
      * @param null|RouteCollection $routes
-     * @throws InvalidOperationException
      */
     public function __construct(
         PathFindingStrategyInterface $pathFindingStrategy,
@@ -50,15 +49,7 @@ final class Map
     ) {
         $this->pathFindingStrategy = $pathFindingStrategy;
 
-        try {
-            $this->routes = $routes ?? new RouteCollection();
-        } catch (InvalidArgumentException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
+        $this->routes = $routes ?? new RouteCollection();
     }
 
     /**
