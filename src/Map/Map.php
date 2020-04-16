@@ -55,6 +55,11 @@ final class Map
     /**
      * Gets the routes connecting the source points with the target points.
      *
+     * Combines manually/statically added routes with automatically/dynamically
+     * added routes. In case of duplicate between manually and automatically
+     * added routes, manually added routes take precedence over automatically
+     * added routes.
+     *
      * @param Source $source
      * @param Target $target
      * @return RouteCollection
@@ -62,15 +67,21 @@ final class Map
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
-        $routes = $this->pathFindingStrategy
+        $routes = [];
+        $staticRoutes = $this->routes;
+        $dynamicRoutes = $this->pathFindingStrategy
             ->getRoutes($source, $target)->toArray();
 
-        foreach ($this->routes as $route) {
+        foreach ($dynamicRoutes as $dynamicRoute) {
+            $routes[$dynamicRoute->getFqn()] = $dynamicRoute;
+        }
+
+        foreach ($staticRoutes as $staticRoute) {
             if (
-                $source->hasPoint($route->getSourcePoint()) &&
-                $target->hasPoint($route->getTargetPoint())
+                $source->hasPoint($staticRoute->getSourcePoint()) &&
+                $target->hasPoint($staticRoute->getTargetPoint())
             ) {
-                $routes[] = $route;
+                $routes[$staticRoute->getFqn()] = $staticRoute;
             }
         }
 
