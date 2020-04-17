@@ -32,7 +32,11 @@ interface MapBuilderInterface
      * @param null|CheckPointCollection $checkPoints
      * @return MapBuilderInterface
      */
-    public function addRoute(string $sourcePointFqn, string $targetPointFqn, ?CheckPointCollection $checkPoints = null): MapBuilderInterface;
+    public function addRoute(
+        string $sourcePointFqn,
+        string $targetPointFqn,
+        ?CheckPointCollection $checkPoints = null
+    ): MapBuilderInterface;
 
     /**
      * Builds the map.
