@@ -32,7 +32,7 @@ abstract class AbstractImmutableCollection implements
     /**
      * @var array $items
      */
-    private $items = [];
+    private $items;
 
     /**
      * Constructs the collection.
