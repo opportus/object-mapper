@@ -67,21 +67,15 @@ final class Map
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
-        $routes = [];
-        $staticRoutes = $this->routes;
-        $dynamicRoutes = $this->pathFindingStrategy
+        $routes = $this->pathFindingStrategy
             ->getRoutes($source, $target)->toArray();
 
-        foreach ($dynamicRoutes as $dynamicRoute) {
-            $routes[$dynamicRoute->getFqn()] = $dynamicRoute;
-        }
-
-        foreach ($staticRoutes as $staticRoute) {
+        foreach ($this->routes as $route) {
             if (
-                $source->hasPoint($staticRoute->getSourcePoint()) &&
-                $target->hasPoint($staticRoute->getTargetPoint())
+                $source->hasPoint($route->getSourcePoint()) &&
+                $target->hasPoint($route->getTargetPoint())
             ) {
-                $routes[$staticRoute->getFqn()] = $staticRoute;
+                $routes[] = $route;
             }
         }
 
