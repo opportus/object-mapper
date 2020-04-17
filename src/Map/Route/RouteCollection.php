@@ -35,12 +35,13 @@ final class RouteCollection extends AbstractImmutableCollection
 
         foreach ($routes as $route) {
             if (!\is_object($route) || !$route instanceof Route) {
-                throw new InvalidArgumentException(\sprintf(
-                    'Argument "routes" passed to "%s" is invalid. Expects the array to contain elements of type "%s". Got an element of type "%s".',
-                    __METHOD__,
+                $message = \sprintf(
+                    'The array must contain exclusively elements of type %s, got an element of type %s.',
                     Route::class,
                     \is_object($route) ? \get_class($route) : \gettype($route)
-                ));
+                );
+
+                throw new InvalidArgumentException(1, __METHOD__, $message);
             }
 
             $indexedRoutes[$route->getFqn()] = $route;

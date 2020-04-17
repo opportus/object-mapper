@@ -11,7 +11,6 @@
 
 namespace Opportus\ObjectMapper\Map\Strategy;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
@@ -73,11 +72,10 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
         try {
             $targetPointReflections = $this->getTargetPointReflections($target);
         } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
+            throw new InvalidOperationException(
                 __METHOD__,
                 $exception->getMessage()
-            ));
+            );
         }
 
         foreach ($targetPointReflections as $targetPointReflection) {
@@ -87,11 +85,10 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
                     $targetPointReflection
                 );
             } catch (ReflectionException $exception) {
-                throw new InvalidOperationException(\sprintf(
-                    'Invalid "%s" operation. %s',
+                throw new InvalidOperationException(
                     __METHOD__,
                     $exception->getMessage()
-                ));
+                );
             }
 
             if (null === $sourcePointReflection) {
@@ -130,30 +127,14 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
                 );
             }
 
-            try {
-                $routes[] = $this->routeBuilder->buildRoute(
-                    $sourcePointFqn,
-                    $targetPointFqn,
-                    new CheckPointCollection()
-                );
-            } catch (InvalidArgumentException $exception) {
-                throw new InvalidOperationException(\sprintf(
-                    'Invalid "%s" operation. %s',
-                    __METHOD__,
-                    $exception->getMessage()
-                ));
-            }
+            $routes[] = $this->routeBuilder->buildRoute(
+                $sourcePointFqn,
+                $targetPointFqn,
+                new CheckPointCollection()
+            );
         }
 
-        try {
-            return new RouteCollection($routes);
-        } catch (InvalidArgumentException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
+        return new RouteCollection($routes);
     }
 
     /**
@@ -161,7 +142,6 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
      *
      * @param Target $target
      * @return Reflector[]
-     * @throws InvalidOperationException
      * @throws ReflectionException
      */
     private function getTargetPointReflections(Target $target): array
@@ -251,7 +231,6 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
      * @param Source $source
      * @param Reflector $targetPointReflection
      * @return null|Reflector
-     * @throws InvalidOperationException
      * @throws ReflectionException
      */
     private function getSourcePointReflection(

@@ -12,12 +12,10 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\AbstractPoint;
 use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
 use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * The source.
@@ -47,21 +45,10 @@ final class Source
      * Constructs the source.
      *
      * @param object $source
-     * @throws InvalidArgumentException
      */
     public function __construct(object $source)
     {
-        try {
-            $this->classReflection = new ReflectionClass($source);
-        } catch (ReflectionException $exception) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "source" passed to "%s" is invalid. "%s" is not a source. %s.',
-                __METHOD__,
-                $source,
-                $exception->getMessage()
-            ));
-        }
-
+        $this->classReflection = new ReflectionClass($source);
         $this->instance = $source;
         $this->classFqn = $this->classReflection->getName();
     }
@@ -102,19 +89,10 @@ final class Source
      * Gets the source class reflection.
      *
      * @return ReflectionClass
-     * @throws InvalidOperationException
      */
     public function getClassReflection(): ReflectionClass
     {
-        try {
-            return new ReflectionClass($this->classFqn);
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
+        return new ReflectionClass($this->classFqn);
     }
 
     /**
@@ -134,47 +112,35 @@ final class Source
      * @param AbstractPoint $point
      * @return mixed
      * @throws InvalidArgumentException
-     * @throws InvalidOperationException
+     * @noinspection PhpInconsistentReturnPointsInspection
      */
     public function getPointValue(AbstractPoint $point)
     {
         if (false === $this->hasPoint($point)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "point" passed to "%s" is invalid. "%s" is not a property of "%s".',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a property of %s.',
                 $point->getFqn(),
                 $this->classFqn
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         if (false === self::isValidPoint($point)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "point" passed to "%s" is invalid. "%s" is not a valid source point.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a valid source point.',
                 \get_class($point)
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        try {
-            if ($point instanceof PropertyPoint) {
-                return $this->classReflection->getProperty($point->getName())
+        if ($point instanceof PropertyPoint) {
+            return $this->classReflection->getProperty($point->getName())
                     ->getValue($this->instance);
-            } elseif ($point instanceof MethodPoint) {
-                return $this->classReflection->getMethod($point->getName())
+        } elseif ($point instanceof MethodPoint) {
+            return $this->classReflection->getMethod($point->getName())
                     ->invoke($this->instance);
-            }
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
         }
-
-        throw new InvalidArgumentException(\sprintf(
-            'Argument "point" passed to "%s" is invalid. "%s" is not a valid source point.',
-            __METHOD__,
-            \get_class($point)
-        ));
     }
 }

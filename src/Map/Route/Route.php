@@ -60,19 +60,21 @@ final class Route
         CheckPointCollection $checkPoints
     ) {
         if (false === Source::isValidPoint($sourcePoint)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "sourcePoint" passed to "%s" is invalid. "%s" cannot be a source point.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s cannot be a source point.',
                 \get_class($sourcePoint)
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         if (false === Target::isValidPoint($targetPoint)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "targetPoint" passed to "%s" is invalid. "%s" cannot be a target point.',
-                __METHOD__,
-                \get_class($targetPoint)
-            ));
+            $message = \sprintf(
+                '%s cannot be a target point.',
+                \get_class($sourcePoint)
+            );
+
+            throw new InvalidArgumentException(2, __METHOD__, $message);
         }
 
         $this->sourcePoint = $sourcePoint;

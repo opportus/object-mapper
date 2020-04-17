@@ -11,7 +11,6 @@
 
 namespace Opportus\ObjectMapper\Map\Route;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
 
 /**
@@ -30,7 +29,6 @@ interface RouteBuilderInterface
      * @param string $targetPointFqn
      * @param CheckPointCollection $checkPoints
      * @return Route
-     * @throws InvalidArgumentException
      */
     public function buildRoute(
         string $sourcePointFqn,

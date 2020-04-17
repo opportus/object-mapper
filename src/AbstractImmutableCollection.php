@@ -93,10 +93,10 @@ abstract class AbstractImmutableCollection implements
      */
     public function offsetSet($offset, $value)
     {
-        throw new InvalidOperationException(\sprintf(
-            'Invalid operation "%s". Attempting to set an element of an immutable array.',
-            __METHOD__
-        ));
+        throw new InvalidOperationException(
+            __METHOD__,
+            'Attempting to set an element of an immutable array.'
+        );
     }
 
     /**
@@ -106,9 +106,9 @@ abstract class AbstractImmutableCollection implements
      */
     public function offsetUnset($offset)
     {
-        throw new InvalidOperationException(\sprintf(
-            'Invalid operation "%s". Attempting to unset an element of an immutable array.',
-            __METHOD__
-        ));
+        throw new InvalidOperationException(
+            __METHOD__,
+            'Attempting to set an element of an immutable array.'
+        );
     }
 }

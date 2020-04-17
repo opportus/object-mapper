@@ -11,8 +11,6 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
@@ -63,7 +61,6 @@ final class Map
      * @param Source $source
      * @param Target $target
      * @return RouteCollection
-     * @throws InvalidOperationException
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
@@ -79,15 +76,7 @@ final class Map
             }
         }
 
-        try {
-            return new RouteCollection($routes);
-        } catch (InvalidArgumentException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
+        return new RouteCollection($routes);
     }
 
     /**

@@ -36,13 +36,14 @@ final class CheckPointCollection extends AbstractImmutableCollection
                 !\is_object($checkPoint) ||
                 !$checkPoint instanceof CheckPointInterface
             ) {
-                throw new InvalidArgumentException(\sprintf(
-                    'Argument "checkPoints" passed to "%s" is invalid. Expects the array to contain elements of type "%s". Got an element of type "%s".',
-                    __METHOD__,
+                $message = \sprintf(
+                    'The array must contain exclusively elements of type %s, got an element of type %s.',
                     CheckPointInterface::class,
                     \is_object($checkPoint) ?
                         \get_class($checkPoint) : \gettype($checkPoint)
-                ));
+                );
+
+                throw new InvalidArgumentException(1, __METHOD__, $message);
             }
         }
 

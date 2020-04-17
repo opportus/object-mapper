@@ -85,15 +85,15 @@ final class MapBuilder implements MapBuilderInterface
             !\is_object($pathFindingStrategy) ||
             !$pathFindingStrategy instanceof PathFindingStrategyInterface
         ) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "pathFindingStrategy" passed to "%s" is invalid. Expects an argument of type "%s" or "%s", got an argument of type "%s".',
-                __METHOD__,
-                'boolean',
+            $message = \sprintf(
+                'The argument must be of type boolean or %s, got an argument of type %s.',
                 PathFindingStrategyInterface::class,
                 \is_object($pathFindingStrategy) ?
                     \get_class($pathFindingStrategy) :
                     \gettype($pathFindingStrategy)
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         return new Map($pathFindingStrategy, $this->routes);

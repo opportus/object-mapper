@@ -50,12 +50,13 @@ final class ParameterPoint extends AbstractPoint
     public function __construct(string $fqn)
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "fqn" passed to "%s" is invalid. "%s" is not a parameter point as FQN of such is expected to have the following syntax: %s.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a parameter point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         [
@@ -71,12 +72,13 @@ final class ParameterPoint extends AbstractPoint
                 $matchedName
             );
         } catch (ReflectionException $exception) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "fqn" passed to "%s" is invalid. "%s" is not a parameter point. %s.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a parameter point. %s.',
                 $fqn,
                 $exception->getMessage()
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         $reflector->getDeclaringFunction()->setAccessible(true);

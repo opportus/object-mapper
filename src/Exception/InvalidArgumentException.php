@@ -11,6 +11,8 @@
 
 namespace Opportus\ObjectMapper\Exception;
 
+use Throwable;
+
 /**
  * The invalid argument exception.
  *
@@ -20,4 +22,41 @@ namespace Opportus\ObjectMapper\Exception;
  */
 class InvalidArgumentException extends Exception
 {
+    /**
+     * @var int $argument
+     */
+    private $argument;
+
+    /**
+     * @var string $function
+     */
+    private $function;
+
+    /**
+     * Constructs the invalid argument exception.
+     *
+     * @param int $argument
+     * @param string $function
+     * @param string $message
+     * @param int $code
+     * @param null|Throwable $previous
+     */
+    public function __construct(
+        int $argument,
+        string $function,
+        string $message,
+        int $code = 0,
+        Throwable $previous = null
+    ) {
+        $this->argument = $argument;
+        $this->function = $function;
+        $this->message = \sprintf(
+            'Argument %d passed to %s is invalid. %s',
+            $argument,
+            $function,
+            $message
+        );
+
+        parent::__construct($message, $code, $previous);
+    }
 }

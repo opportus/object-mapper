@@ -11,8 +11,6 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Map;
 
 /**
@@ -35,8 +33,6 @@ interface ObjectMapperInterface
      *                      the default `PathFindingStrategy`
      * @return null|object The instantiated and/or updated target or null if
      *                     the map has no route
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
      */
     public function map(object $source, $target, ?Map $map = null): ?object;
 }

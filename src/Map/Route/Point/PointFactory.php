@@ -35,10 +35,8 @@ final class PointFactory implements PointFactoryInterface
             return new PropertyPoint($pointFqn);
         }
 
-        throw new InvalidArgumentException(\sprintf(
-            'Argument "pointFqn" passed to "%s" is invalid. "%s" is not a valid point FQN.',
-            __METHOD__,
-            $pointFqn
-        ));
+        $message = \sprintf('%s is not a point FQN.', $pointFqn);
+
+        throw new InvalidArgumentException(1, __METHOD__, $message);
     }
 }

@@ -40,12 +40,13 @@ final class MethodPoint extends AbstractPoint
     public function __construct(string $fqn)
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "fqn" passed to "%s" is invalid. "%s" is not a method point as FQN of such is expected to have the following syntax: %s.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a method point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         [$matchedFqn, $matchedClassName, $matchedName] = $matches;
@@ -53,20 +54,22 @@ final class MethodPoint extends AbstractPoint
         try {
             $reflector = new ReflectionMethod($matchedClassName, $matchedName);
         } catch (ReflectionException $exception) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "fqn" passed to "%s" is invalid. "%s" is not a method point. %s.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a method point. %s.',
                 $fqn,
                 $exception->getMessage()
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         if ($reflector->getNumberOfRequiredParameters() > 0) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "fqn" passed to "%s" is invalid. "%s" is not a method point as such cannot have required parameters.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a method point as such cannot have required parameters.',
                 $fqn
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         $reflector->setAccessible(true);

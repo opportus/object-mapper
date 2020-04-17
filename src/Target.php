@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper;
 
+use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Route\Point\AbstractPoint;
@@ -60,22 +61,24 @@ final class Target
     public function __construct($target)
     {
         if (false === \is_object($target) && false === \is_string($target)) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "target" passed to "%s" is invalid. Expecting an argument of type "object" or "string", got an argument of type "%s".',
-                __METHOD__,
+            $message = \sprintf(
+                'The argument must be of type object or string, got an argument of type %s.',
                 \gettype($target)
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         try {
             $this->classReflection = new ReflectionClass($target);
         } catch (ReflectionException $exception) {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "target" passed to "%s" is invalid. "%s" is not a target. %s.',
-                __METHOD__,
+            $message = \sprintf(
+                '%s is not a target. %s',
                 $target,
                 $exception->getMessage()
-            ));
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         $this->instance = \is_object($target) ? $target : null;
@@ -103,7 +106,17 @@ final class Target
     public function getInstance(): ?object
     {
         if ($this->hasPointValues()) {
-            return $this->operateInstance($this->instance, $this->pointValues);
+            try {
+                return $this->operateInstance(
+                    $this->instance,
+                    $this->pointValues
+                );
+            } catch (Exception $exception) {
+                throw new InvalidOperationException(
+                    __METHOD__,
+                    $exception->getMessage()
+                );
+            }
         }
 
         return $this->instance;
@@ -133,19 +146,10 @@ final class Target
      * Gets the target class reflection.
      *
      * @return ReflectionClass
-     * @throws InvalidOperationException
      */
     public function getClassReflection(): ReflectionClass
     {
-        try {
-            return new ReflectionClass($this->classFqn);
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
-        }
+        return new ReflectionClass($this->classFqn);
     }
 
     /**
@@ -169,24 +173,22 @@ final class Target
     public function setPointValue(AbstractPoint $point, $pointValue)
     {
         if (false === $this->hasPoint($point)) {
-            throw new InvalidArgumentException(
-                \sprintf(
-                    'Argument "point" passed to "%s" is invalid. "%s" is not a property of "%s".',
-                    __METHOD__,
-                    $point->getFqn(),
-                    $this->classFqn
-                )
+            $message = \sprintf(
+                '%s is not a property of %s.',
+                $point->getFqn(),
+                $this->classFqn
             );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         if (false === self::isValidPoint($point)) {
-            throw new InvalidArgumentException(
-                \sprintf(
-                    'Argument "point" passed to "%s" is invalid. "%s" is not a valid source point.',
-                    __METHOD__,
-                    \get_class($point)
-                )
+            $message = \sprintf(
+                '%s is not a valid target point.',
+                \get_class($point)
             );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         if ($point instanceof PropertyPoint) {
@@ -194,12 +196,6 @@ final class Target
         } elseif ($point instanceof ParameterPoint) {
             $this->pointValues['parameters']
                 [$point->getMethodName()][$point->getPosition()] = $pointValue;
-        } else {
-            throw new InvalidArgumentException(\sprintf(
-                'Argument "point" passed to "%s" is invalid. "%s" is not a valid target point.',
-                __METHOD__,
-                \get_class($point)
-            ));
         }
     }
 
@@ -209,7 +205,6 @@ final class Target
      * @param null|object $instance
      * @param array $pointValues
      * @return object
-     * @throws InvalidOperationException
      */
     private function operateInstance(
         ?object $instance,
@@ -225,38 +220,30 @@ final class Target
             }
         }
 
-        try {
-            foreach (
-                $pointValues['parameters'] as
-                $methodName =>
+        foreach (
+            $pointValues['parameters'] as
+            $methodName =>
+            $methodArguments
+        ) {
+            if ('__construct' === $methodName) {
+                continue;
+            }
+
+            $this->classReflection->getMethod($methodName)->invokeArgs(
+                $instance,
                 $methodArguments
-            ) {
-                if ('__construct' === $methodName) {
-                    continue;
-                }
+            );
+        }
 
-                $this->classReflection->getMethod($methodName)->invokeArgs(
-                    $instance,
-                    $methodArguments
-                );
-            }
-
-            foreach (
-                $pointValues['properties'] as
-                $propertyName =>
+        foreach (
+            $pointValues['properties'] as
+            $propertyName =>
+            $propertyValue
+        ) {
+            $this->classReflection->getProperty($propertyName)->setValue(
+                $instance,
                 $propertyValue
-            ) {
-                $this->classReflection->getProperty($propertyName)->setValue(
-                    $instance,
-                    $propertyValue
-                );
-            }
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(\sprintf(
-                'Invalid "%s" operation. %s',
-                __METHOD__,
-                $exception->getMessage()
-            ));
+            );
         }
 
         return $instance;
