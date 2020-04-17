@@ -67,6 +67,7 @@ final class ParameterPoint extends AbstractPoint
         ] = $matches;
 
         try {
+            /** @noinspection PhpParamsInspection */
             $reflector = new ReflectionParameter(
                 [$matchedClassName, $matchedMethodName],
                 $matchedName
@@ -81,6 +82,7 @@ final class ParameterPoint extends AbstractPoint
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
         $reflector->getDeclaringFunction()->setAccessible(true);
 
         $this->reflector = $reflector;
