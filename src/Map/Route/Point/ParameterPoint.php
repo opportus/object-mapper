@@ -12,8 +12,6 @@
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use ReflectionException;
-use ReflectionParameter;
 
 /**
  * The parameter point.
@@ -27,19 +25,9 @@ final class ParameterPoint extends AbstractPoint
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\).\$([A-Za-z0-9_]+)$/';
 
     /**
-     * @var ReflectionParameter $reflector
-     */
-    private $reflector;
-
-    /**
      * @var string $methodName
      */
     private $methodName;
-
-    /**
-     * @var int $position
-     */
-    private $position;
 
     /**
      * Constructs the parameter point.
@@ -66,31 +54,10 @@ final class ParameterPoint extends AbstractPoint
             $matchedName
         ] = $matches;
 
-        try {
-            /** @noinspection PhpParamsInspection */
-            $reflector = new ReflectionParameter(
-                [$matchedClassName, $matchedMethodName],
-                $matchedName
-            );
-        } catch (ReflectionException $exception) {
-            $message = \sprintf(
-                '%s is not a parameter point. %s.',
-                $fqn,
-                $exception->getMessage()
-            );
-
-            throw new InvalidArgumentException(1, __METHOD__, $message);
-        }
-
-        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-        $reflector->getDeclaringFunction()->setAccessible(true);
-
-        $this->reflector = $reflector;
         $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;
         $this->methodName = $matchedMethodName;
-        $this->position = $reflector->getPosition();
     }
 
     /**
@@ -101,15 +68,5 @@ final class ParameterPoint extends AbstractPoint
     public function getMethodName(): string
     {
         return $this->methodName;
-    }
-
-    /**
-     * Gets the position of the point.
-     *
-     * @return int
-     */
-    public function getPosition(): int
-    {
-        return $this->position;
     }
 }

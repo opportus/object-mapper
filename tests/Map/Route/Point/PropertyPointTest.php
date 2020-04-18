@@ -111,7 +111,6 @@ class PropertyPointTest extends FinalBypassTestCase
     public function provideInvalidPropertyPointFqns(): array
     {
         return [
-            // Invalid syntax...
             [\sprintf(
                 '%s.%s',
                 PropertyPointTestClass::class,
@@ -125,18 +124,6 @@ class PropertyPointTest extends FinalBypassTestCase
             [\sprintf(
                 '%s.$',
                 PropertyPointTestClass::class
-            )],
-
-            // Invalid reflection...
-            [\sprintf(
-                '%s.$%s',
-                'InvalidClass',
-                'publicProperty'
-            )],
-            [\sprintf(
-                '%s.$%s',
-                PropertyPointTestClass::class,
-                'invalidProperty'
             )],
         ];
     }

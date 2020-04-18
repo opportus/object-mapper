@@ -30,27 +30,19 @@ use ReflectionException;
 final class Target
 {
     /**
+     * @var ReflectionClass $reflector
+     */
+    private $reflector;
+
+    /**
      * @var null|object $instance
      */
     private $instance;
 
     /**
-     * @var string $classFqn
-     */
-    private $classFqn;
-
-    /**
-     * @var ReflectionClass $classReflection
-     */
-    private $classReflection;
-
-    /**
      * @var array $pointValues
      */
-    private $pointValues = [
-        'properties' => [],
-        'methods'    => [],
-    ];
+    private $pointValues;
 
     /**
      * Constructs the target.
@@ -70,7 +62,7 @@ final class Target
         }
 
         try {
-            $this->classReflection = new ReflectionClass($target);
+            $this->reflector = new ReflectionClass($target);
         } catch (ReflectionException $exception) {
             $message = \sprintf(
                 '%s is not a target. %s',
@@ -82,19 +74,20 @@ final class Target
         }
 
         $this->instance = \is_object($target) ? $target : null;
-        $this->classFqn = $this->classReflection->getName();
+        $this->pointValues = [
+            'properties' => [],
+            'methods' => [],
+        ];
     }
 
     /**
-     * Checks whether the passed argument can be a target point.
+     * Gets the target reflector.
      *
-     * @param AbstractPoint $point
-     * @return bool
+     * @return ReflectionClass
      */
-    public static function isValidPoint(AbstractPoint $point): bool
+    public function getReflector(): ReflectionClass
     {
-        return $point instanceof PropertyPoint ||
-               $point instanceof ParameterPoint;
+        return new ReflectionClass($this->reflector->getName());
     }
 
     /**
@@ -133,23 +126,16 @@ final class Target
     }
 
     /**
-     * Gets the target class Fully Qualified Name.
+     * Checks whether the passed point can be a target point.
      *
-     * @return string
+     * @param AbstractPoint $point
+     * @return bool
      */
-    public function getClassFqn(): string
+    public static function isValidPoint(AbstractPoint $point): bool
     {
-        return $this->classFqn;
-    }
-
-    /**
-     * Gets the target class reflection.
-     *
-     * @return ReflectionClass
-     */
-    public function getClassReflection(): ReflectionClass
-    {
-        return new ReflectionClass($this->classFqn);
+        return
+            $point instanceof PropertyPoint ||
+            $point instanceof ParameterPoint;
     }
 
     /**
@@ -160,7 +146,30 @@ final class Target
      */
     public function hasPoint(AbstractPoint $point): bool
     {
-        return $this->classFqn === $point->getClassFqn();
+        if (self::isValidPoint($point)) {
+            if ($point instanceof PropertyPoint) {
+                return
+                    $this->reflector->getName() === $point->getClassFqn() &&
+                    $this->reflector->hasProperty($point->getName());
+            } elseif ($point instanceof ParameterPoint) {
+                if (
+                    $this->reflector->getName() === $point->getClassFqn() &&
+                    $this->reflector->hasMethod($point->getMethodName())
+                ) {
+                    foreach (
+                        $this->reflector->getMethod($point->getMethodName())
+                            ->getParameters() as
+                        $parameter
+                    ) {
+                        if ($parameter->getName() === $point->getName()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -176,16 +185,7 @@ final class Target
             $message = \sprintf(
                 '%s is not a property of %s.',
                 $point->getFqn(),
-                $this->classFqn
-            );
-
-            throw new InvalidArgumentException(1, __METHOD__, $message);
-        }
-
-        if (false === self::isValidPoint($point)) {
-            $message = \sprintf(
-                '%s is not a valid target point.',
-                \get_class($point)
+                $this->reflector->getName()
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -194,8 +194,28 @@ final class Target
         if ($point instanceof PropertyPoint) {
             $this->pointValues['properties'][$point->getName()] = $pointValue;
         } elseif ($point instanceof ParameterPoint) {
-            $this->pointValues['parameters']
-                [$point->getMethodName()][$point->getPosition()] = $pointValue;
+            $this->pointValues['parameters'][$point->getMethodName()]
+                [$this->getParameterPointPosition($point)] = $pointValue;
+        }
+    }
+
+    /**
+     * Gets the parameter point position.
+     *
+     * @param ParameterPoint $point
+     * @return int
+     * @noinspection PhpInconsistentReturnPointsInspection
+     */
+    private function getParameterPointPosition(ParameterPoint $point): int
+    {
+        foreach (
+            $this->reflector->getMethod($point->getMethodName())
+                ->getParameters() as
+            $parameter
+        ) {
+            if ($parameter->getName() === $point->getName()) {
+                return $parameter->getPosition();
+            }
         }
     }
 
@@ -212,11 +232,11 @@ final class Target
     ): object {
         if (null === $instance) {
             if (isset($pointValues['parameters']['__construct'])) {
-                $instance = $this->classReflection->newInstanceArgs(
+                $instance = $this->reflector->newInstanceArgs(
                     $pointValues['parameters']['__construct']
                 );
             } else {
-                $instance = $this->classReflection->newInstance();
+                $instance = $this->reflector->newInstance();
             }
         }
 
@@ -229,7 +249,7 @@ final class Target
                 continue;
             }
 
-            $this->classReflection->getMethod($methodName)->invokeArgs(
+            $this->reflector->getMethod($methodName)->invokeArgs(
                 $instance,
                 $methodArguments
             );
@@ -240,7 +260,7 @@ final class Target
             $propertyName =>
             $propertyValue
         ) {
-            $this->classReflection->getProperty($propertyName)->setValue(
+            $this->reflector->getProperty($propertyName)->setValue(
                 $instance,
                 $propertyValue
             );
@@ -257,6 +277,6 @@ final class Target
     private function hasPointValues(): bool
     {
         return $this->pointValues['properties'] ||
-               $this->pointValues['parameters'];
+            $this->pointValues['parameters'];
     }
 }
