@@ -17,6 +17,7 @@ use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Map\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -69,8 +70,14 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     {
         $routes = [];
 
+        $sourceReflection = $source->getReflection();
+        $targetReflection = $target->getReflection();
+
         try {
-            $targetPointReflections = $this->getTargetPointReflections($target);
+            $targetPointReflections = $this->getTargetPointReflections(
+                $target,
+                $targetReflection
+            );
         } catch (ReflectionException $exception) {
             throw new InvalidOperationException(
                 __METHOD__,
@@ -81,7 +88,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
         foreach ($targetPointReflections as $targetPointReflection) {
             try {
                 $sourcePointReflection = $this->getSourcePointReflection(
-                    $source,
+                    $sourceReflection,
                     $targetPointReflection
                 );
             } catch (ReflectionException $exception) {
@@ -141,85 +148,79 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
      * Gets target point reflections.
      *
      * @param Target $target
+     * @param ReflectionClass $targetReflection
      * @return Reflector[]
      * @throws ReflectionException
      */
-    private function getTargetPointReflections(Target $target): array
-    {
-        $targetClassReflection = $target->getReflection();
-
+    private function getTargetPointReflections(
+        Target $target,
+        ReflectionClass $targetReflection
+    ): array {
         $methodBlackList = [];
         $propertyBlackList = [];
 
         if (
             $target->isInstantiated() === false &&
-            $targetClassReflection->hasMethod('__construct')
+            $targetReflection->hasMethod('__construct')
         ) {
-            $targetConstructorReflection = $targetClassReflection
+            $constructorReflection = $targetReflection
                 ->getMethod('__construct');
 
             foreach (
-                $targetConstructorReflection->getParameters() as
-                $targetConstructorParameterReflection
+                $constructorReflection->getParameters() as
+                $parameterReflection
             ) {
                 $methodBlackList[] = \sprintf(
                     'set%s',
-                    \ucfirst($targetConstructorParameterReflection->getName())
+                    \ucfirst($parameterReflection->getName())
                 );
 
-                $propertyBlackList[] = $targetConstructorParameterReflection
-                    ->getName();
+                $propertyBlackList[] = $parameterReflection->getName();
             }
         }
 
         $targetPointReflections = [];
 
         foreach (
-            $targetClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
-            $targetMethodReflection
+            $targetReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
+            $methodReflection
         ) {
-            if (\in_array(
-                $targetMethodReflection->getName(),
-                $methodBlackList
-            )) {
+            if (\in_array($methodReflection->getName(), $methodBlackList)) {
                 continue;
             }
 
-            if ($targetMethodReflection->getNumberOfParameters() === 0) {
+            if ($methodReflection->getNumberOfParameters() === 0) {
                 continue;
             }
 
             if (
-                \strpos($targetMethodReflection->getName(), 'set') !== 0 &&
+                \strpos($methodReflection->getName(), 'set') !== 0 &&
                 (
-                    $target->isInstantiated() === true ||
-                    $targetMethodReflection->getName() !== '__construct'
+                    $target->isInstantiated() ||
+                    $methodReflection->getName() !== '__construct'
                 )
             ) {
                 continue;
             }
 
             foreach (
-                $targetMethodReflection->getParameters() as
-                $targetParameterReflection
+                $methodReflection->getParameters() as
+                $parameterReflection
             ) {
-                $targetPointReflections[] = $targetParameterReflection;
+                $targetPointReflections[] = $parameterReflection;
             }
         }
 
         foreach (
-            $targetClassReflection
+            $targetReflection
                 ->getProperties(ReflectionProperty::IS_PUBLIC) as
-            $targetPropertyReflection
+            $propertyReflection
         ) {
-            if (\in_array(
-                $targetPropertyReflection->getName(),
-                $propertyBlackList
-            )) {
+            if (\in_array($propertyReflection->getName(), $propertyBlackList)) {
                 continue;
             }
 
-            $targetPointReflections[] = $targetPropertyReflection;
+            $targetPointReflections[] = $propertyReflection;
         }
 
         return $targetPointReflections;
@@ -228,43 +229,37 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
     /**
      * Gets a source point to pair with the passed target point.
      *
-     * @param Source $source
+     * @param ReflectionClass $sourceReflection
      * @param Reflector $targetPointReflection
      * @return null|Reflector
      * @throws ReflectionException
      */
     private function getSourcePointReflection(
-        Source $source,
+        ReflectionClass $sourceReflection,
         Reflector $targetPointReflection
     ): ?Reflector {
-        $sourceClassReflection = $source->getReflection();
-
-        if ($sourceClassReflection->hasMethod(
+        if ($sourceReflection->hasMethod(
             \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
         )) {
-            $sourceMethodReflection = $sourceClassReflection->getMethod(
+            $methodReflection = $sourceReflection->getMethod(
                 \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
             );
 
             if (
-                $sourceMethodReflection->isPublic() === true &&
-                $sourceMethodReflection->getNumberOfRequiredParameters() === 0&&
-                $sourceMethodReflection->invoke($source->getInstance()) !== null
+                $methodReflection->isPublic() === true &&
+                $methodReflection->getNumberOfRequiredParameters() === 0
             ) {
-                return $sourceMethodReflection;
+                return $methodReflection;
             }
-        } elseif ($sourceClassReflection->hasProperty(
+        } elseif ($sourceReflection->hasProperty(
             $targetPointReflection->getName()
         )) {
-            $sourcePropertyReflection = $sourceClassReflection
-                ->getProperty($targetPointReflection->getName());
+            $propertyReflection = $sourceReflection->getProperty(
+                $targetPointReflection->getName()
+            );
 
-            if (
-                $sourcePropertyReflection->isPublic() === true &&
-                $sourcePropertyReflection
-                    ->getValue($source->getInstance()) !== null
-            ) {
-                return $sourcePropertyReflection;
+            if ($propertyReflection->isPublic() === true) {
+                return $propertyReflection;
             }
         }
 
