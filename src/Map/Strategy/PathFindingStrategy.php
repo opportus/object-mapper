@@ -146,7 +146,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
      */
     private function getTargetPointReflections(Target $target): array
     {
-        $targetClassReflection = $target->getClassReflection();
+        $targetClassReflection = $target->getReflection();
 
         $methodBlackList = [];
         $propertyBlackList = [];
@@ -237,7 +237,7 @@ final class PathFindingStrategy implements PathFindingStrategyInterface
         Source $source,
         Reflector $targetPointReflection
     ): ?Reflector {
-        $sourceClassReflection = $source->getClassReflection();
+        $sourceClassReflection = $source->getReflection();
 
         if ($sourceClassReflection->hasMethod(
             \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
