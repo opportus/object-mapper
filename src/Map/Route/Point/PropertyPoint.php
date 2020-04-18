@@ -24,7 +24,7 @@ use ReflectionProperty;
  */
 final class PropertyPoint extends AbstractPoint
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).\$([A-Za-z0-9_]+)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * @var ReflectionProperty $reflector

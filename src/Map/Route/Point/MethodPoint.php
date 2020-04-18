@@ -24,7 +24,7 @@ use ReflectionMethod;
  */
 final class MethodPoint extends AbstractPoint
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
 
     /**
      * @var ReflectionMethod $reflector
