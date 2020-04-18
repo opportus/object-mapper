@@ -136,13 +136,6 @@ class MethodPointTest extends FinalBypassTestCase
                 MethodPointTestClass::class,
                 'invalidMethod'
             )],
-
-            // Invalid method...
-            [\sprintf(
-                '%s.%s()',
-                MethodPointTestClass::class,
-                'parameterableMethod'
-            )],
         ];
     }
 
@@ -191,15 +184,6 @@ class MethodPointTestClass
      * @return int
      */
     public function publicMethod(): int
-    {
-        return 1;
-    }
-
-    /**
-     * @param $parameterableMethodParameter
-     * @return int
-     */
-    public function parameterableMethod($parameterableMethodParameter): int
     {
         return 1;
     }

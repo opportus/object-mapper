@@ -27,11 +27,6 @@ final class PropertyPoint extends AbstractPoint
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
-     * @var ReflectionProperty $reflector
-     */
-    private $reflector;
-
-    /**
      * Constructs the property point.
      *
      * @param string $fqn
@@ -52,7 +47,7 @@ final class PropertyPoint extends AbstractPoint
         [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
         try {
-            $reflector = new ReflectionProperty(
+            new ReflectionProperty(
                 $matchedClassName,
                 $matchedName
             );
@@ -66,9 +61,6 @@ final class PropertyPoint extends AbstractPoint
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        $reflector->setAccessible(true);
-
-        $this->reflector = $reflector;
         $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;

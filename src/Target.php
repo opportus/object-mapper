@@ -194,8 +194,28 @@ final class Target
         if ($point instanceof PropertyPoint) {
             $this->pointValues['properties'][$point->getName()] = $pointValue;
         } elseif ($point instanceof ParameterPoint) {
-            $this->pointValues['parameters']
-                [$point->getMethodName()][$point->getPosition()] = $pointValue;
+            $this->pointValues['parameters'][$point->getMethodName()]
+                [$this->getParameterPointPosition($point)] = $pointValue;
+        }
+    }
+
+    /**
+     * Gets the parameter point position.
+     *
+     * @param ParameterPoint $point
+     * @return int
+     * @noinspection PhpInconsistentReturnPointsInspection
+     */
+    private function getParameterPointPosition(ParameterPoint $point): int
+    {
+        foreach (
+            $this->classReflection->getMethod($point->getMethodName())
+                ->getParameters() as
+            $parameter
+        ) {
+            if ($parameter->getName() === $point->getName()) {
+                return $parameter->getPosition();
+            }
         }
     }
 
