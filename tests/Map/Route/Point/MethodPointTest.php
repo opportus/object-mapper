@@ -109,6 +109,7 @@ class MethodPointTest extends FinalBypassTestCase
     public function provideInvalidMethodPointFqns(): array
     {
         return [
+            // Invalid syntax...
             [\sprintf(
                 '%s.%s',
                 MethodPointTestClass::class,
@@ -122,6 +123,25 @@ class MethodPointTest extends FinalBypassTestCase
             [\sprintf(
                 '%s.',
                 MethodPointTestClass::class
+            )],
+
+            // Invalid reflection...
+            [\sprintf(
+                '%s.%s()',
+                'InvalidClass',
+                'publicMethod'
+            )],
+            [\sprintf(
+                '%s.%s()',
+                MethodPointTestClass::class,
+                'invalidMethod'
+            )],
+
+            // Invalid method...
+            [\sprintf(
+                '%s.%s()',
+                MethodPointTestClass::class,
+                'parameterableMethod'
             )],
         ];
     }

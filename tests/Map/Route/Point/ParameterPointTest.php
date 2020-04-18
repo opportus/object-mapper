@@ -148,6 +148,27 @@ class ParameterPointTest extends FinalBypassTestCase
     }
 
     /**
+     * @dataProvider provideParameterPointFqnTokens
+     * @param string $className
+     * @param string $methodName
+     * @param string $parameterName
+     * @throws InvalidArgumentException
+     */
+    public function testGetPosition(
+        string $className,
+        string $methodName,
+        string $parameterName
+    ): void {
+        $parameterPoint = $this->buildParameterPoint(
+            $className,
+            $methodName,
+            $parameterName
+        );
+
+        static::assertSame(0, $parameterPoint->getPosition());
+    }
+
+    /**
      * @return array|string[][]
      */
     public function provideParameterPointFqnTokens(): array
@@ -177,6 +198,7 @@ class ParameterPointTest extends FinalBypassTestCase
     public function provideInvalidParameterPointFqns(): array
     {
         return [
+            // Invalid syntax...
             [\sprintf(
                 '%s.%s.$%s',
                 ParameterPointTestClass::class,
@@ -194,6 +216,26 @@ class ParameterPointTest extends FinalBypassTestCase
                 ParameterPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
+            )],
+
+            // Invalid reflection...
+            [\sprintf(
+                '%s.%s().$%s',
+                'InvalidClass',
+                'publicMethod',
+                'publicMethodParameter'
+            )],
+            [\sprintf(
+                '%s.%s().$%s',
+                ParameterPointTestClass::class,
+                'invalidMethod',
+                'publicMethodParameter'
+            )],
+            [\sprintf(
+                '%s.%s().$%s',
+                ParameterPointTestClass::class,
+                'publicMethod',
+                'invalidParameter'
             )],
         ];
     }

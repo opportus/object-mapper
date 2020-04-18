@@ -27,14 +27,19 @@ use ReflectionClass;
 final class Source
 {
     /**
-     * @var ReflectionClass $reflector
-     */
-    private $reflector;
-
-    /**
      * @var object $instance
      */
     private $instance;
+
+    /**
+     * @var string
+     */
+    private $classFqn;
+
+    /**
+     * @var ReflectionClass $classReflection
+     */
+    private $classReflection;
 
     /**
      * Constructs the source.
@@ -43,18 +48,21 @@ final class Source
      */
     public function __construct(object $source)
     {
-        $this->reflector = new ReflectionClass($source);
+        $this->classReflection = new ReflectionClass($source);
         $this->instance = $source;
+        $this->classFqn = $this->classReflection->getName();
     }
 
     /**
-     * Gets the source reflector.
+     * Checks whether the passed argument can be a source point.
      *
-     * @return ReflectionClass
+     * @param AbstractPoint $point
+     * @return bool
      */
-    public function getReflector(): ReflectionClass
+    public static function isValidPoint(AbstractPoint $point)
     {
-        return new ReflectionClass($this->reflector->getName());
+        return $point instanceof PropertyPoint ||
+               $point instanceof MethodPoint;
     }
 
     /**
@@ -68,15 +76,23 @@ final class Source
     }
 
     /**
-     * Checks whether the passed argument can be a source point.
+     * Gets the source class Fully Qualified Name.
      *
-     * @param AbstractPoint $point
-     * @return bool
+     * @return string
      */
-    public static function isValidPoint(AbstractPoint $point)
+    public function getClassFqn(): string
     {
-        return $point instanceof PropertyPoint ||
-            $point instanceof MethodPoint;
+        return $this->classFqn;
+    }
+
+    /**
+     * Gets the source class reflection.
+     *
+     * @return ReflectionClass
+     */
+    public function getClassReflection(): ReflectionClass
+    {
+        return new ReflectionClass($this->classFqn);
     }
 
     /**
@@ -87,21 +103,8 @@ final class Source
      */
     public function hasPoint(AbstractPoint $point): bool
     {
-        if (self::isValidPoint($point)) {
-            if ($point instanceof PropertyPoint) {
-                return
-                    $this->reflector->getName() === $point->getClassFqn() &&
-                    $this->reflector->hasProperty($point->getName());
-            } elseif ($point instanceof MethodPoint) {
-                return
-                    $this->reflector->getName() === $point->getClassFqn() &&
-                    $this->reflector->hasMethod($point->getName());
-            }
-        }
-
-        return false;
+        return $this->classFqn === $point->getClassFqn();
     }
-
 
     /**
      * Gets the value of the passed source point.
@@ -117,17 +120,26 @@ final class Source
             $message = \sprintf(
                 '%s is not a property of %s.',
                 $point->getFqn(),
-                $this->reflector->getName()
+                $this->classFqn
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        if (false === self::isValidPoint($point)) {
+            $message = \sprintf(
+                '%s is not a valid source point.',
+                \get_class($point)
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
         if ($point instanceof PropertyPoint) {
-            return $this->reflector->getProperty($point->getName())
+            return $this->classReflection->getProperty($point->getName())
                     ->getValue($this->instance);
         } elseif ($point instanceof MethodPoint) {
-            return $this->reflector->getMethod($point->getName())
+            return $this->classReflection->getMethod($point->getName())
                     ->invoke($this->instance);
         }
     }

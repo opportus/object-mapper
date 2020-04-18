@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use ReflectionException;
+use ReflectionProperty;
 
 /**
  * The property point.
@@ -22,7 +24,12 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  */
 final class PropertyPoint extends AbstractPoint
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).\$([A-Za-z0-9_]+)$/';
+
+    /**
+     * @var ReflectionProperty $reflector
+     */
+    private $reflector;
 
     /**
      * Constructs the property point.
@@ -44,6 +51,24 @@ final class PropertyPoint extends AbstractPoint
 
         [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
+        try {
+            $reflector = new ReflectionProperty(
+                $matchedClassName,
+                $matchedName
+            );
+        } catch (ReflectionException $exception) {
+            $message = \sprintf(
+                '%s is not a property point. %s.',
+                $fqn,
+                $exception->getMessage()
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        $reflector->setAccessible(true);
+
+        $this->reflector = $reflector;
         $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;

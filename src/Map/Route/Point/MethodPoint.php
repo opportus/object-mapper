@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper\Map\Route\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use ReflectionException;
+use ReflectionMethod;
 
 /**
  * The method point.
@@ -22,7 +24,12 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  */
 final class MethodPoint extends AbstractPoint
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+).([A-Za-z0-9_]+)\(\)$/';
+
+    /**
+     * @var ReflectionMethod $reflector
+     */
+    private $reflector;
 
     /**
      * Constructs the method point.
@@ -44,6 +51,30 @@ final class MethodPoint extends AbstractPoint
 
         [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
+        try {
+            $reflector = new ReflectionMethod($matchedClassName, $matchedName);
+        } catch (ReflectionException $exception) {
+            $message = \sprintf(
+                '%s is not a method point. %s.',
+                $fqn,
+                $exception->getMessage()
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        if ($reflector->getNumberOfRequiredParameters() > 0) {
+            $message = \sprintf(
+                '%s is not a method point as such cannot have required parameters.',
+                $fqn
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        $reflector->setAccessible(true);
+
+        $this->reflector = $reflector;
         $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;
