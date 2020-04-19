@@ -23,16 +23,6 @@ use Throwable;
 class InvalidArgumentException extends Exception
 {
     /**
-     * @var int $argument
-     */
-    private $argument;
-
-    /**
-     * @var string $function
-     */
-    private $function;
-
-    /**
      * Constructs the invalid argument exception.
      *
      * @param int $argument
@@ -48,9 +38,7 @@ class InvalidArgumentException extends Exception
         int $code = 0,
         Throwable $previous = null
     ) {
-        $this->argument = $argument;
-        $this->function = $function;
-        $this->message = \sprintf(
+        $message = \sprintf(
             'Argument %d passed to %s is invalid. %s',
             $argument,
             $function,

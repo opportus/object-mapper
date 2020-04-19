@@ -23,11 +23,6 @@ use Throwable;
 class InvalidOperationException extends Exception
 {
     /**
-     * @var string $function
-     */
-    private $function;
-
-    /**
      * Constructs the invalid operation exception.
      *
      * @param string $function
@@ -41,8 +36,7 @@ class InvalidOperationException extends Exception
         int $code = 0,
         Throwable $previous = null
     ) {
-        $this->function = $function;
-        $this->message = \sprintf(
+        $message = \sprintf(
             'Operation %s is invalid. %s',
             $function,
             $message
