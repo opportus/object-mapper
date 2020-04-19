@@ -101,7 +101,8 @@ class to instantiate and) to map data to.
 
 `$map` must be a `null` or an instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
 If it is `null`, the method builds and uses a map composed of the default
- [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php).
+ [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
+ behavior.
 
 **Returns**
 
@@ -136,7 +137,7 @@ A *check point* can be any instance of [`CheckPointInterface`](https://github.co
 
 These routes can be defined [automatically](#automatic-mapping) via the `Map`'s
 [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php)
-and/or [manually](#manual-mapping):
+behavior and/or [manually](#manual-mapping):
 
 -   [Via map builder API](#via-map-builder-api).
 -   [Via map definition preloading](#via-map-definition-preloading).
@@ -184,7 +185,7 @@ echo $user->getUsername(); // 'Toto'
 Calling the
 `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method
 presented earlier, with its `$map` parameter set on `null`, makes the method
-build then use a `Map` composed of the default `PathFinding`.
+build then use a `Map` composed of the default `PathFinding` behavior.
 
 The default `PathFinding` behavior consists of guessing what is the
 appropriate point of the source class to connect to each point of the target
@@ -192,8 +193,8 @@ class. The connected *source point* and *target point* compose then a `Route`
 which is followed by the
 `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method.
 
-For the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php),
-a *target point* can be:
+For the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
+behavior, a *target point* can be:
 
 -   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
 -   A parameter of a public *setter* or constructor ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
@@ -206,7 +207,7 @@ The corresponding *source point* can be:
 
 #### Custom automatic mapping
 
-The default `PathFinding` presented above is based on one particular
+The default `PathFinding` behavior presented above is based on one particular
 *convention* that the *source* and the *target* have to comply with in order for
 this strategy to automatically map those for you. However, you may want to
 automatically map *source* and *target* not complying with this particular
@@ -216,10 +217,11 @@ One solution is to implement `PathFindingInterface` defining another
 *convention* which your *source* and *target* can comply with in order for this
 custom strategy to "automatically" map those for you the way you need.
 
-For concrete example of how to implement a `PathFindingInterface`,
-refer to the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php).
+For concrete example of how to implement `PathFindingInterface`, refer to the
+default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
+implementation.
 
-Below is described the single method of the [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php):
+Below is described the single method of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php):
 
 ```php
 PathFindingInterface::getRoutes(
@@ -248,8 +250,8 @@ class MyPathFinding implements PathFindingInterface
 {
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
-        $source->getClassReflection();
-        $target->getClassReflection();
+        $source->getReflection();
+        $target->getReflection();
 
         // Custom mapping algorithm
 
@@ -258,7 +260,7 @@ class MyPathFinding implements PathFindingInterface
 }
 
 // Pass to the map builder the strategy you want it to compose the map of
-$map = $mapBuilder->buildMap(new MyPathFinding());
+$map = $mapBuilder->getMap(new MyPathFinding());
 
 echo $map->getPathFindingFqn(); // 'MyPathFinding'
 
@@ -308,14 +310,16 @@ class ContributorDto
     public $name;
 }
 
-$user           = new User('Toto');
+$user = new User('Toto');
 $contributorDto = new ContributorDto();
 
 // Define *on the go* the route
 $map = $mapBuilder
-    ->addRoute('User.getUsername()', 'ContributorDto.$name')
-    ->buildMap()
-;
+    ->prepareRoute()
+        ->setSourcePoint('User.getUsername()')
+        ->setTargetPoint('ContributorDto.$name')
+        ->addRouteToMapBuilder()
+    ->getMap();
 
 // Map the data of the `User` instance to the `ContributorDto` instance
 $objectMapper->map($user, $contributorDto, $map);
@@ -324,9 +328,11 @@ echo $contributorDto->name; // 'Toto'
 
 // Define *on the go* the route
 $map = $mapBuilder
-    ->addRoute('ContributorDto.$name', 'User.__construct().$username')
-    ->buildMap()
-;
+    ->prepareRoute()
+        ->setSourcePoint('ContributorDto.$name')
+        ->setTargetPoint('User.__construct().$username')
+        ->addRouteToMapBuilder()
+    ->getMap();
 
 // Map the data of the `ContributorDto` instance to a new `User` instance
 $user = $objectMapper->map($contributorDto, User::class, $map);
@@ -334,14 +340,24 @@ $user = $objectMapper->map($contributorDto, User::class, $map);
 echo $user->getUsername(); // 'Toto'
 ```
 
-Such as in the example above, you can add routes to a map with the method
+Such as in the example above, you can add routes to a map with the methods
 described below:
 
 ```php
-MapBuilderInterface::addRoute(string $sourcePointFqn, string $targetPointFqn): MapBuilderInterface
+MapBuilderInterface::prepareRoute(): RouteBuilderInterface
 ```
 
-**Parameters**
+**Returns**
+
+A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
+
+---
+
+```php
+RouteBuilderInterface::setSourcePoint(string $sourcePointFqn): RouteBuilderInterface
+```
+
+**Parameter**
 
 `$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a
 *source point* which can be:
@@ -351,6 +367,18 @@ MapBuilderInterface::addRoute(string $sourcePointFqn, string $targetPointFqn): M
 -   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php))
     represented by its FQN having for syntax `'My\Class.method()'`.
 
+**Returns**
+
+A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
+
+---
+
+```php
+RouteBuilderInterface::setTargetPoint(string $targetPointFqn): RouteBuilderInterface
+```
+
+**Parameter**
+
 `$targetPointFqn` must be a `string` representing the Fully Qualified Name of a
 *target point* which can be:
 
@@ -359,20 +387,45 @@ MapBuilderInterface::addRoute(string $sourcePointFqn, string $targetPointFqn): M
 -   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
     represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
-`$checkPoints` must be an instance of [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php).
-See the [check point](#check-point) chapter.
-
 **Returns**
 
-A **new** instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
+A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
 
 ---
 
-Once routes are defined with the method described above, build the `Map` with
+```php
+RouteBuilderInterface::addCheckPoint(CheckPointInterface $checkPoint, int $checkPointPosition = null): RouteBuilderInterface
+```
+
+**Parameter**
+
+`$checkPoint` must be an instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
+
+`$checkPointPosition` The position of the checkpoint on the route.
+
+See the [check point](#check-point) chapter for more info.
+
+**Returns**
+
+A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
+
+---
+
+```php
+RouteBuilderInterface::addRouteToMapBuilder(): MapBuilderInterface
+```
+
+**Returns**
+
+The instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
+
+---
+
+Once routes are defined with the methods described above, build the `Map` with
 the method described below:
 
 ```php
-MapBuilderInterface::buildMap($pathFinding = false): Map
+MapBuilderInterface::getMap($pathFinding = false): Map
 ```
 
 **Parameters**
@@ -381,9 +434,9 @@ MapBuilderInterface::buildMap($pathFinding = false): Map
  [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php).
 
 -   If it is `false`, a `Map` composed of the [`NoPathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/NoPathFinding.php)
-    will be built.
+    behavior will be built.
 -   If it is `true`, a `Map` with the [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
-    is built.
+    behavior is built.
 -   If it is an instance of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php),
     a `Map` composed of this instance is built.
 
@@ -398,9 +451,8 @@ An instance of
 map (adding to it routes) *on the go*. There is another way to define the map,
 preloading its definition.
 
-While this library is definitely designed with *map definition preloading* in
-mind, it does not provide a way to effectively preload a *map definition* which
-could be:
+While this library is designed with *map definition preloading* in mind, it
+does not provide a way to effectively preload a *map definition* which could be:
 
 -   Any type of file, commonly used for configuration (XML, YAML, JSON, etc...),
     defining statically a map.
@@ -510,14 +562,14 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 
 $contributor = new Contributor('<script>**Hello World!**</script>', true);
 
-$checkPoints = new CheckPointCollection([
-    10 => new ContributorViewHtmlTagStripper(),     // Index 10 represents the position of this checkpoint on the route
-    20 => new ContributorViewMarkdownTransformer(), // Index 20 represents the position of this checkpoint on the route
-]);
-
 $map = $mapBuilder
-    ->addRoute('Contributor.getBio()', 'ContributorView.__construct().$bio', $checkPoints)
-    ->buildMap()
+    ->prepareRoute()
+        ->setSourcePoint('Contributor.getBio()')
+        ->setTargetPoint('ContributorView.__construct().$bio')
+        ->addCheckPoint(new ContributorViewHtmlTagStripper, 10)
+        ->addCheckPoint(new ContributorViewMarkdownTransformer, 20)
+        ->addRouteToMapBuilder()
+    ->getMap($pathFinding = true);
 ;
 
 $objectMapper->map($contributor, ContributorView::class, $map);
