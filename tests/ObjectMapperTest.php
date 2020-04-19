@@ -12,12 +12,12 @@
 namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Map\MapBuilder;
-use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Map\Route\Point\CheckPointInterface;
-use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
-use Opportus\ObjectMapper\Map\Route\Route;
-use Opportus\ObjectMapper\Map\Route\RouteBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
+use Opportus\ObjectMapper\Point\CheckPointCollection;
+use Opportus\ObjectMapper\Point\CheckPointInterface;
+use Opportus\ObjectMapper\Point\PointFactory;
+use Opportus\ObjectMapper\Route\Route;
+use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 

@@ -41,7 +41,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 -   Implement recursion system
 -   Implement *adders*, *removers*, *isers*, *hasers* support with the default
-    PathFindingStrategy
+    `PathFinding`
 -   Implement last unit tests
 
 ## Integrations
@@ -65,8 +65,8 @@ This library contains 4 services. 3 of them require a single dependency which is
 another lower level service among those 4:
 
 ```php
-use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
-use Opportus\ObjectMapper\Map\Route\RouteBuilder;
+use Opportus\ObjectMapper\Point\PointFactory;
+use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
 
@@ -100,7 +100,8 @@ ObjectMapperInterface::map(object $source, $target, ?Map $map = null): ?object
 class to instantiate and) to map data to.
 
 `$map` must be a `null` or an instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
-If it is `null`, the method builds and uses a map composed of the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
+If it is `null`, the method builds and uses a map composed of the default
+ [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php).
 
 **Returns**
 
@@ -117,24 +118,24 @@ gets from the `Map`. Doing so, the method assigns the value of the current
 *check points* can be defined in order to control the value from the
 *source point* before it reaches the *target point*.
 
-A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)
+A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
 is defined by and composed of its *source point*, its *target point*, and its
 *check points*.
 
 A *source point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php).
--   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php).
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php).
+-   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php).
 
 A *target point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php).
--   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php).
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php).
+-   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php).
 
-A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointInterface.php).
+A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
 These routes can be defined [automatically](#automatic-mapping) via the `Map`'s
-[`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php)
+[`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php)
 and/or [manually](#manual-mapping):
 
 -   [Via map builder API](#via-map-builder-api).
@@ -183,45 +184,45 @@ echo $user->getUsername(); // 'Toto'
 Calling the
 `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method
 presented earlier, with its `$map` parameter set on `null`, makes the method
-build then use a `Map` composed of the default `PathFindingStrategy`.
+build then use a `Map` composed of the default `PathFinding`.
 
-The default `PathFindingStrategy` behavior consists of guessing what is the
+The default `PathFinding` behavior consists of guessing what is the
 appropriate point of the source class to connect to each point of the target
 class. The connected *source point* and *target point* compose then a `Route`
 which is followed by the
 `ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method.
 
-For the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php),
+For the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php),
 a *target point* can be:
 
--   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
--   A parameter of a public *setter* or constructor ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php))
+-   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
+-   A parameter of a public *setter* or constructor ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
 
 The corresponding *source point* can be:
 
--   A public property having for name the same as the target point ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
+-   A public property having for name the same as the target point ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
 -   A public *getter* having for name `'get'.ucfirst($targetPointName)` and
-    requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php))
+    requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php))
 
 #### Custom automatic mapping
 
-The default `PathFindingStrategy` presented above is based on one particular
+The default `PathFinding` presented above is based on one particular
 *convention* that the *source* and the *target* have to comply with in order for
 this strategy to automatically map those for you. However, you may want to
 automatically map *source* and *target* not complying with this particular
 *convention*...
 
-One solution is to implement `PathFindingStrategyInterface` defining another
+One solution is to implement `PathFindingInterface` defining another
 *convention* which your *source* and *target* can comply with in order for this
 custom strategy to "automatically" map those for you the way you need.
 
-For concrete example of how to implement a `PathFindingStrategyInterface`,
-refer to the default [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php).
+For concrete example of how to implement a `PathFindingInterface`,
+refer to the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php).
 
-Below is described the single method of the [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php):
+Below is described the single method of the [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php):
 
 ```php
-PathFindingStrategyInterface::getRoutes(
+PathFindingInterface::getRoutes(
     Source $source,
     Target $target
 ): RouteCollection;
@@ -237,13 +238,13 @@ which represents and wraps the target to map data to.
 
 **Returns**
 
-[`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/RouteCollection.php)
+[`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteCollection.php)
 connecting the *source points* with the *target points*.
 
 **Example**
 
 ```php
-class MyPathFindingStrategy implements PathFindingStrategyInterface
+class MyPathFinding implements PathFindingInterface
 {
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
@@ -257,9 +258,9 @@ class MyPathFindingStrategy implements PathFindingStrategyInterface
 }
 
 // Pass to the map builder the strategy you want it to compose the map of
-$map = $mapBuilder->buildMap(new MyPathFindingStrategy());
+$map = $mapBuilder->buildMap(new MyPathFinding());
 
-echo $map->getPathFindingStrategyFqn(); // 'MyPathFindingStrategy'
+echo $map->getPathFindingFqn(); // 'MyPathFinding'
 
 // Use the map
 $user = $objectMapper->map($userDto, User::class, $map);
@@ -345,20 +346,20 @@ MapBuilderInterface::addRoute(string $sourcePointFqn, string $targetPointFqn): M
 `$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a
 *source point* which can be:
 
--   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
+-   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
     represented by its FQN having for syntax `'My\Class.$property'`.
--   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/MethodPoint.php))
+-   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php))
     represented by its FQN having for syntax `'My\Class.method()'`.
 
 `$targetPointFqn` must be a `string` representing the Fully Qualified Name of a
 *target point* which can be:
 
--   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/PropertyPoint.php))
+-   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
     represented by its FQN having for syntax `'My\Class.$property'`.
--   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/ParameterPoint.php))
+-   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
     represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
-`$checkPoints` must be an instance of [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointCollection.php).
+`$checkPoints` must be an instance of [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php).
 See the [check point](#check-point) chapter.
 
 **Returns**
@@ -371,18 +372,19 @@ Once routes are defined with the method described above, build the `Map` with
 the method described below:
 
 ```php
-MapBuilderInterface::buildMap($pathFindingStrategy = false): Map
+MapBuilderInterface::buildMap($pathFinding = false): Map
 ```
 
 **Parameters**
 
-`$pathFindingStrategy` must be either a `boolean` or an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php).
+`$pathFinding` must be either a `boolean` or an instance of
+ [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php).
 
--   If it is `false`, a `Map` composed of the [`NoPathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/NoPathFindingStrategy.php)
+-   If it is `false`, a `Map` composed of the [`NoPathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/NoPathFinding.php)
     will be built.
--   If it is `true`, a `Map` with the [`PathFindingStrategy`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategy.php)
+-   If it is `true`, a `Map` with the [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
     is built.
--   If it is an instance of [`PathFindingStrategyInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Strategy/PathFindingStrategyInterface.php),
+-   If it is an instance of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php),
     a `Map` composed of this instance is built.
 
 **Returns**
@@ -523,7 +525,7 @@ $objectMapper->map($contributor, ContributorView::class, $map);
 echo $contributorView->getBio(); // '<b>Hello World!</b>'
 ```
 
-Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointInterface.php):
+Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
 
 ```php
 CheckPointInterface::control($value, Route $route, Source $source, Target $target);
@@ -534,10 +536,10 @@ CheckPointInterface::control($value, Route $route, Source $source, Target $targe
 `$value` is the subject that `CheckPointInterface` implementation is meant to
 control.
 
-`$route` is the instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Route.php)
+`$route` is the instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
 which the `ObjectMapper` is currently on, containing the *source point* which
 the `$value` comes from, the *target point* which the `$value` goes to, and the
-[`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Map/Route/Point/CheckPointCollection.php)
+[`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php)
 which contain your current `CheckPointInterface` instance.
 
 `$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)

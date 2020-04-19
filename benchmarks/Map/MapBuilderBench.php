@@ -13,8 +13,8 @@ namespace Opportus\ObjectMapper\Benchmarks\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
-use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
-use Opportus\ObjectMapper\Map\Route\RouteBuilder;
+use Opportus\ObjectMapper\Point\PointFactory;
+use Opportus\ObjectMapper\Route\RouteBuilder;
 use PhpBench\Benchmark\Metadata\Annotations\BeforeMethods;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
@@ -22,7 +22,7 @@ use PhpBench\Benchmark\Metadata\Annotations\Revs;
 /**
  * The map builder bench.
  *
- * @package Opportus\ObjectMapper\Benchmarks\Src\Map
+ * @package Opportus\ObjectMapper\Benchmarks\Map
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  *
@@ -36,7 +36,7 @@ class MapBuilderBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchBuildMapWithPathFindingStrategy()
+    public function benchBuilPathFindingMap()
     {
         $this->mapBuilder->buildMap(true);
     }
@@ -45,7 +45,7 @@ class MapBuilderBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchBuildMapWithNoPathFindingStrategy()
+    public function benchBuildNoPathFindingMap()
     {
         $this->mapBuilder
             ->addRoute(

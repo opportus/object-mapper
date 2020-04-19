@@ -12,9 +12,9 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Route\Point\AbstractPoint;
-use Opportus\ObjectMapper\Map\Route\Point\MethodPoint;
-use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\AbstractPoint;
+use Opportus\ObjectMapper\Point\MethodPoint;
+use Opportus\ObjectMapper\Point\PropertyPoint;
 use ReflectionClass;
 
 /**

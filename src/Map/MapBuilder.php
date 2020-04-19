@@ -12,12 +12,12 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Map\Route\RouteBuilderInterface;
-use Opportus\ObjectMapper\Map\Route\RouteCollection;
-use Opportus\ObjectMapper\Map\Strategy\NoPathFindingStrategy;
-use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategy;
-use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
+use Opportus\ObjectMapper\PathFinding\NoPathFinding;
+use Opportus\ObjectMapper\PathFinding\PathFinding;
+use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\Point\CheckPointCollection;
+use Opportus\ObjectMapper\Route\RouteBuilderInterface;
+use Opportus\ObjectMapper\Route\RouteCollection;
 
 /**
  * The map builder.
@@ -75,27 +75,27 @@ final class MapBuilder implements MapBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function buildMap($pathFindingStrategy = false): Map
+    public function buildMap($pathFinding = false): Map
     {
-        if (false === $pathFindingStrategy) {
-            $pathFindingStrategy = new NoPathFindingStrategy();
-        } elseif (true === $pathFindingStrategy) {
-            $pathFindingStrategy = new PathFindingStrategy($this->routeBuilder);
+        if (false === $pathFinding) {
+            $pathFinding = new NoPathFinding();
+        } elseif (true === $pathFinding) {
+            $pathFinding = new PathFinding($this->routeBuilder);
         } elseif (
-            !\is_object($pathFindingStrategy) ||
-            !$pathFindingStrategy instanceof PathFindingStrategyInterface
+            !\is_object($pathFinding) ||
+            !$pathFinding instanceof PathFindingInterface
         ) {
             $message = \sprintf(
                 'The argument must be of type boolean or %s, got an argument of type %s.',
-                PathFindingStrategyInterface::class,
-                \is_object($pathFindingStrategy) ?
-                    \get_class($pathFindingStrategy) :
-                    \gettype($pathFindingStrategy)
+                PathFindingInterface::class,
+                \is_object($pathFinding) ?
+                    \get_class($pathFinding) :
+                    \gettype($pathFinding)
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        return new Map($pathFindingStrategy, $this->routes);
+        return new Map($pathFinding, $this->routes);
     }
 }

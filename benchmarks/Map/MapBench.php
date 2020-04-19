@@ -13,8 +13,8 @@ namespace Opportus\ObjectMapper\Benchmarks\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
-use Opportus\ObjectMapper\Map\Route\Point\PointFactory;
-use Opportus\ObjectMapper\Map\Route\RouteBuilder;
+use Opportus\ObjectMapper\Point\PointFactory;
+use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;
@@ -29,13 +29,13 @@ use PhpBench\Benchmark\Metadata\Annotations\Revs;
  */
 class MapBench
 {
-    private $pathFindingStrategyMap;
-    private $pathFindingStrategySource;
-    private $pathFindingStrategyTarget;
+    private $pathFindingMap;
+    private $pathFindingSource;
+    private $pathFindingTarget;
 
-    private $noPathFindingStrategyMap;
-    private $noPathFindingStrategySource;
-    private $noPathFindingStrategyTarget;
+    private $noPathFindingMap;
+    private $noPathFindingSource;
+    private $noPathFindingTarget;
 
     public function __construct()
     {
@@ -46,12 +46,12 @@ class MapBench
         $source = new BenchObject(1);
         $source->setB(11);
 
-        $this->pathFindingStrategyMap = $mapBuilder->buildMap(true);
+        $this->pathFindingMap = $mapBuilder->buildMap(true);
 
-        $this->pathFindingStrategySource = new Source($source);
-        $this->pathFindingStrategyTarget = new Target(BenchObject::class);
+        $this->pathFindingSource = new Source($source);
+        $this->pathFindingTarget = new Target(BenchObject::class);
 
-        $this->noPathFindingStrategyMap = $mapBuilder
+        $this->noPathFindingMap = $mapBuilder
             ->addRoute(
                 \sprintf('%s.getA()', BenchObject::class),
                 \sprintf('%s.__construct().$a', BenchObject::class)
@@ -62,19 +62,19 @@ class MapBench
             )
             ->buildMap();
 
-        $this->noPathFindingStrategySource = new Source($source);
-        $this->noPathFindingStrategyTarget = new Target(BenchObject::class);
+        $this->noPathFindingSource = new Source($source);
+        $this->noPathFindingTarget = new Target(BenchObject::class);
     }
 
     /**
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchGetRoutesWithPathFindingStrategy()
+    public function benchGetRoutesWithPathFinding()
     {
-        $this->pathFindingStrategyMap->getRoutes(
-            $this->pathFindingStrategySource,
-            $this->pathFindingStrategyTarget
+        $this->pathFindingMap->getRoutes(
+            $this->pathFindingSource,
+            $this->pathFindingTarget
         );
     }
 
@@ -82,11 +82,11 @@ class MapBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchGetRoutesWithNoPathFindingStrategy()
+    public function benchGetRoutesWithNoPathFinding()
     {
-        $this->noPathFindingStrategyMap->getRoutes(
-            $this->noPathFindingStrategySource,
-            $this->noPathFindingStrategyTarget
+        $this->noPathFindingMap->getRoutes(
+            $this->noPathFindingSource,
+            $this->noPathFindingTarget
         );
     }
 }

@@ -12,8 +12,8 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Map\Route\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
+use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\Point\CheckPointCollection;
 
 /**
  * The map builder interface.
@@ -41,9 +41,9 @@ interface MapBuilderInterface
     /**
      * Builds the map.
      *
-     * @param bool|PathFindingStrategyInterface $pathFindingStrategy
+     * @param bool|PathFindingInterface $pathFinding
      * @return Map
      * @throws InvalidArgumentException
      */
-    public function buildMap($pathFindingStrategy = false): Map;
+    public function buildMap($pathFinding = false): Map;
 }

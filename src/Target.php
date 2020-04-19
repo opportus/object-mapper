@@ -13,9 +13,9 @@ namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Map\Route\Point\AbstractPoint;
-use Opportus\ObjectMapper\Map\Route\Point\ParameterPoint;
-use Opportus\ObjectMapper\Map\Route\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\AbstractPoint;
+use Opportus\ObjectMapper\Point\ParameterPoint;
+use Opportus\ObjectMapper\Point\PropertyPoint;
 use ReflectionClass;
 use ReflectionException;
 

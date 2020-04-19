@@ -11,10 +11,10 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Map\Route\RouteCollection;
-use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 
 /**
  * The map.
@@ -26,9 +26,9 @@ use Opportus\ObjectMapper\Map\Strategy\PathFindingStrategyInterface;
 final class Map
 {
     /**
-     * @var PathFindingStrategyInterface $pathFindingStrategy
+     * @var PathFindingInterface $pathFinding
      */
-    private $pathFindingStrategy;
+    private $pathFinding;
 
     /**
      * @var RouteCollection $routes
@@ -38,14 +38,14 @@ final class Map
     /**
      * Constructs the map.
      *
-     * @param PathFindingStrategyInterface $pathFindingStrategy
+     * @param PathFindingInterface $pathFinding
      * @param null|RouteCollection $routes
      */
     public function __construct(
-        PathFindingStrategyInterface $pathFindingStrategy,
+        PathFindingInterface $pathFinding,
         ?RouteCollection $routes = null
     ) {
-        $this->pathFindingStrategy = $pathFindingStrategy;
+        $this->pathFinding = $pathFinding;
 
         $this->routes = $routes ?? new RouteCollection();
     }
@@ -64,7 +64,7 @@ final class Map
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
-        $routes = $this->pathFindingStrategy
+        $routes = $this->pathFinding
             ->getRoutes($source, $target)->toArray();
 
         foreach ($this->routes as $route) {
@@ -80,12 +80,12 @@ final class Map
     }
 
     /**
-     * Gets the Fully Qualified Name of the path finding strategy.
+     * Gets the Fully Qualified Name of the path finding.
      *
      * @return string
      */
-    public function getPathFindingStrategyFqn(): string
+    public function getPathFindingFqn(): string
     {
-        return \get_class($this->pathFindingStrategy);
+        return \get_class($this->pathFinding);
     }
 }
