@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Benchmarks\Route;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
-use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;
@@ -43,15 +42,14 @@ class RouteBuilderBench
      */
     public function benchBuildRoute()
     {
-        $this->routeBuilder->buildRoute(
-            \sprintf('%s.getA()', BenchObject::class),
-            \sprintf('%s.__construct().$a', BenchObject::class),
-            new CheckPointCollection()
-        );
-        $this->routeBuilder->buildRoute(
-            \sprintf('%s.getB()', BenchObject::class),
-            \sprintf('%s.setB().$b', BenchObject::class),
-            new CheckPointCollection()
-        );
+        $this->routeBuilder
+            ->setSourcePoint(\sprintf('%s.getA()', BenchObject::class))
+            ->setTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
+            ->getRoute();
+
+        $this->routeBuilder
+            ->setSourcePoint(\sprintf('%s.getB()', BenchObject::class))
+            ->setTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
+            ->getRoute();
     }
 }

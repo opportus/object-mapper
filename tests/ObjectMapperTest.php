@@ -40,19 +40,12 @@ class ObjectMapperTest extends FinalBypassTestCase
         $objectMapper = new ObjectMapper($mapBuilder);
 
         $map = $mapBuilder
-            ->addRoute(
-                \sprintf(
-                    '%s.getA()',
-                    ObjectMapperTestObjectClass::class
-                ),
-                \sprintf(
-                    '%s.__construct().$a',
-                    ObjectMapperTestObjectClass::class
-                ),
-                new CheckPointCollection(
-                    [new ObjectMapperTestCheckPointClass()]
-                )
-            )->buildMap(true);
+            ->prepareRoute()
+                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
+                ->addCheckPoint(new ObjectMapperTestCheckPointClass())
+                ->addRouteToMapBuilder()
+            ->getMap(true);
 
         $target = $objectMapper->map(
             $this->buildSource(),

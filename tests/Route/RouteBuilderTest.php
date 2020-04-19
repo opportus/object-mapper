@@ -11,12 +11,16 @@
 
 namespace Opportus\ObjectMapper\Tests\Route;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\CheckPointCollection;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Map\MapBuilder;
+use Opportus\ObjectMapper\Map\MapBuilderInterface;
+use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
+use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -37,24 +41,23 @@ class RouteBuilderTest extends FinalBypassTestCase
     }
 
     /**
-     * @dataProvider providePointFqns
+     * @dataProvider providePoints
      * @param string $sourcePointFqn
      * @param string $targetPointFqn
-     * @param CheckPointCollection $checkPoints
-     * @throws InvalidArgumentException
+     * @param CheckPointInterface $checkPoint
      */
-    public function testBuildRoute(
+    public function testGetRoute(
         string $sourcePointFqn,
         string $targetPointFqn,
-        CheckPointCollection $checkPoints
+        CheckPointInterface $checkPoint
     ): void {
         $routeBuilder = $this->buildRouteBuilder();
 
-        $route = $routeBuilder->buildRoute(
-            $sourcePointFqn,
-            $targetPointFqn,
-            $checkPoints
-        );
+        $route = $routeBuilder
+            ->setSourcePoint($sourcePointFqn)
+            ->setTargetPoint($targetPointFqn)
+            ->addCheckPoint($checkPoint, 10)
+            ->getRoute();
 
         static::assertInstanceOf(Route::class, $route);
 
@@ -68,45 +71,51 @@ class RouteBuilderTest extends FinalBypassTestCase
             $route->getTargetPoint()->getFqn()
         );
 
-        if (null === $checkPoints) {
-            static::assertInstanceOf(
-                CheckPointCollection::class,
-                $route->getCheckPoints()
-            );
+        static::assertCount(1, $route->getCheckPoints());
 
-            static::assertCount(0, $route->getCheckPoints());
-        } else {
-            static::assertSame($checkPoints, $route->getCheckPoints());
+        foreach ($route->getCheckPoints() as $position => $checkPoint) {
+            static::assertEquals(10, $position);
         }
     }
 
+    public function testGetRouteException(): void
+    {
+        $this->expectException(InvalidOperationException::class);
+
+        $this->buildRouteBuilder()->getRoute();
+    }
+
     /**
-     * @dataProvider provideInvalidPointFqns
+     * @dataProvider providePoints
      * @param string $sourcePointFqn
      * @param string $targetPointFqn
-     * @param CheckPointCollection $checkPoints
-     * @throws InvalidArgumentException
+     * @param CheckPointInterface $checkPoint
      */
-    public function testBuildRouteException(
+    public function testAddRouteToMapBuilder(
         string $sourcePointFqn,
         string $targetPointFqn,
-        CheckPointCollection $checkPoints
+        CheckPointInterface $checkPoint
     ): void {
         $routeBuilder = $this->buildRouteBuilder();
 
-        $this->expectException(InvalidArgumentException::class);
+        $mapBuilder = $routeBuilder
+            ->setMapBuilder($this->buildMapBuilder())
+            ->setSourcePoint($sourcePointFqn)
+            ->setTargetPoint($targetPointFqn)
+            ->addCheckPoint($checkPoint, 10)
+            ->addRouteToMapBuilder();
 
-        $routeBuilder->buildRoute(
-            $sourcePointFqn,
-            $targetPointFqn,
-            $checkPoints
-        );
+        static::assertInstanceOf(MapBuilderInterface::class, $mapBuilder);
     }
 
-    /**
-     * @return array|array[]
-     */
-    public function providePointFqns(): array
+    public function testAddRouteToMapBuilderException(): void
+    {
+        self::expectException(InvalidOperationException::class);
+
+        $this->buildRouteBuilder()->addRouteToMapBuilder();
+    }
+
+    public function providePoints(): array
     {
         return [
             [
@@ -118,7 +127,7 @@ class RouteBuilderTest extends FinalBypassTestCase
                     '%s.$property',
                     RouteBuilderTestClass::class
                 ),
-                new CheckPointCollection(),
+                new CheckPointTestClass()
             ],
             [
                 \sprintf(
@@ -129,7 +138,7 @@ class RouteBuilderTest extends FinalBypassTestCase
                     '%s.method().$parameter',
                     RouteBuilderTestClass::class
                 ),
-                new CheckPointCollection(),
+                new CheckPointTestClass()
             ],
             [
                 \sprintf(
@@ -140,7 +149,7 @@ class RouteBuilderTest extends FinalBypassTestCase
                     '%s.$property',
                     RouteBuilderTestClass::class
                 ),
-                new CheckPointCollection(),
+                new CheckPointTestClass()
             ],
             [
                 \sprintf(
@@ -151,70 +160,19 @@ class RouteBuilderTest extends FinalBypassTestCase
                     '%s.method().$parameter',
                     RouteBuilderTestClass::class
                 ),
-                new CheckPointCollection(),
+                new CheckPointTestClass()
             ],
         ];
     }
 
-    /**
-     * @return array|array[]
-     */
-    public function provideInvalidPointFqns(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s.method().$parameter',
-                    RouteBuilderTestClass::class
-                ),
-                \sprintf(
-                    '%s.$property',
-                    RouteBuilderTestClass::class
-                ),
-                new CheckPointCollection(),
-            ],
-            [
-                \sprintf(
-                    '%s.method().$parameter',
-                    RouteBuilderTestClass::class
-                ),
-                \sprintf(
-                    '%s.method().$parameter',
-                    RouteBuilderTestClass::class
-                ),
-                new CheckPointCollection(),
-            ],
-            [
-                \sprintf(
-                    '%s.$property',
-                    RouteBuilderTestClass::class
-                ),
-                \sprintf(
-                    '%s.method()',
-                    RouteBuilderTestClass::class
-                ),
-                new CheckPointCollection(),
-            ],
-            [
-                \sprintf(
-                    '%s.method()',
-                    RouteBuilderTestClass::class
-                ),
-                \sprintf(
-                    '%s.method()',
-                    RouteBuilderTestClass::class
-                ),
-                new CheckPointCollection(),
-            ],
-        ];
-    }
-
-    /**
-     * @return RouteBuilder
-     */
     private function buildRouteBuilder(): RouteBuilder
     {
         return new RouteBuilder(new PointFactory());
+    }
+
+    private function buildMapBuilder(): MapBuilder
+    {
+        return new MapBuilder($this->buildRouteBuilder());
     }
 }
 
@@ -231,5 +189,23 @@ class RouteBuilderTestClass
 
     public function method($parameter = null)
     {
+    }
+}
+
+/**
+ * The checkpoint test class.
+ *
+ * @package Opportus\ObjectMapper\Tests\Route
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class CheckPointTestClass implements CheckPointInterface
+{
+    public function control(
+        $value,
+        Route $route,
+        Source $source,
+        Target $target
+    ) {
     }
 }

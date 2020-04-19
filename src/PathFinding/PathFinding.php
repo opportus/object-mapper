@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\PathFinding;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
@@ -134,11 +133,10 @@ final class PathFinding implements PathFindingInterface
                 );
             }
 
-            $routes[] = $this->routeBuilder->buildRoute(
-                $sourcePointFqn,
-                $targetPointFqn,
-                new CheckPointCollection()
-            );
+            $routes[] = $this->routeBuilder
+                ->setSourcePoint($sourcePointFqn)
+                ->setTargetPoint($targetPointFqn)
+                ->getRoute();
         }
 
         return new RouteCollection($routes);

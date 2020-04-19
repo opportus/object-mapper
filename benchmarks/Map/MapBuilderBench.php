@@ -36,9 +36,9 @@ class MapBuilderBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchBuilPathFindingMap()
+    public function benchBuildPathFindingMap()
     {
-        $this->mapBuilder->buildMap(true);
+        $this->mapBuilder->getMap(true);
     }
 
     /**
@@ -48,15 +48,15 @@ class MapBuilderBench
     public function benchBuildNoPathFindingMap()
     {
         $this->mapBuilder
-            ->addRoute(
-                \sprintf('%s.getA()', BenchObject::class),
-                \sprintf('%s.__construct().$a', BenchObject::class)
-            )
-            ->addRoute(
-                \sprintf('%s.getB()', BenchObject::class),
-                \sprintf('%s.setB().$b', BenchObject::class)
-            )
-            ->buildMap();
+            ->prepareRoute()
+                ->setSourcePoint(\sprintf('%s.getA()', BenchObject::class))
+                ->setTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
+                ->addRouteToMapBuilder()
+            ->prepareRoute()
+                ->setSourcePoint(\sprintf('%s.getB()', BenchObject::class))
+                ->setTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
+                ->addRouteToMapBuilder()
+            ->getMap();
     }
 
     public function buildMapBuilder()

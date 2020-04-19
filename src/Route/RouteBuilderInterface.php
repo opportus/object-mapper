@@ -11,7 +11,9 @@
 
 namespace Opportus\ObjectMapper\Route;
 
-use Opportus\ObjectMapper\Point\CheckPointCollection;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Map\MapBuilderInterface;
+use Opportus\ObjectMapper\Point\CheckPointInterface;
 
 /**
  * The route builder interface.
@@ -23,16 +25,61 @@ use Opportus\ObjectMapper\Point\CheckPointCollection;
 interface RouteBuilderInterface
 {
     /**
-     * Builds a route.
+     * Sets the map builder.
+     *
+     * @param MapBuilderInterface $mapBuilder
+     * @return RouteBuilderInterface
+     */
+    public function setMapBuilder(
+        MapBuilderInterface $mapBuilder
+    ): RouteBuilderInterface;
+
+    /**
+     * Sets the source point of the route.
      *
      * @param string $sourcePointFqn
-     * @param string $targetPointFqn
-     * @param CheckPointCollection $checkPoints
-     * @return Route
+     * @return RouteBuilderInterface
      */
-    public function buildRoute(
-        string $sourcePointFqn,
-        string $targetPointFqn,
-        CheckPointCollection $checkPoints
-    ): Route;
+    public function setSourcePoint(
+        string $sourcePointFqn
+    ): RouteBuilderInterface;
+
+
+    /**
+     * Sets the target point of the route.
+     *
+     * @param string $targetPointFqn
+     * @return RouteBuilderInterface
+     */
+    public function setTargetPoint(
+        string $targetPointFqn
+    ): RouteBuilderInterface;
+
+    /**
+     * Adds a checkpoint to the route.
+     *
+     * @param CheckPointInterface $checkPoint
+     * @param int $checkPointPosition
+     * @return RouteBuilderInterface
+     */
+    public function addCheckPoint(
+        CheckPointInterface $checkPoint,
+        int $checkPointPosition = null
+    ): RouteBuilderInterface;
+
+
+    /**
+     * Gets the route.
+     *
+     * @return Route
+     * @throws InvalidOperationException
+     */
+    public function getRoute(): Route;
+
+    /**
+     * Adds the route to the map builder.
+     *
+     * @return MapBuilderInterface
+     */
+    public function addRouteToMapBuilder(): MapBuilderInterface;
 }
