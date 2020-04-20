@@ -47,8 +47,6 @@ This solution can be used for example as:
 Implementing any kind of data workflow based on this solution makes it pretty
 much Agile.
 
-This project aims 100% unit test coverage and optimization.
-
 ## Abstract
 
 A computing system is a set of control over its data. Each control passes the
