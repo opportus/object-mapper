@@ -46,9 +46,6 @@ This solution can be used for example as:
 -   Backbone infrastructure for AI driven data transformation
 -   ...
 
-Implementing any kind of data workflow based on this solution makes it truly
-Agile.
-
 ## Abstract
 
 A computing system is a set of control over its data. Each control passes the
