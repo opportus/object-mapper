@@ -65,8 +65,7 @@ The data going out from this control set is represented by the ***target***.
 The control set is represented by the ***checkpoint*** set.
 The data and control flow is represented by the ***route***.
 The intelligence (the programmer or the AI) defining the control set and the
-control flow (depending on the data) is represented by the ***pathfinding***
-strategy.
+control flow based on the data is represented by the ***pathfinding*** strategy.
 
 ## Roadmap
 
