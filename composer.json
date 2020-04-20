@@ -1,8 +1,8 @@
 {
     "name": "opportus/object-mapper",
-    "description": "Maps generically differently typed objects via extensible strategies and controls.",
+    "description": "Maps automatically (differently typed or not) objects via extensible strategies and controls.",
     "type": "library",
-    "keywords": ["object mapper", "map", "pathfinding", "dto"],
+    "keywords": ["object mapper", "data mapper", "map", "dto", "pathfinding"],
     "homepage": "https://github.com/opportus/object-mapper",
     "license": "MIT",
     "authors": [
