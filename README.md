@@ -22,16 +22,51 @@
 
 ## Use cases
 
-Use this solution for mapping data of objects to differently typed objects via
-extensible strategies and controls.
+Use this solution for mapping automatically data of objects to (differently
+typed or not) objects via extensible strategies and controls.
 
-This library can be used for example as:
+Leverage this solution by delegating to it patternable control over your model
+data and services to truly decouple those from your application. Meaning that
+nowhere in your codebase is statically coded these models and services routine
+calls which are variables defined by that patternable control.
 
--   Object <=> DTO mapping system.
--   Domain <=> Persistence model mapping system.
--   Domain <=> View model mapping system.
--   Object mapping subsystem by higher level systems such as serializers,
-    ORMs, form handlers, etc...
+Leverage further this solution by delegating to it self-learning AI driven
+control over your model data to transform it autonomously.
+
+This solution can be used for example as:
+
+-   Mapping system for Model <=> DTO
+-   Mapping system for Domain Model <=> Persistence Model
+-   Mapping system for Domain Model <=> View Model
+-   Mapping system for higher level systems such as serializer, form handler,
+    ORM, and others
+-   Backbone infrastructure for inter-layer communication
+-   Backbone infrastructure for AI driven data transformation
+-   ...
+
+Implementing any kind of data workflow based on this solution makes it pretty
+much Agile.
+
+This project aims 100% unit test coverage and optimization.
+
+## Abstract
+
+A computing system is a set of control over its data. Each control passes the
+data to the next control (control flow) so that we end up getting the data the
+way we want.
+
+This solution models this exact same fundamental workflow because a computing
+system **is** a data mapper by essence.
+
+***In this solution's terms:***
+
+The data being passed to a control set is represented by the ***source***.
+The data going out from this control set is represented by the ***target***.
+The control set is represented by the ***checkpoint*** set.
+The data and control flow is represented by the ***route***.
+The intelligence (the programmer or the AI) defining the control set and the
+control flow (depending on the data) is represented by the ***pathfinding***
+strategy.
 
 ## Roadmap
 
@@ -39,9 +74,9 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 ### v1.0.0 (stable)
 
--   Implement recursion system
+-   Implement recursion control system
 -   Implement *adders*, *removers*, *isers*, *hasers* support with the default
-    `PathFinding`
+    `PathFinding` strategy
 -   Implement last unit tests
 
 ## Integrations
@@ -89,7 +124,7 @@ Mapping object to object is done via the main [`ObjectMapper`](https://github.co
 service's method described below:
 
 ```php
-ObjectMapperInterface::map(object $source, $target, ?Map $map = null): ?object
+ObjectMapperInterface::map(object $source, $target, ?Map $map = null): ?object;
 ```
 
 **Parameters**
@@ -108,8 +143,8 @@ If it is `null`, the method builds and uses a map composed of the default
 
 Either:
 
--   `null` if the map has no route connecting source points with target points.
--   `object` which is the (instantiated and) updated target.
+-   `null` if the map has no route connecting source points with target points
+-   `object` which is the (instantiated and) updated target
 
 ### How it works
 
@@ -125,22 +160,22 @@ is defined by and composed of its *source point*, its *target point*, and its
 
 A *source point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php).
--   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php).
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php)
+-   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php)
 
 A *target point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php).
--   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php).
+-   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php)
+-   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php)
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
 These routes can be defined [automatically](#automatic-mapping) via the `Map`'s
 [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php)
-behavior and/or [manually](#manual-mapping):
+strategy and/or [manually](#manual-mapping) via:
 
--   [Via map builder API](#via-map-builder-api).
--   [Via map definition preloading](#via-map-definition-preloading).
+-   [Map builder API](#via-map-builder-api)
+-   [Map definition preloading](#via-map-definition-preloading)
 
 ### Automatic mapping
 
@@ -171,30 +206,28 @@ class UserDto
 $user    = new User('Toto');
 $userDto = new UserDto();
 
-// Map the data of the `User` instance to the `UserDto` instance
+// Map the data of the User instance to the UserDto instance
 $objectMapper->map($user, $userDto);
 
-echo $userDto->username; // 'Toto'
+echo $userDto->username; // Toto
 
-// Map the data of the `UserDto` instance to a new `User` instance
+// Map the data of the UserDto instance to a new User instance
 $user = $objectMapper->map($userDto, User::class);
 
-echo $user->getUsername(); // 'Toto'
+echo $user->getUsername(); // Toto
 ```
 
-Calling the
-`ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method
-presented earlier, with its `$map` parameter set on `null`, makes the method
-build then use a `Map` composed of the default `PathFinding` behavior.
+Calling the `ObjectMapper::map()` method presented earlier with its `$map`
+parameter set on `null`, makes the method build then use a `Map` composed of the
+default `PathFinding` strategy.
 
-The default `PathFinding` behavior consists of guessing what is the
+This default `PathFinding` behavior consists of guessing what is the
 appropriate point of the source class to connect to each point of the target
 class. The connected *source point* and *target point* compose then a `Route`
-which is followed by the
-`ObjectMapper::map(object $source, $target, ?Map $map = null): ?object` method.
+which is followed by the `ObjectMapper::map()` method.
 
 For the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
-behavior, a *target point* can be:
+strategy, a *target point* can be:
 
 -   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
 -   A parameter of a public *setter* or constructor ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
@@ -207,15 +240,14 @@ The corresponding *source point* can be:
 
 #### Custom automatic mapping
 
-The default `PathFinding` behavior presented above is based on one particular
-*convention* that the *source* and the *target* have to comply with in order for
-this strategy to automatically map those for you. However, you may want to
-automatically map *source* and *target* not complying with this particular
-*convention*...
+The default `PathFinding` strategy presented above is based on a particular use
+case and convention that the *source*, the *target*, and the mapping logic have
+to comply with in order for this strategy to automatically map those for you the
+way you want. However, you may want to automatically map *source* and *target* a
+different way...
 
-One solution is to implement `PathFindingInterface` defining another
-*convention* which your *source* and *target* can comply with in order for this
-custom strategy to "automatically" map those for you the way you need.
+One solution is to implement `PathFindingInterface` defining another convention
+and mapping logic.
 
 For concrete example of how to implement `PathFindingInterface`, refer to the
 default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
@@ -224,19 +256,16 @@ implementation.
 Below is described the single method of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php):
 
 ```php
-PathFindingInterface::getRoutes(
-    Source $source,
-    Target $target
-): RouteCollection;
+PathFindingInterface::getRoutes(Source $source, Target $target): RouteCollection;
 ```
 
 **Parameters**
 
 `$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)
-which represents and wraps the source to map data from.
+which encapsulate and represent the source to map data from.
 
 `$target` An instance of [`Target`](https://github.com/opportus/object-mapper/blob/master/src/Target.php)
-which represents and wraps the target to map data to.
+which encapsulate and represent the target to map data to.
 
 **Returns**
 
@@ -252,17 +281,17 @@ class MyPathFinding implements PathFindingInterface
     {
         $source->getReflection();
         $target->getReflection();
+        
+        $routes = new RouteCollection();
 
         // Custom mapping algorithm
 
-        return $routeCollection;
+        return $routes;
     }
 }
 
 // Pass to the map builder the strategy you want it to compose the map of
 $map = $mapBuilder->getMap(new MyPathFinding());
-
-echo $map->getPathFindingFqn(); // 'MyPathFinding'
 
 // Use the map
 $user = $objectMapper->map($userDto, User::class, $map);
@@ -313,7 +342,7 @@ class ContributorDto
 $user = new User('Toto');
 $contributorDto = new ContributorDto();
 
-// Define *on the go* the route
+// Define the route manually
 $map = $mapBuilder
     ->prepareRoute()
         ->setSourcePoint('User.getUsername()')
@@ -321,12 +350,12 @@ $map = $mapBuilder
         ->addRouteToMapBuilder()
     ->getMap();
 
-// Map the data of the `User` instance to the `ContributorDto` instance
+// Map the data of the User instance to the ContributorDto instance
 $objectMapper->map($user, $contributorDto, $map);
 
-echo $contributorDto->name; // 'Toto'
+echo $contributorDto->name; // Toto
 
-// Define *on the go* the route
+// Define the route manually
 $map = $mapBuilder
     ->prepareRoute()
         ->setSourcePoint('ContributorDto.$name')
@@ -334,7 +363,7 @@ $map = $mapBuilder
         ->addRouteToMapBuilder()
     ->getMap();
 
-// Map the data of the `ContributorDto` instance to a new `User` instance
+// Map the data of the ContributorDto instance to a new User instance
 $user = $objectMapper->map($contributorDto, User::class, $map);
 
 echo $user->getUsername(); // 'Toto'
@@ -434,9 +463,9 @@ MapBuilderInterface::getMap($pathFinding = false): Map
  [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php).
 
 -   If it is `false`, a `Map` composed of the [`NoPathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/NoPathFinding.php)
-    behavior will be built.
+    strategy will be built.
 -   If it is `true`, a `Map` with the [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
-    behavior is built.
+    strategy is built.
 -   If it is an instance of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php),
     a `Map` composed of this instance is built.
 
@@ -492,7 +521,7 @@ mapper. Then, the object mapper passes the value to the next checkpoint and so
 on... Until the last checkpoint returns the final value to be assigned to the
 *target point* by the object mapper.
 
-So it is important to keep in mind that each *check point* has an unique
+So it is important to keep in mind that each *check point* has a unique
 position (priority) on a route. The routed value goes through each of the
 *check points* from the lowest to the highest positioned ones such as
 represented below:
@@ -574,7 +603,7 @@ $map = $mapBuilder
 
 $objectMapper->map($contributor, ContributorView::class, $map);
 
-echo $contributorView->getBio(); // '<b>Hello World!</b>'
+echo $contributorView->getBio(); // <b>Hello World!</b>
 ```
 
 Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
