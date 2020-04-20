@@ -137,7 +137,7 @@ class to instantiate and) to map data to.
 `$map` must be a `null` or an instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
 If it is `null`, the method builds and uses a map composed of the default
  [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
- behavior.
+ strategy.
 
 **Returns**
 
@@ -221,7 +221,7 @@ Calling the `ObjectMapper::map()` method presented earlier with its `$map`
 parameter set on `null`, makes the method build then use a `Map` composed of the
 default `PathFinding` strategy.
 
-This default `PathFinding` behavior consists of guessing what is the
+This default `PathFinding` strategy consists of guessing what is the
 appropriate point of the source class to connect to each point of the target
 class. The connected *source point* and *target point* compose then a `Route`
 which is followed by the `ObjectMapper::map()` method.
