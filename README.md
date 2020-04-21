@@ -7,7 +7,6 @@
 ## Index
 
 -   [Use cases](#use-cases)
--   [Abstract](#abstract)
 -   [Roadmap](#roadmap)
 -   [Integrations](#integrations)
 -   [Setup](#setup)
@@ -23,7 +22,7 @@
 
 ## Use cases
 
-Use this solution for mapping automatically data of objects to (differently
+Use this solution for mapping automatically objects to (differently
 typed or not) objects via extensible strategies and controls.
 
 Leverage this solution by delegating to it patternable control over your model
@@ -31,9 +30,6 @@ data and services to **truly decouple** those from your application. Meaning
 nowhere then in your codebase is statically coded these models and services
 routine calls which are variables dynamically defined by that patternable
 control.
-
-Leverage further this solution by delegating to it self-learning AI driven
-control over your model data to transform it autonomously.
 
 This solution can be used for example as:
 
@@ -45,24 +41,6 @@ This solution can be used for example as:
 -   Backbone infrastructure for inter-layer communication
 -   Backbone infrastructure for AI driven data transformation
 -   ...
-
-## Abstract
-
-A computing system is a set of control over its data. Each control passes the
-data to the next control (control flow) so that we end up getting the data the
-way we want.
-
-This solution models this exact same fundamental workflow because a computing
-system **is** a data mapper by essence.
-
-***In this solution's terms:***
-
-The data being passed to a control set is represented by the ***source***.
-The data going out from this control set is represented by the ***target***.
-The control set is represented by the ***checkpoint*** set.
-The data and control flow is represented by the ***route***.
-The intelligence (the programmer or the AI) defining the control set and the
-control flow based on the data is represented by the ***pathfinding*** strategy.
 
 ## Roadmap
 
