@@ -28,8 +28,7 @@ typed or not) objects via extensible strategies and controls.
 Leverage this solution by delegating to it patternable control over your model
 data and services to **truly decouple** those from your application. Meaning
 nowhere then in your codebase is statically coded these models and services
-routine calls which are variables dynamically defined by that patternable
-control.
+routine calls which are variables dynamically defined by that control pattern.
 
 This solution can be used for example as:
 
@@ -214,14 +213,16 @@ The corresponding *source point* can be:
 
 #### Custom automatic mapping
 
-The default `PathFinding` strategy presented above is based on a particular use
-case and convention that the *source*, the *target*, and the mapping logic have
-to comply with in order for this strategy to automatically map those for you the
-way you want. However, you may want to automatically map *source* and *target* a
-different way...
+The default `PathFinding` strategy presented above is based on one particular
+mapping logic that the use case have to accord with and on one particular
+convention that the *source* and *target* have to comply with in order for this
+strategy to automatically map those for you the way you want. However, you may
+want to automatically map *source* and *target* a different way...
 
-One solution is to implement `PathFindingInterface` defining another convention
-and mapping logic.
+One solution is to implement `PathFindingInterface` defining another mapping
+logic and convention, or said otherwise, implementing a **control pattern** over
+the *source* and *target* decoupling totally those from your application in this
+context.
 
 For concrete example of how to implement `PathFindingInterface`, refer to the
 default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
@@ -463,15 +464,15 @@ does not provide a way to effectively preload a *map definition* which could be:
 
 -   Any type of file, commonly used for configuration (XML, YAML, JSON, etc...),
     defining statically a map
--   Any type of PHP subroutine defining dynamically a map
+-   Any type of PHP routine defining dynamically a map
 -   ...
 
 So in order to create routes to compose the map of, you can:
 
 -   Parse your map configuration files, extract from them *source point* and
     *target point* and inject them as is into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilderInterface.php)
--   Implement some sort of map generator subroutine making use itself of the
-    `MapBuilder` service
+-   Implement some sort of map generator routine making use itself of the
+    `MapBuilder` service instance
 
 Because an *object mapper* has a wide range of different use case contexts, this
 solution is designed as a minimalist, flexible, and extensible core in order to
