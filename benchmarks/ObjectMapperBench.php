@@ -41,14 +41,16 @@ class ObjectMapperBench
         $this->objectMapper = $objectMapper;
 
         $this->noPathFindingMap = $mapBuilder
-            ->prepareRoute()
+            ->getRouteBuilder()
                 ->setSourcePoint(\sprintf('%s.getA()', BenchObject::class))
                 ->setTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
-                ->addRouteToMapBuilder()
-            ->prepareRoute()
+                ->addRoute()
+                ->getMapBuilder()
+            ->getRouteBuilder()
                 ->setSourcePoint(\sprintf('%s.getB()', BenchObject::class))
                 ->setTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
-                ->addRouteToMapBuilder()
+                ->addRoute()
+                ->getMapBuilder()
             ->getMap();
 
         $this->source = new BenchObject(1);

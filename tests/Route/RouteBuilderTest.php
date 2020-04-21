@@ -19,6 +19,7 @@ use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
+use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
@@ -91,7 +92,31 @@ class RouteBuilderTest extends FinalBypassTestCase
      * @param string $targetPointFqn
      * @param CheckPointInterface $checkPoint
      */
-    public function testAddRouteToMapBuilder(
+    public function testGetRoutes(
+        string $sourcePointFqn,
+        string $targetPointFqn,
+        CheckPointInterface $checkPoint
+    ): void {
+        $routeBuilder = $this->buildRouteBuilder();
+
+        $routes = $routeBuilder
+            ->setMapBuilder($this->buildMapBuilder())
+            ->setSourcePoint($sourcePointFqn)
+            ->setTargetPoint($targetPointFqn)
+            ->addCheckPoint($checkPoint, 10)
+            ->addRoute()
+            ->getRoutes();
+
+        static::assertInstanceOf(RouteCollection::class, $routes);
+    }
+
+    /**
+     * @dataProvider providePoints
+     * @param string $sourcePointFqn
+     * @param string $targetPointFqn
+     * @param CheckPointInterface $checkPoint
+     */
+    public function testGetMapBuilder(
         string $sourcePointFqn,
         string $targetPointFqn,
         CheckPointInterface $checkPoint
@@ -103,16 +128,17 @@ class RouteBuilderTest extends FinalBypassTestCase
             ->setSourcePoint($sourcePointFqn)
             ->setTargetPoint($targetPointFqn)
             ->addCheckPoint($checkPoint, 10)
-            ->addRouteToMapBuilder();
+            ->addRoute()
+            ->getMapBuilder();
 
         static::assertInstanceOf(MapBuilderInterface::class, $mapBuilder);
     }
 
-    public function testAddRouteToMapBuilderException(): void
+    public function testGetMapBuilderException(): void
     {
         self::expectException(InvalidOperationException::class);
 
-        $this->buildRouteBuilder()->addRouteToMapBuilder();
+        $this->buildRouteBuilder()->getMapBuilder();
     }
 
     public function providePoints(): array

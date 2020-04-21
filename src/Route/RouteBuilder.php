@@ -53,6 +53,11 @@ final class RouteBuilder implements RouteBuilderInterface
     private $checkPoints;
 
     /**
+     * @var RouteCollection $routes
+     */
+    private $routes;
+
+    /**
      * Constructs the route builder.
      *
      * @param PointFactoryInterface $pointFactory
@@ -60,19 +65,22 @@ final class RouteBuilder implements RouteBuilderInterface
      * @param null|AbstractPoint $sourcePoint
      * @param null|AbstractPoint $targetPoint
      * @param null|CheckPointCollection $checkPoints
+     * @param null|RouteCollection $routes
      */
     public function __construct(
         PointFactoryInterface $pointFactory,
         ?MapBuilderInterface $mapBuilder = null,
         ?AbstractPoint $sourcePoint = null,
         ?AbstractPoint $targetPoint = null,
-        ?CheckPointCollection $checkPoints = null
+        ?CheckPointCollection $checkPoints = null,
+        ?RouteCollection $routes = null
     ) {
         $this->pointFactory = $pointFactory;
         $this->mapBuilder = $mapBuilder;
         $this->sourcePoint = $sourcePoint;
         $this->targetPoint = $targetPoint;
         $this->checkPoints = $checkPoints ?? new CheckPointCollection();
+        $this->routes = $routes ?? new RouteCollection();
     }
 
     /**
@@ -86,7 +94,8 @@ final class RouteBuilder implements RouteBuilderInterface
             $mapBuilder,
             $this->sourcePoint,
             $this->targetPoint,
-            $this->checkPoints
+            $this->checkPoints,
+            $this->routes
         );
     }
 
@@ -101,7 +110,8 @@ final class RouteBuilder implements RouteBuilderInterface
             $this->mapBuilder,
             $this->pointFactory->createPoint($sourcePointFqn),
             $this->targetPoint,
-            $this->checkPoints
+            $this->checkPoints,
+            $this->routes
         );
     }
 
@@ -116,7 +126,8 @@ final class RouteBuilder implements RouteBuilderInterface
             $this->mapBuilder,
             $this->sourcePoint,
             $this->pointFactory->createPoint($targetPointFqn),
-            $this->checkPoints
+            $this->checkPoints,
+            $this->routes
         );
     }
 
@@ -140,7 +151,27 @@ final class RouteBuilder implements RouteBuilderInterface
             $this->mapBuilder,
             $this->sourcePoint,
             $this->targetPoint,
-            new CheckPointCollection($checkPoints)
+            new CheckPointCollection($checkPoints),
+            $this->routes
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addRoute(): RouteBuilderInterface
+    {
+        $routes = $this->routes->toArray();
+
+        $routes[] = $this->getRoute();
+
+        return new self(
+            $this->pointFactory,
+            $this->mapBuilder,
+            $this->sourcePoint,
+            $this->targetPoint,
+            $this->checkPoints,
+            new RouteCollection($routes)
         );
     }
 
@@ -166,7 +197,15 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function addRouteToMapBuilder(): MapBuilderInterface
+    public function getRoutes(): RouteCollection
+    {
+        return $this->routes;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMapBuilder(): MapBuilderInterface
     {
         if (null === $this->mapBuilder) {
             throw new InvalidOperationException(
@@ -175,6 +214,6 @@ final class RouteBuilder implements RouteBuilderInterface
             );
         }
 
-        return $this->mapBuilder->addRoute($this->getRoute());
+        return $this->mapBuilder->addRoutes($this->getRoutes());
     }
 }

@@ -13,7 +13,6 @@ namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
-use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\Route;
@@ -40,11 +39,12 @@ class ObjectMapperTest extends FinalBypassTestCase
         $objectMapper = new ObjectMapper($mapBuilder);
 
         $map = $mapBuilder
-            ->prepareRoute()
+            ->getRouteBuilder()
                 ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
                 ->setTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
                 ->addCheckPoint(new ObjectMapperTestCheckPointClass())
-                ->addRouteToMapBuilder()
+                ->addRoute()
+                ->getMapBuilder()
             ->getMap(true);
 
         $target = $objectMapper->map(

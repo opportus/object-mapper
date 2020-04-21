@@ -52,14 +52,16 @@ class MapBench
         $this->pathFindingTarget = new Target(BenchObject::class);
 
         $this->noPathFindingMap = $mapBuilder
-            ->prepareRoute()
+            ->getRouteBuilder()
                 ->setSourcePoint(\sprintf('%s.getA()', BenchObject::class))
                 ->setTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
-                ->addRouteToMapBuilder()
-            ->prepareRoute()
+                ->addRoute()
+                ->getMapBuilder()
+            ->getRouteBuilder()
                 ->setSourcePoint(\sprintf('%s.getB()', BenchObject::class))
                 ->setTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
-                ->addRouteToMapBuilder()
+                ->addRoute()
+                ->getMapBuilder()
             ->getMap();
 
         $this->noPathFindingSource = new Source($source);

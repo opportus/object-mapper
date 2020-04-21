@@ -15,7 +15,6 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\PathFinding\NoPathFinding;
 use Opportus\ObjectMapper\PathFinding\PathFinding;
 use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
-use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 
@@ -49,14 +48,13 @@ final class MapBuilder implements MapBuilderInterface
         ?RouteCollection $routes = null
     ) {
         $this->routeBuilder = $routeBuilder;
-
         $this->routes = $routes ?? new RouteCollection();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function prepareRoute(): RouteBuilderInterface
+    public function getRouteBuilder(): RouteBuilderInterface
     {
         return $this->routeBuilder->setMapBuilder($this);
     }
@@ -64,10 +62,9 @@ final class MapBuilder implements MapBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addRoute(Route $route): MapBuilderInterface
+    public function addRoutes(RouteCollection $routes): MapBuilderInterface
     {
-        $routes = $this->routes->toArray();
-        $routes[] = $route;
+        $routes = $routes->toArray() + $this->routes->toArray();
 
         return new self($this->routeBuilder, new RouteCollection($routes));
     }

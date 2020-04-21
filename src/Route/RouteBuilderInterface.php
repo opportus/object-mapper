@@ -67,9 +67,15 @@ interface RouteBuilderInterface
         int $checkPointPosition = null
     ): RouteBuilderInterface;
 
+    /**
+     * Adds the built route to the built route collection.
+     *
+     * @return RouteBuilderInterface
+     */
+    public function addRoute(): RouteBuilderInterface;
 
     /**
-     * Gets the route.
+     * Gets the built route.
      *
      * @return Route
      * @throws InvalidOperationException
@@ -77,9 +83,16 @@ interface RouteBuilderInterface
     public function getRoute(): Route;
 
     /**
-     * Adds the route to the map builder.
+     * Gets the built route collection.
+     *
+     * @return RouteCollection
+     */
+    public function getRoutes(): RouteCollection;
+
+    /**
+     * Gets the map builder with previously built routes.
      *
      * @return MapBuilderInterface
      */
-    public function addRouteToMapBuilder(): MapBuilderInterface;
+    public function getMapBuilder(): MapBuilderInterface;
 }
