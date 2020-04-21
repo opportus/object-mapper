@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper;
 
+use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 
@@ -46,7 +47,6 @@ final class ObjectMapper implements ObjectMapperInterface
         $source = ($source instanceof Source) ? $source : new Source($source);
         $target = ($target instanceof Target) ? $target : new Target($target);
         $map    = $map ?? $this->mapBuilder->getMap(true);
-
         $routes = $map->getRoutes($source, $target);
 
         if (0 === \count($routes)) {
@@ -58,18 +58,23 @@ final class ObjectMapper implements ObjectMapperInterface
             $targetPoint = $route->getTargetPoint();
             $checkPoints = $route->getCheckPoints();
 
-            $targetPointValue = $source->getPointValue($sourcePoint);
+            $checkPointSubject = $source->getPointValue($sourcePoint);
 
-            foreach ($checkPoints as $checkPoint) {
-                $targetPointValue = $checkPoint->control(
-                    $targetPointValue,
-                    $route,
-                    $source,
-                    $target
-                );
+            try {
+                foreach ($checkPoints as $checkPoint) {
+                    $checkPointSubject = $checkPoint->control(
+                        $checkPointSubject,
+                        $route,
+                        $map,
+                        $source,
+                        $target
+                    );
+                }
+            } catch (CheckPointSeizingException $e) {
+                continue;
             }
 
-            $target->setPointValue($targetPoint, $targetPointValue);
+            $target->setPointValue($targetPoint, $checkPointSubject);
         }
 
         return $target->getInstance();

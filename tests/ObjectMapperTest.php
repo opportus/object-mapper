@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests;
 
+use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
@@ -119,6 +120,7 @@ class ObjectMapperTestCheckPointClass implements CheckPointInterface
     public function control(
         $value,
         Route $route,
+        Map $map,
         Source $source,
         Target $target
     ) {

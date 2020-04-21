@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Tests\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
@@ -230,6 +231,7 @@ class CheckPointTestClass implements CheckPointInterface
     public function control(
         $value,
         Route $route,
+        Map $map,
         Source $source,
         Target $target
     ) {

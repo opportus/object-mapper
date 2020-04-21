@@ -11,6 +11,9 @@
 
 namespace Opportus\ObjectMapper\Point;
 
+use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
@@ -25,17 +28,21 @@ use Opportus\ObjectMapper\Target;
 interface CheckPointInterface
 {
     /**
-     * Controls the value.
+     * Controls the subject.
      *
-     * @param mixed $value The value going to be assigned to the target point
-     * @param Route $route The route which the mapper is currently on
-     * @param Source $source The source which the point value comes from
-     * @param Target $target The target which the point value goes to
+     * @param mixed $subject The value going to be assigned to the target point
+     * @param Route $route The route which the check point is currently on
+     * @param Map $map The map which the route is currently on
+     * @param Source $source The source which the subject comes from
+     * @param Target $target The target which the subject goes to
      * @return mixed The value going to be assigned to the target point
+     * @throws CheckPointSeizingException
+     * @throws InvalidOperationException
      */
     public function control(
-        $value,
+        $subject,
         Route $route,
+        Map $map,
         Source $source,
         Target $target
     );
