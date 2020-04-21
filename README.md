@@ -319,10 +319,11 @@ $contributorDto = new ContributorDto();
 
 // Define the route manually
 $map = $mapBuilder
-    ->prepareRoute()
+    ->getRouteBuilder()
         ->setSourcePoint('User.getUsername()')
         ->setTargetPoint('ContributorDto.$name')
-        ->addRouteToMapBuilder()
+        ->addRoute()
+        ->getMapBuilder()
     ->getMap();
 
 // Map the data of the User instance to the ContributorDto instance
@@ -332,10 +333,11 @@ echo $contributorDto->name; // Toto
 
 // Define the route manually
 $map = $mapBuilder
-    ->prepareRoute()
+    ->getRouteBuilder()
         ->setSourcePoint('ContributorDto.$name')
         ->setTargetPoint('User.__construct().$username')
-        ->addRouteToMapBuilder()
+        ->addRoute()
+        ->getMapBuilder()
     ->getMap();
 
 // Map the data of the ContributorDto instance to a new User instance
@@ -350,7 +352,7 @@ described below:
 ---
 
 ```php
-MapBuilderInterface::prepareRoute(): RouteBuilderInterface
+MapBuilderInterface::getRouteBuilder(): RouteBuilderInterface
 ```
 
 **Returns**
@@ -418,12 +420,23 @@ A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper
 ---
 
 ```php
-RouteBuilderInterface::addRouteToMapBuilder(): MapBuilderInterface
+RouteBuilderInterface::addRoute(): RouteBuilderInterface
 ```
 
 **Returns**
 
-The instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
+A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
+
+---
+
+```php
+RouteBuilderInterface::getMapBuilder(): MapBuilderInterface
+```
+
+**Returns**
+
+The instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php)
+with built routes added to it.
 
 ---
 
@@ -570,12 +583,13 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 $contributor = new Contributor('<script>**Hello World!**</script>', true);
 
 $map = $mapBuilder
-    ->prepareRoute()
+    ->getRouteBuilder()
         ->setSourcePoint('Contributor.getBio()')
         ->setTargetPoint('ContributorView.__construct().$bio')
         ->addCheckPoint(new ContributorViewHtmlTagStripper, 10)
         ->addCheckPoint(new ContributorViewMarkdownTransformer, 20)
-        ->addRouteToMapBuilder()
+        ->addRoute()
+        ->getMapBuilder()
     ->getMap($pathFinding = true);
 ;
 
