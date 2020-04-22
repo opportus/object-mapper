@@ -22,23 +22,30 @@
 
 ## Use cases
 
-Use this solution for mapping automatically objects to (differently
-typed or not) objects via extensible strategies and controls.
+Use this solution for mapping (differently typed or not) objects via extensible
+strategies and controls.
 
-Leverage this solution by delegating to it patternable control over your model
-data and services to **truly decouple** those from your application. Meaning
-nowhere then in your codebase is statically coded these models and services
-routine calls which are variables dynamically defined by that control pattern.
+Leverage this solution by delegating to it patternable control strategies over
+source and target objects to:
+ 
+-   Decouple these objects (models or services) from your codebase
+-   Dynamically define control flow over data being transferred
+-   Dynamically define data model
 
-This solution can be used for example as:
+This project aims to provide a standard core system to many applications such
+as:
 
--   Mapping system for Model <=> DTO
--   Mapping system for Domain Model <=> Persistence Model
--   Mapping system for Domain Model <=> View Model
--   Mapping system for higher level systems such as serializer, form handler,
-    ORM, and others
--   Backbone infrastructure for inter-layer communication
--   Backbone infrastructure for AI driven data transformation
+-   Data transformation
+-   ORM
+-   Form handling
+-   Serialization
+-   ...
+
+This solution also fits common needs such as:
+
+-   Model <=> DTO mapper
+-   Model <=> Persistence Model mapper
+-   Model <=> View Model mapper
 -   ...
 
 ## Roadmap
