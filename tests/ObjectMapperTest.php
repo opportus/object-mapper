@@ -46,7 +46,8 @@ class ObjectMapperTest extends FinalBypassTestCase
                 ->addCheckPoint(new ObjectMapperTestCheckPointClass())
                 ->addRoute()
                 ->getMapBuilder()
-            ->getMap(true);
+            ->setPathFinding()
+            ->getMap();
 
         $target = $objectMapper->map(
             $this->buildSource(),

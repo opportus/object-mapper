@@ -11,7 +11,6 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -41,11 +40,19 @@ interface MapBuilderInterface
     public function addRoutes(RouteCollection $routes): MapBuilderInterface;
 
     /**
+     * Sets the pathfinding.
+     *
+     * @param null|PathFindingInterface $pathFinding
+     * @return MapBuilderInterface
+     */
+    public function setPathFinding(
+        ?PathFindingInterface $pathFinding = null
+    ): MapBuilderInterface;
+
+    /**
      * Gets the map.
      *
-     * @param bool|PathFindingInterface $pathFinding
      * @return Map
-     * @throws InvalidArgumentException
      */
-    public function getMap($pathFinding = false): Map;
+    public function getMap(): Map;
 }

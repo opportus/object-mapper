@@ -46,7 +46,9 @@ class MapBench
         $source = new BenchObject(1);
         $source->setB(11);
 
-        $this->pathFindingMap = $mapBuilder->getMap(true);
+        $this->pathFindingMap = $mapBuilder
+            ->setPathFinding()
+            ->getMap();
 
         $this->pathFindingSource = new Source($source);
         $this->pathFindingTarget = new Target(BenchObject::class);
