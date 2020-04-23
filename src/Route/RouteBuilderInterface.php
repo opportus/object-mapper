@@ -44,7 +44,6 @@ interface RouteBuilderInterface
         string $sourcePointFqn
     ): RouteBuilderInterface;
 
-
     /**
      * Sets the target point of the route.
      *
@@ -68,13 +67,6 @@ interface RouteBuilderInterface
     ): RouteBuilderInterface;
 
     /**
-     * Adds the built route to the built route collection.
-     *
-     * @return RouteBuilderInterface
-     */
-    public function addRoute(): RouteBuilderInterface;
-
-    /**
      * Gets the built route.
      *
      * @return Route
@@ -83,14 +75,15 @@ interface RouteBuilderInterface
     public function getRoute(): Route;
 
     /**
-     * Gets the built route collection.
+     * Adds the built route to the map builder.
      *
-     * @return RouteCollection
+     * @return RouteBuilderInterface
+     * @throws InvalidOperationException
      */
-    public function getRoutes(): RouteCollection;
+    public function addRouteToMapBuilder(): RouteBuilderInterface;
 
     /**
-     * Gets the map builder with previously built routes.
+     * Gets the map builder.
      *
      * @return MapBuilderInterface
      */

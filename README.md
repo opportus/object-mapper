@@ -331,7 +331,7 @@ $map = $mapBuilder
     ->getRouteBuilder()
         ->setSourcePoint('User.getUsername()')
         ->setTargetPoint('ContributorDto.$name')
-        ->addRoute()
+        ->addRouteToMapBuilder()
         ->getMapBuilder()
     ->getMap();
 
@@ -345,7 +345,7 @@ $map = $mapBuilder
     ->getRouteBuilder()
         ->setSourcePoint('ContributorDto.$name')
         ->setTargetPoint('User.__construct().$username')
-        ->addRoute()
+        ->addRouteToMapBuilder()
         ->getMapBuilder()
     ->getMap();
 
@@ -429,7 +429,7 @@ A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper
 ---
 
 ```php
-RouteBuilderInterface::addRoute(): RouteBuilderInterface
+RouteBuilderInterface::addRouteToMapBuilder(): RouteBuilderInterface
 ```
 
 **Returns**
@@ -444,8 +444,7 @@ RouteBuilderInterface::getMapBuilder(): MapBuilderInterface
 
 **Returns**
 
-The instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php)
-with built routes added to it.
+The instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
 
 ---
 
@@ -602,7 +601,7 @@ $map = $mapBuilder
         ->setTargetPoint('ContributorView.__construct().$bio')
         ->addCheckPoint(new ContributorViewHtmlTagStripper, 10)
         ->addCheckPoint(new ContributorViewMarkdownTransformer, 20)
-        ->addRoute()
+        ->addRouteToMapBuilder()
         ->getMapBuilder()
     ->setPathFinding()
     ->getMap();

@@ -44,7 +44,7 @@ class ObjectMapperTest extends FinalBypassTestCase
                 ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
                 ->setTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
                 ->addCheckPoint(new ObjectMapperTestCheckPointClass())
-                ->addRoute()
+                ->addRouteToMapBuilder()
                 ->getMapBuilder()
             ->setPathFinding()
             ->getMap();
