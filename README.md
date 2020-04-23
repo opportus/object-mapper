@@ -273,7 +273,9 @@ class MyPathFinding implements PathFindingInterface
 }
 
 // Pass to the map builder the strategy you want it to compose the map of
-$map = $mapBuilder->getMap(new MyPathFinding());
+$map = $mapBuilder
+    ->setPathFinding(new MyPathFinding())
+    ->getMap();
 
 // Use the map
 $user = $objectMapper->map($userDto, User::class, $map);
@@ -447,24 +449,29 @@ with built routes added to it.
 
 ---
 
-Once routes are defined with the methods described above, build the `Map` with
-the method described below:
+Once routes are defined with the methods described above, set the
+`PathFindingInterface` strategy and build the `Map` with the methods described
+below:
 
 ```php
-MapBuilderInterface::getMap($pathFinding = false): Map
+MapBuilderInterface::setPathFinding(?PathFindingInterface $pathFinding = null): MapBuilderInterface
 ```
 
-**Parameters**
+**Parameter**
 
-`$pathFinding` must be either a `boolean` or an instance of
- [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php).
+`$pathFinding` must be an instance of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php)
+or `null`. If it is `null`, a `Map` with the default `PathFinding` will be
+built.
 
--   If it is `false`, a `Map` composed of the [`NoPathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/NoPathFinding.php)
-    strategy will be built
--   If it is `true`, a `Map` with the [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
-    strategy is built
--   If it is an instance of [`PathFindingInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFindingInterface.php),
-    a `Map` composed of this instance is built
+**Returns**
+
+The instance of [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php).
+
+---
+
+```php
+MapBuilderInterface::getMap(): Map
+```
 
 **Returns**
 
@@ -563,7 +570,7 @@ class ContributorView
 
 class ContributorViewHtmlTagStripper implements CheckPointInterface
 {
-    public function control($value, Route $route, Source $source, Target $target)
+    public function control($value, Route $route, Map $map, Source $source, Target $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getClassFqn() && \is_string($value)) {
             return \strip_tags($value);
@@ -577,7 +584,7 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 {
     // ...
 
-    public function control($value, Route $route, Source $source, Target $target)
+    public function control($value, Route $route, Map $map, Source $source, Target $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getClassFqn() && \is_string($value)) {
             return $this->markdownParser->transform($value);
@@ -587,7 +594,7 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
     }
 }
 
-$contributor = new Contributor('<script>**Hello World!**</script>', true);
+$contributor = new Contributor('<script>**Hello World!**</script>');
 
 $map = $mapBuilder
     ->getRouteBuilder()
@@ -597,7 +604,8 @@ $map = $mapBuilder
         ->addCheckPoint(new ContributorViewMarkdownTransformer, 20)
         ->addRoute()
         ->getMapBuilder()
-    ->getMap($pathFinding = true);
+    ->setPathFinding()
+    ->getMap();
 ;
 
 $objectMapper->map($contributor, ContributorView::class, $map);
@@ -608,7 +616,7 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
 
 ```php
-CheckPointInterface::control($subject, Route $route, Source $source, Target $target);
+CheckPointInterface::control($subject, Route $route, Map $map, Source $source, Target $target);
 ```
 
 **Parameters**
@@ -621,6 +629,9 @@ which the `ObjectMapper` is currently on, containing the *source point* which
 the `$subject` comes from, the *target point* which the `$subject` goes to, and the
 [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php)
 which contain your current `CheckPointInterface` instance.
+
+`$map` is the instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php)
+which the `Route` is on.
 
 `$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)
 which encapsulate and represent the *source* to map data from.
