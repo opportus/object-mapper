@@ -55,15 +55,16 @@ final class PathFinding implements PathFindingInterface
      *
      * A TargetPoint can be:
      *
-     * - A public property (PropertyPoint)
-     * - A parameter of a public setter or a public constructor (ParameterPoint)
+     * - A public property (PropertyObjectPoint)
+     * - A parameter of a public setter or a public constructor
+     * (ParameterObjectPoint)
      *
      * The connectable SourcePoint can be:
      *
      * - A public property having for name the same as the target point
-     * (PropertyPoint)
+     * (PropertyObjectPoint)
      * - A public getter having for name `'get'.ucfirst($targetPointName)` and
-     * requiring no argument (MethodPoint)
+     * requiring no argument (MethodObjectPoint)
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {

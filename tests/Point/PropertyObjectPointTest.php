@@ -12,17 +12,17 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The property point test.
+ * The property object point test.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyPointTest extends FinalBypassTestCase
+class PropertyObjectPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidPropertyPointFqns
@@ -32,7 +32,7 @@ class PropertyPointTest extends FinalBypassTestCase
     public function testConstructException($invalidPropertyPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new PropertyPoint($invalidPropertyPointFqn);
+        new PropertyObjectPoint($invalidPropertyPointFqn);
     }
 
     /**
@@ -44,8 +44,8 @@ class PropertyPointTest extends FinalBypassTestCase
     public function testConstruct(string $className, string $propertyName): void
     {
         static::assertInstanceOf(
-            PropertyPoint::class,
-            new PropertyPoint(\sprintf('%s.$%s', $className, $propertyName))
+            PropertyObjectPoint::class,
+            new PropertyObjectPoint(\sprintf('%s.$%s', $className, $propertyName))
         );
     }
 
@@ -99,9 +99,9 @@ class PropertyPointTest extends FinalBypassTestCase
     public function providePropertyPointFqnTokens(): array
     {
         return [
-            [PropertyPointTestClass::class, 'privateProperty'],
-            [PropertyPointTestClass::class, 'protectedProperty'],
-            [PropertyPointTestClass::class, 'publicProperty'],
+            [PropertyObjectPointTestClass::class, 'privateProperty'],
+            [PropertyObjectPointTestClass::class, 'protectedProperty'],
+            [PropertyObjectPointTestClass::class, 'publicProperty'],
         ];
     }
 
@@ -114,17 +114,17 @@ class PropertyPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf(
                 '%s.%s',
-                PropertyPointTestClass::class,
+                PropertyObjectPointTestClass::class,
                 'publicProperty'
             )],
             [\sprintf(
                 '%s$%s',
-                PropertyPointTestClass::class,
+                PropertyObjectPointTestClass::class,
                 'publicProperty'
             )],
             [\sprintf(
                 '%s.$',
-                PropertyPointTestClass::class
+                PropertyObjectPointTestClass::class
             )],
 
             // Invalid reflection...
@@ -135,7 +135,7 @@ class PropertyPointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.$%s',
-                PropertyPointTestClass::class,
+                PropertyObjectPointTestClass::class,
                 'invalidProperty'
             )],
         ];
@@ -144,27 +144,27 @@ class PropertyPointTest extends FinalBypassTestCase
     /**
      * @param string $className
      * @param string $propertyName
-     * @return PropertyPoint
+     * @return PropertyObjectPoint
      * @throws InvalidArgumentException
      */
     private function buildPropertyPoint(
         string $className,
         string $propertyName
-    ): PropertyPoint {
+    ): PropertyObjectPoint {
         $propertyPointFqn = \sprintf('%s.$%s', $className, $propertyName);
 
-        return new PropertyPoint($propertyPointFqn);
+        return new PropertyObjectPoint($propertyPointFqn);
     }
 }
 
 /**
- * The property point test class.
+ * The property object point test class.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyPointTestClass
+class PropertyObjectPointTestClass
 {
     private $privateProperty = 1;
     protected $protectedProperty = 1;

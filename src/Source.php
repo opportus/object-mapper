@@ -12,9 +12,9 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\AbstractPoint;
-use Opportus\ObjectMapper\Point\MethodPoint;
-use Opportus\ObjectMapper\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\MethodObjectPoint;
+use Opportus\ObjectMapper\Point\ObjectPoint;
+use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use ReflectionClass;
 
 /**
@@ -70,23 +70,23 @@ final class Source
     /**
      * Checks whether the passed argument can be a source point.
      *
-     * @param AbstractPoint $point
+     * @param ObjectPoint $point
      * @return bool
      */
-    public static function isPoint(AbstractPoint $point)
+    public static function isPoint(ObjectPoint $point)
     {
         return
-            $point instanceof PropertyPoint ||
-            $point instanceof MethodPoint;
+            $point instanceof PropertyObjectPoint ||
+            $point instanceof MethodObjectPoint;
     }
 
     /**
      * Checks whether the source has the passed point.
      *
-     * @param AbstractPoint $point
+     * @param ObjectPoint $point
      * @return bool
      */
-    public function hasPoint(AbstractPoint $point): bool
+    public function hasPoint(ObjectPoint $point): bool
     {
         return
             self::isPoint($point) &&
@@ -96,12 +96,12 @@ final class Source
     /**
      * Gets the value of the passed source point.
      *
-     * @param AbstractPoint $point
+     * @param ObjectPoint $point
      * @return mixed
      * @throws InvalidArgumentException
      * @noinspection PhpInconsistentReturnPointsInspection
      */
-    public function getPointValue(AbstractPoint $point)
+    public function getPointValue(ObjectPoint $point)
     {
         if (false === $this->hasPoint($point)) {
             $message = \sprintf(
@@ -113,10 +113,10 @@ final class Source
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        if ($point instanceof PropertyPoint) {
+        if ($point instanceof PropertyObjectPoint) {
             return $this->reflection->getProperty($point->getName())
                     ->getValue($this->instance);
-        } elseif ($point instanceof MethodPoint) {
+        } elseif ($point instanceof MethodObjectPoint) {
             return $this->reflection->getMethod($point->getName())
                     ->invoke($this->instance);
         }

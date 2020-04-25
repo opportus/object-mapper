@@ -133,13 +133,13 @@ is defined by and composed of its *source point*, its *target point*, and its
 
 A *source point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php)
--   A [`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php)
+-   A [`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php)
+-   A [`MethodObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodObjectPoint.php)
 
 A *target point* can be either:
 
--   A [`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php)
--   A [`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php)
+-   A [`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php)
+-   A [`ParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterObjectPoint.php)
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
@@ -202,14 +202,14 @@ which is followed by the `ObjectMapper::map()` method.
 For the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/master/src/PathFinding/PathFinding.php)
 strategy, a *target point* can be:
 
--   A public property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
--   A parameter of a public *setter* or constructor ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
+-   A public property ([`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php))
+-   A parameter of a public *setter* or constructor ([`ParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterObjectPoint.php))
 
 The corresponding *source point* can be:
 
--   A public property having for name the same as the target point ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
+-   A public property having for name the same as the target point ([`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php))
 -   A public *getter* having for name `'get'.ucfirst($targetPointName)` and
-    requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php))
+    requiring no argument ([`MethodObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodObjectPoint.php))
 
 #### Custom automatic mapping
 
@@ -372,9 +372,9 @@ RouteBuilderInterface::setSourcePoint(string $sourcePointFqn): RouteBuilderInter
 `$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a
 *source point* which can be:
 
--   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
+-   A public, protected or private property ([`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php))
     represented by its FQN having for syntax `'My\Class.$property'`.
--   A public, protected or private method requiring no argument ([`MethodPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodPoint.php))
+-   A public, protected or private method requiring no argument ([`MethodObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodObjectPoint.php))
     represented by its FQN having for syntax `'My\Class.method()'`.
 
 **Returns**
@@ -392,9 +392,9 @@ RouteBuilderInterface::setTargetPoint(string $targetPointFqn): RouteBuilderInter
 `$targetPointFqn` must be a `string` representing the Fully Qualified Name of a
 *target point* which can be:
 
--   A public, protected or private property ([`PropertyPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyPoint.php))
+-   A public, protected or private property ([`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php))
     represented by its FQN having for syntax `'My\Class.$property'`.
--   A parameter of a public, protected or private method ([`ParameterPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterPoint.php))
+-   A parameter of a public, protected or private method ([`ParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterObjectPoint.php))
     represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
 **Returns**

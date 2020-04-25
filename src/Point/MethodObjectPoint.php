@@ -13,26 +13,21 @@ namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use ReflectionException;
-use ReflectionParameter;
+use ReflectionMethod;
 
 /**
- * The parameter point.
+ * The method object point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class ParameterPoint extends AbstractPoint
+final class MethodObjectPoint extends ObjectPoint
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
 
     /**
-     * @var string $methodName
-     */
-    private $methodName;
-
-    /**
-     * Constructs the parameter point.
+     * Constructs the method object point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException
@@ -41,7 +36,7 @@ final class ParameterPoint extends AbstractPoint
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                '%s is not a parameter point as FQN of such is expected to have the following syntax: %s.',
+                '%s is not a method point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
             );
@@ -49,22 +44,13 @@ final class ParameterPoint extends AbstractPoint
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        [
-            $matchedFqn,
-            $matchedClassName,
-            $matchedMethodName,
-            $matchedName
-        ] = $matches;
+        [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
         try {
-            /** @noinspection PhpParamsInspection */
-            new ReflectionParameter(
-                [$matchedClassName, $matchedMethodName],
-                $matchedName
-            );
+            new ReflectionMethod($matchedClassName, $matchedName);
         } catch (ReflectionException $exception) {
             $message = \sprintf(
-                '%s is not a parameter point. %s.',
+                '%s is not a method point. %s.',
                 $fqn,
                 $exception->getMessage()
             );
@@ -75,16 +61,5 @@ final class ParameterPoint extends AbstractPoint
         $this->fqn = $matchedFqn;
         $this->classFqn = $matchedClassName;
         $this->name = $matchedName;
-        $this->methodName = $matchedMethodName;
-    }
-
-    /**
-     * Gets the name of the method of the point.
-     *
-     * @return string
-     */
-    public function getMethodName(): string
-    {
-        return $this->methodName;
     }
 }

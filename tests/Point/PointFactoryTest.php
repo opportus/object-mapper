@@ -12,11 +12,11 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\MethodPoint;
-use Opportus\ObjectMapper\Point\ParameterPoint;
+use Opportus\ObjectMapper\Point\MethodObjectPoint;
+use Opportus\ObjectMapper\Point\ParameterObjectPoint;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\PointFactoryInterface;
-use Opportus\ObjectMapper\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -41,17 +41,17 @@ class PointFactoryTest extends FinalBypassTestCase
         $pointFactory = new PointFactory();
 
         $pointFqns =  [
-            PropertyPoint::class => \sprintf(
+            PropertyObjectPoint::class => \sprintf(
                 '%s.$%s',
                 PointFactoryTestClass::class,
                 'property'
             ),
-            MethodPoint::class => \sprintf(
+            MethodObjectPoint::class => \sprintf(
                 '%s.%s()',
                 PointFactoryTestClass::class,
                 'method'
             ),
-            ParameterPoint::class => \sprintf(
+            ParameterObjectPoint::class => \sprintf(
                 '%s.%s().$%s',
                 PointFactoryTestClass::class,
                 'method',
@@ -61,14 +61,14 @@ class PointFactoryTest extends FinalBypassTestCase
 
 
         foreach ($pointFqns as $pointType => $pointFqn) {
-            $point = $pointFactory->createPoint($pointFqn);
+            $point = $pointFactory->createObjectPoint($pointFqn);
 
             static::assertInstanceOf($pointType, $point);
             static::assertSame($pointFqn, $point->getFqn());
         }
 
         $this->expectException(InvalidArgumentException::class);
-        $pointFactory->createPoint('test');
+        $pointFactory->createObjectPoint('test');
     }
 }
 

@@ -13,9 +13,9 @@ namespace Opportus\ObjectMapper\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
-use Opportus\ObjectMapper\Point\AbstractPoint;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
+use Opportus\ObjectMapper\Point\ObjectPoint;
 use Opportus\ObjectMapper\Point\PointFactoryInterface;
 
 /**
@@ -38,12 +38,12 @@ final class RouteBuilder implements RouteBuilderInterface
     private $mapBuilder;
 
     /**
-     * @var null|AbstractPoint $sourcePoint
+     * @var null|ObjectPoint $sourcePoint
      */
     private $sourcePoint;
 
     /**
-     * @var null|AbstractPoint $targetPoint
+     * @var null|ObjectPoint $targetPoint
      */
     private $targetPoint;
 
@@ -57,15 +57,15 @@ final class RouteBuilder implements RouteBuilderInterface
      *
      * @param PointFactoryInterface $pointFactory
      * @param null|MapBuilderInterface $mapBuilder
-     * @param null|AbstractPoint $sourcePoint
-     * @param null|AbstractPoint $targetPoint
+     * @param null|ObjectPoint $sourcePoint
+     * @param null|ObjectPoint $targetPoint
      * @param null|CheckPointCollection $checkPoints
      */
     public function __construct(
         PointFactoryInterface $pointFactory,
         ?MapBuilderInterface $mapBuilder = null,
-        ?AbstractPoint $sourcePoint = null,
-        ?AbstractPoint $targetPoint = null,
+        ?ObjectPoint $sourcePoint = null,
+        ?ObjectPoint $targetPoint = null,
         ?CheckPointCollection $checkPoints = null
     ) {
         $this->pointFactory = $pointFactory;
@@ -99,7 +99,7 @@ final class RouteBuilder implements RouteBuilderInterface
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
-            $this->pointFactory->createPoint($sourcePointFqn),
+            $this->pointFactory->createObjectPoint($sourcePointFqn),
             $this->targetPoint,
             $this->checkPoints
         );
@@ -115,7 +115,7 @@ final class RouteBuilder implements RouteBuilderInterface
             $this->pointFactory,
             $this->mapBuilder,
             $this->sourcePoint,
-            $this->pointFactory->createPoint($targetPointFqn),
+            $this->pointFactory->createObjectPoint($targetPointFqn),
             $this->checkPoints
         );
     }

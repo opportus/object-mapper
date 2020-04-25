@@ -23,11 +23,12 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 interface PointFactoryInterface
 {
     /**
-     * Creates a point of a certain type based on the passed point FQN.
+     * Creates an object point of a certain type based on the passed object
+     * point FQN.
      *
-     * @param string $pointFqn
-     * @return AbstractPoint
+     * @param string $objectPointFqn
+     * @return ObjectPoint
      * @throws InvalidArgumentException
      */
-    public function createPoint(string $pointFqn): AbstractPoint;
+    public function createObjectPoint(string $objectPointFqn): ObjectPoint;
 }

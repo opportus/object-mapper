@@ -16,18 +16,18 @@ use ReflectionException;
 use ReflectionProperty;
 
 /**
- * The property point.
+ * The property object point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class PropertyPoint extends AbstractPoint
+final class PropertyObjectPoint extends ObjectPoint
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
-     * Constructs the property point.
+     * Constructs the property object point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException

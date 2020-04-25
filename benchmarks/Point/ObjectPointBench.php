@@ -12,19 +12,19 @@
 namespace Opportus\ObjectMapper\Benchmarks\Point;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
-use Opportus\ObjectMapper\Point\MethodPoint;
-use Opportus\ObjectMapper\Point\ParameterPoint;
+use Opportus\ObjectMapper\Point\MethodObjectPoint;
+use Opportus\ObjectMapper\Point\ParameterObjectPoint;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
 /**
- * The point bench.
+ * The object point bench.
  *
  * @package Opportus\ObjectMapper\Benchmarks\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PointBench
+class ObjectPointBench
 {
     /**
      * @Revs(1000)
@@ -32,9 +32,9 @@ class PointBench
      */
     public function benchConstruct()
     {
-        new MethodPoint(\sprintf('%s.getA()', BenchObject::class));
-        new ParameterPoint(\sprintf('%s.setB().$b', BenchObject::class));
-        new MethodPoint(\sprintf('%s.getA()', BenchObject::class));
-        new ParameterPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        new MethodObjectPoint(\sprintf('%s.getA()', BenchObject::class));
+        new ParameterObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        new MethodObjectPoint(\sprintf('%s.getA()', BenchObject::class));
+        new ParameterObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
     }
 }

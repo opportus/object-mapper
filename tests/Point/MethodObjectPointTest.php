@@ -12,17 +12,17 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\MethodPoint;
+use Opportus\ObjectMapper\Point\MethodObjectPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The method point test.
+ * The method object point test.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodPointTest extends FinalBypassTestCase
+class MethodObjectPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidMethodPointFqns
@@ -32,7 +32,7 @@ class MethodPointTest extends FinalBypassTestCase
     public function testConstructException($invalidMethodPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new MethodPoint($invalidMethodPointFqn);
+        new MethodObjectPoint($invalidMethodPointFqn);
     }
 
     /**
@@ -44,8 +44,8 @@ class MethodPointTest extends FinalBypassTestCase
     public function testConstruct(string $className, string $methodName): void
     {
         static::assertInstanceOf(
-            MethodPoint::class,
-            new MethodPoint(\sprintf('%s.%s()', $className, $methodName))
+            MethodObjectPoint::class,
+            new MethodObjectPoint(\sprintf('%s.%s()', $className, $methodName))
         );
     }
 
@@ -97,9 +97,9 @@ class MethodPointTest extends FinalBypassTestCase
     public function provideMethodPointFqnTokens(): array
     {
         return [
-            [MethodPointTestClass::class, 'privateMethod'],
-            [MethodPointTestClass::class, 'protectedMethod'],
-            [MethodPointTestClass::class, 'publicMethod'],
+            [MethodObjectPointTestClass::class, 'privateMethod'],
+            [MethodObjectPointTestClass::class, 'protectedMethod'],
+            [MethodObjectPointTestClass::class, 'publicMethod'],
         ];
     }
 
@@ -112,17 +112,17 @@ class MethodPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf(
                 '%s.%s',
-                MethodPointTestClass::class,
+                MethodObjectPointTestClass::class,
                 'publicMethod'
             )],
             [\sprintf(
                 '%s%s()',
-                MethodPointTestClass::class,
+                MethodObjectPointTestClass::class,
                 'publicMethod'
             )],
             [\sprintf(
                 '%s.',
-                MethodPointTestClass::class
+                MethodObjectPointTestClass::class
             )],
 
             // Invalid reflection...
@@ -133,7 +133,7 @@ class MethodPointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.%s()',
-                MethodPointTestClass::class,
+                MethodObjectPointTestClass::class,
                 'invalidMethod'
             )],
         ];
@@ -142,27 +142,27 @@ class MethodPointTest extends FinalBypassTestCase
     /**
      * @param string $className
      * @param string $methodName
-     * @return MethodPoint
+     * @return MethodObjectPoint
      * @throws InvalidArgumentException
      */
     private function buildMethodPoint(
         string $className,
         string $methodName
-    ): MethodPoint {
+    ): MethodObjectPoint {
         $methodPointFqn = \sprintf('%s.%s()', $className, $methodName);
 
-        return new MethodPoint($methodPointFqn);
+        return new MethodObjectPoint($methodPointFqn);
     }
 }
 
 /**
- * The method point test class.
+ * The method object point test class.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodPointTestClass
+class MethodObjectPointTestClass
 {
     /**
      * @return int

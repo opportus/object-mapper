@@ -12,8 +12,8 @@
 namespace Opportus\ObjectMapper\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\AbstractPoint;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
+use Opportus\ObjectMapper\Point\ObjectPoint;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 
@@ -32,12 +32,12 @@ final class Route
     private $fqn;
 
     /**
-     * @var AbstractPoint $sourcePoint
+     * @var ObjectPoint $sourcePoint
      */
     private $sourcePoint;
 
     /**
-     * @var AbstractPoint $targetPoint
+     * @var ObjectPoint $targetPoint
      */
     private $targetPoint;
 
@@ -49,14 +49,14 @@ final class Route
     /**
      * Constructs the route.
      *
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function __construct(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         CheckPointCollection $checkPoints
     ) {
         if (false === Source::isPoint($sourcePoint)) {
@@ -100,9 +100,9 @@ final class Route
     /**
      * Get the source point of the route.
      *
-     * @return AbstractPoint
+     * @return ObjectPoint
      */
-    public function getSourcePoint(): AbstractPoint
+    public function getSourcePoint(): ObjectPoint
     {
         return $this->sourcePoint;
     }
@@ -110,9 +110,9 @@ final class Route
     /**
      * Get the target point of the route.
      *
-     * @return AbstractPoint
+     * @return ObjectPoint
      */
-    public function getTargetPoint(): AbstractPoint
+    public function getTargetPoint(): ObjectPoint
     {
         return $this->targetPoint;
     }

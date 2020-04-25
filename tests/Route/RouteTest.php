@@ -12,11 +12,11 @@
 namespace Opportus\ObjectMapper\Tests\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\AbstractPoint;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Point\MethodPoint;
-use Opportus\ObjectMapper\Point\ParameterPoint;
-use Opportus\ObjectMapper\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\MethodObjectPoint;
+use Opportus\ObjectMapper\Point\ObjectPoint;
+use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
@@ -31,14 +31,14 @@ class RouteTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidPoints
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testConstructException(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
         $this->expectException(InvalidArgumentException::class);
@@ -47,14 +47,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testConstruct(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         ?CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -64,14 +64,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetFqn(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         ?CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -84,14 +84,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetSourcePoint(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         ?CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -104,14 +104,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetTargetPoint(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -124,14 +124,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param AbstractPoint $sourcePoint
-     * @param AbstractPoint $targetPoint
+     * @param ObjectPoint $sourcePoint
+     * @param ObjectPoint $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetCheckPoints(
-        AbstractPoint $sourcePoint,
-        AbstractPoint $targetPoint,
+        ObjectPoint $sourcePoint,
+        ObjectPoint $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -156,44 +156,44 @@ class RouteTest extends FinalBypassTestCase
         return [
             [
                 $this->buildPoint(
-                    PropertyPoint::class,
+                    PropertyObjectPoint::class,
                     'Class.$property'
                 ),
                 $this->buildPoint(
-                    PropertyPoint::class,
+                    PropertyObjectPoint::class,
                     'Class.$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    PropertyPoint::class,
+                    PropertyObjectPoint::class,
                     'Class.$property'
                 ),
                 $this->buildPoint(
-                    ParameterPoint::class,
+                    ParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    MethodPoint::class,
+                    MethodObjectPoint::class,
                     'Class.method()'
                 ),
                 $this->buildPoint(
-                    PropertyPoint::class,
+                    PropertyObjectPoint::class,
                     'Class.$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    MethodPoint::class,
+                    MethodObjectPoint::class,
                     'Class.method()'
                 ),
                 $this->buildPoint(
-                    ParameterPoint::class,
+                    ParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
@@ -209,44 +209,44 @@ class RouteTest extends FinalBypassTestCase
         return [
             [
                 $this->buildPoint(
-                    ParameterPoint::class,
+                    ParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 $this->buildPoint(
-                    ParameterPoint::class,
+                    ParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    ParameterPoint::class,
+                    ParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 $this->buildPoint(
-                    PropertyPoint::class,
+                    PropertyObjectPoint::class,
                     'Class.$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    PropertyPoint::class,
+                    PropertyObjectPoint::class,
                     'Class.$property'
                 ),
                 $this->buildPoint(
-                    MethodPoint::class,
+                    MethodObjectPoint::class,
                     'Class.method()'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    MethodPoint::class,
+                    MethodObjectPoint::class,
                     'Class.method()'
                 ),
                 $this->buildPoint(
-                    MethodPoint::class,
+                    MethodObjectPoint::class,
                     'Class.method()'
                 ),
                 new CheckPointCollection(),

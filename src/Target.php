@@ -13,9 +13,9 @@ namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\AbstractPoint;
-use Opportus\ObjectMapper\Point\ParameterPoint;
-use Opportus\ObjectMapper\Point\PropertyPoint;
+use Opportus\ObjectMapper\Point\ObjectPoint;
+use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use ReflectionClass;
 use ReflectionException;
 
@@ -127,23 +127,23 @@ final class Target
     /**
      * Checks whether the passed argument can be a target point.
      *
-     * @param AbstractPoint $point
+     * @param ObjectPoint $point
      * @return bool
      */
-    public static function isPoint(AbstractPoint $point): bool
+    public static function isPoint(ObjectPoint $point): bool
     {
         return
-            $point instanceof PropertyPoint ||
-            $point instanceof ParameterPoint;
+            $point instanceof PropertyObjectPoint ||
+            $point instanceof ParameterObjectPoint;
     }
 
     /**
      * Checks whether the target has the passed point.
      *
-     * @param AbstractPoint $point
+     * @param ObjectPoint $point
      * @return bool
      */
-    public function hasPoint(AbstractPoint $point): bool
+    public function hasPoint(ObjectPoint $point): bool
     {
         return
             self::isPoint($point) &&
@@ -153,11 +153,11 @@ final class Target
     /**
      * Sets the value of the passed target point.
      *
-     * @param AbstractPoint $point
+     * @param ObjectPoint $point
      * @param mixed $pointValue
      * @throws InvalidArgumentException
      */
-    public function setPointValue(AbstractPoint $point, $pointValue)
+    public function setPointValue(ObjectPoint $point, $pointValue)
     {
         if (false === $this->hasPoint($point)) {
             $message = \sprintf(
@@ -169,9 +169,9 @@ final class Target
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        if ($point instanceof PropertyPoint) {
+        if ($point instanceof PropertyObjectPoint) {
             $this->pointValues['properties'][$point->getName()] = $pointValue;
-        } elseif ($point instanceof ParameterPoint) {
+        } elseif ($point instanceof ParameterObjectPoint) {
             $this->pointValues['parameters'][$point->getMethodName()]
                 [$this->getParameterPointPosition($point)] = $pointValue;
         }
@@ -180,11 +180,11 @@ final class Target
     /**
      * Gets the parameter point position.
      *
-     * @param ParameterPoint $point
+     * @param ParameterObjectPoint $point
      * @return int
      * @noinspection PhpInconsistentReturnPointsInspection
      */
-    private function getParameterPointPosition(ParameterPoint $point): int
+    private function getParameterPointPosition(ParameterObjectPoint $point): int
     {
         foreach (
             $this->reflection->getMethod($point->getMethodName())

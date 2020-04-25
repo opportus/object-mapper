@@ -12,13 +12,13 @@
 namespace Opportus\ObjectMapper\Point;
 
 /**
- * The abstract point.
+ * The object point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class AbstractPoint
+abstract class ObjectPoint
 {
     /**
      * @var string $fqn

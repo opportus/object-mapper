@@ -12,17 +12,17 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\ParameterPoint;
+use Opportus\ObjectMapper\Point\ParameterObjectPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The parameter point test.
+ * The parameter object point test.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ParameterPointTest extends FinalBypassTestCase
+class ParameterObjectPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidParameterPointFqns
@@ -32,7 +32,7 @@ class ParameterPointTest extends FinalBypassTestCase
     public function testConstructException($invalidParameterPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new ParameterPoint($invalidParameterPointFqn);
+        new ParameterObjectPoint($invalidParameterPointFqn);
     }
 
     /**
@@ -48,8 +48,8 @@ class ParameterPointTest extends FinalBypassTestCase
         string $parameterName
     ): void {
         static::assertInstanceOf(
-            ParameterPoint::class,
-            new ParameterPoint(
+            ParameterObjectPoint::class,
+            new ParameterObjectPoint(
                 \sprintf(
                     '%s.%s().$%s',
                     $className,
@@ -154,17 +154,17 @@ class ParameterPointTest extends FinalBypassTestCase
     {
         return [
             [
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'privateMethod',
                 'privateMethodParameter',
             ],
             [
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'protectedMethod',
                 'protectedMethodParameter',
             ],
             [
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter',
             ],
@@ -180,19 +180,19 @@ class ParameterPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf(
                 '%s.%s.$%s',
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
                 '%s.%s().%s',
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
                 '%s.%s.%s',
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
@@ -206,13 +206,13 @@ class ParameterPointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.%s().$%s',
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'invalidMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
                 '%s.%s().$%s',
-                ParameterPointTestClass::class,
+                ParameterObjectPointTestClass::class,
                 'publicMethod',
                 'invalidParameter'
             )],
@@ -223,14 +223,14 @@ class ParameterPointTest extends FinalBypassTestCase
      * @param string $className
      * @param string $methodName
      * @param string $parameterName
-     * @return ParameterPoint
+     * @return ParameterObjectPoint
      * @throws InvalidArgumentException
      */
     private function buildParameterPoint(
         string $className,
         string $methodName,
         string $parameterName
-    ): ParameterPoint {
+    ): ParameterObjectPoint {
         $parameterPointFqn = \sprintf(
             '%s.%s().$%s',
             $className,
@@ -238,18 +238,18 @@ class ParameterPointTest extends FinalBypassTestCase
             $parameterName
         );
 
-        return new ParameterPoint($parameterPointFqn);
+        return new ParameterObjectPoint($parameterPointFqn);
     }
 }
 
 /**
- * The parameter point test class.
+ * The parameter object point test class.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ParameterPointTestClass
+class ParameterObjectPointTestClass
 {
     /**
      * @param $privateMethodParameter

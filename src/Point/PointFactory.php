@@ -25,17 +25,26 @@ final class PointFactory implements PointFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createPoint(string $pointFqn): AbstractPoint
+    public function createObjectPoint(string $objectPointFqn): ObjectPoint
     {
-        if (\preg_match(MethodPoint::FQN_SYNTAX_PATTERN, $pointFqn)) {
-            return new MethodPoint($pointFqn);
-        } elseif (\preg_match(ParameterPoint::FQN_SYNTAX_PATTERN, $pointFqn)) {
-            return new ParameterPoint($pointFqn);
-        } elseif (\preg_match(PropertyPoint::FQN_SYNTAX_PATTERN, $pointFqn)) {
-            return new PropertyPoint($pointFqn);
+        if (\preg_match(
+            MethodObjectPoint::FQN_SYNTAX_PATTERN,
+            $objectPointFqn
+        )) {
+            return new MethodObjectPoint($objectPointFqn);
+        } elseif (\preg_match(
+            ParameterObjectPoint::FQN_SYNTAX_PATTERN,
+            $objectPointFqn
+        )) {
+            return new ParameterObjectPoint($objectPointFqn);
+        } elseif (\preg_match(
+            PropertyObjectPoint::FQN_SYNTAX_PATTERN,
+            $objectPointFqn
+        )) {
+            return new PropertyObjectPoint($objectPointFqn);
         }
 
-        $message = \sprintf('%s is not a point FQN.', $pointFqn);
+        $message = \sprintf('%s is not a point FQN.', $objectPointFqn);
 
         throw new InvalidArgumentException(1, __METHOD__, $message);
     }

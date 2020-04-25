@@ -36,11 +36,15 @@ class PointFactoryBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchCreatePoint()
+    public function benchCreateObjectPoint()
     {
-        $this->pointFactory->createPoint(\sprintf('%s.getA()', BenchObject::class));
-        $this->pointFactory->createPoint(\sprintf('%s.setB().$b', BenchObject::class));
-        $this->pointFactory->createPoint(\sprintf('%s.getA()', BenchObject::class));
-        $this->pointFactory->createPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        $this->pointFactory
+            ->createObjectPoint(\sprintf('%s.getA()', BenchObject::class));
+        $this->pointFactory
+            ->createObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        $this->pointFactory
+            ->createObjectPoint(\sprintf('%s.getA()', BenchObject::class));
+        $this->pointFactory
+            ->createObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
     }
 }
