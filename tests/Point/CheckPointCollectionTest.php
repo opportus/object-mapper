@@ -15,9 +15,9 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Opportus\ObjectMapper\AbstractImmutableCollection;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\ImmutableCollection;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
@@ -47,7 +47,7 @@ class CheckPointCollectionTest extends FinalBypassTestCase
         );
 
         static::assertInstanceOf(
-            AbstractImmutableCollection::class,
+            ImmutableCollection::class,
             $checkPointCollection
         );
 

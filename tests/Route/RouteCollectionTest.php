@@ -15,9 +15,9 @@ use ArrayAccess;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Opportus\ObjectMapper\AbstractImmutableCollection;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\ImmutableCollection;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
@@ -47,7 +47,7 @@ class RouteCollectionTest extends FinalBypassTestCase
         );
 
         static::assertInstanceOf(
-            AbstractImmutableCollection::class,
+            ImmutableCollection::class,
             $routeCollection
         );
 

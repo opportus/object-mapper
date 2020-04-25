@@ -11,8 +11,8 @@
 
 namespace Opportus\ObjectMapper\Point;
 
-use Opportus\ObjectMapper\AbstractImmutableCollection;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\ImmutableCollection;
 
 /**
  * The check point collection.
@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class CheckPointCollection extends AbstractImmutableCollection
+final class CheckPointCollection extends ImmutableCollection
 {
     /**
      * Constructs the check point collection.

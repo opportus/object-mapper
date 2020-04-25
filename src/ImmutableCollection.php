@@ -18,13 +18,13 @@ use IteratorAggregate;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 
 /**
- * The abstract immutable collection.
+ * The immutable collection.
  *
  * @package Opportus\ObjectMapper
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class AbstractImmutableCollection implements
+abstract class ImmutableCollection implements
     ArrayAccess,
     Countable,
     IteratorAggregate
@@ -35,7 +35,7 @@ abstract class AbstractImmutableCollection implements
     private $items;
 
     /**
-     * Constructs the collection.
+     * Constructs the immutable collection.
      *
      * @param array $items
      */
