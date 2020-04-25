@@ -41,13 +41,6 @@ as:
 -   Serialization
 -   ...
 
-This solution also fits common needs such as:
-
--   Model <=> DTO mapper
--   Model <=> Persistence Model mapper
--   Model <=> View Model mapper
--   ...
-
 ## Roadmap
 
 To develop this solution faster, [contributions](https://github.com/opportus/object-mapper/blob/master/.github/CONTRIBUTING.md) are welcome...
