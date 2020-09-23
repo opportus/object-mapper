@@ -125,12 +125,12 @@ final class Target
     }
 
     /**
-     * Checks whether the passed argument can be a target point.
+     * Checks whether the source has the passed point type.
      *
      * @param ObjectPoint $point
      * @return bool
      */
-    public static function isPoint(ObjectPoint $point): bool
+    public static function hasPointType(ObjectPoint $point): bool
     {
         return
             $point instanceof PropertyObjectPoint ||
@@ -146,7 +146,7 @@ final class Target
     public function hasPoint(ObjectPoint $point): bool
     {
         return
-            self::isPoint($point) &&
+            self::hasPointType($point) &&
             $this->reflection->getName() === $point->getClassFqn();
     }
 

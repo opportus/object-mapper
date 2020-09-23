@@ -59,7 +59,7 @@ final class Route
         ObjectPoint $targetPoint,
         CheckPointCollection $checkPoints
     ) {
-        if (false === Source::isPoint($sourcePoint)) {
+        if (false === Source::hasPointType($sourcePoint)) {
             $message = \sprintf(
                 '%s cannot be a source point.',
                 \get_class($sourcePoint)
@@ -68,7 +68,7 @@ final class Route
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        if (false === Target::isPoint($targetPoint)) {
+        if (false === Target::hasPointType($targetPoint)) {
             $message = \sprintf(
                 '%s cannot be a target point.',
                 \get_class($sourcePoint)
