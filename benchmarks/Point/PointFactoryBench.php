@@ -39,12 +39,12 @@ class PointFactoryBench
     public function benchCreateObjectPoint()
     {
         $this->pointFactory
-            ->createObjectPoint(\sprintf('%s.getA()', BenchObject::class));
+            ->createStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class));
         $this->pointFactory
-            ->createObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
+            ->createStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class));
         $this->pointFactory
-            ->createObjectPoint(\sprintf('%s.getA()', BenchObject::class));
+            ->createStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class));
         $this->pointFactory
-            ->createObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
+            ->createStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class));
     }
 }

@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
+use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
@@ -68,12 +70,19 @@ final class Map
             ->getRoutes($source, $target)->toArray();
 
         foreach ($this->routes as $route) {
-            if (
-                $source->hasPoint($route->getSourcePoint()) &&
-                $target->hasPoint($route->getTargetPoint())
+            if ($route->getSourcePoint() instanceof StaticSourcePointInterface &&
+                false === $source->hasStaticPoint($route->getSourcePoint())
             ) {
-                $routes[] = $route;
+                continue;
             }
+
+            if ($route->getTargetPoint() instanceof StaticTargetPointInterface &&
+                false === $target->hasStaticPoint($route->getTargetPoint())
+            ) {
+                continue;
+            }
+
+            $routes[] = $route;
         }
 
         return new RouteCollection($routes);

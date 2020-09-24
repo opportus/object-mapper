@@ -24,13 +24,13 @@ use ReflectionProperty;
 use Reflector;
 
 /**
- * The default path finding.
+ * The default static path finding.
  *
  * @package Opportus\ObjectMapper\PathFinding
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class PathFinding implements PathFindingInterface
+final class StaticPathFinding implements PathFindingInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder
@@ -135,8 +135,8 @@ final class PathFinding implements PathFindingInterface
             }
 
             $routes[] = $this->routeBuilder
-                ->setSourcePoint($sourcePointFqn)
-                ->setTargetPoint($targetPointFqn)
+                ->setStaticSourcePoint($sourcePointFqn)
+                ->setStaticTargetPoint($targetPointFqn)
                 ->getRoute();
         }
 

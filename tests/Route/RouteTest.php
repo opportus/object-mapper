@@ -13,10 +13,12 @@ namespace Opportus\ObjectMapper\Tests\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Point\MethodObjectPoint;
-use Opportus\ObjectMapper\Point\ObjectPoint;
-use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
-use Opportus\ObjectMapper\Point\PropertyObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
+use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
+use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
+use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
+use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
@@ -30,31 +32,15 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 class RouteTest extends FinalBypassTestCase
 {
     /**
-     * @dataProvider provideInvalidPoints
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
-     * @param CheckPointCollection $checkPoints
-     * @throws InvalidArgumentException
-     */
-    public function testConstructException(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
-        CheckPointCollection $checkPoints
-    ): void {
-        $this->expectException(InvalidArgumentException::class);
-        new Route($sourcePoint, $targetPoint, $checkPoints);
-    }
-
-    /**
      * @dataProvider providePoints
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
+     * @param SourcePointInterface $sourcePoint
+     * @param TargetPointInterface $targetPoint
      * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testConstruct(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
         ?CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -64,14 +50,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
+     * @param SourcePointInterface $sourcePoint
+     * @param TargetPointInterface $targetPoint
      * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetFqn(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
         ?CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -84,14 +70,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
+     * @param SourcePointInterface $sourcePoint
+     * @param TargetPointInterface $targetPoint
      * @param null|CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetSourcePoint(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
         ?CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -104,14 +90,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
+     * @param SourcePointInterface $sourcePoint
+     * @param TargetPointInterface $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetTargetPoint(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -124,14 +110,14 @@ class RouteTest extends FinalBypassTestCase
 
     /**
      * @dataProvider providePoints
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
+     * @param SourcePointInterface $sourcePoint
+     * @param TargetPointInterface $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function testGetCheckPoints(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
@@ -156,98 +142,45 @@ class RouteTest extends FinalBypassTestCase
         return [
             [
                 $this->buildPoint(
-                    PropertyObjectPoint::class,
+                    PropertyStaticSourcePoint::class,
                     'Class.$property'
                 ),
                 $this->buildPoint(
-                    PropertyObjectPoint::class,
+                    PropertyStaticTargetPoint::class,
                     'Class.$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    PropertyObjectPoint::class,
+                    PropertyStaticSourcePoint::class,
                     'Class.$property'
                 ),
                 $this->buildPoint(
-                    MethodParameterObjectPoint::class,
+                    MethodParameterStaticTargetPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    MethodObjectPoint::class,
+                    MethodStaticSourcePoint::class,
                     'Class.method()'
                 ),
                 $this->buildPoint(
-                    PropertyObjectPoint::class,
+                    PropertyStaticTargetPoint::class,
                     'Class.$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    MethodObjectPoint::class,
+                    MethodStaticSourcePoint::class,
                     'Class.method()'
                 ),
                 $this->buildPoint(
-                    MethodParameterObjectPoint::class,
+                    MethodParameterStaticTargetPoint::class,
                     'Class.method().$parameter'
-                ),
-                new CheckPointCollection(),
-            ],
-        ];
-    }
-
-    /**
-     * @return array|array[]
-     */
-    public function provideInvalidPoints(): array
-    {
-        return [
-            [
-                $this->buildPoint(
-                    MethodParameterObjectPoint::class,
-                    'Class.method().$parameter'
-                ),
-                $this->buildPoint(
-                    MethodParameterObjectPoint::class,
-                    'Class.method().$parameter'
-                ),
-                new CheckPointCollection(),
-            ],
-            [
-                $this->buildPoint(
-                    MethodParameterObjectPoint::class,
-                    'Class.method().$parameter'
-                ),
-                $this->buildPoint(
-                    PropertyObjectPoint::class,
-                    'Class.$property'
-                ),
-                new CheckPointCollection(),
-            ],
-            [
-                $this->buildPoint(
-                    PropertyObjectPoint::class,
-                    'Class.$property'
-                ),
-                $this->buildPoint(
-                    MethodObjectPoint::class,
-                    'Class.method()'
-                ),
-                new CheckPointCollection(),
-            ],
-            [
-                $this->buildPoint(
-                    MethodObjectPoint::class,
-                    'Class.method()'
-                ),
-                $this->buildPoint(
-                    MethodObjectPoint::class,
-                    'Class.method()'
                 ),
                 new CheckPointCollection(),
             ],

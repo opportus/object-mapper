@@ -35,42 +35,42 @@ interface RouteBuilderInterface
     ): RouteBuilderInterface;
 
     /**
-     * Sets the source point of the route.
+     * Sets the static source point of the route.
      *
      * @param string $sourcePointFqn
      * @return RouteBuilderInterface
      */
-    public function setSourcePoint(
+    public function setStaticSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface;
 
     /**
-     * Sets the target point of the route.
+     * Sets the static target point of the route.
      *
      * @param string $targetPointFqn
      * @return RouteBuilderInterface
      */
-    public function setTargetPoint(
+    public function setStaticTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface;
 
     /**
-     * Sets the overloaded source point of the route.
+     * Sets the dynamic source point of the route.
      *
      * @param string $sourcePointFqn
      * @return RouteBuilderInterface
      */
-    public function setOverloadedSourcePoint(
+    public function setDynamicSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface;
 
     /**
-     * Sets the overloaded target point of the route.
+     * Sets the dynamic target point of the route.
      *
      * @param string $targetPointFqn
      * @return RouteBuilderInterface
      */
-    public function setOverloadedTargetPoint(
+    public function setDynamicTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface;
 

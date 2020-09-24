@@ -13,11 +13,12 @@ namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\ObjectPoint;
-use Opportus\ObjectMapper\Point\OverloadedMethodParameterObjectPoint;
-use Opportus\ObjectMapper\Point\OverloadedPropertyObjectPoint;
-use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
-use Opportus\ObjectMapper\Point\PropertyObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
+use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
+use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
+use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
+use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
+use Opportus\ObjectMapper\Point\TargetPointInterface;
 use ReflectionClass;
 use ReflectionException;
 
@@ -76,10 +77,10 @@ final class Target
 
         $this->instance = \is_object($target) ? $target : null;
         $this->pointValues = [
-            'properties' => [],
-            'parameters' => [],
-            'overloaded_properties' => [],
-            'overloaded_parameters' => [],
+            'static_properties' => [],
+            'static_method_parameters' => [],
+            'dynamic_properties' => [],
+            'dynamic_method_parameters' => [],
         ];
     }
 
@@ -129,47 +130,30 @@ final class Target
     }
 
     /**
-     * Checks whether the source has the passed point type.
+     * Checks whether the target has the passed static point.
      *
-     * @param ObjectPoint $point
+     * @param StaticTargetPointInterface $point
      * @return bool
      */
-    public static function hasPointType(ObjectPoint $point): bool
+    public function hasStaticPoint(StaticTargetPointInterface $point): bool
     {
-        return
-            $point instanceof PropertyObjectPoint ||
-            $point instanceof MethodParameterObjectPoint ||
-            $point instanceof OverloadedPropertyObjectPoint ||
-            $point instanceof OverloadedMethodParameterObjectPoint;
-    }
-
-    /**
-     * Checks whether the target has the passed point.
-     *
-     * @param ObjectPoint $point
-     * @return bool
-     */
-    public function hasPoint(ObjectPoint $point): bool
-    {
-        return
-            self::hasPointType($point) &&
-            $this->reflection->getName() === $point->getClassFqn();
+        return $this->reflection->getName() === $point->getClassFqn();
     }
 
     /**
      * Sets the value of the passed target point.
      *
-     * @param ObjectPoint $point
+     * @param TargetPointInterface $point
      * @param mixed $pointValue
      * @throws InvalidArgumentException
      */
-    public function setPointValue(ObjectPoint $point, $pointValue)
+    public function setPointValue(TargetPointInterface $point, $pointValue)
     {
-        if (false === $this->hasPoint($point) &&
-            false === self::hasPointType($point)
+        if ($point instanceof StaticTargetPointInterface &&
+            false === $this->hasStaticPoint($point)
         ) {
             $message = \sprintf(
-                '%s is not a property of %s.',
+                '%s is not a static target point of %s.',
                 $point->getFqn(),
                 $this->reflection->getName()
             );
@@ -177,28 +161,28 @@ final class Target
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        if ($point instanceof PropertyObjectPoint) {
-            $this->pointValues['properties'][$point->getName()] = $pointValue;
-        } elseif ($point instanceof MethodParameterObjectPoint) {
-            $this->pointValues['parameters'][$point->getMethodName()]
-                [$this->getParameterPointPosition($point)] = $pointValue;
-        } elseif ($point instanceof OverloadedPropertyObjectPoint) {
-            $this->pointValues['overloaded_properties']
+        if ($point instanceof PropertyStaticTargetPoint) {
+            $this->pointValues['static_properties'][$point->getName()] = $pointValue;
+        } elseif ($point instanceof MethodParameterStaticTargetPoint) {
+            $this->pointValues['static_method_parameters'][$point->getMethodName()]
+                [$this->getMethodParameterStaticPointPosition($point)] = $pointValue;
+        } elseif ($point instanceof PropertyDynamicTargetPoint) {
+            $this->pointValues['dynamic_properties']
                 [$point->getName()] = $pointValue;
-        } elseif ($point instanceof OverloadedMethodParameterObjectPoint) {
-            $this->pointValues['overloaded_parameters']
+        } elseif ($point instanceof MethodParameterDynamicTargetPoint) {
+            $this->pointValues['dynamic_method_parameters']
                 [$point->getMethodName()][] = $pointValue;
         }
     }
 
     /**
-     * Gets the parameter point position.
+     * Gets the method parameter static point position.
      *
-     * @param MethodParameterObjectPoint $point
+     * @param MethodParameterStaticTargetPoint $point
      * @return int
      * @noinspection PhpInconsistentReturnPointsInspection
      */
-    private function getParameterPointPosition(MethodParameterObjectPoint $point): int
+    private function getMethodParameterStaticPointPosition(MethodParameterStaticTargetPoint $point): int
     {
         foreach (
             $this->reflection->getMethod($point->getMethodName())
@@ -224,9 +208,9 @@ final class Target
         array $pointValues
     ): object {
         if (null === $instance) {
-            if (isset($pointValues['parameters']['__construct'])) {
+            if (isset($pointValues['static_method_parameters']['__construct'])) {
                 $instance = $this->reflection->newInstanceArgs(
-                    $pointValues['parameters']['__construct']
+                    $pointValues['static_method_parameters']['__construct']
                 );
             } else {
                 $instance = $this->reflection->newInstance();
@@ -234,7 +218,7 @@ final class Target
         }
 
         foreach (
-            $pointValues['parameters'] as
+            $pointValues['static_method_parameters'] as
             $methodName =>
             $methodArguments
         ) {
@@ -249,7 +233,7 @@ final class Target
         }
 
         foreach (
-            $pointValues['overloaded_parameters'] as
+            $pointValues['dynamic_method_parameters'] as
             $methodName =>
             $methodArguments
         ) {
@@ -261,7 +245,7 @@ final class Target
         }
 
         foreach (
-            $pointValues['properties'] as
+            $pointValues['static_properties'] as
             $propertyName =>
             $propertyValue
         ) {
@@ -272,7 +256,7 @@ final class Target
         }
 
         foreach (
-            $pointValues['overloaded_properties'] as
+            $pointValues['dynamic_properties'] as
             $propertyName =>
             $propertyValue
         ) {
@@ -290,9 +274,9 @@ final class Target
     private function hasPointValues(): bool
     {
         return
-            $this->pointValues['properties'] ||
-            $this->pointValues['parameters'] ||
-            $this->pointValues['overloaded_properties'] ||
-            $this->pointValues['overloaded_parameters'];
+            $this->pointValues['static_properties'] ||
+            $this->pointValues['static_method_parameters'] ||
+            $this->pointValues['dynamic_properties'] ||
+            $this->pointValues['dynamic_method_parameters'];
     }
 }

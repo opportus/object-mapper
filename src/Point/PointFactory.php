@@ -25,26 +25,21 @@ final class PointFactory implements PointFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createObjectPoint(string $objectPointFqn): ObjectPoint
+    public function createStaticSourcePoint(string $pointFqn): StaticSourcePointInterface
     {
         if (\preg_match(
-            MethodObjectPoint::FQN_SYNTAX_PATTERN,
-            $objectPointFqn
+            MethodStaticSourcePoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
         )) {
-            return new MethodObjectPoint($objectPointFqn);
+            return new MethodStaticSourcePoint($pointFqn);
         } elseif (\preg_match(
-            MethodParameterObjectPoint::FQN_SYNTAX_PATTERN,
-            $objectPointFqn
+            PropertyStaticSourcePoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
         )) {
-            return new MethodParameterObjectPoint($objectPointFqn);
-        } elseif (\preg_match(
-            PropertyObjectPoint::FQN_SYNTAX_PATTERN,
-            $objectPointFqn
-        )) {
-            return new PropertyObjectPoint($objectPointFqn);
+            return new PropertyStaticSourcePoint($pointFqn);
         }
 
-        $message = \sprintf('%s is not a point FQN.', $objectPointFqn);
+        $message = \sprintf('%s is not a static source point FQN.', $pointFqn);
 
         throw new InvalidArgumentException(1, __METHOD__, $message);
     }
@@ -52,26 +47,65 @@ final class PointFactory implements PointFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createOverloadedObjectPoint(string $objectPointFqn): ObjectPoint
+    public function createStaticTargetPoint(string $pointFqn): StaticTargetPointInterface
     {
         if (\preg_match(
-            OverloadedMethodObjectPoint::FQN_SYNTAX_PATTERN,
-            $objectPointFqn
+            MethodParameterStaticTargetPoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
         )) {
-            return new OverloadedMethodObjectPoint($objectPointFqn);
+            return new MethodParameterStaticTargetPoint($pointFqn);
         } elseif (\preg_match(
-            OverloadedMethodParameterObjectPoint::FQN_SYNTAX_PATTERN,
-            $objectPointFqn
+            PropertyStaticTargetPoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
         )) {
-            return new OverloadedMethodParameterObjectPoint($objectPointFqn);
-        } elseif (\preg_match(
-            OverloadedPropertyObjectPoint::FQN_SYNTAX_PATTERN,
-            $objectPointFqn
-        )) {
-            return new OverloadedPropertyObjectPoint($objectPointFqn);
+            return new PropertyStaticTargetPoint($pointFqn);
         }
 
-        $message = \sprintf('%s is not a point FQN.', $objectPointFqn);
+        $message = \sprintf('%s is not a static target point FQN.', $pointFqn);
+
+        throw new InvalidArgumentException(1, __METHOD__, $message);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createDynamicSourcePoint(string $pointFqn): DynamicSourcePointInterface
+    {
+        if (\preg_match(
+            MethodDynamicSourcePoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
+        )) {
+            return new MethodDynamicSourcePoint($pointFqn);
+        } elseif (\preg_match(
+            PropertyDynamicSourcePoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
+        )) {
+            return new PropertyDynamicSourcePoint($pointFqn);
+        }
+
+        $message = \sprintf('%s is not a dynamic source point FQN.', $pointFqn);
+
+        throw new InvalidArgumentException(1, __METHOD__, $message);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface
+    {
+        if (\preg_match(
+            MethodParameterDynamicTargetPoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
+        )) {
+            return new MethodParameterDynamicTargetPoint($pointFqn);
+        } elseif (\preg_match(
+            PropertyDynamicTargetPoint::FQN_SYNTAX_PATTERN,
+            $pointFqn
+        )) {
+            return new PropertyDynamicTargetPoint($pointFqn);
+        }
+
+        $message = \sprintf('%s is not a dynamic target point FQN.', $pointFqn);
 
         throw new InvalidArgumentException(1, __METHOD__, $message);
     }

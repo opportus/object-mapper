@@ -14,11 +14,12 @@ namespace Opportus\ObjectMapper;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\MethodObjectPoint;
-use Opportus\ObjectMapper\Point\ObjectPoint;
-use Opportus\ObjectMapper\Point\OverloadedMethodObjectPoint;
-use Opportus\ObjectMapper\Point\OverloadedPropertyObjectPoint;
-use Opportus\ObjectMapper\Point\PropertyObjectPoint;
+use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
+use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
+use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
+use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
+use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use ReflectionClass;
 
 /**
@@ -72,47 +73,32 @@ final class Source
     }
 
     /**
-     * Checks whether the source has the passed point type.
+     * Checks whether the source has the passed static point.
      *
-     * @param ObjectPoint $point
+     * @param StaticSourcePointInterface $point
      * @return bool
      */
-    public static function hasPointType(ObjectPoint $point)
+    public function hasStaticPoint(StaticSourcePointInterface $point): bool
     {
-        return
-            $point instanceof PropertyObjectPoint ||
-            $point instanceof MethodObjectPoint ||
-            $point instanceof OverloadedPropertyObjectPoint ||
-            $point instanceof OverloadedMethodObjectPoint;
-    }
-
-    /**
-     * Checks whether the source has the passed point.
-     *
-     * @param ObjectPoint $point
-     * @return bool
-     */
-    public function hasPoint(ObjectPoint $point): bool
-    {
-        return
-            self::hasPointType($point) &&
-            $this->reflection->getName() === $point->getClassFqn();
+        return $this->reflection->getName() === $point->getClassFqn();
     }
 
     /**
      * Gets the value of the passed source point.
      *
-     * @param ObjectPoint $point
+     * @param SourcePointInterface $point
      * @return mixed
      * @throws InvalidArgumentException
      * @throws InvalidOperationException
      * @noinspection PhpInconsistentReturnPointsInspection
      */
-    public function getPointValue(ObjectPoint $point)
+    public function getPointValue(SourcePointInterface $point)
     {
-        if (false === $this->hasPoint($point) && false === self::hasPointType($point)) {
+        if ($point instanceof StaticSourcePointInterface &&
+            false === $this->hasStaticPoint($point)
+        ) {
             $message = \sprintf(
-                '%s is not a property of %s.',
+                '%s is not a static source point of %s.',
                 $point->getFqn(),
                 $this->reflection->getName()
             );
@@ -120,32 +106,32 @@ final class Source
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        if ($point instanceof PropertyObjectPoint) {
+        if ($point instanceof PropertyStaticSourcePoint) {
             return $this->reflection->getProperty($point->getName())
                     ->getValue($this->instance);
-        } elseif ($point instanceof MethodObjectPoint) {
+        } elseif ($point instanceof MethodStaticSourcePoint) {
             return $this->reflection->getMethod($point->getName())
                     ->invoke($this->instance);
-        } elseif ($point instanceof OverloadedPropertyObjectPoint) {
+        } elseif ($point instanceof PropertyDynamicSourcePoint) {
             try {
                 return $this->instance->{$point->getName()};
             } catch (Exception $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
                     \sprintf(
-                        'Cannot call overloaded source point %s.',
+                        'Cannot call property dynamic source point: %s.',
                         $point->getFqn()
                     )
                 );
             }
-        } elseif ($point instanceof OverloadedMethodObjectPoint) {
+        } elseif ($point instanceof MethodDynamicSourcePoint) {
             try {
                 return $this->instance->{$point->getName()}();
             } catch (Exception $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
                     \sprintf(
-                        'Cannot call overloaded source point %s.',
+                        'Cannot call method dynamic source point: %s.',
                         $point->getFqn()
                     )
                 );

@@ -13,9 +13,8 @@ namespace Opportus\ObjectMapper\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Point\ObjectPoint;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Point\TargetPointInterface;
 
 /**
  * The route.
@@ -32,12 +31,12 @@ final class Route
     private $fqn;
 
     /**
-     * @var ObjectPoint $sourcePoint
+     * @var SourcePointInterface $sourcePoint
      */
     private $sourcePoint;
 
     /**
-     * @var ObjectPoint $targetPoint
+     * @var TargetPointInterface $targetPoint
      */
     private $targetPoint;
 
@@ -49,34 +48,16 @@ final class Route
     /**
      * Constructs the route.
      *
-     * @param ObjectPoint $sourcePoint
-     * @param ObjectPoint $targetPoint
+     * @param SourcePointInterface $sourcePoint
+     * @param TargetPointInterface $targetPoint
      * @param CheckPointCollection $checkPoints
      * @throws InvalidArgumentException
      */
     public function __construct(
-        ObjectPoint $sourcePoint,
-        ObjectPoint $targetPoint,
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ) {
-        if (false === Source::hasPointType($sourcePoint)) {
-            $message = \sprintf(
-                '%s cannot be a source point.',
-                \get_class($sourcePoint)
-            );
-
-            throw new InvalidArgumentException(1, __METHOD__, $message);
-        }
-
-        if (false === Target::hasPointType($targetPoint)) {
-            $message = \sprintf(
-                '%s cannot be a target point.',
-                \get_class($sourcePoint)
-            );
-
-            throw new InvalidArgumentException(2, __METHOD__, $message);
-        }
-
         $this->sourcePoint = $sourcePoint;
         $this->targetPoint = $targetPoint;
         $this->checkPoints = $checkPoints;
@@ -100,9 +81,9 @@ final class Route
     /**
      * Get the source point of the route.
      *
-     * @return ObjectPoint
+     * @return SourcePointInterface
      */
-    public function getSourcePoint(): ObjectPoint
+    public function getSourcePoint(): SourcePointInterface
     {
         return $this->sourcePoint;
     }
@@ -110,9 +91,9 @@ final class Route
     /**
      * Get the target point of the route.
      *
-     * @return ObjectPoint
+     * @return TargetPointInterface
      */
-    public function getTargetPoint(): ObjectPoint
+    public function getTargetPoint(): TargetPointInterface
     {
         return $this->targetPoint;
     }

@@ -18,7 +18,7 @@ namespace Opportus\ObjectMapper\Point;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class ObjectPoint
+abstract class ObjectPoint implements ObjectPointInterface
 {
     /**
      * @var string $fqn
@@ -36,9 +36,7 @@ abstract class ObjectPoint
     protected $name;
 
     /**
-     * Gets the Fully Qualified Name of the point.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getFqn(): string
     {
@@ -46,9 +44,7 @@ abstract class ObjectPoint
     }
 
     /**
-     * Gets the Fully Qualified Name of the class of the point.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getClassFqn(): string
     {
@@ -56,9 +52,7 @@ abstract class ObjectPoint
     }
 
     /**
-     * Gets the name of the point.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getName(): string
     {

@@ -12,17 +12,17 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The parameter object point test.
+ * The method parameter static source point test.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodParameterObjectPointTest extends FinalBypassTestCase
+class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidParameterPointFqns
@@ -32,7 +32,7 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
     public function testConstructException($invalidParameterPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new MethodParameterObjectPoint($invalidParameterPointFqn);
+        new MethodParameterStaticTargetPoint($invalidParameterPointFqn);
     }
 
     /**
@@ -48,8 +48,8 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
         string $parameterName
     ): void {
         static::assertInstanceOf(
-            MethodParameterObjectPoint::class,
-            new MethodParameterObjectPoint(
+            MethodParameterStaticTargetPoint::class,
+            new MethodParameterStaticTargetPoint(
                 \sprintf(
                     '%s.%s().$%s',
                     $className,
@@ -154,17 +154,17 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
     {
         return [
             [
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'privateMethod',
                 'privateMethodParameter',
             ],
             [
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'protectedMethod',
                 'protectedMethodParameter',
             ],
             [
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter',
             ],
@@ -180,19 +180,19 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf(
                 '%s.%s.$%s',
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
                 '%s.%s().%s',
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
                 '%s.%s.%s',
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
@@ -206,13 +206,13 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.%s().$%s',
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'invalidMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
                 '%s.%s().$%s',
-                ParameterObjectPointTestClass::class,
+                MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'invalidParameter'
             )],
@@ -223,14 +223,14 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
      * @param string $className
      * @param string $methodName
      * @param string $parameterName
-     * @return MethodParameterObjectPoint
+     * @return MethodParameterStaticTargetPoint
      * @throws InvalidArgumentException
      */
     private function buildParameterPoint(
         string $className,
         string $methodName,
         string $parameterName
-    ): MethodParameterObjectPoint {
+    ): MethodParameterStaticTargetPoint {
         $parameterPointFqn = \sprintf(
             '%s.%s().$%s',
             $className,
@@ -238,7 +238,7 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
             $parameterName
         );
 
-        return new MethodParameterObjectPoint($parameterPointFqn);
+        return new MethodParameterStaticTargetPoint($parameterPointFqn);
     }
 }
 
@@ -249,7 +249,7 @@ class MethodParameterObjectPointTest extends FinalBypassTestCase
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ParameterObjectPointTestClass
+class MethodParameterStaticTargetPointTestClass
 {
     /**
      * @param $privateMethodParameter

@@ -13,21 +13,23 @@ namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use ReflectionException;
-use ReflectionProperty;
+use ReflectionMethod;
 
 /**
- * The property object point.
+ * The method static source point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class PropertyObjectPoint extends ObjectPoint
+final class MethodStaticSourcePoint
+extends ObjectPoint
+implements StaticSourcePointInterface
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
 
     /**
-     * Constructs the property object point.
+     * Constructs the method static source point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException
@@ -36,7 +38,7 @@ final class PropertyObjectPoint extends ObjectPoint
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                '%s is not a property point as FQN of such is expected to have the following syntax: %s.',
+                '%s is not a method static source point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
             );
@@ -47,13 +49,10 @@ final class PropertyObjectPoint extends ObjectPoint
         [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
         try {
-            new ReflectionProperty(
-                $matchedClassName,
-                $matchedName
-            );
+            new ReflectionMethod($matchedClassName, $matchedName);
         } catch (ReflectionException $exception) {
             $message = \sprintf(
-                '%s is not a property point. %s.',
+                '%s is not a method static source point. %s.',
                 $fqn,
                 $exception->getMessage()
             );

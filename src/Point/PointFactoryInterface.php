@@ -23,22 +23,42 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 interface PointFactoryInterface
 {
     /**
-     * Creates an object point of a certain type based on the passed
-     * object point FQN.
+     * Creates a static source point of a certain type based
+     * on the passed FQN.
      *
-     * @param string $objectPointFqn
-     * @return ObjectPoint
+     * @param string $pointFqn
+     * @return StaticSourcePointInterface
      * @throws InvalidArgumentException
      */
-    public function createObjectPoint(string $objectPointFqn): ObjectPoint;
+    public function createStaticSourcePoint(string $pointFqn): StaticSourcePointInterface;
 
     /**
-     * Creates an overloaded object point of a certain type based on the passed
-     * object point FQN.
+     * Creates a static target point of a certain type based
+     * on the passed FQN.
      *
-     * @param string $objectPointFqn
-     * @return ObjectPoint
+     * @param string $pointFqn
+     * @return StaticTargetPointInterface
      * @throws InvalidArgumentException
      */
-    public function createOverloadedObjectPoint(string $objectPointFqn): ObjectPoint;
+    public function createStaticTargetPoint(string $pointFqn): StaticTargetPointInterface;
+
+    /**
+     * Creates a dynamic source point of a certain type based
+     * on the passed FQN.
+     *
+     * @param string $pointFqn
+     * @return DynamicSourcePointInterface
+     * @throws InvalidArgumentException
+     */
+    public function createDynamicSourcePoint(string $pointFqn): DynamicSourcePointInterface;
+
+    /**
+     * Creates a dynamic target point of a certain type based
+     * on the passed FQN.
+     *
+     * @param string $pointFqn
+     * @return DynamicTargetPointInterface
+     * @throws InvalidArgumentException
+     */
+    public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface;
 }

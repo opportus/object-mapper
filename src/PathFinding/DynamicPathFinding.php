@@ -11,25 +11,23 @@
 
 namespace Opportus\ObjectMapper\PathFinding;
 
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 use Reflector;
 
 /**
- * The overloaded path finding.
+ * The default dynamic path finding.
  *
  * @package Opportus\ObjectMapper\PathFinding
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class OverloadedPathFinding implements PathFindingInterface
+final class DynamicPathFinding implements PathFindingInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder
@@ -37,7 +35,7 @@ final class OverloadedPathFinding implements PathFindingInterface
     private $routeBuilder;
 
     /**
-     * Constructs the overloaded path finding strategy.
+     * Constructs the default dynamic path finding strategy.
      *
      * @param RouteBuilderInterface $routeBuilder
      */
@@ -85,8 +83,8 @@ final class OverloadedPathFinding implements PathFindingInterface
             }
 
             $routes[] = $this->routeBuilder
-                ->setOverloadedSourcePoint($sourcePointFqn)
-                ->setOverloadedTargetPoint($targetPointFqn)
+                ->setDynamicSourcePoint($sourcePointFqn)
+                ->setDynamicTargetPoint($targetPointFqn)
                 ->getRoute();
         }
 

@@ -12,11 +12,12 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\MethodObjectPoint;
-use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
+use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\PointFactoryInterface;
-use Opportus\ObjectMapper\Point\PropertyObjectPoint;
+use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
+use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -36,22 +37,46 @@ class PointFactoryTest extends FinalBypassTestCase
         static::assertInstanceOf(PointFactoryInterface::class, $pointFactory);
     }
 
-    public function testCreatePoint(): void
+    public function testCreateStaticSourcePoint(): void
     {
         $pointFactory = new PointFactory();
 
         $pointFqns =  [
-            PropertyObjectPoint::class => \sprintf(
+            PropertyStaticSourcePoint::class => \sprintf(
                 '%s.$%s',
                 PointFactoryTestClass::class,
                 'property'
             ),
-            MethodObjectPoint::class => \sprintf(
+            MethodStaticSourcePoint::class => \sprintf(
                 '%s.%s()',
                 PointFactoryTestClass::class,
                 'method'
             ),
-            MethodParameterObjectPoint::class => \sprintf(
+        ];
+
+
+        foreach ($pointFqns as $pointType => $pointFqn) {
+            $point = $pointFactory->createStaticSourcePoint($pointFqn);
+
+            static::assertInstanceOf($pointType, $point);
+            static::assertSame($pointFqn, $point->getFqn());
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createStaticSourcePoint('test');
+    }
+
+    public function testCreateStaticTargetPoint(): void
+    {
+        $pointFactory = new PointFactory();
+
+        $pointFqns =  [
+            PropertyStaticTargetPoint::class => \sprintf(
+                '%s.$%s',
+                PointFactoryTestClass::class,
+                'property'
+            ),
+            MethodParameterStaticTargetPoint::class => \sprintf(
                 '%s.%s().$%s',
                 PointFactoryTestClass::class,
                 'method',
@@ -61,14 +86,14 @@ class PointFactoryTest extends FinalBypassTestCase
 
 
         foreach ($pointFqns as $pointType => $pointFqn) {
-            $point = $pointFactory->createObjectPoint($pointFqn);
+            $point = $pointFactory->createStaticTargetPoint($pointFqn);
 
             static::assertInstanceOf($pointType, $point);
             static::assertSame($pointFqn, $point->getFqn());
         }
 
         $this->expectException(InvalidArgumentException::class);
-        $pointFactory->createObjectPoint('test');
+        $pointFactory->createStaticTargetPoint('test');
     }
 }
 

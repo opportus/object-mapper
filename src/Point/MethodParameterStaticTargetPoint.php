@@ -16,13 +16,15 @@ use ReflectionException;
 use ReflectionParameter;
 
 /**
- * The method parameter object point.
+ * The method parameter static target point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MethodParameterObjectPoint extends ObjectPoint
+final class MethodParameterStaticTargetPoint
+extends ObjectPoint
+implements StaticTargetPointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
 
@@ -32,7 +34,7 @@ final class MethodParameterObjectPoint extends ObjectPoint
     private $methodName;
 
     /**
-     * Constructs the method parameter object point.
+     * Constructs the method parameter static target point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException
@@ -41,7 +43,7 @@ final class MethodParameterObjectPoint extends ObjectPoint
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                '%s is not a parameter point as FQN of such is expected to have the following syntax: %s.',
+                '%s is not a method parameter static target point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
             );
@@ -64,7 +66,7 @@ final class MethodParameterObjectPoint extends ObjectPoint
             );
         } catch (ReflectionException $exception) {
             $message = \sprintf(
-                '%s is not a parameter point. %s.',
+                '%s is not a method parameter static target point. %s.',
                 $fqn,
                 $exception->getMessage()
             );

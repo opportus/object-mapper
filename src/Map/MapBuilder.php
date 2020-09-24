@@ -12,7 +12,7 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\PathFinding\NoPathFinding;
-use Opportus\ObjectMapper\PathFinding\PathFinding;
+use Opportus\ObjectMapper\PathFinding\StaticPathFinding;
 use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
@@ -103,7 +103,7 @@ final class MapBuilder implements MapBuilderInterface
     public function setPathFinding(
         ?PathFindingInterface $pathFinding = null
     ): MapBuilderInterface {
-        $pathFinding = $pathFinding ?? new PathFinding($this->routeBuilder);
+        $pathFinding = $pathFinding ?? new StaticPathFinding($this->routeBuilder);
 
         return new self(
             $this->routeBuilder,

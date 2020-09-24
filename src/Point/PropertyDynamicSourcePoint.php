@@ -14,18 +14,20 @@ namespace Opportus\ObjectMapper\Point;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 
 /**
- * The overloaded property object point.
+ * The property dynamic source point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class OverloadedPropertyObjectPoint extends ObjectPoint
+final class PropertyDynamicSourcePoint
+extends ObjectPoint
+implements DynamicSourcePointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
-     * Constructs the overloaded property object point.
+     * Constructs the property dynamic source point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException
@@ -34,7 +36,7 @@ final class OverloadedPropertyObjectPoint extends ObjectPoint
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                '%s is not a property point as FQN of such is expected to have the following syntax: %s.',
+                '%s is not a property dynamic source point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
             );

@@ -13,21 +13,23 @@ namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use ReflectionException;
-use ReflectionMethod;
+use ReflectionProperty;
 
 /**
- * The method object point.
+ * The property static target point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MethodObjectPoint extends ObjectPoint
+final class PropertyStaticTargetPoint
+extends ObjectPoint
+implements StaticTargetPointInterface
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
+    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
-     * Constructs the method object point.
+     * Constructs the property static target point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException
@@ -36,7 +38,7 @@ final class MethodObjectPoint extends ObjectPoint
     {
         if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                '%s is not a method point as FQN of such is expected to have the following syntax: %s.',
+                '%s is not a property static target point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
                 self::FQN_SYNTAX_PATTERN
             );
@@ -47,10 +49,13 @@ final class MethodObjectPoint extends ObjectPoint
         [$matchedFqn, $matchedClassName, $matchedName] = $matches;
 
         try {
-            new ReflectionMethod($matchedClassName, $matchedName);
+            new ReflectionProperty(
+                $matchedClassName,
+                $matchedName
+            );
         } catch (ReflectionException $exception) {
             $message = \sprintf(
-                '%s is not a method point. %s.',
+                '%s is not a property static target point. %s.',
                 $fqn,
                 $exception->getMessage()
             );

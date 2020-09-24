@@ -12,17 +12,17 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\PropertyObjectPoint;
+use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The property object point test.
+ * The property static source point test.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyObjectPointTest extends FinalBypassTestCase
+class PropertyStaticSourcePointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidPropertyPointFqns
@@ -32,7 +32,7 @@ class PropertyObjectPointTest extends FinalBypassTestCase
     public function testConstructException($invalidPropertyPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new PropertyObjectPoint($invalidPropertyPointFqn);
+        new PropertyStaticSourcePoint($invalidPropertyPointFqn);
     }
 
     /**
@@ -44,8 +44,8 @@ class PropertyObjectPointTest extends FinalBypassTestCase
     public function testConstruct(string $className, string $propertyName): void
     {
         static::assertInstanceOf(
-            PropertyObjectPoint::class,
-            new PropertyObjectPoint(\sprintf('%s.$%s', $className, $propertyName))
+            PropertyStaticSourcePoint::class,
+            new PropertyStaticSourcePoint(\sprintf('%s.$%s', $className, $propertyName))
         );
     }
 
@@ -99,9 +99,9 @@ class PropertyObjectPointTest extends FinalBypassTestCase
     public function providePropertyPointFqnTokens(): array
     {
         return [
-            [PropertyObjectPointTestClass::class, 'privateProperty'],
-            [PropertyObjectPointTestClass::class, 'protectedProperty'],
-            [PropertyObjectPointTestClass::class, 'publicProperty'],
+            [PropertyStaticSourcePointTestClass::class, 'privateProperty'],
+            [PropertyStaticSourcePointTestClass::class, 'protectedProperty'],
+            [PropertyStaticSourcePointTestClass::class, 'publicProperty'],
         ];
     }
 
@@ -114,17 +114,17 @@ class PropertyObjectPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf(
                 '%s.%s',
-                PropertyObjectPointTestClass::class,
+                PropertyStaticSourcePointTestClass::class,
                 'publicProperty'
             )],
             [\sprintf(
                 '%s$%s',
-                PropertyObjectPointTestClass::class,
+                PropertyStaticSourcePointTestClass::class,
                 'publicProperty'
             )],
             [\sprintf(
                 '%s.$',
-                PropertyObjectPointTestClass::class
+                PropertyStaticSourcePointTestClass::class
             )],
 
             // Invalid reflection...
@@ -135,7 +135,7 @@ class PropertyObjectPointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.$%s',
-                PropertyObjectPointTestClass::class,
+                PropertyStaticSourcePointTestClass::class,
                 'invalidProperty'
             )],
         ];
@@ -144,16 +144,16 @@ class PropertyObjectPointTest extends FinalBypassTestCase
     /**
      * @param string $className
      * @param string $propertyName
-     * @return PropertyObjectPoint
+     * @return PropertyStaticSourcePoint
      * @throws InvalidArgumentException
      */
     private function buildPropertyPoint(
         string $className,
         string $propertyName
-    ): PropertyObjectPoint {
+    ): PropertyStaticSourcePoint {
         $propertyPointFqn = \sprintf('%s.$%s', $className, $propertyName);
 
-        return new PropertyObjectPoint($propertyPointFqn);
+        return new PropertyStaticSourcePoint($propertyPointFqn);
     }
 }
 
@@ -164,7 +164,7 @@ class PropertyObjectPointTest extends FinalBypassTestCase
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyObjectPointTestClass
+class PropertyStaticSourcePointTestClass
 {
     private $privateProperty = 1;
     protected $protectedProperty = 1;

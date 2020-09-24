@@ -55,8 +55,8 @@ class RouteBuilderTest extends FinalBypassTestCase
         $routeBuilder = $this->buildRouteBuilder();
 
         $route = $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->setTargetPoint($targetPointFqn)
+            ->setStaticSourcePoint($sourcePointFqn)
+            ->setStaticTargetPoint($targetPointFqn)
             ->addCheckPoint($checkPoint, 10)
             ->getRoute();
 
@@ -101,8 +101,8 @@ class RouteBuilderTest extends FinalBypassTestCase
 
         $mapBuilder = $routeBuilder
             ->setMapBuilder($this->buildMapBuilder())
-            ->setSourcePoint($sourcePointFqn)
-            ->setTargetPoint($targetPointFqn)
+            ->setStaticSourcePoint($sourcePointFqn)
+            ->setStaticTargetPoint($targetPointFqn)
             ->addCheckPoint($checkPoint, 10)
             ->addRouteToMapBuilder()
             ->getMapBuilder();

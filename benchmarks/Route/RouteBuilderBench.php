@@ -43,13 +43,13 @@ class RouteBuilderBench
     public function benchBuildRoute()
     {
         $this->routeBuilder
-            ->setSourcePoint(\sprintf('%s.getA()', BenchObject::class))
-            ->setTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
+            ->setStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class))
+            ->setStaticTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
             ->getRoute();
 
         $this->routeBuilder
-            ->setSourcePoint(\sprintf('%s.getB()', BenchObject::class))
-            ->setTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
+            ->setStaticSourcePoint(\sprintf('%s.getB()', BenchObject::class))
+            ->setStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
             ->getRoute();
     }
 }

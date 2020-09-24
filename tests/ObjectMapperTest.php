@@ -14,7 +14,7 @@ namespace Opportus\ObjectMapper\Tests;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
-use Opportus\ObjectMapper\PathFinding\OverloadedPathFinding;
+use Opportus\ObjectMapper\PathFinding\DynamicPathFinding;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\Route;
@@ -42,21 +42,21 @@ class ObjectMapperTest extends FinalBypassTestCase
 
         $map = $mapBuilder
             ->getRouteBuilder()
-                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setStaticTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
                 ->addCheckPoint(new ObjectMapperTestCheckPointClass())
                 ->addRouteToMapBuilder()
-                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setTargetPoint(\sprintf('%s.setB().$b', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setStaticTargetPoint(\sprintf('%s.setB().$b', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
-                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setOverloadedTargetPoint(\sprintf('%s.$c', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setDynamicTargetPoint(\sprintf('%s.$c', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
-                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setOverloadedTargetPoint(\sprintf('%s.setD().$d', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setDynamicTargetPoint(\sprintf('%s.setD().$d', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
-                ->setSourcePoint(\sprintf('%s.getB()', ObjectMapperTestObjectClass::class))
-                ->setOverloadedTargetPoint(\sprintf('%s.setD().$dp', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s.getB()', ObjectMapperTestObjectClass::class))
+                ->setDynamicTargetPoint(\sprintf('%s.setD().$dp', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
                 ->getMapBuilder()
             ->setPathFinding()
@@ -82,7 +82,7 @@ class ObjectMapperTest extends FinalBypassTestCase
         static::assertEquals(11, $target->getB());
 
         $map = $mapBuilder
-            ->setPathFinding(new OverloadedPathFinding($routeBuilder))
+            ->setPathFinding(new DynamicPathFinding($routeBuilder))
             ->getMap();
 
         $target = $objectMapper->map(

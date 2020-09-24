@@ -12,17 +12,17 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\MethodObjectPoint;
+use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The method object point test.
+ * The method static source point test.
  *
  * @package Opportus\ObjectMapper\Tests\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodObjectPointTest extends FinalBypassTestCase
+class MethodStaticSourcePointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidMethodPointFqns
@@ -32,7 +32,7 @@ class MethodObjectPointTest extends FinalBypassTestCase
     public function testConstructException($invalidMethodPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new MethodObjectPoint($invalidMethodPointFqn);
+        new MethodStaticSourcePoint($invalidMethodPointFqn);
     }
 
     /**
@@ -44,8 +44,8 @@ class MethodObjectPointTest extends FinalBypassTestCase
     public function testConstruct(string $className, string $methodName): void
     {
         static::assertInstanceOf(
-            MethodObjectPoint::class,
-            new MethodObjectPoint(\sprintf('%s.%s()', $className, $methodName))
+            MethodStaticSourcePoint::class,
+            new MethodStaticSourcePoint(\sprintf('%s.%s()', $className, $methodName))
         );
     }
 
@@ -97,9 +97,9 @@ class MethodObjectPointTest extends FinalBypassTestCase
     public function provideMethodPointFqnTokens(): array
     {
         return [
-            [MethodObjectPointTestClass::class, 'privateMethod'],
-            [MethodObjectPointTestClass::class, 'protectedMethod'],
-            [MethodObjectPointTestClass::class, 'publicMethod'],
+            [MethodStaticSourcePointTestClass::class, 'privateMethod'],
+            [MethodStaticSourcePointTestClass::class, 'protectedMethod'],
+            [MethodStaticSourcePointTestClass::class, 'publicMethod'],
         ];
     }
 
@@ -112,17 +112,17 @@ class MethodObjectPointTest extends FinalBypassTestCase
             // Invalid syntax...
             [\sprintf(
                 '%s.%s',
-                MethodObjectPointTestClass::class,
+                MethodStaticSourcePointTestClass::class,
                 'publicMethod'
             )],
             [\sprintf(
                 '%s%s()',
-                MethodObjectPointTestClass::class,
+                MethodStaticSourcePointTestClass::class,
                 'publicMethod'
             )],
             [\sprintf(
                 '%s.',
-                MethodObjectPointTestClass::class
+                MethodStaticSourcePointTestClass::class,
             )],
 
             // Invalid reflection...
@@ -133,7 +133,7 @@ class MethodObjectPointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.%s()',
-                MethodObjectPointTestClass::class,
+                MethodStaticSourcePointTestClass::class,
                 'invalidMethod'
             )],
         ];
@@ -142,16 +142,16 @@ class MethodObjectPointTest extends FinalBypassTestCase
     /**
      * @param string $className
      * @param string $methodName
-     * @return MethodObjectPoint
+     * @return MethodStaticSourcePoint
      * @throws InvalidArgumentException
      */
     private function buildMethodPoint(
         string $className,
         string $methodName
-    ): MethodObjectPoint {
+    ): MethodStaticSourcePoint {
         $methodPointFqn = \sprintf('%s.%s()', $className, $methodName);
 
-        return new MethodObjectPoint($methodPointFqn);
+        return new MethodStaticSourcePoint($methodPointFqn);
     }
 }
 
@@ -162,7 +162,7 @@ class MethodObjectPointTest extends FinalBypassTestCase
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodObjectPointTestClass
+class MethodStaticSourcePointTestClass
 {
     /**
      * @return int

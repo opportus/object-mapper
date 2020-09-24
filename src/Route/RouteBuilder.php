@@ -15,8 +15,9 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
-use Opportus\ObjectMapper\Point\ObjectPoint;
 use Opportus\ObjectMapper\Point\PointFactoryInterface;
+use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Point\TargetPointInterface;
 
 /**
  * The route builder.
@@ -38,12 +39,12 @@ final class RouteBuilder implements RouteBuilderInterface
     private $mapBuilder;
 
     /**
-     * @var null|ObjectPoint $sourcePoint
+     * @var null|SourcePointInterface $sourcePoint
      */
     private $sourcePoint;
 
     /**
-     * @var null|ObjectPoint $targetPoint
+     * @var null|TargetPointInterface $targetPoint
      */
     private $targetPoint;
 
@@ -57,15 +58,15 @@ final class RouteBuilder implements RouteBuilderInterface
      *
      * @param PointFactoryInterface $pointFactory
      * @param null|MapBuilderInterface $mapBuilder
-     * @param null|ObjectPoint $sourcePoint
-     * @param null|ObjectPoint $targetPoint
+     * @param null|SourcePointInterface $sourcePoint
+     * @param null|TargetPointInterface $targetPoint
      * @param null|CheckPointCollection $checkPoints
      */
     public function __construct(
         PointFactoryInterface $pointFactory,
         ?MapBuilderInterface $mapBuilder = null,
-        ?ObjectPoint $sourcePoint = null,
-        ?ObjectPoint $targetPoint = null,
+        ?SourcePointInterface $sourcePoint = null,
+        ?TargetPointInterface $targetPoint = null,
         ?CheckPointCollection $checkPoints = null
     ) {
         $this->pointFactory = $pointFactory;
@@ -93,13 +94,13 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function setSourcePoint(
+    public function setStaticSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface {
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
-            $this->pointFactory->createObjectPoint($sourcePointFqn),
+            $this->pointFactory->createStaticSourcePoint($sourcePointFqn),
             $this->targetPoint,
             $this->checkPoints
         );
@@ -108,14 +109,14 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function setTargetPoint(
+    public function setStaticTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface {
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
             $this->sourcePoint,
-            $this->pointFactory->createObjectPoint($targetPointFqn),
+            $this->pointFactory->createStaticTargetPoint($targetPointFqn),
             $this->checkPoints
         );
     }
@@ -123,13 +124,13 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function setOverloadedSourcePoint(
+    public function setDynamicSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface {
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
-            $this->pointFactory->createOverloadedObjectPoint($sourcePointFqn),
+            $this->pointFactory->createDynamicSourcePoint($sourcePointFqn),
             $this->targetPoint,
             $this->checkPoints
         );
@@ -138,14 +139,14 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function setOverloadedTargetPoint(
+    public function setDynamicTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface {
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
             $this->sourcePoint,
-            $this->pointFactory->createOverloadedObjectPoint($targetPointFqn),
+            $this->pointFactory->createDynamicTargetPoint($targetPointFqn),
             $this->checkPoints
         );
     }

@@ -49,11 +49,11 @@ class MapBuilderBench
     {
         $this->mapBuilder
             ->getRouteBuilder()
-                ->setSourcePoint(\sprintf('%s.getA()', BenchObject::class))
-                ->setTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
+                ->setStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class))
+                ->setStaticTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
                 ->addRouteToMapBuilder()
-                ->setSourcePoint(\sprintf('%s.getB()', BenchObject::class))
-                ->setTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
+                ->setStaticSourcePoint(\sprintf('%s.getB()', BenchObject::class))
+                ->setStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
                 ->addRouteToMapBuilder()
                 ->getMapBuilder()
             ->getMap();
