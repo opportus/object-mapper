@@ -40,15 +40,14 @@ final class Map
     /**
      * Constructs the map.
      *
-     * @param PathFinderCollection $pathFinders
+     * @param null|PathFinderCollection $pathFinders
      * @param null|RouteCollection $routes
      */
     public function __construct(
-        PathFinderCollection $pathFinders,
+        ?PathFinderCollection $pathFinders,
         ?RouteCollection $routes = null
     ) {
-        $this->pathFinders = $pathFinders;
-
+        $this->pathFinders = $pathFinders ?? new PathFinderCollection();
         $this->routes = $routes ?? new RouteCollection();
     }
 

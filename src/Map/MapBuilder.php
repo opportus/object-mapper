@@ -11,8 +11,6 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\PathFinder\NoPathFinder;
-use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\Route\Route;
@@ -120,10 +118,6 @@ final class MapBuilder implements MapBuilderInterface
      */
     public function getMap(): Map
     {
-        if (\count($this->pathFinders) === 0) {
-            return $this->addPathFinder(new NoPathFinder())->getMap();
-        }
-
         return new Map($this->pathFinders, $this->routes);
     }
 }
