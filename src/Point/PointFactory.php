@@ -48,4 +48,31 @@ final class PointFactory implements PointFactoryInterface
 
         throw new InvalidArgumentException(1, __METHOD__, $message);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createOverloadedObjectPoint(string $objectPointFqn): ObjectPoint
+    {
+        if (\preg_match(
+            OverloadedMethodObjectPoint::FQN_SYNTAX_PATTERN,
+            $objectPointFqn
+        )) {
+            return new OverloadedMethodObjectPoint($objectPointFqn);
+        } elseif (\preg_match(
+            OverloadedParameterObjectPoint::FQN_SYNTAX_PATTERN,
+            $objectPointFqn
+        )) {
+            return new OverloadedParameterObjectPoint($objectPointFqn);
+        } elseif (\preg_match(
+            OverloadedPropertyObjectPoint::FQN_SYNTAX_PATTERN,
+            $objectPointFqn
+        )) {
+            return new OverloadedPropertyObjectPoint($objectPointFqn);
+        }
+
+        $message = \sprintf('%s is not a point FQN.', $objectPointFqn);
+
+        throw new InvalidArgumentException(1, __METHOD__, $message);
+    }
 }

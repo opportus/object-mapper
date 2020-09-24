@@ -123,6 +123,36 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
+    public function setOverloadedSourcePoint(
+        string $sourcePointFqn
+    ): RouteBuilderInterface {
+        return new self(
+            $this->pointFactory,
+            $this->mapBuilder,
+            $this->pointFactory->createOverloadedObjectPoint($sourcePointFqn),
+            $this->targetPoint,
+            $this->checkPoints
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setOverloadedTargetPoint(
+        string $targetPointFqn
+    ): RouteBuilderInterface {
+        return new self(
+            $this->pointFactory,
+            $this->mapBuilder,
+            $this->sourcePoint,
+            $this->pointFactory->createOverloadedObjectPoint($targetPointFqn),
+            $this->checkPoints
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addCheckPoint(
         CheckPointInterface $checkPoint,
         int $checkPointPosition = null

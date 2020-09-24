@@ -55,6 +55,26 @@ interface RouteBuilderInterface
     ): RouteBuilderInterface;
 
     /**
+     * Sets the overloaded source point of the route.
+     *
+     * @param string $sourcePointFqn
+     * @return RouteBuilderInterface
+     */
+    public function setOverloadedSourcePoint(
+        string $sourcePointFqn
+    ): RouteBuilderInterface;
+
+    /**
+     * Sets the overloaded target point of the route.
+     *
+     * @param string $targetPointFqn
+     * @return RouteBuilderInterface
+     */
+    public function setOverloadedTargetPoint(
+        string $targetPointFqn
+    ): RouteBuilderInterface;
+
+    /**
      * Adds a checkpoint to the route.
      *
      * @param CheckPointInterface $checkPoint

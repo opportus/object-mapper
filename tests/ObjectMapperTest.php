@@ -14,6 +14,7 @@ namespace Opportus\ObjectMapper\Tests;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
+use Opportus\ObjectMapper\PathFinding\OverloadedPathFinding;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\Route;
@@ -45,6 +46,18 @@ class ObjectMapperTest extends FinalBypassTestCase
                 ->setTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
                 ->addCheckPoint(new ObjectMapperTestCheckPointClass())
                 ->addRouteToMapBuilder()
+                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setTargetPoint(\sprintf('%s.setB().$b', ObjectMapperTestObjectClass::class))
+                ->addRouteToMapBuilder()
+                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setOverloadedTargetPoint(\sprintf('%s.$c', ObjectMapperTestObjectClass::class))
+                ->addRouteToMapBuilder()
+                ->setSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
+                ->setOverloadedTargetPoint(\sprintf('%s.setD().$d', ObjectMapperTestObjectClass::class))
+                ->addRouteToMapBuilder()
+                ->setSourcePoint(\sprintf('%s.getB()', ObjectMapperTestObjectClass::class))
+                ->setOverloadedTargetPoint(\sprintf('%s.setD().$dp', ObjectMapperTestObjectClass::class))
+                ->addRouteToMapBuilder()
                 ->getMapBuilder()
             ->setPathFinding()
             ->getMap();
@@ -56,7 +69,30 @@ class ObjectMapperTest extends FinalBypassTestCase
         );
 
         static::assertEquals(2, $target->getA());
+        static::assertEquals(1, $target->getB());
+        static::assertEquals(1, $target->c);
+        static::assertEquals(-10, $target->d);
+
+        $target = $objectMapper->map(
+            $this->buildSource(),
+            ObjectMapperTestObjectClass::class
+        );
+
+        static::assertEquals(1, $target->getA());
         static::assertEquals(11, $target->getB());
+
+        $map = $mapBuilder
+            ->setPathFinding(new OverloadedPathFinding($routeBuilder))
+            ->getMap();
+
+        $target = $objectMapper->map(
+            $this->buildSource(),
+            DynamicObjectMapperTestObjectClass::class,
+            $map
+        );
+
+        static::assertEquals(2, $target->e);
+        static::assertEquals(3, $target->f);
     }
 
     /**
@@ -66,6 +102,7 @@ class ObjectMapperTest extends FinalBypassTestCase
     {
         $source = new ObjectMapperTestObjectClass(1);
         $source->setB(11);
+        $source->f = 3;
 
         return $source;
     }
@@ -82,8 +119,9 @@ class ObjectMapperTestObjectClass
 {
     private $a;
     private $b;
+    public $f;
 
-    public function __construct(int $a)
+    public function __construct(int $a = 22)
     {
         $this->a = $a;
     }
@@ -107,6 +145,43 @@ class ObjectMapperTestObjectClass
     {
         $this->b = $b;
     }
+
+    public function getE()
+    {
+        return 2;
+    }
+
+    public function __get($propertyName)
+    {
+        if ($propertyName === 'c' && isset($this->c) || $propertyName === 'd' && isset($this->d)) {
+            return $this->{$propertyName};
+        }
+    }
+
+    public function __set($propertyName, $propertyValue)
+    {
+        if ($propertyName === 'c' || $propertyName === 'd') {
+            $this->{$propertyName} = $propertyValue;
+        }
+    }
+
+    public function __call($methodName, $arguments)
+    {
+        if ($methodName === 'setD') {
+            $this->d = $arguments[0] - $arguments[1];
+        }
+    }
+}
+
+/**
+ * The object mapper test dynamic object class.
+ *
+ * @package Opportus\ObjectMapper\Tests
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class DynamicObjectMapperTestObjectClass
+{
 }
 
 /**

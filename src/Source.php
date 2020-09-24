@@ -11,9 +11,13 @@
 
 namespace Opportus\ObjectMapper;
 
+use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Point\MethodObjectPoint;
 use Opportus\ObjectMapper\Point\ObjectPoint;
+use Opportus\ObjectMapper\Point\OverloadedMethodObjectPoint;
+use Opportus\ObjectMapper\Point\OverloadedPropertyObjectPoint;
 use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use ReflectionClass;
 
@@ -77,7 +81,9 @@ final class Source
     {
         return
             $point instanceof PropertyObjectPoint ||
-            $point instanceof MethodObjectPoint;
+            $point instanceof MethodObjectPoint ||
+            $point instanceof OverloadedPropertyObjectPoint ||
+            $point instanceof OverloadedMethodObjectPoint;
     }
 
     /**
@@ -99,11 +105,12 @@ final class Source
      * @param ObjectPoint $point
      * @return mixed
      * @throws InvalidArgumentException
+     * @throws InvalidOperationException
      * @noinspection PhpInconsistentReturnPointsInspection
      */
     public function getPointValue(ObjectPoint $point)
     {
-        if (false === $this->hasPoint($point)) {
+        if (false === $this->hasPoint($point) && false === self::hasPointType($point)) {
             $message = \sprintf(
                 '%s is not a property of %s.',
                 $point->getFqn(),
@@ -119,6 +126,30 @@ final class Source
         } elseif ($point instanceof MethodObjectPoint) {
             return $this->reflection->getMethod($point->getName())
                     ->invoke($this->instance);
+        } elseif ($point instanceof OverloadedPropertyObjectPoint) {
+            try {
+                return $this->instance->{$point->getName()};
+            } catch (Exception $exception) {
+                throw new InvalidOperationException(
+                    __METHOD__,
+                    \sprintf(
+                        'Cannot call overloaded source point %s.',
+                        $point->getFqn()
+                    )
+                );
+            }
+        } elseif ($point instanceof OverloadedMethodObjectPoint) {
+            try {
+                return $this->instance->{$point->getName()}();
+            } catch (Exception $exception) {
+                throw new InvalidOperationException(
+                    __METHOD__,
+                    \sprintf(
+                        'Cannot call overloaded source point %s.',
+                        $point->getFqn()
+                    )
+                );
+            }
         }
     }
 }

@@ -14,6 +14,8 @@ namespace Opportus\ObjectMapper;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Point\ObjectPoint;
+use Opportus\ObjectMapper\Point\OverloadedParameterObjectPoint;
+use Opportus\ObjectMapper\Point\OverloadedPropertyObjectPoint;
 use Opportus\ObjectMapper\Point\ParameterObjectPoint;
 use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use ReflectionClass;
@@ -75,7 +77,9 @@ final class Target
         $this->instance = \is_object($target) ? $target : null;
         $this->pointValues = [
             'properties' => [],
-            'methods'    => [],
+            'parameters' => [],
+            'overloaded_properties' => [],
+            'overloaded_parameters' => [],
         ];
     }
 
@@ -134,7 +138,9 @@ final class Target
     {
         return
             $point instanceof PropertyObjectPoint ||
-            $point instanceof ParameterObjectPoint;
+            $point instanceof ParameterObjectPoint ||
+            $point instanceof OverloadedPropertyObjectPoint ||
+            $point instanceof OverloadedParameterObjectPoint;
     }
 
     /**
@@ -159,7 +165,9 @@ final class Target
      */
     public function setPointValue(ObjectPoint $point, $pointValue)
     {
-        if (false === $this->hasPoint($point)) {
+        if (false === $this->hasPoint($point) &&
+            false === self::hasPointType($point)
+        ) {
             $message = \sprintf(
                 '%s is not a property of %s.',
                 $point->getFqn(),
@@ -174,6 +182,12 @@ final class Target
         } elseif ($point instanceof ParameterObjectPoint) {
             $this->pointValues['parameters'][$point->getMethodName()]
                 [$this->getParameterPointPosition($point)] = $pointValue;
+        } elseif ($point instanceof OverloadedPropertyObjectPoint) {
+            $this->pointValues['overloaded_properties']
+                [$point->getName()] = $pointValue;
+        } elseif ($point instanceof OverloadedParameterObjectPoint) {
+            $this->pointValues['overloaded_parameters']
+                [$point->getMethodName()][] = $pointValue;
         }
     }
 
@@ -235,6 +249,18 @@ final class Target
         }
 
         foreach (
+            $pointValues['overloaded_parameters'] as
+            $methodName =>
+            $methodArguments
+        ) {
+            if ('__construct' === $methodName) {
+                continue;
+            }
+
+            $instance->{$methodName}(...$methodArguments);
+        }
+
+        foreach (
             $pointValues['properties'] as
             $propertyName =>
             $propertyValue
@@ -243,6 +269,14 @@ final class Target
                 $instance,
                 $propertyValue
             );
+        }
+
+        foreach (
+            $pointValues['overloaded_properties'] as
+            $propertyName =>
+            $propertyValue
+        ) {
+            $instance->{$propertyName} = $propertyValue;
         }
 
         return $instance;
@@ -257,6 +291,8 @@ final class Target
     {
         return
             $this->pointValues['properties'] ||
-           $this->pointValues['parameters'];
+            $this->pointValues['parameters'] ||
+            $this->pointValues['overloaded_properties'] ||
+            $this->pointValues['overloaded_parameters'];
     }
 }
