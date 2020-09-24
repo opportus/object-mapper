@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Benchmarks\Map;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Map\MapBuilder;
+use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Source;
@@ -47,7 +48,7 @@ class MapBench
         $source->setB(11);
 
         $this->pathFinderMap = $mapBuilder
-            ->setPathFinder()
+            ->addPathFinder(new StaticPathFinder($routeBuilder))
             ->getMap();
 
         $this->pathFinderSource = new Source($source);

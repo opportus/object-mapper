@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Benchmarks;
 
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
+use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;
@@ -28,6 +29,7 @@ use PhpBench\Benchmark\Metadata\Annotations\Revs;
 class ObjectMapperBench
 {
     private $objectMapper;
+    private $pathFinderMap;
     private $noPathFinderMap;
     private $source;
 
@@ -39,6 +41,10 @@ class ObjectMapperBench
         $objectMapper = new ObjectMapper($mapBuilder);
 
         $this->objectMapper = $objectMapper;
+
+        $this->pathFinderMap = $mapBuilder
+            ->addPathFinder(new StaticPathFinder($routeBuilder))
+            ->getMap();
 
         $this->noPathFinderMap = $mapBuilder
             ->getRouteBuilder()
@@ -61,7 +67,11 @@ class ObjectMapperBench
      */
     public function benchMapWithPathFinder()
     {
-        $this->objectMapper->map($this->source, BenchObject::class);
+        $this->objectMapper->map(
+            $this->source,
+            BenchObject::class,
+            $this->pathFinderMap
+        );
     }
 
     /**

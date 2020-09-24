@@ -49,13 +49,13 @@ interface MapBuilderInterface
     public function addRoutes(RouteCollection $routes): MapBuilderInterface;
 
     /**
-     * Sets the pathfinder.
+     * Adds a path finder.
      *
-     * @param null|PathFinderInterface $pathFinder
+     * @param PathFinderInterface $pathFinder
      * @return MapBuilderInterface
      */
-    public function setPathFinder(
-        ?PathFinderInterface $pathFinder = null
+    public function addPathFinder(
+        PathFinderInterface $pathFinder
     ): MapBuilderInterface;
 
     /**
