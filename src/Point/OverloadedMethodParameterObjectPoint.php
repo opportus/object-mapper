@@ -14,13 +14,13 @@ namespace Opportus\ObjectMapper\Point;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 
 /**
- * The overloaded parameter object point.
+ * The overloaded method parameter object point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class OverloadedParameterObjectPoint extends ObjectPoint
+final class OverloadedMethodParameterObjectPoint extends ObjectPoint
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
 
@@ -30,7 +30,7 @@ final class OverloadedParameterObjectPoint extends ObjectPoint
     private $methodName;
 
     /**
-     * Constructs the overloaded parameter object point.
+     * Constructs the overloaded method parameter object point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException

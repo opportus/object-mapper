@@ -12,7 +12,7 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ParameterObjectPointTest extends FinalBypassTestCase
+class MethodParameterObjectPointTest extends FinalBypassTestCase
 {
     /**
      * @dataProvider provideInvalidParameterPointFqns
@@ -32,7 +32,7 @@ class ParameterObjectPointTest extends FinalBypassTestCase
     public function testConstructException($invalidParameterPointFqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new ParameterObjectPoint($invalidParameterPointFqn);
+        new MethodParameterObjectPoint($invalidParameterPointFqn);
     }
 
     /**
@@ -48,8 +48,8 @@ class ParameterObjectPointTest extends FinalBypassTestCase
         string $parameterName
     ): void {
         static::assertInstanceOf(
-            ParameterObjectPoint::class,
-            new ParameterObjectPoint(
+            MethodParameterObjectPoint::class,
+            new MethodParameterObjectPoint(
                 \sprintf(
                     '%s.%s().$%s',
                     $className,
@@ -223,14 +223,14 @@ class ParameterObjectPointTest extends FinalBypassTestCase
      * @param string $className
      * @param string $methodName
      * @param string $parameterName
-     * @return ParameterObjectPoint
+     * @return MethodParameterObjectPoint
      * @throws InvalidArgumentException
      */
     private function buildParameterPoint(
         string $className,
         string $methodName,
         string $parameterName
-    ): ParameterObjectPoint {
+    ): MethodParameterObjectPoint {
         $parameterPointFqn = \sprintf(
             '%s.%s().$%s',
             $className,
@@ -238,7 +238,7 @@ class ParameterObjectPointTest extends FinalBypassTestCase
             $parameterName
         );
 
-        return new ParameterObjectPoint($parameterPointFqn);
+        return new MethodParameterObjectPoint($parameterPointFqn);
     }
 }
 

@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Benchmarks\Point;
 
 use Opportus\ObjectMapper\Benchmarks\BenchObject;
 use Opportus\ObjectMapper\Point\MethodObjectPoint;
-use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
 use PhpBench\Benchmark\Metadata\Annotations\Iterations;
 use PhpBench\Benchmark\Metadata\Annotations\Revs;
 
@@ -33,8 +33,8 @@ class ObjectPointBench
     public function benchConstruct()
     {
         new MethodObjectPoint(\sprintf('%s.getA()', BenchObject::class));
-        new ParameterObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        new MethodParameterObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
         new MethodObjectPoint(\sprintf('%s.getA()', BenchObject::class));
-        new ParameterObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        new MethodParameterObjectPoint(\sprintf('%s.setB().$b', BenchObject::class));
     }
 }

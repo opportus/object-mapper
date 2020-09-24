@@ -14,9 +14,9 @@ namespace Opportus\ObjectMapper;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Point\ObjectPoint;
-use Opportus\ObjectMapper\Point\OverloadedParameterObjectPoint;
+use Opportus\ObjectMapper\Point\OverloadedMethodParameterObjectPoint;
 use Opportus\ObjectMapper\Point\OverloadedPropertyObjectPoint;
-use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
 use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use ReflectionClass;
 use ReflectionException;
@@ -138,9 +138,9 @@ final class Target
     {
         return
             $point instanceof PropertyObjectPoint ||
-            $point instanceof ParameterObjectPoint ||
+            $point instanceof MethodParameterObjectPoint ||
             $point instanceof OverloadedPropertyObjectPoint ||
-            $point instanceof OverloadedParameterObjectPoint;
+            $point instanceof OverloadedMethodParameterObjectPoint;
     }
 
     /**
@@ -179,13 +179,13 @@ final class Target
 
         if ($point instanceof PropertyObjectPoint) {
             $this->pointValues['properties'][$point->getName()] = $pointValue;
-        } elseif ($point instanceof ParameterObjectPoint) {
+        } elseif ($point instanceof MethodParameterObjectPoint) {
             $this->pointValues['parameters'][$point->getMethodName()]
                 [$this->getParameterPointPosition($point)] = $pointValue;
         } elseif ($point instanceof OverloadedPropertyObjectPoint) {
             $this->pointValues['overloaded_properties']
                 [$point->getName()] = $pointValue;
-        } elseif ($point instanceof OverloadedParameterObjectPoint) {
+        } elseif ($point instanceof OverloadedMethodParameterObjectPoint) {
             $this->pointValues['overloaded_parameters']
                 [$point->getMethodName()][] = $pointValue;
         }
@@ -194,11 +194,11 @@ final class Target
     /**
      * Gets the parameter point position.
      *
-     * @param ParameterObjectPoint $point
+     * @param MethodParameterObjectPoint $point
      * @return int
      * @noinspection PhpInconsistentReturnPointsInspection
      */
-    private function getParameterPointPosition(ParameterObjectPoint $point): int
+    private function getParameterPointPosition(MethodParameterObjectPoint $point): int
     {
         foreach (
             $this->reflection->getMethod($point->getMethodName())

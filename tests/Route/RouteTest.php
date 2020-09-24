@@ -15,7 +15,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\MethodObjectPoint;
 use Opportus\ObjectMapper\Point\ObjectPoint;
-use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
 use Opportus\ObjectMapper\Point\PropertyObjectPoint;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
@@ -171,7 +171,7 @@ class RouteTest extends FinalBypassTestCase
                     'Class.$property'
                 ),
                 $this->buildPoint(
-                    ParameterObjectPoint::class,
+                    MethodParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
@@ -193,7 +193,7 @@ class RouteTest extends FinalBypassTestCase
                     'Class.method()'
                 ),
                 $this->buildPoint(
-                    ParameterObjectPoint::class,
+                    MethodParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
@@ -209,18 +209,18 @@ class RouteTest extends FinalBypassTestCase
         return [
             [
                 $this->buildPoint(
-                    ParameterObjectPoint::class,
+                    MethodParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 $this->buildPoint(
-                    ParameterObjectPoint::class,
+                    MethodParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
-                    ParameterObjectPoint::class,
+                    MethodParameterObjectPoint::class,
                     'Class.method().$parameter'
                 ),
                 $this->buildPoint(

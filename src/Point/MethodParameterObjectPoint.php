@@ -16,13 +16,13 @@ use ReflectionException;
 use ReflectionParameter;
 
 /**
- * The parameter object point.
+ * The method parameter object point.
  *
  * @package Opportus\ObjectMapper\Point
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class ParameterObjectPoint extends ObjectPoint
+final class MethodParameterObjectPoint extends ObjectPoint
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
 
@@ -32,7 +32,7 @@ final class ParameterObjectPoint extends ObjectPoint
     private $methodName;
 
     /**
-     * Constructs the parameter object point.
+     * Constructs the method parameter object point.
      *
      * @param string $fqn
      * @throws InvalidArgumentException

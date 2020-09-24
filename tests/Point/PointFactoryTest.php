@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\MethodObjectPoint;
-use Opportus\ObjectMapper\Point\ParameterObjectPoint;
+use Opportus\ObjectMapper\Point\MethodParameterObjectPoint;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\PointFactoryInterface;
 use Opportus\ObjectMapper\Point\PropertyObjectPoint;
@@ -51,7 +51,7 @@ class PointFactoryTest extends FinalBypassTestCase
                 PointFactoryTestClass::class,
                 'method'
             ),
-            ParameterObjectPoint::class => \sprintf(
+            MethodParameterObjectPoint::class => \sprintf(
                 '%s.%s().$%s',
                 PointFactoryTestClass::class,
                 'method',

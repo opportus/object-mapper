@@ -6,19 +6,23 @@
 
 ## Index
 
--   [Use cases](#use-cases)
--   [Roadmap](#roadmap)
--   [Integrations](#integrations)
--   [Setup](#setup)
--   [Mapping](#mapping)
-    -   [How it works](#how-it-works)
-    -   [Automatic mapping](#automatic-mapping)
-        - [Custom automatic mapping](#custom-automatic-mapping)
-    -   [Manual mapping](#manual-mapping)
-        - [Via map builder API](#via-map-builder-api)
-        - [Via map definition preloading](#via-map-definition-preloading)
-    -   [Check point](#check-point)
-    -   [Recursion](#recursion)
+- [Index](#index)
+- [Use cases](#use-cases)
+- [Roadmap](#roadmap)
+  - [v1.0.0 (stable)](#v100-stable)
+- [Integrations](#integrations)
+- [Setup](#setup)
+  - [Step 1 - Installation](#step-1---installation)
+  - [Step 2 - Initialization](#step-2---initialization)
+- [Mapping](#mapping)
+  - [How it works](#how-it-works)
+  - [Automatic mapping](#automatic-mapping)
+    - [Custom automatic mapping](#custom-automatic-mapping)
+  - [Manual mapping](#manual-mapping)
+    - [Via map builder API](#via-map-builder-api)
+    - [Via map definition preloading](#via-map-definition-preloading)
+  - [Check point](#check-point)
+  - [Recursion](#recursion)
 
 ## Use cases
 
@@ -139,7 +143,7 @@ A *source point* can be either:
 A *target point* can be either:
 
 -   A [`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php)
--   A [`ParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterObjectPoint.php)
+-   A [`MethodParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterObjectPoint.php)
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
@@ -203,7 +207,7 @@ For the default [`PathFinding`](https://github.com/opportus/object-mapper/blob/m
 strategy, a *target point* can be:
 
 -   A public property ([`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php))
--   A parameter of a public *setter* or constructor ([`ParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterObjectPoint.php))
+-   A parameter of a public *setter* or constructor ([`MethodParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterObjectPoint.php))
 
 The corresponding *source point* can be:
 
@@ -394,7 +398,7 @@ RouteBuilderInterface::setTargetPoint(string $targetPointFqn): RouteBuilderInter
 
 -   A public, protected or private property ([`PropertyObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyObjectPoint.php))
     represented by its FQN having for syntax `'My\Class.$property'`.
--   A parameter of a public, protected or private method ([`ParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/ParameterObjectPoint.php))
+-   A parameter of a public, protected or private method ([`MethodParameterObjectPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterObjectPoint.php))
     represented by its FQN having for syntax `'My\Class.method().$parameter'`.
 
 **Returns**

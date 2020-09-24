@@ -33,10 +33,10 @@ final class PointFactory implements PointFactoryInterface
         )) {
             return new MethodObjectPoint($objectPointFqn);
         } elseif (\preg_match(
-            ParameterObjectPoint::FQN_SYNTAX_PATTERN,
+            MethodParameterObjectPoint::FQN_SYNTAX_PATTERN,
             $objectPointFqn
         )) {
-            return new ParameterObjectPoint($objectPointFqn);
+            return new MethodParameterObjectPoint($objectPointFqn);
         } elseif (\preg_match(
             PropertyObjectPoint::FQN_SYNTAX_PATTERN,
             $objectPointFqn
@@ -60,10 +60,10 @@ final class PointFactory implements PointFactoryInterface
         )) {
             return new OverloadedMethodObjectPoint($objectPointFqn);
         } elseif (\preg_match(
-            OverloadedParameterObjectPoint::FQN_SYNTAX_PATTERN,
+            OverloadedMethodParameterObjectPoint::FQN_SYNTAX_PATTERN,
             $objectPointFqn
         )) {
-            return new OverloadedParameterObjectPoint($objectPointFqn);
+            return new OverloadedMethodParameterObjectPoint($objectPointFqn);
         } elseif (\preg_match(
             OverloadedPropertyObjectPoint::FQN_SYNTAX_PATTERN,
             $objectPointFqn
