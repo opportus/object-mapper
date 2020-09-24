@@ -14,7 +14,7 @@ namespace Opportus\ObjectMapper\Tests;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
-use Opportus\ObjectMapper\PathFinding\DynamicPathFinding;
+use Opportus\ObjectMapper\PathFinder\DynamicPathFinder;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\Route;
@@ -59,7 +59,7 @@ class ObjectMapperTest extends FinalBypassTestCase
                 ->setDynamicTargetPoint(\sprintf('%s.setD().$dp', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
                 ->getMapBuilder()
-            ->setPathFinding()
+            ->setPathFinder()
             ->getMap();
 
         $target = $objectMapper->map(
@@ -82,7 +82,7 @@ class ObjectMapperTest extends FinalBypassTestCase
         static::assertEquals(11, $target->getB());
 
         $map = $mapBuilder
-            ->setPathFinding(new DynamicPathFinding($routeBuilder))
+            ->setPathFinder(new DynamicPathFinder($routeBuilder))
             ->getMap();
 
         $target = $objectMapper->map(

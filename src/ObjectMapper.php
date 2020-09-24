@@ -47,7 +47,7 @@ final class ObjectMapper implements ObjectMapperInterface
         $source = ($source instanceof Source) ? $source : new Source($source);
         $target = ($target instanceof Target) ? $target : new Target($target);
         $map    = $map ?? $this->mapBuilder
-                ->setPathFinding()
+                ->setPathFinder()
                 ->getMap();
 
         $routes = $map->getRoutes($source, $target);

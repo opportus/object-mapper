@@ -28,7 +28,7 @@ use PhpBench\Benchmark\Metadata\Annotations\Revs;
 class ObjectMapperBench
 {
     private $objectMapper;
-    private $noPathFindingMap;
+    private $noPathFinderMap;
     private $source;
 
     public function __construct()
@@ -40,7 +40,7 @@ class ObjectMapperBench
 
         $this->objectMapper = $objectMapper;
 
-        $this->noPathFindingMap = $mapBuilder
+        $this->noPathFinderMap = $mapBuilder
             ->getRouteBuilder()
                 ->setStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class))
                 ->setStaticTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
@@ -59,7 +59,7 @@ class ObjectMapperBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchMapWithPathFinding()
+    public function benchMapWithPathFinder()
     {
         $this->objectMapper->map($this->source, BenchObject::class);
     }
@@ -68,12 +68,12 @@ class ObjectMapperBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchMapWithNoPathFinding()
+    public function benchMapWithNoPathFinder()
     {
         $this->objectMapper->map(
             $this->source,
             BenchObject::class,
-            $this->noPathFindingMap
+            $this->noPathFinderMap
         );
     }
 }

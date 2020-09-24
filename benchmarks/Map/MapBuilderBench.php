@@ -36,7 +36,7 @@ class MapBuilderBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchBuildPathFindingMap()
+    public function benchBuildPathFinderMap()
     {
         $this->mapBuilder->getMap(true);
     }
@@ -45,7 +45,7 @@ class MapBuilderBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchBuildNoPathFindingMap()
+    public function benchBuildNoPathFinderMap()
     {
         $this->mapBuilder
             ->getRouteBuilder()

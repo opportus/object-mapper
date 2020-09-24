@@ -9,26 +9,29 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\PathFinding;
+namespace Opportus\ObjectMapper\PathFinder;
 
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 
 /**
- * The no path finding.
+ * The path finder interface.
  *
- * @package Opportus\ObjectMapper\PathFinding
+ * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class NoPathFinding implements PathFindingInterface
+interface PathFinderInterface
 {
     /**
-     * {@inheritdoc}
+     * Gets the routes, each connecting a source point to a target point.
+     *
+     * @param Source $source
+     * @param Target $target
+     * @return RouteCollection
+     * @throws InvalidOperationException
      */
-    public function getRoutes(Source $source, Target $target): RouteCollection
-    {
-        return new RouteCollection();
-    }
+    public function getRoutes(Source $source, Target $target): RouteCollection;
 }

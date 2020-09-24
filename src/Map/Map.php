@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -28,9 +28,9 @@ use Opportus\ObjectMapper\Target;
 final class Map
 {
     /**
-     * @var PathFindingInterface $pathFinding
+     * @var PathFinderInterface $pathFinder
      */
-    private $pathFinding;
+    private $pathFinder;
 
     /**
      * @var RouteCollection $routes
@@ -40,14 +40,14 @@ final class Map
     /**
      * Constructs the map.
      *
-     * @param PathFindingInterface $pathFinding
+     * @param PathFinderInterface $pathFinder
      * @param null|RouteCollection $routes
      */
     public function __construct(
-        PathFindingInterface $pathFinding,
+        PathFinderInterface $pathFinder,
         ?RouteCollection $routes = null
     ) {
-        $this->pathFinding = $pathFinding;
+        $this->pathFinder = $pathFinder;
 
         $this->routes = $routes ?? new RouteCollection();
     }
@@ -66,7 +66,7 @@ final class Map
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {
-        $routes = $this->pathFinding
+        $routes = $this->pathFinder
             ->getRoutes($source, $target)->toArray();
 
         foreach ($this->routes as $route) {
@@ -89,12 +89,12 @@ final class Map
     }
 
     /**
-     * Gets the Fully Qualified Name of the path finding.
+     * Gets the Fully Qualified Name of the path finder.
      *
      * @return string
      */
-    public function getPathFindingFqn(): string
+    public function getPathFinderFqn(): string
     {
-        return \get_class($this->pathFinding);
+        return \get_class($this->pathFinder);
     }
 }

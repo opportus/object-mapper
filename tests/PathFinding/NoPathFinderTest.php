@@ -9,41 +9,41 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\Tests\PathFinding;
+namespace Opportus\ObjectMapper\Tests\PathFinder;
 
-use Opportus\ObjectMapper\PathFinding\NoPathFinding;
-use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\PathFinder\NoPathFinder;
+use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
- * The no path finding test.
+ * The no path finder test.
  *
- * @package Opportus\ObjectMapper\Tests\PathFinding
+ * @package Opportus\ObjectMapper\Tests\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class NoPathFindingTest extends FinalBypassTestCase
+class NoPathFinderTest extends FinalBypassTestCase
 {
     public function testConstruct(): void
     {
-        $strategy = new NoPathFinding();
+        $strategy = new NoPathFinder();
 
         static::assertInstanceOf(
-            NoPathFinding::class,
+            NoPathFinder::class,
             $strategy
         );
         static::assertInstanceOf(
-            PathFindingInterface::class,
+            PathFinderInterface::class,
             $strategy
         );
     }
 
     public function testGetRoutes(): void
     {
-        $strategy = new NoPathFinding();
+        $strategy = new NoPathFinder();
         $source = $this->buildSource();
         $target = $this->buildTarget();
 

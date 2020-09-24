@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\PathFinding;
+namespace Opportus\ObjectMapper\PathFinder;
 
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -21,13 +21,13 @@ use ReflectionProperty;
 use Reflector;
 
 /**
- * The default dynamic path finding.
+ * The default dynamic path finder.
  *
- * @package Opportus\ObjectMapper\PathFinding
+ * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class DynamicPathFinding implements PathFindingInterface
+final class DynamicPathFinder implements PathFinderInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder
@@ -35,7 +35,7 @@ final class DynamicPathFinding implements PathFindingInterface
     private $routeBuilder;
 
     /**
-     * Constructs the default dynamic path finding strategy.
+     * Constructs the default dynamic path finder.
      *
      * @param RouteBuilderInterface $routeBuilder
      */

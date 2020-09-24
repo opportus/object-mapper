@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -49,13 +49,13 @@ interface MapBuilderInterface
     public function addRoutes(RouteCollection $routes): MapBuilderInterface;
 
     /**
-     * Sets the pathfinding.
+     * Sets the pathfinder.
      *
-     * @param null|PathFindingInterface $pathFinding
+     * @param null|PathFinderInterface $pathFinder
      * @return MapBuilderInterface
      */
-    public function setPathFinding(
-        ?PathFindingInterface $pathFinding = null
+    public function setPathFinder(
+        ?PathFinderInterface $pathFinder = null
     ): MapBuilderInterface;
 
     /**

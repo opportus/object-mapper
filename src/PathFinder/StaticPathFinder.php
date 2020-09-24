@@ -9,7 +9,7 @@
  * that was distributed with this source code.
  */
 
-namespace Opportus\ObjectMapper\PathFinding;
+namespace Opportus\ObjectMapper\PathFinder;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
@@ -24,13 +24,13 @@ use ReflectionProperty;
 use Reflector;
 
 /**
- * The default static path finding.
+ * The default static path finder.
  *
- * @package Opportus\ObjectMapper\PathFinding
+ * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class StaticPathFinding implements PathFindingInterface
+final class StaticPathFinder implements PathFinderInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder
@@ -38,7 +38,7 @@ final class StaticPathFinding implements PathFindingInterface
     private $routeBuilder;
 
     /**
-     * Constructs the default path finding strategy.
+     * Constructs the default path finder strategy.
      *
      * @param RouteBuilderInterface $routeBuilder
      */

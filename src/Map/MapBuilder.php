@@ -11,9 +11,9 @@
 
 namespace Opportus\ObjectMapper\Map;
 
-use Opportus\ObjectMapper\PathFinding\NoPathFinding;
-use Opportus\ObjectMapper\PathFinding\StaticPathFinding;
-use Opportus\ObjectMapper\PathFinding\PathFindingInterface;
+use Opportus\ObjectMapper\PathFinder\NoPathFinder;
+use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
+use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -38,25 +38,25 @@ final class MapBuilder implements MapBuilderInterface
     private $routes;
 
     /**
-     * @var null|PathFinding
+     * @var null|PathFinder
      */
-    private $pathFinding;
+    private $pathFinder;
 
     /**
      * Constructs the map builder.
      *
      * @param RouteBuilderInterface $routeBuilder
      * @param null|RouteCollection $routes
-     * @param null|PathFindingInterface $pathFinding
+     * @param null|PathFinderInterface $pathFinder
      */
     public function __construct(
         RouteBuilderInterface $routeBuilder,
         ?RouteCollection $routes = null,
-        ?PathFindingInterface $pathFinding = null
+        ?PathFinderInterface $pathFinder = null
     ) {
         $this->routeBuilder = $routeBuilder;
         $this->routes = $routes ?? new RouteCollection();
-        $this->pathFinding = $pathFinding;
+        $this->pathFinder = $pathFinder;
     }
 
     /**
@@ -79,7 +79,7 @@ final class MapBuilder implements MapBuilderInterface
         return new self(
             $this->routeBuilder,
             new RouteCollection($routes),
-            $this->pathFinding
+            $this->pathFinder
         );
     }
 
@@ -93,22 +93,22 @@ final class MapBuilder implements MapBuilderInterface
         return new self(
             $this->routeBuilder,
             new RouteCollection($routes),
-            $this->pathFinding
+            $this->pathFinder
         );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setPathFinding(
-        ?PathFindingInterface $pathFinding = null
+    public function setPathFinder(
+        ?PathFinderInterface $pathFinder = null
     ): MapBuilderInterface {
-        $pathFinding = $pathFinding ?? new StaticPathFinding($this->routeBuilder);
+        $pathFinder = $pathFinder ?? new StaticPathFinder($this->routeBuilder);
 
         return new self(
             $this->routeBuilder,
             $this->routes,
-            $pathFinding
+            $pathFinder
         );
     }
 
@@ -117,8 +117,8 @@ final class MapBuilder implements MapBuilderInterface
      */
     public function getMap(): Map
     {
-        $pathFinding = $this->pathFinding ?? new NoPathFinding();
+        $pathFinder = $this->pathFinder ?? new NoPathFinder();
 
-        return new Map($pathFinding, $this->routes);
+        return new Map($pathFinder, $this->routes);
     }
 }

@@ -29,13 +29,13 @@ use PhpBench\Benchmark\Metadata\Annotations\Revs;
  */
 class MapBench
 {
-    private $pathFindingMap;
-    private $pathFindingSource;
-    private $pathFindingTarget;
+    private $pathFinderMap;
+    private $pathFinderSource;
+    private $pathFinderTarget;
 
-    private $noPathFindingMap;
-    private $noPathFindingSource;
-    private $noPathFindingTarget;
+    private $noPathFinderMap;
+    private $noPathFinderSource;
+    private $noPathFinderTarget;
 
     public function __construct()
     {
@@ -46,14 +46,14 @@ class MapBench
         $source = new BenchObject(1);
         $source->setB(11);
 
-        $this->pathFindingMap = $mapBuilder
-            ->setPathFinding()
+        $this->pathFinderMap = $mapBuilder
+            ->setPathFinder()
             ->getMap();
 
-        $this->pathFindingSource = new Source($source);
-        $this->pathFindingTarget = new Target(BenchObject::class);
+        $this->pathFinderSource = new Source($source);
+        $this->pathFinderTarget = new Target(BenchObject::class);
 
-        $this->noPathFindingMap = $mapBuilder
+        $this->noPathFinderMap = $mapBuilder
             ->getRouteBuilder()
                 ->setStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class))
                 ->setStaticTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
@@ -64,19 +64,19 @@ class MapBench
                 ->getMapBuilder()
             ->getMap();
 
-        $this->noPathFindingSource = new Source($source);
-        $this->noPathFindingTarget = new Target(BenchObject::class);
+        $this->noPathFinderSource = new Source($source);
+        $this->noPathFinderTarget = new Target(BenchObject::class);
     }
 
     /**
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchGetRoutesWithPathFinding()
+    public function benchGetRoutesWithPathFinder()
     {
-        $this->pathFindingMap->getRoutes(
-            $this->pathFindingSource,
-            $this->pathFindingTarget
+        $this->pathFinderMap->getRoutes(
+            $this->pathFinderSource,
+            $this->pathFinderTarget
         );
     }
 
@@ -84,11 +84,11 @@ class MapBench
      * @Revs(1000)
      * @Iterations(10)
      */
-    public function benchGetRoutesWithNoPathFinding()
+    public function benchGetRoutesWithNoPathFinder()
     {
-        $this->noPathFindingMap->getRoutes(
-            $this->noPathFindingSource,
-            $this->noPathFindingTarget
+        $this->noPathFinderMap->getRoutes(
+            $this->noPathFinderSource,
+            $this->noPathFinderTarget
         );
     }
 }
