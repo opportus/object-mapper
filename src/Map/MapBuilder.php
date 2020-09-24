@@ -11,8 +11,10 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\PathFinder\DynamicPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
+use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -111,6 +113,22 @@ final class MapBuilder implements MapBuilderInterface
             $this->routes,
             new PathFinderCollection($pathFinders)
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addStaticPathFinder(): MapBuilderInterface
+    {
+        return $this->addPathFinder(new StaticPathFinder($this->routeBuilder));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addDynamicPathFinder(): MapBuilderInterface
+    {
+        return $this->addPathFinder(new DynamicPathFinder($this->routeBuilder));
     }
 
     /**

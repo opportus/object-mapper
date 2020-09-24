@@ -29,7 +29,6 @@ use PhpBench\Benchmark\Metadata\Annotations\Revs;
 class ObjectMapperBench
 {
     private $objectMapper;
-    private $pathFinderMap;
     private $noPathFinderMap;
     private $source;
 
@@ -41,10 +40,6 @@ class ObjectMapperBench
         $objectMapper = new ObjectMapper($mapBuilder);
 
         $this->objectMapper = $objectMapper;
-
-        $this->pathFinderMap = $mapBuilder
-            ->addPathFinder(new StaticPathFinder($routeBuilder))
-            ->getMap();
 
         $this->noPathFinderMap = $mapBuilder
             ->getRouteBuilder()
@@ -69,8 +64,7 @@ class ObjectMapperBench
     {
         $this->objectMapper->map(
             $this->source,
-            BenchObject::class,
-            $this->pathFinderMap
+            BenchObject::class
         );
     }
 

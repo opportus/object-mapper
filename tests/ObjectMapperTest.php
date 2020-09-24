@@ -60,7 +60,7 @@ class ObjectMapperTest extends FinalBypassTestCase
                 ->setDynamicTargetPoint(\sprintf('%s.setD().$dp', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
                 ->getMapBuilder()
-            ->addPathFinder(new StaticPathFinder($routeBuilder))
+            ->addStaticPathFinder()
             ->getMap();
 
         $target = $objectMapper->map(
@@ -88,7 +88,7 @@ class ObjectMapperTest extends FinalBypassTestCase
         static::assertEquals(11, $target->getB());
 
         $map = $mapBuilder
-            ->addPathFinder(new DynamicPathFinder($routeBuilder))
+            ->addDynamicPathFinder()
             ->getMap();
 
         $target = $objectMapper->map(
