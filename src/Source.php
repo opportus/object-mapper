@@ -53,6 +53,16 @@ final class Source
     }
 
     /**
+     * Gets the source Fully Qualified Name.
+     *
+     * @return string
+     */
+    public function getFqn(): string
+    {
+        return $this->reflection->getName();
+    }
+
+    /**
      * Gets the source reflection.
      *
      * @return ReflectionClass

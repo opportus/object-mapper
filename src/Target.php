@@ -85,6 +85,16 @@ final class Target
     }
 
     /**
+     * Gets the target Fully Qualified Name.
+     *
+     * @return string
+     */
+    public function getFqn(): string
+    {
+        return $this->reflection->getName();
+    }
+
+    /**
      * Gets the target reflection.
      *
      * @return ReflectionClass
