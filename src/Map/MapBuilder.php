@@ -47,12 +47,12 @@ final class MapBuilder implements MapBuilderInterface
      *
      * @param RouteBuilderInterface $routeBuilder
      * @param null|RouteCollection $routes
-     * @param null|PathFinding $pathFinding
+     * @param null|PathFindingInterface $pathFinding
      */
     public function __construct(
         RouteBuilderInterface $routeBuilder,
         ?RouteCollection $routes = null,
-        ?PathFinding $pathFinding = null
+        ?PathFindingInterface $pathFinding = null
     ) {
         $this->routeBuilder = $routeBuilder;
         $this->routes = $routes ?? new RouteCollection();
