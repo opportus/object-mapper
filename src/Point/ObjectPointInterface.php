@@ -28,13 +28,6 @@ interface ObjectPointInterface
     public function getFqn(): string;
 
     /**
-     * Gets the Fully Qualified Name of the class of the point.
-     *
-     * @return string
-     */
-    public function getClassFqn(): string;
-
-    /**
      * Gets the name of the point.
      *
      * @return string

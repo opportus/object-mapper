@@ -23,7 +23,7 @@ use ReflectionMethod;
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class MethodStaticSourcePoint
-extends ObjectPoint
+extends SourcePoint
 implements StaticSourcePointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
@@ -46,10 +46,10 @@ implements StaticSourcePointInterface
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        [$matchedFqn, $matchedClassName, $matchedName] = $matches;
+        [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
 
         try {
-            new ReflectionMethod($matchedClassName, $matchedName);
+            new ReflectionMethod($matchedSourceFqn, $matchedName);
         } catch (ReflectionException $exception) {
             $message = \sprintf(
                 '%s is not a method static source point. %s.',
@@ -61,7 +61,7 @@ implements StaticSourcePointInterface
         }
 
         $this->fqn = $matchedFqn;
-        $this->classFqn = $matchedClassName;
+        $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
     }
 }

@@ -102,7 +102,7 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
             $parameterName
         );
 
-        static::assertSame($className, $parameterPoint->getClassFqn());
+        static::assertSame($className, $parameterPoint->getTargetFqn());
     }
 
     /**

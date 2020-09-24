@@ -12,18 +12,24 @@
 namespace Opportus\ObjectMapper\Point;
 
 /**
- * The source point interface.
+ * The target point.
  *
  * @package Opportus\ObjectMapper\Point
- * @author Clément Cazaud <clement.cazaud@gmail.com>
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-interface SourcePointInterface extends ObjectPointInterface
+abstract class TargetPoint extends ObjectPoint implements TargetPointInterface
 {
     /**
-     * Gets the Fully Qualified Name of the source.
-     * 
-     * @return string
+     * @var string $targetFqn
      */
-    public function getSourceFqn(): string;
+    protected $targetFqn;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargetFqn(): string
+    {
+        return $this->targetFqn;
+    }
 }

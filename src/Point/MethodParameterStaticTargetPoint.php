@@ -23,7 +23,7 @@ use ReflectionParameter;
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class MethodParameterStaticTargetPoint
-extends ObjectPoint
+extends TargetPoint
 implements StaticTargetPointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
@@ -53,7 +53,7 @@ implements StaticTargetPointInterface
 
         [
             $matchedFqn,
-            $matchedClassName,
+            $matchedTargetFqn,
             $matchedMethodName,
             $matchedName
         ] = $matches;
@@ -61,7 +61,7 @@ implements StaticTargetPointInterface
         try {
             /** @noinspection PhpParamsInspection */
             new ReflectionParameter(
-                [$matchedClassName, $matchedMethodName],
+                [$matchedTargetFqn, $matchedMethodName],
                 $matchedName
             );
         } catch (ReflectionException $exception) {
@@ -75,7 +75,7 @@ implements StaticTargetPointInterface
         }
 
         $this->fqn = $matchedFqn;
-        $this->classFqn = $matchedClassName;
+        $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
         $this->methodName = $matchedMethodName;
     }

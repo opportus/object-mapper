@@ -137,7 +137,7 @@ final class Target
      */
     public function hasStaticPoint(StaticTargetPointInterface $point): bool
     {
-        return $this->reflection->getName() === $point->getClassFqn();
+        return $this->reflection->getName() === $point->getTargetFqn();
     }
 
     /**

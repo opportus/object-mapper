@@ -26,11 +26,6 @@ abstract class ObjectPoint implements ObjectPointInterface
     protected $fqn;
 
     /**
-     * @var string $classFqn
-     */
-    protected $classFqn;
-
-    /**
      * @var string $name
      */
     protected $name;
@@ -41,14 +36,6 @@ abstract class ObjectPoint implements ObjectPointInterface
     public function getFqn(): string
     {
         return $this->fqn;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClassFqn(): string
-    {
-        return $this->classFqn;
     }
 
     /**

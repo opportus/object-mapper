@@ -23,7 +23,7 @@ use ReflectionProperty;
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class PropertyStaticTargetPoint
-extends ObjectPoint
+extends TargetPoint
 implements StaticTargetPointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
@@ -46,11 +46,11 @@ implements StaticTargetPointInterface
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        [$matchedFqn, $matchedClassName, $matchedName] = $matches;
+        [$matchedFqn, $matchedTargetFqn, $matchedName] = $matches;
 
         try {
             new ReflectionProperty(
-                $matchedClassName,
+                $matchedTargetFqn,
                 $matchedName
             );
         } catch (ReflectionException $exception) {
@@ -64,7 +64,7 @@ implements StaticTargetPointInterface
         }
 
         $this->fqn = $matchedFqn;
-        $this->classFqn = $matchedClassName;
+        $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
     }
 }

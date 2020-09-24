@@ -20,4 +20,10 @@ namespace Opportus\ObjectMapper\Point;
  */
 interface TargetPointInterface extends ObjectPointInterface
 {
+    /**
+     * Gets the Fully Qualified Name of the target.
+     * 
+     * @return string
+     */
+    public function getTargetFqn(): string;
 }

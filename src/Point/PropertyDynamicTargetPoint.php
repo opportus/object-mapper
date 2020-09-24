@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
 final class PropertyDynamicTargetPoint
-extends ObjectPoint
+extends TargetPoint
 implements DynamicTargetPointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
@@ -44,10 +44,10 @@ implements DynamicTargetPointInterface
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        [$matchedFqn, $matchedClassName, $matchedName] = $matches;
+        [$matchedFqn, $matchedTargetFqn, $matchedName] = $matches;
 
         $this->fqn = $matchedFqn;
-        $this->classFqn = $matchedClassName;
+        $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
     }
 }

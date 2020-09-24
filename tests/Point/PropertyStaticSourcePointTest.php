@@ -77,7 +77,7 @@ class PropertyStaticSourcePointTest extends FinalBypassTestCase
     ): void {
         $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
 
-        static::assertSame($className, $propertyPoint->getClassFqn());
+        static::assertSame($className, $propertyPoint->getSourceFqn());
     }
 
     /**

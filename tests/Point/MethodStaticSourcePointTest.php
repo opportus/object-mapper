@@ -75,7 +75,7 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
     {
         $methodPoint = $this->buildMethodPoint($className, $methodName);
 
-        static::assertSame($className, $methodPoint->getClassFqn());
+        static::assertSame($className, $methodPoint->getSourceFqn());
     }
 
     /**
