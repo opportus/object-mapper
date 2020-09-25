@@ -90,7 +90,7 @@ final class Source
      */
     public function hasStaticPoint(StaticSourcePointInterface $point): bool
     {
-        return $this->reflection->getName() === $point->getSourceFqn();
+        return $this->getFqn() === $point->getSourceFqn();
     }
 
     /**
