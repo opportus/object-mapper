@@ -56,7 +56,7 @@ final class Map implements MapInterface
      * added routes. In case of duplicate between manually and automatically
      * added routes, manually added routes take precedence over automatically
      * added routes.
-     * 
+     *
      * {@inheritdoc}
      */
     public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
