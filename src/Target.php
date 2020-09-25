@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper;
 
+use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
@@ -115,10 +116,10 @@ final class Target
         if ($this->hasPointValues()) {
             try {
                 return $this->operateInstance(
-                    $this->instance,
-                    $this->pointValues
+                    $this->pointValues,
+                    $this->instance
                 );
-            } catch (ReflectionException $exception) {
+            } catch (Exception $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
                     $exception->getMessage()
@@ -208,14 +209,14 @@ final class Target
     /**
      * Creates/updates the target instance.
      *
-     * @param null|object $instance
      * @param array $pointValues
+     * @param null|object $instance
      * @return object
      * @throws ReflectionException
      */
     private function operateInstance(
-        ?object $instance,
-        array $pointValues
+        array $pointValues,
+        ?object $instance
     ): object {
         if (null === $instance) {
             if (isset($pointValues['static_method_parameters']['__construct'])) {
@@ -247,9 +248,6 @@ final class Target
             $methodName =>
             $methodArguments
         ) {
-            if ('__construct' === $methodName) {
-                continue;
-            }
 
             $instance->{$methodName}(...$methodArguments);
         }
