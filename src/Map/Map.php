@@ -25,7 +25,7 @@ use Opportus\ObjectMapper\TargetInterface;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Map implements MapInterface
+class Map implements MapInterface
 {
     /**
      * @var PathFinderCollection $pathFinders

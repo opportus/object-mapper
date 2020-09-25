@@ -30,7 +30,7 @@ use Reflector;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class StaticPathFinder implements PathFinderInterface
+class StaticPathFinder implements PathFinderInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder

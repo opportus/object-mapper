@@ -30,7 +30,7 @@ use ReflectionException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Target implements TargetInterface
+class Target implements TargetInterface
 {
     /**
      * @var ReflectionClass $reflection

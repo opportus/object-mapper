@@ -26,7 +26,7 @@ use Opportus\ObjectMapper\Route\RouteInterface;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MapBuilder implements MapBuilderInterface
+class MapBuilder implements MapBuilderInterface
 {
     /**
      * @var RouteBuilderInterface $routeBuilder

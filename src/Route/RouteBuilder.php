@@ -26,7 +26,7 @@ use Opportus\ObjectMapper\Point\TargetPointInterface;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class RouteBuilder implements RouteBuilderInterface
+class RouteBuilder implements RouteBuilderInterface
 {
     /**
      * @var PointFactoryInterface $pointFactory

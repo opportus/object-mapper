@@ -23,7 +23,7 @@ use Opportus\ObjectMapper\Point\TargetPointInterface;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Route implements RouteInterface
+class Route implements RouteInterface
 {
     /**
      * @var string $fqn
