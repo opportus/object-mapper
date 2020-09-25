@@ -20,7 +20,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class PointFactory implements PointFactoryInterface
+class PointFactory implements PointFactoryInterface
 {
     /**
      * {@inheritdoc}
