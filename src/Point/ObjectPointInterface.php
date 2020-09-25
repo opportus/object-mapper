@@ -21,6 +21,13 @@ namespace Opportus\ObjectMapper\Point;
 interface ObjectPointInterface
 {
     /**
+     * Gets the Fully Qualified Name regex pattern of the point.
+     *
+     * @return string
+     */
+    public static function getFqnRegexPattern(): string;
+
+    /**
      * Gets the Fully Qualified Name of the point.
      *
      * @return string

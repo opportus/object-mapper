@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  */
 final class PropertyDynamicSourcePoint extends SourcePoint implements DynamicSourcePointInterface
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property dynamic source point.
@@ -32,11 +32,11 @@ final class PropertyDynamicSourcePoint extends SourcePoint implements DynamicSou
      */
     public function __construct(string $fqn)
     {
-        if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
+        if (!\preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
                 '%s is not a property dynamic source point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                self::FQN_SYNTAX_PATTERN
+                self::FQN_REGEX_PATTERN
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -47,5 +47,13 @@ final class PropertyDynamicSourcePoint extends SourcePoint implements DynamicSou
         $this->fqn = $matchedFqn;
         $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getFqnRegexPattern(): string
+    {
+        return self::FQN_REGEX_PATTERN;
     }
 }

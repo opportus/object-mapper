@@ -24,7 +24,7 @@ use ReflectionParameter;
  */
 final class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTargetPointInterface
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * @var string $methodName
@@ -39,11 +39,11 @@ final class MethodParameterStaticTargetPoint extends TargetPoint implements Stat
      */
     public function __construct(string $fqn)
     {
-        if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
+        if (!\preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
                 '%s is not a method parameter static target point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                self::FQN_SYNTAX_PATTERN
+                self::FQN_REGEX_PATTERN
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -86,5 +86,13 @@ final class MethodParameterStaticTargetPoint extends TargetPoint implements Stat
     public function getMethodName(): string
     {
         return $this->methodName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getFqnRegexPattern(): string
+    {
+        return self::FQN_REGEX_PATTERN;
     }
 }

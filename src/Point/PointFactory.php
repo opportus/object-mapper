@@ -28,12 +28,12 @@ class PointFactory implements PointFactoryInterface
     public function createStaticSourcePoint(string $pointFqn): StaticSourcePointInterface
     {
         if (\preg_match(
-            MethodStaticSourcePoint::FQN_SYNTAX_PATTERN,
+            MethodStaticSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new MethodStaticSourcePoint($pointFqn);
         } elseif (\preg_match(
-            PropertyStaticSourcePoint::FQN_SYNTAX_PATTERN,
+            PropertyStaticSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new PropertyStaticSourcePoint($pointFqn);
@@ -50,12 +50,12 @@ class PointFactory implements PointFactoryInterface
     public function createStaticTargetPoint(string $pointFqn): StaticTargetPointInterface
     {
         if (\preg_match(
-            MethodParameterStaticTargetPoint::FQN_SYNTAX_PATTERN,
+            MethodParameterStaticTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new MethodParameterStaticTargetPoint($pointFqn);
         } elseif (\preg_match(
-            PropertyStaticTargetPoint::FQN_SYNTAX_PATTERN,
+            PropertyStaticTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new PropertyStaticTargetPoint($pointFqn);
@@ -72,12 +72,12 @@ class PointFactory implements PointFactoryInterface
     public function createDynamicSourcePoint(string $pointFqn): DynamicSourcePointInterface
     {
         if (\preg_match(
-            MethodDynamicSourcePoint::FQN_SYNTAX_PATTERN,
+            MethodDynamicSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new MethodDynamicSourcePoint($pointFqn);
         } elseif (\preg_match(
-            PropertyDynamicSourcePoint::FQN_SYNTAX_PATTERN,
+            PropertyDynamicSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new PropertyDynamicSourcePoint($pointFqn);
@@ -94,12 +94,12 @@ class PointFactory implements PointFactoryInterface
     public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface
     {
         if (\preg_match(
-            MethodParameterDynamicTargetPoint::FQN_SYNTAX_PATTERN,
+            MethodParameterDynamicTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new MethodParameterDynamicTargetPoint($pointFqn);
         } elseif (\preg_match(
-            PropertyDynamicTargetPoint::FQN_SYNTAX_PATTERN,
+            PropertyDynamicTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
             return new PropertyDynamicTargetPoint($pointFqn);

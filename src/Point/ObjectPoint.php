@@ -33,6 +33,11 @@ abstract class ObjectPoint implements ObjectPointInterface
     /**
      * {@inheritdoc}
      */
+    abstract public static function getFqnRegexPattern(): string;
+
+    /**
+     * {@inheritdoc}
+     */
     public function getFqn(): string
     {
         return $this->fqn;

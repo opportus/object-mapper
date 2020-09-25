@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  */
 final class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTargetPointInterface
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property dynamic target point.
@@ -32,11 +32,11 @@ final class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTar
      */
     public function __construct(string $fqn)
     {
-        if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
+        if (!\preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
                 '%s is not a property dynamic target point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                self::FQN_SYNTAX_PATTERN
+                self::FQN_REGEX_PATTERN
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -47,5 +47,13 @@ final class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTar
         $this->fqn = $matchedFqn;
         $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getFqnRegexPattern(): string
+    {
+        return self::FQN_REGEX_PATTERN;
     }
 }

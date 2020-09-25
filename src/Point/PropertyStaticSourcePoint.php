@@ -24,7 +24,7 @@ use ReflectionProperty;
  */
 final class PropertyStaticSourcePoint extends SourcePoint implements StaticSourcePointInterface
 {
-    public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property static source point.
@@ -34,11 +34,11 @@ final class PropertyStaticSourcePoint extends SourcePoint implements StaticSourc
      */
     public function __construct(string $fqn)
     {
-        if (!\preg_match(self::FQN_SYNTAX_PATTERN, $fqn, $matches)) {
+        if (!\preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
                 '%s is not a property static source point as FQN of such is expected to have the following syntax: %s.',
                 $fqn,
-                self::FQN_SYNTAX_PATTERN
+                self::FQN_REGEX_PATTERN
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -64,5 +64,13 @@ final class PropertyStaticSourcePoint extends SourcePoint implements StaticSourc
         $this->fqn = $matchedFqn;
         $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getFqnRegexPattern(): string
+    {
+        return self::FQN_REGEX_PATTERN;
     }
 }
