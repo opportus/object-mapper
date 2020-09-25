@@ -12,8 +12,8 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\Route\RouteCollection;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The map interface.
@@ -27,9 +27,9 @@ interface MapInterface
     /**
      * Gets the routes connecting the source points with the target points.
      *
-     * @param Source $source
-     * @param Target $target
+     * @param SourceInterface $source
+     * @param TargetInterface $target
      * @return RouteCollection
      */
-    public function getRoutes(Source $source, Target $target): RouteCollection;
+    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection;
 }

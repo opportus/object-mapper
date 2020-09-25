@@ -14,8 +14,8 @@ namespace Opportus\ObjectMapper\PathFinder;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -66,7 +66,7 @@ final class StaticPathFinder implements PathFinderInterface
      * - A public getter having for name `'get'.ucfirst($targetPointName)` and
      * requiring no argument (MethodObjectPoint)
      */
-    public function getRoutes(Source $source, Target $target): RouteCollection
+    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
     {
         $routes = [];
 
@@ -146,13 +146,13 @@ final class StaticPathFinder implements PathFinderInterface
     /**
      * Gets target point reflections.
      *
-     * @param Target $target
+     * @param TargetInterface $target
      * @param ReflectionClass $targetReflection
      * @return Reflector[]
      * @throws ReflectionException
      */
     private function getTargetPointReflections(
-        Target $target,
+        TargetInterface $target,
         ReflectionClass $targetReflection
     ): array {
         $methodBlackList = [];

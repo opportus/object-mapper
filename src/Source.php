@@ -29,7 +29,7 @@ use ReflectionClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Source
+final class Source implements SourceInterface
 {
     /**
      * @var ReflectionClass $reflection
@@ -53,9 +53,7 @@ final class Source
     }
 
     /**
-     * Gets the source Fully Qualified Name.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getFqn(): string
     {
@@ -63,9 +61,7 @@ final class Source
     }
 
     /**
-     * Gets the source reflection.
-     *
-     * @return ReflectionClass
+     * {@inheritdoc}
      */
     public function getReflection(): ReflectionClass
     {
@@ -73,9 +69,7 @@ final class Source
     }
 
     /**
-     * Gets the source instance.
-     *
-     * @return object
+     * {@inheritdoc}
      */
     public function getInstance(): object
     {
@@ -83,10 +77,7 @@ final class Source
     }
 
     /**
-     * Checks whether the source has the passed static point.
-     *
-     * @param StaticSourcePointInterface $point
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasStaticPoint(StaticSourcePointInterface $point): bool
     {
@@ -94,13 +85,7 @@ final class Source
     }
 
     /**
-     * Gets the value of the passed source point.
-     *
-     * @param SourcePointInterface $point
-     * @return mixed
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
-     * @noinspection PhpInconsistentReturnPointsInspection
+     * {@inheritdoc}
      */
     public function getPointValue(SourcePointInterface $point)
     {

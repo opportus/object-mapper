@@ -44,8 +44,8 @@ final class ObjectMapper implements ObjectMapperInterface
      */
     public function map(object $source, $target, ?MapInterface $map = null): ?object
     {
-        $source = ($source instanceof Source) ? $source : new Source($source);
-        $target = ($target instanceof Target) ? $target : new Target($target);
+        $source = ($source instanceof SourceInterface) ? $source : new Source($source);
+        $target = ($target instanceof TargetInterface) ? $target : new Target($target);
         $map    = $map ?? $this->mapBuilder
                 ->addStaticPathFinder()
                 ->getMap();

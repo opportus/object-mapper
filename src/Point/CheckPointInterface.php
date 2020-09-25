@@ -15,8 +15,8 @@ use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The check point interface.
@@ -33,8 +33,8 @@ interface CheckPointInterface
      * @param mixed $subject The value going to be assigned to the target point
      * @param RouteInterface $route The route which the check point is currently on
      * @param MapInterface $map The map which the route is currently on
-     * @param Source $source The source which the subject comes from
-     * @param Target $target The target which the subject goes to
+     * @param SourceInterface $source The source which the subject comes from
+     * @param TargetInterface $target The target which the subject goes to
      * @return mixed The value going to be assigned to the target point
      * @throws CheckPointSeizingException
      * @throws InvalidOperationException
@@ -43,7 +43,7 @@ interface CheckPointInterface
         $subject,
         RouteInterface $route,
         MapInterface $map,
-        Source $source,
-        Target $target
+        SourceInterface $source,
+        TargetInterface $target
     );
 }

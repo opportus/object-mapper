@@ -244,16 +244,16 @@ implementations.
 Below is described the single method of [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php):
 
 ```php
-PathFinderInterface::getRoutes(Source $source, Target $target): RouteCollection;
+PathFinderInterface::getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection;
 ```
 
 **Parameters**
 
-`$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)
-which encapsulate and represent the source to map data from.
+`$source` An instance of [`SourceInterface`](https://github.com/opportus/object-mapper/blob/master/src/SourceInterface.php)
+which encapsulate and represent the *source* to map data from.
 
-`$target` An instance of [`Target`](https://github.com/opportus/object-mapper/blob/master/src/Target.php)
-which encapsulate and represent the target to map data to.
+`$target` An instance of [`TargetInterface`](https://github.com/opportus/object-mapper/blob/master/src/TargetInterface.php)
+which encapsulate and represent the *target* to map data to.
 
 **Returns**
 
@@ -265,7 +265,7 @@ connecting the *source points* with the *target points*.
 ```php
 class MyPathFinder implements PathFinderInterface
 {
-    public function getRoutes(Source $source, Target $target): RouteCollection
+    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
     {
         $source->getReflection();
         $target->getReflection();
@@ -498,7 +498,7 @@ class ContributorView
 
 class ContributorViewHtmlTagStripper implements CheckPointInterface
 {
-    public function control($value, RouteInterface $route, MapInterface $map, Source $source, Target $target)
+    public function control($value, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
             return \strip_tags($value);
@@ -512,7 +512,7 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 {
     // ...
 
-    public function control($value, RouteInterface $route, MapInterface $map, Source $source, Target $target)
+    public function control($value, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
             return $this->markdownParser->transform($value);
@@ -543,7 +543,7 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
 
 ```php
-CheckPointInterface::control($subject, RouteInterface $route, MapInterface $map, Source $source, Target $target);
+CheckPointInterface::control($subject, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target);
 ```
 
 **Parameters**
@@ -560,10 +560,10 @@ which contain your current `CheckPointInterface` instance.
 `$map` is an instance of [`MapInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapInterface.php)
 which the *route* is on.
 
-`$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)
+`$source` An instance of [`SourceInterface`](https://github.com/opportus/object-mapper/blob/master/src/SourceInterface.php)
 which encapsulate and represent the *source* to map data from.
 
-`$target` An instance of [`Target`](https://github.com/opportus/object-mapper/blob/master/src/Target.php)
+`$target` An instance of [`TargetInterface`](https://github.com/opportus/object-mapper/blob/master/src/TargetInterface.php)
 which encapsulate and represent and wraps the *target* to map data to.
 
 **Returns**

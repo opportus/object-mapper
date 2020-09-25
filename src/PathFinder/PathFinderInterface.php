@@ -13,8 +13,8 @@ namespace Opportus\ObjectMapper\PathFinder;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Route\RouteCollection;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The path finder interface.
@@ -28,10 +28,10 @@ interface PathFinderInterface
     /**
      * Gets the routes, each connecting a source point to a target point.
      *
-     * @param Source $source
-     * @param Target $target
+     * @param SourceInterface $source
+     * @param TargetInterface $target
      * @return RouteCollection
      * @throws InvalidOperationException
      */
-    public function getRoutes(Source $source, Target $target): RouteCollection;
+    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection;
 }

@@ -20,8 +20,8 @@ use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -200,8 +200,8 @@ class CheckPointTestClass implements CheckPointInterface
         $value,
         RouteInterface $route,
         MapInterface $map,
-        Source $source,
-        Target $target
+        SourceInterface $source,
+        TargetInterface $target
     ) {
     }
 }

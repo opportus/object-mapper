@@ -30,7 +30,7 @@ use ReflectionException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Target
+final class Target implements TargetInterface
 {
     /**
      * @var ReflectionClass $reflection
@@ -86,9 +86,7 @@ final class Target
     }
 
     /**
-     * Gets the target Fully Qualified Name.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getFqn(): string
     {
@@ -96,9 +94,7 @@ final class Target
     }
 
     /**
-     * Gets the target reflection.
-     *
-     * @return ReflectionClass
+     * {@inheritdoc}
      */
     public function getReflection(): ReflectionClass
     {
@@ -106,10 +102,7 @@ final class Target
     }
 
     /**
-     * Gets the target instance.
-     *
-     * @return null|object
-     * @throws InvalidOperationException
+     * {@inheritdoc}
      */
     public function getInstance(): ?object
     {
@@ -131,9 +124,7 @@ final class Target
     }
 
     /**
-     * Checks whether the target is instantiated.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isInstantiated(): bool
     {
@@ -141,10 +132,7 @@ final class Target
     }
 
     /**
-     * Checks whether the target has the passed static point.
-     *
-     * @param StaticTargetPointInterface $point
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasStaticPoint(StaticTargetPointInterface $point): bool
     {
@@ -152,11 +140,7 @@ final class Target
     }
 
     /**
-     * Sets the value of the passed target point.
-     *
-     * @param TargetPointInterface $point
-     * @param mixed $pointValue
-     * @throws InvalidArgumentException
+     * {@inheritdoc}
      */
     public function setPointValue(TargetPointInterface $point, $pointValue)
     {

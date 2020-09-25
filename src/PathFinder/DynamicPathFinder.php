@@ -13,8 +13,8 @@ namespace Opportus\ObjectMapper\PathFinder;
 
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -47,7 +47,7 @@ final class DynamicPathFinder implements PathFinderInterface
     /**
      * {@inheritdoc}
      */
-    public function getRoutes(Source $source, Target $target): RouteCollection
+    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
     {
         $routes = [];
 

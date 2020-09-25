@@ -19,8 +19,8 @@ use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The object mapper test.
@@ -202,8 +202,8 @@ class ObjectMapperTestCheckPointClass implements CheckPointInterface
         $value,
         RouteInterface $route,
         MapInterface $map,
-        Source $source,
-        Target $target
+        SourceInterface $source,
+        TargetInterface $target
     ) {
         return 2;
     }

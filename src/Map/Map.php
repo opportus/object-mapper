@@ -15,8 +15,8 @@ use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The map.
@@ -59,7 +59,7 @@ final class Map implements MapInterface
      * 
      * {@inheritdoc}
      */
-    public function getRoutes(Source $source, Target $target): RouteCollection
+    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
     {
         $routes = [];
 
