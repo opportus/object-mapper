@@ -122,7 +122,7 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
             )],
             [\sprintf(
                 '%s.',
-                MethodStaticSourcePointTestClass::class,
+                MethodStaticSourcePointTestClass::class
             )],
 
             // Invalid reflection...
