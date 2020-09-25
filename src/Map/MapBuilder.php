@@ -134,7 +134,7 @@ final class MapBuilder implements MapBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getMap(): Map
+    public function getMap(): MapInterface
     {
         return new Map($this->pathFinders, $this->routes);
     }

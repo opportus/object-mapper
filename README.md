@@ -103,7 +103,7 @@ Mapping object to object is done via the main [`ObjectMapper`](https://github.co
 service's method described below:
 
 ```php
-ObjectMapperInterface::map(object $source, $target, ?Map $map = null): ?object;
+ObjectMapperInterface::map(object $source, $target, ?MapInterface $map = null): ?object;
 ```
 
 **Parameters**
@@ -113,7 +113,7 @@ ObjectMapperInterface::map(object $source, $target, ?Map $map = null): ?object;
 `$target` must be an `object` (or a `string` being the Fully Qualified Name of a
 class to instantiate and) to map data to.
 
-`$map` must be a `null` or an instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
+`$map` must be a `null` or an instance of [`MapInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapInterface.php).
 If it is `null`, the method builds and uses a map composed of the default
  [`PathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php)
  strategy.
@@ -498,7 +498,7 @@ class ContributorView
 
 class ContributorViewHtmlTagStripper implements CheckPointInterface
 {
-    public function control($value, RouteInterface $route, Map $map, Source $source, Target $target)
+    public function control($value, RouteInterface $route, MapInterface $map, Source $source, Target $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
             return \strip_tags($value);
@@ -512,7 +512,7 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 {
     // ...
 
-    public function control($value, RouteInterface $route, Map $map, Source $source, Target $target)
+    public function control($value, RouteInterface $route, MapInterface $map, Source $source, Target $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
             return $this->markdownParser->transform($value);
@@ -543,7 +543,7 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
 
 ```php
-CheckPointInterface::control($subject, RouteInterface $route, Map $map, Source $source, Target $target);
+CheckPointInterface::control($subject, RouteInterface $route, MapInterface $map, Source $source, Target $target);
 ```
 
 **Parameters**
@@ -557,7 +557,7 @@ the `$subject` comes from, the *target point* which the `$subject` goes to, and 
 [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php)
 which contain your current `CheckPointInterface` instance.
 
-`$map` is the instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php)
+`$map` is an instance of [`MapInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapInterface.php)
 which the *route* is on.
 
 `$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)
@@ -572,7 +572,7 @@ A `mixed` value to get assigned to the *target point*.
 
 ### Recursion
 
-Although a *recursion* dedicated feature may come later, you can implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php)
+Although a *recursion* dedicated feature may come later, you can implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php)
 such as [introduced previously](#check-point) to recursively map a
 *source point* to a *target point*. For example:
 

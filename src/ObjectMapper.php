@@ -12,7 +12,7 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
-use Opportus\ObjectMapper\Map\Map;
+use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 
 /**
@@ -42,7 +42,7 @@ final class ObjectMapper implements ObjectMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function map(object $source, $target, ?Map $map = null): ?object
+    public function map(object $source, $target, ?MapInterface $map = null): ?object
     {
         $source = ($source instanceof Source) ? $source : new Source($source);
         $target = ($target instanceof Target) ? $target : new Target($target);

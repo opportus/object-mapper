@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Map\Map;
+use Opportus\ObjectMapper\Map\MapInterface;
 
 /**
  * The object mapper interface.
@@ -28,11 +28,11 @@ interface ObjectMapperInterface
      * @param object $source The instance to map data from
      * @param object|string $target The instance (or the Fully Qualified Name of
      *                              the class to instantiate and) to map data to
-     * @param null|Map $map The instance of Map. If it is null,
+     * @param null|MapInterface $map The instance of Map. If it is null,
      *                      the method builds and uses a map composed of
      *                      the default `PathFindingStrategy`
      * @return null|object The instantiated and/or updated target or null if
      *                     the map has no route
      */
-    public function map(object $source, $target, ?Map $map = null): ?object;
+    public function map(object $source, $target, ?MapInterface $map = null): ?object;
 }

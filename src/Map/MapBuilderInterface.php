@@ -75,7 +75,7 @@ interface MapBuilderInterface
     /**
      * Gets the map.
      *
-     * @return Map
+     * @return MapInterface
      */
-    public function getMap(): Map;
+    public function getMap(): MapInterface;
 }

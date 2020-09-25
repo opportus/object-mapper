@@ -25,7 +25,7 @@ use Opportus\ObjectMapper\Target;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Map
+final class Map implements MapInterface
 {
     /**
      * @var PathFinderCollection $pathFinders
@@ -52,16 +52,12 @@ final class Map
     }
 
     /**
-     * Gets the routes connecting the source points with the target points.
-     *
      * Combines manually/statically added routes with automatically/dynamically
      * added routes. In case of duplicate between manually and automatically
      * added routes, manually added routes take precedence over automatically
      * added routes.
-     *
-     * @param Source $source
-     * @param Target $target
-     * @return RouteCollection
+     * 
+     * {@inheritdoc}
      */
     public function getRoutes(Source $source, Target $target): RouteCollection
     {

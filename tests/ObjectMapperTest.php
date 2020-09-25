@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests;
 
-use Opportus\ObjectMapper\Map\Map;
+use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
 use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
@@ -201,7 +201,7 @@ class ObjectMapperTestCheckPointClass implements CheckPointInterface
     public function control(
         $value,
         RouteInterface $route,
-        Map $map,
+        MapInterface $map,
         Source $source,
         Target $target
     ) {
