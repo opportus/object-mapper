@@ -89,10 +89,10 @@ interface RouteBuilderInterface
     /**
      * Gets the built route.
      *
-     * @return Route
+     * @return RouteInterface
      * @throws InvalidOperationException
      */
-    public function getRoute(): Route;
+    public function getRoute(): RouteInterface;
 
     /**
      * Adds the built route to the map builder.

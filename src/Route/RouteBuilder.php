@@ -178,7 +178,7 @@ final class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function getRoute(): Route
+    public function getRoute(): RouteInterface
     {
         if (null === $this->sourcePoint || null === $this->targetPoint) {
             throw new InvalidOperationException(

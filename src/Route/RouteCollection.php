@@ -26,7 +26,7 @@ final class RouteCollection extends ImmutableCollection
     /**
      * Constructs the route collection.
      *
-     * @param Route[] $routes
+     * @param RouteInterface[] $routes
      * @throws InvalidArgumentException
      */
     public function __construct(array $routes = [])
@@ -34,10 +34,10 @@ final class RouteCollection extends ImmutableCollection
         $indexedRoutes = [];
 
         foreach ($routes as $route) {
-            if (!\is_object($route) || !$route instanceof Route) {
+            if (!\is_object($route) || !$route instanceof RouteInterface) {
                 $message = \sprintf(
                     'The array must contain exclusively elements of type %s, got an element of type %s.',
-                    Route::class,
+                    RouteInterface::class,
                     \is_object($route) ? \get_class($route) : \gettype($route)
                 );
 

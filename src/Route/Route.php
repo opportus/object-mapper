@@ -23,7 +23,7 @@ use Opportus\ObjectMapper\Point\TargetPointInterface;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class Route
+final class Route implements RouteInterface
 {
     /**
      * @var string $fqn
@@ -69,9 +69,7 @@ final class Route
     }
 
     /**
-     * Gets the Fully Qualified Name of the route.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getFqn(): string
     {
@@ -79,9 +77,7 @@ final class Route
     }
 
     /**
-     * Get the source point of the route.
-     *
-     * @return SourcePointInterface
+     * {@inheritdoc}
      */
     public function getSourcePoint(): SourcePointInterface
     {
@@ -89,9 +85,7 @@ final class Route
     }
 
     /**
-     * Get the target point of the route.
-     *
-     * @return TargetPointInterface
+     * {@inheritdoc}
      */
     public function getTargetPoint(): TargetPointInterface
     {
@@ -99,9 +93,7 @@ final class Route
     }
 
     /**
-     * Gets the checkpoints of the route.
-     *
-     * @return CheckPointCollection
+     * {@inheritdoc}
      */
     public function getCheckPoints(): CheckPointCollection
     {

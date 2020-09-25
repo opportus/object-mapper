@@ -18,8 +18,8 @@ use IteratorAggregate;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\ImmutableCollection;
-use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteCollection;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 use stdClass;
 
@@ -67,7 +67,7 @@ class RouteCollectionTest extends FinalBypassTestCase
         );
 
         static::assertContainsOnlyInstancesOf(
-            Route::class,
+            RouteInterface::class,
             $routeCollection
         );
 
@@ -199,7 +199,7 @@ class RouteCollectionTest extends FinalBypassTestCase
     {
         $routes = [];
         for ($i = 0; $i < 3; $i++) {
-            $route = $this->getMockBuilder(Route::class)
+            $route = $this->getMockBuilder(RouteInterface::class)
                 ->disableOriginalConstructor()
                 ->getMock()
             ;

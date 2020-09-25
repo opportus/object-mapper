@@ -14,12 +14,11 @@ namespace Opportus\ObjectMapper\Tests;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\ObjectMapper;
-use Opportus\ObjectMapper\PathFinder\DynamicPathFinder;
 use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
-use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 
@@ -201,7 +200,7 @@ class ObjectMapperTestCheckPointClass implements CheckPointInterface
 {
     public function control(
         $value,
-        Route $route,
+        RouteInterface $route,
         Map $map,
         Source $source,
         Target $target

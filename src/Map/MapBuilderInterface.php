@@ -12,9 +12,9 @@
 namespace Opportus\ObjectMapper\Map;
 
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
-use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
+use Opportus\ObjectMapper\Route\RouteInterface;
 
 /**
  * The map builder interface.
@@ -35,10 +35,10 @@ interface MapBuilderInterface
     /**
      * Adds a route.
      *
-     * @param Route $route
+     * @param RouteInterface $route
      * @return MapBuilderInterface
      */
-    public function addRoute(Route $route): MapBuilderInterface;
+    public function addRoute(RouteInterface $route): MapBuilderInterface;
 
     /**
      * Adds the routes.

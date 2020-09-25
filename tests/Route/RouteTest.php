@@ -20,6 +20,7 @@ use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
 
 /**
@@ -45,7 +46,7 @@ class RouteTest extends FinalBypassTestCase
     ): void {
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
-        static::assertInstanceOf(Route::class, $route);
+        static::assertInstanceOf(RouteInterface::class, $route);
     }
 
     /**

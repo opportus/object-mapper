@@ -15,9 +15,9 @@ use Opportus\ObjectMapper\PathFinder\DynamicPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
-use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
+use Opportus\ObjectMapper\Route\RouteInterface;
 
 /**
  * The map builder.
@@ -71,7 +71,7 @@ final class MapBuilder implements MapBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addRoute(Route $route): MapBuilderInterface
+    public function addRoute(RouteInterface $route): MapBuilderInterface
     {
         $routes = $this->routes->toArray();
 

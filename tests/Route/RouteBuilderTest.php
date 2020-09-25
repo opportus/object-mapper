@@ -17,9 +17,9 @@ use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
-use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
@@ -60,7 +60,7 @@ class RouteBuilderTest extends FinalBypassTestCase
             ->addCheckPoint($checkPoint, 10)
             ->getRoute();
 
-        static::assertInstanceOf(Route::class, $route);
+        static::assertInstanceOf(RouteInterface::class, $route);
 
         static::assertSame(
             $sourcePointFqn,
@@ -198,7 +198,7 @@ class CheckPointTestClass implements CheckPointInterface
 {
     public function control(
         $value,
-        Route $route,
+        RouteInterface $route,
         Map $map,
         Source $source,
         Target $target

@@ -127,9 +127,9 @@ Either:
 
 ### How it works
 
-The `ObjectMapper` method presented above iterates through each `Route` that it
-gets from the `Map`. Doing so, the method assigns the value of the current
-`Route`'s *source point* to its *target point*. Optionally, on the route,
+The `ObjectMapper` method presented above iterates through each *route* that it
+gets from the *map*. Doing so, the method assigns the value of the current
+*route*'s *source point* to its *target point*. Optionally, on the route,
 *check points* can be defined in order to control the value from the
 *source point* before it reaches the *target point*.
 
@@ -149,7 +149,7 @@ A *target point* can be either:
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
-These routes can be defined [automatically](#automatic-mapping) via a `Map`'s
+These routes can be defined [automatically](#automatic-mapping) via a *map*'s
 [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php)
 and/or [manually](#manual-mapping) via:
 
@@ -204,7 +204,7 @@ default `StaticPathFinder`.
 
 This default `StaticPathFinder` strategy consists of guessing what is the
 appropriate point of the source class to connect to each point of the target
-class. The connected *source point* and *target point* compose then a `Route`
+class. The connected *source point* and *target point* compose then a *route*
 which is followed by the `ObjectMapper::map()` method.
 
 For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinder.php)
@@ -444,7 +444,7 @@ You can refer to it for concrete examples of how to implement
 
 ### Check point
 
-A *check point*, added to a route, allows you to control (or transform) the
+A *check point*, added to a *route*, allows you to control (or transform) the
 value from the *source point* before it reaches the *target point*.
 
 You can add multiple *check points* to a *route*. In this case, these
@@ -498,7 +498,7 @@ class ContributorView
 
 class ContributorViewHtmlTagStripper implements CheckPointInterface
 {
-    public function control($value, Route $route, Map $map, Source $source, Target $target)
+    public function control($value, RouteInterface $route, Map $map, Source $source, Target $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
             return \strip_tags($value);
@@ -512,7 +512,7 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 {
     // ...
 
-    public function control($value, Route $route, Map $map, Source $source, Target $target)
+    public function control($value, RouteInterface $route, Map $map, Source $source, Target $target)
     {
         if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
             return $this->markdownParser->transform($value);
@@ -543,7 +543,7 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
 
 ```php
-CheckPointInterface::control($subject, Route $route, Map $map, Source $source, Target $target);
+CheckPointInterface::control($subject, RouteInterface $route, Map $map, Source $source, Target $target);
 ```
 
 **Parameters**
@@ -551,14 +551,14 @@ CheckPointInterface::control($subject, Route $route, Map $map, Source $source, T
 `$subject` is the value that `CheckPointInterface` implementation is meant to
 control.
 
-`$route` is the instance of [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
+`$route` is the instance of [`RouteInterface`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteInterface.php)
 which the `ObjectMapper` is currently on, containing the *source point* which
 the `$subject` comes from, the *target point* which the `$subject` goes to, and the
 [`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php)
 which contain your current `CheckPointInterface` instance.
 
 `$map` is the instance of [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php)
-which the `Route` is on.
+which the *route* is on.
 
 `$source` An instance of [`Source`](https://github.com/opportus/object-mapper/blob/master/src/Source.php)
 which encapsulate and represent the *source* to map data from.
