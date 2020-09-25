@@ -22,9 +22,7 @@ use ReflectionMethod;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MethodStaticSourcePoint
-extends SourcePoint
-implements StaticSourcePointInterface
+final class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
 

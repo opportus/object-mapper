@@ -20,9 +20,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MethodParameterDynamicTargetPoint
-extends TargetPoint
-implements DynamicTargetPointInterface
+final class MethodParameterDynamicTargetPoint extends TargetPoint implements DynamicTargetPointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
 

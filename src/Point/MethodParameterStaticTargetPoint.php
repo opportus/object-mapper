@@ -22,9 +22,7 @@ use ReflectionParameter;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MethodParameterStaticTargetPoint
-extends TargetPoint
-implements StaticTargetPointInterface
+final class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTargetPointInterface
 {
     public const FQN_SYNTAX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
 

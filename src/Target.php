@@ -248,7 +248,6 @@ final class Target
             $methodName =>
             $methodArguments
         ) {
-
             $instance->{$methodName}(...$methodArguments);
         }
 
