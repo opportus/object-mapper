@@ -28,9 +28,9 @@ use Opportus\ObjectMapper\Target;
 final class Map
 {
     /**
-     * @var PathFinderInterface $pathFinder
+     * @var PathFinderCollection $pathFinders
      */
-    private $pathFinder;
+    private $pathFinders;
 
     /**
      * @var RouteCollection $routes
