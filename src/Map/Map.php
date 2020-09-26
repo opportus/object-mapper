@@ -64,10 +64,9 @@ class Map implements MapInterface
         $routes = [];
 
         foreach ($this->pathFinders as $pathFinder) {
-            $routes = \array_merge(
-                $routes,
-                $pathFinder->getRoutes($source, $target)->toArray()
-            );
+            foreach ($pathFinder->getRoutes($source, $target) as $route) {
+                $routes[] = $route;
+            }
         }
 
         foreach ($this->routes as $route) {
