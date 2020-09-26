@@ -83,7 +83,7 @@ class Map implements MapInterface
                 continue;
             }
 
-            $routes[$route->getFqn()] = $route;
+            $routes[] = $route;
         }
 
         return new RouteCollection($routes);
