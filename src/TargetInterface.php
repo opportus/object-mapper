@@ -73,7 +73,7 @@ interface TargetInterface
 
     /**
      * Checks whether the target is operated.
-     * 
+     *
      * @return bool
      */
     public function isOperated(): bool;
