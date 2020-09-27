@@ -44,16 +44,8 @@ interface TargetInterface
      * Gets the target instance.
      *
      * @return null|object
-     * @throws InvalidOperationException
      */
     public function getInstance(): ?object;
-
-    /**
-     * Checks whether the target is instantiated.
-     *
-     * @return bool
-     */
-    public function isInstantiated(): bool;
 
     /**
      * Checks whether the target has the passed static point.
@@ -71,4 +63,25 @@ interface TargetInterface
      * @throws InvalidArgumentException
      */
     public function setPointValue(TargetPointInterface $point, $pointValue);
+
+    /**
+     * Operates the instance.
+     *
+     * @throws InvalidOperationException
+     */
+    public function operateInstance();
+
+    /**
+     * Checks whether the target is operated.
+     * 
+     * @return bool
+     */
+    public function isOperated(): bool;
+
+    /**
+     * Checks whether the target is instantiated.
+     *
+     * @return bool
+     */
+    public function isInstantiated(): bool;
 }

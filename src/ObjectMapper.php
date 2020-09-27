@@ -80,6 +80,8 @@ class ObjectMapper implements ObjectMapperInterface
             $target->setPointValue($targetPoint, $checkPointSubject);
         }
 
+        $target->operateInstance();
+
         return $target->getInstance();
     }
 }

@@ -48,6 +48,11 @@ class Target implements TargetInterface
     private $pointValues;
 
     /**
+     * @var bool $isOperated
+     */
+    private $isOperated;
+
+    /**
      * Constructs the target.
      *
      * @param object|string $target
@@ -77,6 +82,7 @@ class Target implements TargetInterface
         }
 
         $this->instance = \is_object($target) ? $target : null;
+        $this->isOperated = false;
         $this->pointValues = [
             'static_properties' => [],
             'static_method_parameters' => [],
@@ -106,29 +112,7 @@ class Target implements TargetInterface
      */
     public function getInstance(): ?object
     {
-        if ($this->hasPointValues()) {
-            try {
-                return $this->operateInstance(
-                    $this->pointValues,
-                    $this->instance
-                );
-            } catch (Exception $exception) {
-                throw new InvalidOperationException(
-                    __METHOD__,
-                    $exception->getMessage()
-                );
-            }
-        }
-
         return $this->instance;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isInstantiated(): bool
-    {
-        return (bool)$this->instance;
     }
 
     /**
@@ -171,6 +155,128 @@ class Target implements TargetInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function operateInstance()
+    {
+        if ($this->isOperated) {
+            $message = \sprintf(
+                'Cannot operate already operated %s target.',
+                $this->fqn
+            );
+
+            throw new InvalidOperationException(
+                __METHOD__,
+                $message
+            );
+        }
+
+        try {
+            $this->operateInstanceSafely(
+                $isSafeOperation = (false === $this->isInstantiated())
+            );
+        } catch (Exception $exception) {
+            throw new InvalidOperationException(
+                __METHOD__,
+                $exception->getMessage(),
+                0,
+                $exception
+            );
+        } finally {
+            $this->isOperated = true;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isInstantiated(): bool
+    {
+        return (bool)$this->instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isOperated(): bool
+    {
+        return $this->isOperated;
+    }
+
+    /**
+     * Operates instance safely.
+     *
+     * @param boolean $isSafeOperation
+     * @param null|object $instance
+     */
+    private function operateInstanceSafely($isSafeOperation = false, ?object $instance = null)
+    {
+        if ($isSafeOperation) {
+            $instance = $this->instance;
+        }
+
+        if (null === $instance) {
+            if (isset($this->pointValues['static_method_parameters']['__construct'])) {
+                $instance = $this->reflection->newInstanceArgs(
+                    $this->pointValues['static_method_parameters']['__construct']
+                );
+            } else {
+                $instance = $this->reflection->newInstance();
+            }
+        } elseif (false === $isSafeOperation) {
+            $instance = clone $instance;
+        }
+
+        foreach (
+            $this->pointValues['static_method_parameters'] as
+            $methodName =>
+            $methodArguments
+        ) {
+            if ('__construct' === $methodName) {
+                continue;
+            }
+
+            $this->reflection->getMethod($methodName)->invokeArgs(
+                $instance,
+                $methodArguments
+            );
+        }
+
+        foreach (
+            $this->pointValues['dynamic_method_parameters'] as
+            $methodName =>
+            $methodArguments
+        ) {
+            $instance->{$methodName}(...$methodArguments);
+        }
+
+        foreach (
+            $this->pointValues['static_properties'] as
+            $propertyName =>
+            $propertyValue
+        ) {
+            $this->reflection->getProperty($propertyName)->setValue(
+                $instance,
+                $propertyValue
+            );
+        }
+
+        foreach (
+            $this->pointValues['dynamic_properties'] as
+            $propertyName =>
+            $propertyValue
+        ) {
+            $instance->{$propertyName} = $propertyValue;
+        }
+
+        if ($isSafeOperation) {
+            $this->instance = $instance;
+        } else {
+            $this->operateInstanceSafely(true, $instance);
+        }
+    }
+
+    /**
      * Gets the method parameter static point position.
      *
      * @param MethodParameterStaticTargetPoint $point
@@ -188,73 +294,6 @@ class Target implements TargetInterface
                 return $parameter->getPosition();
             }
         }
-    }
-
-    /**
-     * Creates/updates the target instance.
-     *
-     * @param array $pointValues
-     * @param null|object $instance
-     * @return object
-     * @throws ReflectionException
-     */
-    private function operateInstance(
-        array $pointValues,
-        ?object $instance
-    ): object {
-        if (null === $instance) {
-            if (isset($pointValues['static_method_parameters']['__construct'])) {
-                $instance = $this->reflection->newInstanceArgs(
-                    $pointValues['static_method_parameters']['__construct']
-                );
-            } else {
-                $instance = $this->reflection->newInstance();
-            }
-        }
-
-        foreach (
-            $pointValues['static_method_parameters'] as
-            $methodName =>
-            $methodArguments
-        ) {
-            if ('__construct' === $methodName) {
-                continue;
-            }
-
-            $this->reflection->getMethod($methodName)->invokeArgs(
-                $instance,
-                $methodArguments
-            );
-        }
-
-        foreach (
-            $pointValues['dynamic_method_parameters'] as
-            $methodName =>
-            $methodArguments
-        ) {
-            $instance->{$methodName}(...$methodArguments);
-        }
-
-        foreach (
-            $pointValues['static_properties'] as
-            $propertyName =>
-            $propertyValue
-        ) {
-            $this->reflection->getProperty($propertyName)->setValue(
-                $instance,
-                $propertyValue
-            );
-        }
-
-        foreach (
-            $pointValues['dynamic_properties'] as
-            $propertyName =>
-            $propertyValue
-        ) {
-            $instance->{$propertyName} = $propertyValue;
-        }
-
-        return $instance;
     }
 
     /**
