@@ -295,18 +295,4 @@ class Target implements TargetInterface
             }
         }
     }
-
-    /**
-     * Checks whether target point values have been set.
-     *
-     * @return bool
-     */
-    private function hasPointValues(): bool
-    {
-        return
-            $this->pointValues['static_properties'] ||
-            $this->pointValues['static_method_parameters'] ||
-            $this->pointValues['dynamic_properties'] ||
-            $this->pointValues['dynamic_method_parameters'];
-    }
 }
