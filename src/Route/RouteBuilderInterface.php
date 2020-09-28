@@ -88,7 +88,31 @@ interface RouteBuilderInterface
     ): RouteBuilderInterface;
 
     /**
-     * Adds a check point to the route.
+     * Sets the source point of the route.
+     *
+     * @param  string                $sourcePointFqn The Fully Qualified Name
+     *                                               of a static or dynamic
+     *                                               source point
+     * @return RouteBuilderInterface                 A route builder
+     */
+    public function setSourcePoint(
+        string $sourcePointFqn
+    ): RouteBuilderInterface;
+
+    /**
+     * Sets the target point of the route.
+     *
+     * @param  string                $targetPointFqn The Fully Qualified Name
+     *                                               of a static or dynamic
+     *                                               target point
+     * @return RouteBuilderInterface                 A route builder
+     */
+    public function setTargetPoint(
+        string $targetPointFqn
+    ): RouteBuilderInterface;
+
+    /**
+     * Adds a checkpoint to the route.
      *
      * @param  CheckPointInterface   $checkPoint         A check point to add to
      *                                                   route being built
