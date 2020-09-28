@@ -11,7 +11,6 @@
 
 - [Use cases](#use-cases)
 - [Roadmap](#roadmap)
-  - [v1.0.0-beta.1](#v100-beta1)
   - [v1.0.0 (stable)](#v100-stable)
 - [Integrations](#integrations)
 - [Setup](#setup)
@@ -54,13 +53,11 @@ This project aims to provide a standard core system to many solutions such as:
 
 To develop this solution faster, [contributions](https://github.com/opportus/object-mapper/blob/master/.github/CONTRIBUTING.md) are welcome...
 
-### v1.0.0-beta.1
-
--   Implement recursion control system
-
 ### v1.0.0 (stable)
 
 -   Implement last unit tests to reach 100% coverage
+-   Update the doc with description of last features implemented 
+([Dynamic Mapping](#dynamic-mapping), [Recursion](#recursion))
 
 ## Integrations
 
@@ -470,7 +467,12 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 
 ### Recursion
 
-Although a *recursion* dedicated feature may come later, you can implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php)
+{{ Incoming description (feature already implemented) }}
+
+*Old description still valid though:*
+
+Although a *recursion* dedicated feature may come later, you can implement
+[`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php)
 such as [introduced previously](#check-point) to recursively map a
 *source point* to a *target point*. For example:
 
@@ -482,3 +484,4 @@ such as [introduced previously](#check-point) to recursively map a
 -   If you map an instance of `A` (that *has* `C` which *has* `E`) to `B`
     (that *has* `D` which *has* `F`) and that you want in the same time to map
     `C` and `E` to `D` and `F`, AKA *in-depth recursion*.
+**

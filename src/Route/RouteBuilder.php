@@ -206,6 +206,44 @@ class RouteBuilder implements RouteBuilderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function addRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetSourcePointFqn,
+        ?int $checkPointPosition = null
+    ): RouteBuilderInterface {
+        return $this->addCheckPoint(
+            $this->pointFactory->createRecursionCheckPoint(
+                $sourceFqn,
+                $targetFqn,
+                $targetSourcePointFqn
+            ),
+            $checkPointPosition
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addIterableRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetIterableSourcePointFqn,
+        ?int $checkPointPosition = null
+    ): RouteBuilderInterface {
+        return $this->addCheckPoint(
+            $this->pointFactory->createIterableRecursionCheckPoint(
+                $sourceFqn,
+                $targetFqn,
+                $targetIterableSourcePointFqn
+            ),
+            $checkPointPosition
+        );
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getRoute(): RouteInterface

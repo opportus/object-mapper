@@ -127,6 +127,59 @@ interface RouteBuilderInterface
     ): RouteBuilderInterface;
 
     /**
+     * Adds a recursion check point to the route.
+     *
+     * @param  string              $sourceFqn            The Fully Qualified
+     *                                                   Name of the recursion
+     *                                                   source to map data from
+     * @param  string              $targetFqn            The Fully Qualified
+     *                                                   Name of the recursion
+     *                                                   target to map data to
+     * @param  string              $targetSourcePointFqn The Fully Qualified
+     *                                                   Name of the source
+     *                                                   point to get recursion
+     *                                                   target instance from
+     * @param int                  $checkPointPosition   The position of the
+     *                                                   check point on the
+     *                                                   route
+     * @return RouteBuilderInterface                     A route builder
+     */
+    public function addRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetSourcePointFqn,
+        int $checkPointPosition = null
+    ): RouteBuilderInterface;
+
+    /**
+     * Adds a iterable recursion check point to the route.
+     *
+     * @param  string              $sourceFqn            The Fully Qualified
+     *                                                   Name of the iterable
+     *                                                   recursion source to map
+     *                                                   data from
+     * @param  string              $targetFqn            The Fully Qualified
+     *                                                   Name of the iterable
+     *                                                   recursion target to map
+     *                                                   data to
+     * @param  string      $targetIterableSourcePointFqn The Fully Qualified
+     *                                                   Name of the source
+     *                                                   point to get the iterable
+     *                                                   recursion target instance
+     *                                                   from
+     * @param int                  $checkPointPosition   The position of the
+     *                                                   check point on the
+     *                                                   route
+     * @return RouteBuilderInterface                     A route builder
+     */
+    public function addIterableRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetIterableSourcePointFqn,
+        int $checkPointPosition = null
+    ): RouteBuilderInterface;
+
+    /**
      * Gets the built route.
      *
      * @return RouteInterface            The route built

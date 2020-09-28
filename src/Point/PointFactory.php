@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\ObjectMapper;
 
 /**
  * The point factory.
@@ -117,11 +118,13 @@ class PointFactory implements PointFactoryInterface
     {
         try {
             return $this->createStaticSourcePoint($pointFqn);
-        } catch (InvalidArgumentException $staticPointException) {}
+        } catch (InvalidArgumentException $staticPointException) {
+        }
 
         try {
             return $this->createDynamicSourcePoint($pointFqn);
-        } catch (InvalidArgumentException $dynamicPointException) {}
+        } catch (InvalidArgumentException $dynamicPointException) {
+        }
 
         $message = \sprintf(
             '%s%s%s',
@@ -140,11 +143,13 @@ class PointFactory implements PointFactoryInterface
     {
         try {
             return $this->createStaticTargetPoint($pointFqn);
-        } catch (InvalidArgumentException $staticPointException) {}
+        } catch (InvalidArgumentException $staticPointException) {
+        }
 
         try {
             return $this->createDynamicTargetPoint($pointFqn);
-        } catch (InvalidArgumentException $dynamicPointException) {}
+        } catch (InvalidArgumentException $dynamicPointException) {
+        }
 
         $message = \sprintf(
             '%s%s%s',
@@ -154,5 +159,37 @@ class PointFactory implements PointFactoryInterface
         );
 
         throw new InvalidArgumentException(1, __METHOD__, $message);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetSourcePointFqn
+    ): RecursionCheckPoint {
+        return new RecursionCheckPoint(
+            $sourceFqn,
+            $targetFqn,
+            $this->createSourcePoint($targetSourcePointFqn),
+            new ObjectMapper()
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createIterableRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetIterableSourcePointFqn
+    ): IterableRecursionCheckPoint {
+        return new IterableRecursionCheckPoint(
+            $sourceFqn,
+            $targetFqn,
+            $this->createSourcePoint($targetIterableSourcePointFqn),
+            new ObjectMapper()
+        );
     }
 }
