@@ -109,4 +109,50 @@ class PointFactory implements PointFactoryInterface
 
         throw new InvalidArgumentException(1, __METHOD__, $message);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createSourcePoint(string $pointFqn): SourcePointInterface
+    {
+        try {
+            return $this->createStaticSourcePoint($pointFqn);
+        } catch (InvalidArgumentException $staticPointException) {}
+
+        try {
+            return $this->createDynamicSourcePoint($pointFqn);
+        } catch (InvalidArgumentException $dynamicPointException) {}
+
+        $message = \sprintf(
+            '%s%s%s',
+            $staticPointException->getMessage(),
+            \PHP_EOL,
+            $dynamicPointException->getMessage()
+        );
+
+        throw new InvalidArgumentException(1, __METHOD__, $message);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createTargetPoint(string $pointFqn): TargetPointInterface
+    {
+        try {
+            return $this->createStaticTargetPoint($pointFqn);
+        } catch (InvalidArgumentException $staticPointException) {}
+
+        try {
+            return $this->createDynamicTargetPoint($pointFqn);
+        } catch (InvalidArgumentException $dynamicPointException) {}
+
+        $message = \sprintf(
+            '%s%s%s',
+            $staticPointException->getMessage(),
+            \PHP_EOL,
+            $dynamicPointException->getMessage()
+        );
+
+        throw new InvalidArgumentException(1, __METHOD__, $message);
+    }
 }

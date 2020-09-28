@@ -85,4 +85,22 @@ interface PointFactoryInterface
      *                                               target point type
      */
     public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface;
+
+    /**
+     * Creates a source point of a certain type based on the passed FQN.
+     *
+     * @param string $pointFqn
+     * @return SourcePointInterface
+     * @throws InvalidArgumentException
+     */
+    public function createSourcePoint(string $pointFqn): SourcePointInterface;
+
+    /**
+     * Creates a target point of a certain type based on the passed FQN.
+     *
+     * @param string $pointFqn
+     * @return TargetPointInterface
+     * @throws InvalidArgumentException
+     */
+    public function createTargetPoint(string $pointFqn): TargetPointInterface;
 }
