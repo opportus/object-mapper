@@ -24,7 +24,7 @@ use ReflectionProperty;
  */
 final class PropertyStaticTargetPoint extends TargetPoint implements StaticTargetPointInterface
 {
-    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property static target point.
@@ -61,7 +61,7 @@ final class PropertyStaticTargetPoint extends TargetPoint implements StaticTarge
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        $this->fqn = $matchedFqn;
+        $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));
         $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
     }

@@ -24,7 +24,7 @@ use ReflectionException;
  */
 final class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTargetPointInterface
 {
-    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property dynamic target point.
@@ -67,7 +67,7 @@ final class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTar
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        $this->fqn = $matchedFqn;
+        $this->fqn = \sprintf('~%s', \ltrim($matchedFqn, '~'));
         $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
     }
