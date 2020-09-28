@@ -34,6 +34,8 @@ interface ObjectMapperInterface
      * @return null|object              The instantiated and/or updated target
      *                                  or NULL if the there is no route mapping
      *                                  source and target
+     * @throws InvalidArgumentException If map argument is null and this cannot
+     *                                  get a map
      */
     public function map(object $source, $target, ?MapInterface $map = null): ?object;
 }

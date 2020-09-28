@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 
@@ -25,16 +26,16 @@ use Opportus\ObjectMapper\Map\MapBuilderInterface;
 class ObjectMapper implements ObjectMapperInterface
 {
     /**
-     * @var MapBuilderInterface $mapBuilder
+     * @var null|MapBuilderInterface $mapBuilder
      */
     private $mapBuilder;
 
     /**
      * Constructs the object mapper.
      *
-     * @param MapBuilderInterface $mapBuilder
+     * @param null|MapBuilderInterface $mapBuilder
      */
-    public function __construct(MapBuilderInterface $mapBuilder)
+    public function __construct(?MapBuilderInterface $mapBuilder = null)
     {
         $this->mapBuilder = $mapBuilder;
     }
@@ -46,9 +47,20 @@ class ObjectMapper implements ObjectMapperInterface
     {
         $source = ($source instanceof SourceInterface) ? $source : new Source($source);
         $target = ($target instanceof TargetInterface) ? $target : new Target($target);
-        $map    = $map ?? $this->mapBuilder
+
+        if (null === $map) {
+            if (null === $this->mapBuilder) {
+                throw new InvalidArgumentException(
+                    3,
+                    __METHOD__,
+                    'The argument is required when no MapBuilderInterface instance is set.'
+                );
+            }
+
+            $map = $this->mapBuilder
                 ->addStaticPathFinder()
                 ->getMap();
+        }
 
         $routes = $map->getRoutes($source, $target);
 
