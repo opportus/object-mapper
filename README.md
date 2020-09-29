@@ -17,8 +17,6 @@
 - [Mapping](#mapping)
   - [How it works](#how-it-works)
   - [Automatic mapping](#automatic-mapping)
-    - [Static mapping](#static-mapping)
-    - [Dynamic mapping](#dynamic-mapping)
     - [Custom mapping](#custom-mapping)
   - [Manual mapping](#manual-mapping)
     - [Via map builder API](#via-map-builder-api)
@@ -28,23 +26,23 @@
 
 ## Use cases
 
-Use this solution for mapping (differently typed or not) objects via extensible
-strategies and controls.
+Use this solution for mapping objects via extensible strategies and controls.
 
-Leverage this solution by delegating to it patternable controls over
-source and target objects to:
+Leverage this solution by delegating to it generic controls over source and
+target objects to:
  
--   Decouple these objects (data models or services) from your codebase
+-   Decouple them from your codebase
 -   Dynamically define control flow over data being transferred
--   Dynamically define data model
+-   Dynamically define target model
 
-This project aims to provide a standard core system to many applications such
-as:
+This project aims to provide a standard core system to many types of other
+system such as:
 
 -   Data transformation
 -   ORM
 -   Form handling
 -   Serialization
+-   Interlayer data mapping
 -   ...
 
 ## Roadmap
@@ -54,7 +52,6 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 ### v1.0.0 (stable)
 
 -   Implement recursion control system
--   Implement *adders*, *removers*, *isers*, *hasers* support with the default
     `PathFinding` strategy
 -   Implement last unit tests to reach 100% coverage
 
@@ -158,8 +155,6 @@ and/or [manually](#manual-mapping) via:
 
 ### Automatic mapping
 
-#### Static mapping
-
 A basic example of how to automatically map `User`'s data to `UserDto` and
 vice-versa:
 
@@ -219,22 +214,21 @@ The corresponding *source point* can be:
 -   A public *getter* having for name `'get'.ucfirst($targetPointName)` and
     requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
-#### Dynamic mapping
-
-*Incoming description (feature already implemented)*
-
 #### Custom mapping
 
-The default `StaticPathFinder` and `DynamicPathFinder` strategies
-presented above each modelize a specific mapping logic of a *source*
-to a *target* object. The *source* and the *target* have to comply to
-the convention established by a *pathfinder* in order for it to generically
-map these objects based on its logic.
+The default `StaticPathFinder` strategy presented above implements a specific
+mapping logic. In order for a *pathfinder* to generically map differently
+typed objects, it has to follow a certain convention. You can map differently
+typed objects generically only accordingly to this convention.
 
-`PathFinderInterface` allows implemeting custom mapping logic and convention.
+`PathFinderInterface` allows implementing custom mapping logic...
 
-Such generic interaction with objects is very powerful because in its context,
-it decouples totally those from the codebase.
+You can try to extract from your domain *control patterns* over your objects
+Omplement then each of theses patterns as a type of `PathFinderInterface`.
+Doing so effectively, you will decouple totally these objects from your
+codebase... Furthermore, these controls won't be subject to changes anymore
+when the controled objects change. Such generic controls are indeed very
+powerful. Later, we will see how to leverage this concept with another one.
 
 For concrete example of how to implement `PathFinderInterface`, refer to the
 default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php)
