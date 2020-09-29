@@ -225,11 +225,10 @@ typed objects generically only accordingly to this convention.
 
 You can try to extract from your domain *control patterns* over your objects.
 Implement then each of theses patterns as a type of `PathFinderInterface`.
-Doing so effectively, you will decouple totally these objects from your
-codebase... Furthermore, these controls won't be subject to changes anymore
-when the controled objects change. Such generic controls are indeed very
-powerful. Later, we will see how to leverage furthermore this solution by
-combining this concept with another one.
+Doing so effectively, you will decouple these objects from your codebase...
+Indeed, when the controled objects change, the control won't. Such generic
+controls are very powerful. Later, we will see how to leverage furthermore
+this solution by combining this concept with another one.
 
 For concrete example of how to implement `PathFinderInterface`, refer to the
 default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php)
