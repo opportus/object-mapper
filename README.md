@@ -7,6 +7,7 @@
 [![Build Status](https://travis-ci.com/opportus/object-mapper.svg?branch=master)](https://travis-ci.com/opportus/object-mapper)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d3f5178323844f59a6ef5647cb11d9d7)](https://www.codacy.com/manual/opportus/object-mapper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opportus/object-mapper&amp;utm_campaign=Badge_Grade)
 
+**Index**
 
 - [Use cases](#use-cases)
 - [Roadmap](#roadmap)
@@ -39,8 +40,8 @@ target objects to:
     target
 -   Dynamically define target model depending on source model
 
-This project aims to provide a standard core system to many types of other
-system such as:
+This project aims to provide a standard core system to many types of solution
+such as:
 
 -   Data transformation
 -   ORM
@@ -116,19 +117,15 @@ is defined by and composed of its *source point*, its *target point*, and its
 
 A *source point* can be either:
 
--   A *static property* (statically defined in the source class)
--   A *static method* (statically defined in the source class)
--   A *dynamic property* (dynamically defined/overloaded in the source object)
--   A *dynamic method* (dynamically overloaded in the source object)
--   Any extended *static|dynamic source point*
+-   A static/dynamic property
+-   A static/dynamic method
+-   An extended type of static/dynamic source point
 
 A *target point* can be either:
 
--   A *static property* (statically defined in the target class)
--   A *static method parameter* (statically defined in the source class)
--   A *dynamic property* (dynamically defined/overloaded in the target object)
--   A *dynamic method parameter* (dynamically overloaded in the target object)
--   Any extended *static|dynamic target point*
+-   A static/dynamic property
+-   A static/dynamic method parameter
+-   An extended type of static/dynamic target point
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
