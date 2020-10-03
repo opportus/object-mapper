@@ -206,9 +206,18 @@ class RouteBuilder implements RouteBuilderInterface
             );
         }
 
+        try {
+            $route = $this->getRoute();
+        } catch (InvalidOperationException $exception) {
+            throw new InvalidOperationException(
+                __METHOD__,
+                $exception->getMessage()
+            );
+        }
+
         return new self(
             $this->pointFactory,
-            $this->mapBuilder->addRoute($this->getRoute())
+            $this->mapBuilder->addRoute($route)
         );
     }
 
