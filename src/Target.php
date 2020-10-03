@@ -159,18 +159,6 @@ class Target implements TargetInterface
      */
     public function operateInstance()
     {
-        if ($this->isOperated) {
-            $message = \sprintf(
-                'Cannot operate already operated %s target.',
-                $this->fqn
-            );
-
-            throw new InvalidOperationException(
-                __METHOD__,
-                $message
-            );
-        }
-
         try {
             $this->operateInstanceSafely(
                 $isSafeOperation = (false === $this->isInstantiated())
