@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The map.
- * 
+ *
  * @package Opportus\ObjectMapper\Map
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
