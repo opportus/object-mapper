@@ -157,10 +157,10 @@ class Target implements TargetInterface
     /**
      * {@inheritdoc}
      */
-    public function operateInstance()
+    public function operate()
     {
         try {
-            $this->operateInstanceSafely(
+            $this->operateSafely(
                 $isSafeOperation = (false === $this->isInstantiated())
             );
         } catch (Exception $exception) {
@@ -197,7 +197,7 @@ class Target implements TargetInterface
      * @param boolean $isSafeOperation
      * @param null|object $instance
      */
-    private function operateInstanceSafely($isSafeOperation = false, ?object $instance = null)
+    private function operateSafely($isSafeOperation = false, ?object $instance = null)
     {
         if ($isSafeOperation) {
             $instance = $this->instance;
@@ -260,7 +260,7 @@ class Target implements TargetInterface
         if ($isSafeOperation) {
             $this->instance = $instance;
         } else {
-            $this->operateInstanceSafely(true, $instance);
+            $this->operateSafely(true, $instance);
         }
     }
 

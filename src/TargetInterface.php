@@ -69,7 +69,7 @@ interface TargetInterface
      *
      * @throws InvalidOperationException
      */
-    public function operateInstance();
+    public function operate();
 
     /**
      * Checks whether the target is operated.
