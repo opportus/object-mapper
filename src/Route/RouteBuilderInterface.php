@@ -105,7 +105,7 @@ interface RouteBuilderInterface
     /**
      * Gets the map builder.
      *
-     * @return MapBuilderInterface
+     * @return null|MapBuilderInterface
      */
-    public function getMapBuilder(): MapBuilderInterface;
+    public function getMapBuilder(): ?MapBuilderInterface;
 }

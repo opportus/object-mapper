@@ -215,7 +215,7 @@ class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function getMapBuilder(): MapBuilderInterface
+    public function getMapBuilder(): ?MapBuilderInterface
     {
         return $this->mapBuilder;
     }
