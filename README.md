@@ -17,7 +17,7 @@
 - [Mapping](#mapping)
   - [How it works](#how-it-works)
   - [Automatic mapping](#automatic-mapping)
-    - [Custom mapping](#custom-mapping)
+    - [Custom automatic mapping](#custom-automatic-mapping)
   - [Manual mapping](#manual-mapping)
     - [Via map builder API](#via-map-builder-api)
     - [Via map definition preloading](#via-map-definition-preloading)
@@ -214,21 +214,20 @@ The corresponding *source point* can be:
 -   A public *getter* having for name `'get'.ucfirst($targetPointName)` and
     requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
-#### Custom mapping
+#### Custom automatic mapping
 
 The default `StaticPathFinder` strategy presented above implements a specific
 mapping logic. In order for a *pathfinder* to generically map differently
-typed objects, it has to follow a certain convention. You can map differently
-typed objects generically only accordingly to this convention.
+typed objects, it has to follow a certain convention, de facto established by
+itself. You can map generically differently typed objects only accordingly to
+this convention.
 
 `PathFinderInterface` allows implementing custom mapping logic...
 
-You can try to extract from your domain *control patterns* over your objects.
-Implement then each of theses patterns as a type of `PathFinderInterface`.
-Doing so effectively, you will decouple these objects from your codebase...
-Indeed, when the controled objects change, the control won't. Such generic
-controls are very powerful. Later, we will see how to leverage furthermore
-this solution by combining this concept with another one.
+Implement each of your domain's *object mapping patterns* as a subtype of
+`PathFinderInterface`. Doing so effectively, you will decouple these objects
+from your codebase... Indeed, when the mapped objects change, the mapping won't.
+This is very powerful.
 
 For concrete example of how to implement `PathFinderInterface`, refer to the
 default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php)
