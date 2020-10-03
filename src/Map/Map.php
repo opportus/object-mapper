@@ -11,6 +11,8 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Exception;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
@@ -20,7 +22,7 @@ use Opportus\ObjectMapper\TargetInterface;
 
 /**
  * The map.
- *
+ * 
  * @package Opportus\ObjectMapper\Map
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
@@ -64,8 +66,17 @@ class Map implements MapInterface
         $routes = [];
 
         foreach ($this->pathFinders as $pathFinder) {
-            foreach ($pathFinder->getRoutes($source, $target) as $route) {
-                $routes[] = $route;
+            try {
+                foreach ($pathFinder->getRoutes($source, $target) as $route) {
+                    $routes[] = $route;
+                }
+            } catch (Exception $exception) {
+                throw new InvalidOperationException(
+                    __METHOD__,
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
             }
         }
 
