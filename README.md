@@ -1,17 +1,16 @@
+# Object Mapper
+
 [![License](https://poser.pugx.org/opportus/object-mapper/license)](https://packagist.org/packages/opportus/object-mapper)
 [![Latest Stable Version](https://poser.pugx.org/opportus/object-mapper/v/stable)](https://packagist.org/packages/opportus/object-mapper)
 [![Latest Unstable Version](https://poser.pugx.org/opportus/object-mapper/v/unstable)](https://packagist.org/packages/opportus/object-mapper)
+[![Total Downloads](https://poser.pugx.org/opportus/object-mapper/downloads)](//packagist.org/packages/opportus/object-mapper)
 [![Build Status](https://travis-ci.com/opportus/object-mapper.svg?branch=master)](https://travis-ci.com/opportus/object-mapper)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d3f5178323844f59a6ef5647cb11d9d7)](https://www.codacy.com/manual/opportus/object-mapper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opportus/object-mapper&amp;utm_campaign=Badge_Grade)
 
-This document introduces this solution, especially its concepts and use cases.
-The API documentation is bound to code and complies to PHPDoc standard...
 
-## Index
-
-- [Index](#index)
 - [Use cases](#use-cases)
 - [Roadmap](#roadmap)
+  - [v1.0.0-beta.1](#v100-beta1)
   - [v1.0.0 (stable)](#v100-stable)
 - [Integrations](#integrations)
 - [Setup](#setup)
@@ -27,6 +26,7 @@ The API documentation is bound to code and complies to PHPDoc standard...
   - [Check point](#check-point)
   - [Recursion](#recursion)
 
+
 ## Use cases
 
 Use this solution for mapping objects via extensible strategies and controls.
@@ -34,9 +34,10 @@ Use this solution for mapping objects via extensible strategies and controls.
 Leverage this solution by delegating to it generic controls over source and
 target objects to:
  
--   Decouple them from your codebase
--   Dynamically define control flow over data being transferred
--   Dynamically define target model
+-   Decouple source and target from your codebase
+-   Dynamically define control flow over data being transferred from source to
+    target
+-   Dynamically define target model depending on source model
 
 This project aims to provide a standard core system to many types of other
 system such as:
@@ -52,10 +53,12 @@ system such as:
 
 To develop this solution faster, [contributions](https://github.com/opportus/object-mapper/blob/master/.github/CONTRIBUTING.md) are welcome...
 
-### v1.0.0 (stable)
+### v1.0.0-beta.1
 
 -   Implement recursion control system
-    `PathFinding` strategy
+
+### v1.0.0 (stable)
+
 -   Implement last unit tests to reach 100% coverage
 
 ## Integrations
@@ -103,7 +106,7 @@ instantiating your own services, with a DIC system or whatever.
 
 The `ObjectMapper` method presented above iterates through each *route* that it
 gets from the *map*. Doing so, the method assigns the value of the current
-*route*'s *source point* to its *target point*. Optionally, on the route,
+*route*'s *source point* to its *target point*. Optionally, on the *route*,
 *check points* can be defined in order to control the value from the
 *source point* before it reaches the *target point*.
 
@@ -113,23 +116,23 @@ is defined by and composed of its *source point*, its *target point*, and its
 
 A *source point* can be either:
 
--   A *static property*, statically defined in the source class
--   A *static method*, statically defined in the source class
--   A *dynamic property*, dynamically defined in or overloaded by the source object
--   A *dynamic method*, dynamically overloaded by the source object
+-   A *static property* (statically defined in the source class)
+-   A *static method* (statically defined in the source class)
+-   A *dynamic property* (dynamically defined/overloaded in the source object)
+-   A *dynamic method* (dynamically overloaded in the source object)
 -   Any extended *static|dynamic source point*
 
 A *target point* can be either:
 
--   A *static property*, statically defined in the target class
--   A *static method parameter*, statically defined in the source class
--   A *dynamic property*, to dynamically define in or overload by the target object
--   A *dynamic method parameter*, to dynamically overload by the target object
+-   A *static property* (statically defined in the target class)
+-   A *static method parameter* (statically defined in the source class)
+-   A *dynamic property* (dynamically defined/overloaded in the target object)
+-   A *dynamic method parameter* (dynamically overloaded in the target object)
 -   Any extended *static|dynamic target point*
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
-These routes can be defined [automatically](#automatic-mapping) via a *map*'s
+These *routes* can be defined [automatically](#automatic-mapping) via a *map*'s
 [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php)
 and/or [manually](#manual-mapping) via:
 
@@ -176,25 +179,24 @@ $user = $objectMapper->map($userDto, User::class);
 echo $user->getUsername(); // Toto
 ```
 
-Calling the `ObjectMapper::map()` method presented earlier with its `$map`
-parameter set on `null`, makes the method build then use a `Map` composed of the
-default `StaticPathFinder`.
+Calling the `ObjectMapper::map()` method without passing a `$map` argument makes
+the method build then use a `Map` composed of the default `StaticPathFinder`.
 
 This default `StaticPathFinder` strategy consists of guessing what is the
-appropriate point of the source class to connect to each point of the target
+appropriate point of the *source* class to connect to each point of the *target*
 class. The connected *source point* and *target point* compose then a *route*
-which is followed by the `ObjectMapper::map()` method.
+which is followed by the `ObjectMapper`.
 
-For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinder.php)
-strategy, a *target point* can be:
+For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinder.php),
+a *target point* can be:
 
 -   A public property ([`PropertyStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticTargetPoint.php))
--   A parameter of a public *setter* or constructor ([`MethodParameterStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterStaticTargetPoint.php))
+-   A parameter of a public setter or constructor ([`MethodParameterStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterStaticTargetPoint.php))
 
 The corresponding *source point* can be:
 
 -   A public property having for name the same as the target point ([`PropertyStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticSourcePoint.php))
--   A public *getter* having for name `'get'.ucfirst($targetPointName)` and
+-   A public getter having for name `'get'.ucfirst($targetPointName)` and
     requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
 #### Custom automatic mapping
@@ -202,15 +204,14 @@ The corresponding *source point* can be:
 The default `StaticPathFinder` strategy presented above implements a specific
 mapping logic. In order for a *pathfinder* to generically map differently
 typed objects, it has to follow a certain convention, de facto established by
-itself. You can map generically differently typed objects only accordingly to
-this convention.
+this *path finder*. You can map generically differently typed objects only
+accordingly to this convention.
 
-`PathFinderInterface` allows implementing custom mapping logic...
-
-Implement each of your domain's *object mapping patterns* as a subtype of
-`PathFinderInterface`. Doing so effectively, you will decouple these objects
-from your codebase... Indeed, when the mapped objects change, the mapping won't.
-This is very powerful.
+If the default `StaticPathFinder`'s behavior does not fit your needs, you still
+can genericize and encapsulate your domain's mapping logic in a subtype
+of `PathFinderInterface`. Doing so effectively, you leverage `ObjectMapper` to
+decouple these objects from your codebase... Indeed, when the mapped objects
+change, the mapping won't.
 
 For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php) or [`DynamicPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicPathFinder.php)
 implementations.
@@ -247,15 +248,15 @@ $user = $objectMapper->map($userDto, User::class, $map);
 ### Manual mapping
 
 If in your context, such as walked through in the previous
-"[automatic mapping](#automatic-mapping)" chapter, a mapping strategy definition
-does not scale well, or is either impossible or overkill, you can manually map
-the *source* to the *target*.
+"[automatic mapping](#automatic-mapping)" section, a mapping strategy does not
+scale well, or is either impossible or overkill, you can manually map the
+*source* to the *target*.
 
 There are multiple ways to define manually the mapping such as introduced in the
-2 next sub-chapters:
+next sub-sections:
 
--   [Via map builder API](#via-map-builder-api).
--   [Via map definition preloading](#via-map-definition-preloading).
+-   [Via map builder API](#via-map-builder-api)
+-   [Via map definition preloading](#via-map-definition-preloading)
 
 #### Via map builder API
 
@@ -321,31 +322,49 @@ echo $user->getUsername(); // 'Toto'
 #### Via map definition preloading
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the
-map (adding to it routes) *on the go*. There is another way to define the map,
-preloading its definition.
+*map* (adding to it *routes*) *on the go*. There is another way to define the
+*map*, *preloading* its definition.
 
 While this library is designed with *map definition preloading* in mind, it
-does not provide a way to effectively preload a *map definition* which could be:
+does not provide a way to effectively *preload a map definition* which could be:
 
 -   Any type of file, commonly used for configuration (XML, YAML, JSON, etc...),
-    defining statically a map
--   Any type of PHP routine defining dynamically a map
+    defining statically a *map* to build at runtime
+-   Any type of annotation in *source* and *target* classes, defining statically
+    a *map* to build at runtime
+-   Any type of PHP routine, defining dynamically a *map* to build at runtime
 -   ...
 
-So in order to create routes to compose the map of, you can:
+A *map* being not much more than a collection of *routes*, you can statically
+define it for example by defining its *routes* FQN this way:
 
--   Parse your map configuration files, extract from them *source point* and
-    *target point* and inject them as is into the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilderInterface.php)
--   Implement some sort of map generator routine making use itself of the
-    `MapBuilder` service instance
+```yaml
+map:
+  - source1.property:target1.property
+  - source1.property:target2.property
+  - source2.property:target2.property
+```
+
+Then at runtime, in order to create *routes* to compose a *map* of, you can:
+
+-   Parse your map configuration files, extract from them *route* definitions
+-   Parse your *source* and *target* annotations, extract from them *route*
+    definitions
+-   Implement any sort of map generator logic outputing *route* definitions
+
+Then, based on their definitions, build these *routes* with the initial instance
+of the [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilderInterface.php)
+which will keep and inject them into its built *maps* which in turn might return
+these *routes* to the *object mapper* depending on the source and target being
+mapped.
 
 Because an *object mapper* has a wide range of different use case contexts, this
 solution is designed as a minimalist, flexible, and extensible core in order to
-get **integrated**, **adapted**, and **extended** seamlessly into any of these
-contexts. Therefore, this solution delegates *map definition preloading* to the
+get integrated, adapted, and extended seamlessly into any of these contexts.
+Therefore, this solution delegates *map definition preloading* to the
 integrating higher level system which can make use contextually of its own DIC,
 configuration, and cache systems required for achieving
-*map definition preloading*.
+*map definitionpreloading*.
 
 [opportus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
 is one system integrating this library (into Symfony 4 application context).
@@ -354,8 +373,8 @@ You can refer to it for concrete examples of how to implement
 
 ### Check point
 
-A *check point*, added to a *route*, allows you to control (or transform) the
-value from the *source point* before it reaches the *target point*.
+A *check point*, added to a *route*, allows you to control/transform the value
+from the *source point* before it reaches the *target point*.
 
 You can add multiple *check points* to a *route*. In this case, these
 *check points* form a chain. The first *check point* controls the original value
@@ -364,16 +383,16 @@ from the *source point* and returns the value (transformed or not) to the
 *check point* and so on... Until the last *check point* returns the final value
 to be assigned to the *target point* by the *object mapper*.
 
-So it is important to keep in mind that each *check point* has a unique
-position (priority) on a *route*. The routed value goes through each of the
+So it is important to keep in mind that each *check point* has a unique position
+(priority) on a *route*. The routed value goes through each of the
 *check points* from the lowest to the highest positioned ones such as
 represented below:
 
-```
+```txt
 SourcePoint --> $value' --> CheckPoint1 --> $value'' --> CheckPoint2 --> $value''' --> TargetPoint
 ```
 
-An example of how to use *check points* and implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
+An example of how to use *check points*, implementing [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php) as a sort of presenter:
 
 ```php
 class Contributor
@@ -410,11 +429,7 @@ class ContributorViewHtmlTagStripper implements CheckPointInterface
 {
     public function control($value, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target)
     {
-        if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
-            return \strip_tags($value);
-        }
-
-        return $value;
+        return \strip_tags($value);
     }
 }
 
@@ -424,11 +439,7 @@ class ContributorViewMarkdownTransformer implements CheckPointInterface
 
     public function control($value, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target)
     {
-        if (ContributorView::class === $route->getTargetPoint()->getTargetFqn() && \is_string($value)) {
-            return $this->markdownParser->transform($value);
-        }
-
-        return $value;
+        return $this->markdownParser->transform($value);
     }
 }
 
@@ -439,7 +450,7 @@ $map = $mapBuilder
         ->setStaticSourcePoint('Contributor.getBio()')
         ->setStaticTargetPoint('ContributorView.__construct().$bio')
         ->addCheckPoint(new ContributorViewHtmlTagStripper, 10)
-        ->addCheckPoint(new ContributorViewMarkdownTransformer, 20)
+        ->addCheckPoint(new ContributorViewMarkdownTransformer($markdownParser), 20)
         ->addRouteToMapBuilder()
         ->getMapBuilder()
     ->getMap();
