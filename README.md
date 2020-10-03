@@ -4,6 +4,9 @@
 [![Build Status](https://travis-ci.com/opportus/object-mapper.svg?branch=master)](https://travis-ci.com/opportus/object-mapper)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d3f5178323844f59a6ef5647cb11d9d7)](https://www.codacy.com/manual/opportus/object-mapper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opportus/object-mapper&amp;utm_campaign=Badge_Grade)
 
+This document introduces this solution, especially its concepts and use cases.
+The API documentation is bound to code and complies to PHPDoc standard...
+
 ## Index
 
 - [Index](#index)
@@ -96,32 +99,6 @@ instantiating your own services, with a DIC system or whatever.
 
 ## Mapping
 
-Mapping object to object is done via the main [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
-service's method described below:
-
-```php
-ObjectMapperInterface::map(object $source, $target, ?MapInterface $map = null): ?object;
-```
-
-**Parameters**
-
-`$source` must be an `object` to map data from.
-
-`$target` must be an `object` (or a `string` being the Fully Qualified Name of a
-class to instantiate and) to map data to.
-
-`$map` must be a `null` or an instance of [`MapInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapInterface.php).
-If it is `null`, the method builds and uses a map composed of the default
- [`PathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php)
- strategy.
-
-**Returns**
-
-Either:
-
--   `null` if the map has no route connecting source points with target points
--   `object` which is the (instantiated and) updated target
-
 ### How it works
 
 The `ObjectMapper` method presented above iterates through each *route* that it
@@ -136,13 +113,19 @@ is defined by and composed of its *source point*, its *target point*, and its
 
 A *source point* can be either:
 
--   A property
--   A method
+-   A *static property*, statically defined in the source class
+-   A *static method*, statically defined in the source class
+-   A *dynamic property*, dynamically defined in or overloaded by the source object
+-   A *dynamic method*, dynamically overloaded by the source object
+-   Any extended *static|dynamic source point*
 
 A *target point* can be either:
 
--   A property
--   A method parameter
+-   A *static property*, statically defined in the target class
+-   A *static method parameter*, statically defined in the source class
+-   A *dynamic property*, to dynamically define in or overload by the target object
+-   A *dynamic method parameter*, to dynamically overload by the target object
+-   Any extended *static|dynamic target point*
 
 A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
@@ -229,29 +212,8 @@ Implement each of your domain's *object mapping patterns* as a subtype of
 from your codebase... Indeed, when the mapped objects change, the mapping won't.
 This is very powerful.
 
-For concrete example of how to implement `PathFinderInterface`, refer to the
-default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php)
-or [`DynamicPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicPathFinder.php)
+For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php) or [`DynamicPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicPathFinder.php)
 implementations.
-
-Below is described the single method of [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php):
-
-```php
-PathFinderInterface::getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection;
-```
-
-**Parameters**
-
-`$source` An instance of [`SourceInterface`](https://github.com/opportus/object-mapper/blob/master/src/SourceInterface.php)
-which encapsulate and represent the *source* to map data from.
-
-`$target` An instance of [`TargetInterface`](https://github.com/opportus/object-mapper/blob/master/src/TargetInterface.php)
-which encapsulate and represent the *target* to map data to.
-
-**Returns**
-
-[`RouteCollection`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteCollection.php)
-connecting the *source points* with the *target points*.
 
 **Example**
 
@@ -356,51 +318,6 @@ $user = $objectMapper->map($contributorDto, User::class, $map);
 echo $user->getUsername(); // 'Toto'
 ```
 
-Such as in the example above, you can add routes to a map with the methods
-described below:
-
----
-
-```php
-RouteBuilderInterface::setStaticSourcePoint(string $sourcePointFqn): RouteBuilderInterface
-```
-
-**Parameter**
-
-`$sourcePointFqn` must be a `string` representing the Fully Qualified Name of a
-*source point* which can be:
-
--   A public, protected or private property ([`PropertyStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticSourcePoint.php))
-    represented by its FQN having for syntax `'My\Class.$property'`.
--   A public, protected or private method requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
-    represented by its FQN having for syntax `'My\Class.method()'`.
-
-**Returns**
-
-A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
-
----
-
-```php
-RouteBuilderInterface::setStaticTargetPoint(string $targetPointFqn): RouteBuilderInterface
-```
-
-**Parameter**
-
-`$targetPointFqn` must be a `string` representing the Fully Qualified Name of a
-*target point* which can be:
-
--   A public, protected or private property ([`PropertyStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticTargetPoint.php))
-    represented by its FQN having for syntax `'My\Class.$property'`.
--   A parameter of a public, protected or private method ([`MethodParameterStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterStaticTargetPoint.php))
-    represented by its FQN having for syntax `'My\Class.method().$parameter'`.
-
-**Returns**
-
-A **new** instance of [`RouteBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteBuilder.php).
-
----
-
 #### Via map definition preloading
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the
@@ -456,7 +373,7 @@ represented below:
 SourcePoint --> $value' --> CheckPoint1 --> $value'' --> CheckPoint2 --> $value''' --> TargetPoint
 ```
 
-An example of how to use *check points*:
+An example of how to use *check points* and implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
 
 ```php
 class Contributor
@@ -532,36 +449,6 @@ $objectMapper->map($contributor, ContributorView::class, $map);
 
 echo $contributorView->getBio(); // <b>Hello World!</b>
 ```
-
-Below is described the unique method of the [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php):
-
-```php
-CheckPointInterface::control($subject, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target);
-```
-
-**Parameters**
-
-`$subject` is the value that `CheckPointInterface` implementation is meant to
-control.
-
-`$route` is the instance of [`RouteInterface`](https://github.com/opportus/object-mapper/blob/master/src/Route/RouteInterface.php)
-which the `ObjectMapper` is currently on, containing the *source point* which
-the `$subject` comes from, the *target point* which the `$subject` goes to, and the
-[`CheckPointCollection`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointCollection.php)
-which contain your current `CheckPointInterface` instance.
-
-`$map` is an instance of [`MapInterface`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapInterface.php)
-which the *route* is on.
-
-`$source` An instance of [`SourceInterface`](https://github.com/opportus/object-mapper/blob/master/src/SourceInterface.php)
-which encapsulate and represent the *source* to map data from.
-
-`$target` An instance of [`TargetInterface`](https://github.com/opportus/object-mapper/blob/master/src/TargetInterface.php)
-which encapsulate and represent and wraps the *target* to map data to.
-
-**Returns**
-
-A `mixed` value to get assigned to the *target point*.
 
 ### Recursion
 
