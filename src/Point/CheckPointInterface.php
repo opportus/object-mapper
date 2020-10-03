@@ -30,14 +30,22 @@ interface CheckPointInterface
     /**
      * Controls the subject.
      *
-     * @param mixed $subject The value going to be assigned to the target point
-     * @param RouteInterface $route The route which the check point is currently on
-     * @param MapInterface $map The map which the route is currently on
-     * @param SourceInterface $source The source which the subject comes from
-     * @param TargetInterface $target The target which the subject goes to
-     * @return mixed The value going to be assigned to the target point
-     * @throws CheckPointSeizingException
-     * @throws InvalidOperationException
+     * @param mixed                       $subject The value going to be
+     *                                             assigned to the target point
+     * @param RouteInterface              $route   The route which the check
+     *                                             point is currently on
+     * @param MapInterface                $map     The map which the route is
+     *                                             currently on
+     * @param SourceInterface             $source  The source which the subject
+     *                                             comes from
+     * @param TargetInterface             $target  The target which the subject
+     *                                             goes to
+     * @return mixed                               The value going to be
+     *                                             assigned to the target point
+     * @throws CheckPointSeizingException          If the subject must not be
+     *                                             reach its target point
+     * @throws InvalidOperationException           If the operation fails for
+     *                                             any reason
      */
     public function control(
         $subject,

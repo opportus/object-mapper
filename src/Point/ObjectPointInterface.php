@@ -23,21 +23,21 @@ interface ObjectPointInterface
     /**
      * Gets the Fully Qualified Name regex pattern of the point.
      *
-     * @return string
+     * @return string The Fully Qualified Name regex pattern of the point
      */
     public static function getFqnRegexPattern(): string;
 
     /**
      * Gets the Fully Qualified Name of the point.
      *
-     * @return string
+     * @return string The Fully Qualified Name of the point
      */
     public function getFqn(): string;
 
     /**
      * Gets the name of the point.
      *
-     * @return string
+     * @return string The name of the point
      */
     public function getName(): string;
 }

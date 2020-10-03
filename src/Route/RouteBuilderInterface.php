@@ -25,10 +25,11 @@ use Opportus\ObjectMapper\Point\CheckPointInterface;
 interface RouteBuilderInterface
 {
     /**
-     * Sets the map builder.
+     * Sets the map builder to which the route builder passes built routes.
      *
-     * @param MapBuilderInterface $mapBuilder
-     * @return RouteBuilderInterface
+     * @param  MapBuilderInterface   $mapBuilder A map builder to add built
+     *                                           routes to
+     * @return RouteBuilderInterface             A route builder
      */
     public function setMapBuilder(
         MapBuilderInterface $mapBuilder
@@ -37,8 +38,11 @@ interface RouteBuilderInterface
     /**
      * Sets the static source point of the route.
      *
-     * @param string $sourcePointFqn
-     * @return RouteBuilderInterface
+     * @param  string                $sourcePointFqn The Fully Qualified Name
+     *                                               of a static source point
+     *                                               to compose the route being
+     *                                               build of
+     * @return RouteBuilderInterface                 A route builder
      */
     public function setStaticSourcePoint(
         string $sourcePointFqn
@@ -47,8 +51,11 @@ interface RouteBuilderInterface
     /**
      * Sets the static target point of the route.
      *
-     * @param string $targetPointFqn
-     * @return RouteBuilderInterface
+     * @param  string                $targetPointFqn The Fully Qualified Name
+     *                                               of a static target point
+     *                                               to compose the route being
+     *                                               built of
+     * @return RouteBuilderInterface                 A route builder
      */
     public function setStaticTargetPoint(
         string $targetPointFqn
@@ -57,8 +64,11 @@ interface RouteBuilderInterface
     /**
      * Sets the dynamic source point of the route.
      *
-     * @param string $sourcePointFqn
-     * @return RouteBuilderInterface
+     * @param  string                $sourcePointFqn The Fully Qualified Name
+     *                                               of a dynamic source point
+     *                                               to compose the route being
+     *                                               build of
+     * @return RouteBuilderInterface                 A route builder
      */
     public function setDynamicSourcePoint(
         string $sourcePointFqn
@@ -67,19 +77,25 @@ interface RouteBuilderInterface
     /**
      * Sets the dynamic target point of the route.
      *
-     * @param string $targetPointFqn
-     * @return RouteBuilderInterface
+     * @param  string                $targetPointFqn The Fully Qualified Name
+     *                                               of a dynamic target point
+     *                                               to compose the route being
+     *                                               built of
+     * @return RouteBuilderInterface                 A route builder
      */
     public function setDynamicTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface;
 
     /**
-     * Adds a checkpoint to the route.
+     * Adds a check point to the route.
      *
-     * @param CheckPointInterface $checkPoint
-     * @param int $checkPointPosition
-     * @return RouteBuilderInterface
+     * @param  CheckPointInterface   $checkPoint         A check point to add to
+     *                                                   route being built
+     * @param  int                   $checkPointPosition The position of the
+     *                                                   check point on the
+     *                                                   route being built
+     * @return RouteBuilderInterface                     A route builder
      */
     public function addCheckPoint(
         CheckPointInterface $checkPoint,
@@ -89,23 +105,31 @@ interface RouteBuilderInterface
     /**
      * Gets the built route.
      *
-     * @return RouteInterface
-     * @throws InvalidOperationException
+     * @return RouteInterface            The route built
+     * @throws InvalidOperationException If either or both of the source point
+     *                                   or the target point have not been set
+     *                                   or if the operation fails for any
+     *                                   reason
      */
     public function getRoute(): RouteInterface;
 
     /**
      * Adds the built route to the map builder.
      *
-     * @return RouteBuilderInterface
-     * @throws InvalidOperationException
+     * @return RouteBuilderInterface     A route builder to which the built
+     *                                   route has been added
+     * @throws InvalidOperationException If either or both of the source point
+     *                                   or the target point have not been set
+     *                                   or if the operation fails for any
+     *                                   reason
      */
     public function addRouteToMapBuilder(): RouteBuilderInterface;
 
     /**
      * Gets the map builder.
      *
-     * @return null|MapBuilderInterface
+     * @return null|MapBuilderInterface The map builder to add built routes to
+     *                                  if it has been set or NULL otherwise
      */
     public function getMapBuilder(): ?MapBuilderInterface;
 }

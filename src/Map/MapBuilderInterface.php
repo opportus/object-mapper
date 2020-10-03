@@ -28,54 +28,56 @@ interface MapBuilderInterface
     /**
      * Gets the route builder.
      *
-     * @return RouteBuilderInterface
+     * @return RouteBuilderInterface A `RouteBuilderInterface` instance
      */
     public function getRouteBuilder(): RouteBuilderInterface;
 
     /**
-     * Adds a route.
+     * Adds a route to the map being built.
      *
-     * @param RouteInterface $route
-     * @return MapBuilderInterface
+     * @param  RouteInterface      $route A route to add to the map being built
+     * @return MapBuilderInterface        A map builder
      */
     public function addRoute(RouteInterface $route): MapBuilderInterface;
 
     /**
-     * Adds the routes.
+     * Adds the routes to the map being built.
      *
-     * @param RouteCollection $routes
-     * @return MapBuilderInterface
+     * @param  RouteCollection     $routes A collection of routes to add to the
+     *                                     map being built
+     * @return MapBuilderInterface         A map builder
      */
     public function addRoutes(RouteCollection $routes): MapBuilderInterface;
 
     /**
-     * Adds a path finder.
+     * Adds a path finder to the map being built.
      *
-     * @param PathFinderInterface $pathFinder
-     * @return MapBuilderInterface
+     * @param  PathFinderInterface $pathFinder A path finder to add to the map
+     *                                         being built
+     * @return MapBuilderInterface             A map builder
      */
     public function addPathFinder(
         PathFinderInterface $pathFinder
     ): MapBuilderInterface;
 
     /**
-     * Adds a static path finder.
+     * Adds a static path finder to the map being built.
      *
-     * @return MapBuilderInterface
+     * @return MapBuilderInterface A map builder
      */
     public function addStaticPathFinder(): MapBuilderInterface;
 
     /**
-     * Adds a dynamic path finder.
+     * Adds a dynamic path finder to the map being built.
      *
-     * @return MapBuilderInterface
+     * @return MapBuilderInterface A map builder
      */
     public function addDynamicPathFinder(): MapBuilderInterface;
 
     /**
-     * Gets the map.
+     * Gets the built map.
      *
-     * @return MapInterface
+     * @return MapInterface The map built
      */
     public function getMap(): MapInterface;
 }

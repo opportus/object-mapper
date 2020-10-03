@@ -23,7 +23,7 @@ interface SourcePointInterface extends ObjectPointInterface
     /**
      * Gets the Fully Qualified Name of the source.
      *
-     * @return string
+     * @return string The Fully Qualified Name of the source
      */
     public function getSourceFqn(): string;
 }

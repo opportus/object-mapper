@@ -27,28 +27,33 @@ interface RouteInterface
     /**
      * Gets the Fully Qualified Name of the route.
      *
-     * @return string
+     * @return string The Fully Qualified Name of the route:
+     *                SourcePointFqn:TargetPointFqn
      */
     public function getFqn(): string;
 
     /**
      * Get the source point of the route.
      *
-     * @return SourcePointInterface
+     * @return SourcePointInterface The source point of the route to get value
+     *                              from
      */
     public function getSourcePoint(): SourcePointInterface;
 
     /**
      * Get the target point of the route.
      *
-     * @return TargetPointInterface
+     * @return TargetPointInterface The target point of the route to assign the
+     *                              value to
      */
     public function getTargetPoint(): TargetPointInterface;
 
     /**
-     * Gets the checkpoints of the route.
+     * Gets the check points of the route.
      *
-     * @return CheckPointCollection
+     * @return CheckPointCollection The collection of check points through
+     *                              which the value will pass prior to get
+     *                              assigned to the target
      */
     public function getCheckPoints(): CheckPointCollection;
 }

@@ -26,9 +26,15 @@ interface PointFactoryInterface
      * Creates a static source point of a certain type based
      * on the passed FQN.
      *
-     * @param string $pointFqn
-     * @return StaticSourcePointInterface
-     * @throws InvalidArgumentException
+     * @param  string                     $pointFqn The Fully Qualified Name of
+     *                                              a static source point to
+     *                                              create
+     * @return StaticSourcePointInterface           The static source point
+     *                                              created
+     * @throws InvalidArgumentException             If the first argument does
+     *                                              not match the FQN regex
+     *                                              pattern of any static source
+     *                                              point type
      */
     public function createStaticSourcePoint(string $pointFqn): StaticSourcePointInterface;
 
@@ -36,9 +42,15 @@ interface PointFactoryInterface
      * Creates a static target point of a certain type based
      * on the passed FQN.
      *
-     * @param string $pointFqn
-     * @return StaticTargetPointInterface
-     * @throws InvalidArgumentException
+     * @param  string                     $pointFqn The Fully Qualified Name of
+     *                                              a static target point to
+     *                                              create
+     * @return StaticTargetPointInterface           The static target point
+     *                                              created
+     * @throws InvalidArgumentException             If the first argument does
+     *                                              not match the FQN regex
+     *                                              pattern of any static target
+     *                                              point type
      */
     public function createStaticTargetPoint(string $pointFqn): StaticTargetPointInterface;
 
@@ -46,9 +58,15 @@ interface PointFactoryInterface
      * Creates a dynamic source point of a certain type based
      * on the passed FQN.
      *
-     * @param string $pointFqn
-     * @return DynamicSourcePointInterface
-     * @throws InvalidArgumentException
+     * @param  string                      $pointFqn The Fully Qualified Name of
+     *                                               a dynamic source point to
+     *                                               create
+     * @return DynamicSourcePointInterface           The dynamic source point
+     *                                               created
+     * @throws InvalidArgumentException              If the first argument does
+     *                                               not match the FQN regex
+     *                                               pattern of any dynamic
+     *                                               source point type
      */
     public function createDynamicSourcePoint(string $pointFqn): DynamicSourcePointInterface;
 
@@ -56,9 +74,15 @@ interface PointFactoryInterface
      * Creates a dynamic target point of a certain type based
      * on the passed FQN.
      *
-     * @param string $pointFqn
-     * @return DynamicTargetPointInterface
-     * @throws InvalidArgumentException
+     * @param  string                      $pointFqn The Fully Qualified Name of
+     *                                               a dynamic target point to
+     *                                               create
+     * @return DynamicTargetPointInterface           The dynamic target point
+     *                                               created
+     * @throws InvalidArgumentException              If the first argument does
+     *                                               not match the FQN regex
+     *                                               pattern of any dynamic
+     *                                               target point type
      */
     public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface;
 }

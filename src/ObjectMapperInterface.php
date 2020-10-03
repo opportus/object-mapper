@@ -25,14 +25,15 @@ interface ObjectMapperInterface
     /**
      * Maps source points values to target points following routes on the map.
      *
-     * @param object $source The instance to map data from
-     * @param object|string $target The instance (or the Fully Qualified Name of
-     *                              the class to instantiate and) to map data to
-     * @param null|MapInterface $map The instance of Map. If it is null,
-     *                      the method builds and uses a map composed of
-     *                      the default `PathFindingStrategy`
-     * @return null|object The instantiated and/or updated target or null if
-     *                     the map has no route
+     * @param object            $source The instance to map data from
+     * @param object|string     $target The instance (or the Fully Qualified
+     *                                  Name of the class to instantiate and)
+     *                                  to map data to
+     * @param null|MapInterface $map    An instance of `MapInterface`. If it is
+     *                                  null, the method builds itself a map.
+     * @return null|object              The instantiated and/or updated target
+     *                                  or NULL if the there is no route mapping
+     *                                  source and target
      */
     public function map(object $source, $target, ?MapInterface $map = null): ?object;
 }

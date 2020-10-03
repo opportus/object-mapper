@@ -29,40 +29,45 @@ interface SourceInterface
     /**
      * Gets the source Fully Qualified Name.
      *
-     * @return string
+     * @return string The Fully Qualified Class Name of the source
      */
     public function getFqn(): string;
 
     /**
      * Gets the source reflection.
      *
-     * @return ReflectionClass
+     * @return ReflectionClass The class reflection of the source
      */
     public function getReflection(): ReflectionClass;
 
     /**
      * Gets the source instance.
      *
-     * @return object
+     * @return object The source instance
      */
     public function getInstance(): object;
 
     /**
      * Checks whether the source has the passed static point.
      *
-     * @param StaticSourcePointInterface $point
-     * @return bool
+     * @param  StaticSourcePointInterface $point A static source point
+     * @return bool                              TRUE if the source class has
+     *                                           this point statically defined
+     *                                           or FALSE otherwise
      */
     public function hasStaticPoint(StaticSourcePointInterface $point): bool;
 
     /**
      * Gets the value of the passed source point.
      *
-     * @param SourcePointInterface $point
-     * @return mixed
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
-     * @noinspection PhpInconsistentReturnPointsInspection
+     * @param  SourcePointInterface      $point The source point to get the
+     *                                          value from
+     * @return mixed                            The value of the source point
+     * @throws InvalidArgumentException         If the source point is static
+     *                                          and the source class has no
+     *                                          such point defined
+     * @throws InvalidOperationException        If the operation fails for any
+     *                                          reason
      */
     public function getPointValue(SourcePointInterface $point);
 }

@@ -23,7 +23,7 @@ interface TargetPointInterface extends ObjectPointInterface
     /**
      * Gets the Fully Qualified Name of the target.
      *
-     * @return string
+     * @return string The Fully Qualified Name of the target
      */
     public function getTargetFqn(): string;
 }

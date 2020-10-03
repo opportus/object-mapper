@@ -26,12 +26,13 @@ use Opportus\ObjectMapper\TargetInterface;
 interface PathFinderInterface
 {
     /**
-     * Gets the routes, each connecting a source point to a target point.
+     * Gets the routes connecting the source points with the target points.
      *
-     * @param SourceInterface $source
-     * @param TargetInterface $target
-     * @return RouteCollection
-     * @throws InvalidOperationException
+     * @param  SourceInterface           $source A source to map data from
+     * @param  TargetInterface           $target A target to map data to
+     * @return RouteCollection           A route collection connecting the
+     *                                   source points with the target points
+     * @throws InvalidOperationException If the operation fails for any reason
      */
     public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection;
 }
