@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\PathFinder\DynamicSourceToStaticTargetPathFinder;
 use Opportus\ObjectMapper\PathFinder\StaticSourceToDynamicTargetPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
@@ -129,6 +130,14 @@ class MapBuilder implements MapBuilderInterface
     public function addStaticSourceToDynamicTargetPathFinder(): MapBuilderInterface
     {
         return $this->addPathFinder(new StaticSourceToDynamicTargetPathFinder($this->routeBuilder));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addDynamicSourceToStaticTargetPathFinder(): MapBuilderInterface
+    {
+        return $this->addPathFinder(new DynamicSourceToStaticTargetPathFinder($this->routeBuilder));
     }
 
     /**
