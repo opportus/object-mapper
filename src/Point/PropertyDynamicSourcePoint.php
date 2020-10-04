@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * The property dynamic source point.
@@ -43,6 +45,27 @@ final class PropertyDynamicSourcePoint extends SourcePoint implements DynamicSou
         }
 
         [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
+
+        try {
+            $sourceClassReflection = new ReflectionClass($matchedSourceFqn);
+        } catch (ReflectionException $exception) {
+            $message = \sprintf(
+                '%s is not a property dynamic source point. %s.',
+                $fqn,
+                $exception->getMessage()
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        if ($sourceClassReflection->hasProperty($matchedName)) {
+            $message = \sprintf(
+                '%s is not a property dynamic source point since the point is statically defined.',
+                $fqn,
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
 
         $this->fqn = $matchedFqn;
         $this->sourceFqn = $matchedSourceFqn;

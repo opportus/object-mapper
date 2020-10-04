@@ -83,7 +83,7 @@ class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
             }
 
             $routes[] = $this->routeBuilder
-                ->setDynamicSourcePoint($sourcePointFqn)
+                ->setStaticSourcePoint($sourcePointFqn)
                 ->setDynamicTargetPoint($targetPointFqn)
                 ->getRoute();
         }

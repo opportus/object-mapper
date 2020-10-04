@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * The property dynamic target point.
@@ -43,6 +45,27 @@ final class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTar
         }
 
         [$matchedFqn, $matchedTargetFqn, $matchedName] = $matches;
+
+        try {
+            $targetClassReflection = new ReflectionClass($matchedTargetFqn);
+        } catch (ReflectionException $exception) {
+            $message = \sprintf(
+                '%s is not a property dynamic target point. %s.',
+                $fqn,
+                $exception->getMessage()
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        if ($targetClassReflection->hasProperty($matchedName)) {
+            $message = \sprintf(
+                '%s is not a property dynamic target point since the point is statically defined.',
+                $fqn,
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
 
         $this->fqn = $matchedFqn;
         $this->targetFqn = $matchedTargetFqn;

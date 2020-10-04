@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use ReflectionClass;
+use ReflectionException;
 
 /**
  * The method dynamic source point.
@@ -43,6 +45,27 @@ final class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourc
         }
 
         [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
+
+        try {
+            $sourceClassReflection = new ReflectionClass($matchedSourceFqn);
+        } catch (ReflectionException $exception) {
+            $message = \sprintf(
+                '%s is not a method dynamic source point. %s.',
+                $fqn,
+                $exception->getMessage()
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        if ($sourceClassReflection->hasMethod($matchedName)) {
+            $message = \sprintf(
+                '%s is not a method dynamic source point since the point is statically defined.',
+                $fqn,
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
 
         $this->fqn = $matchedFqn;
         $this->sourceFqn = $matchedSourceFqn;
