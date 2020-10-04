@@ -97,7 +97,7 @@ class ObjectMapperTest extends FinalBypassTestCase
         static::assertEquals(1, $target->getG()->getA());
         static::assertIsArray($target->getH());
         static::assertContainsOnlyInstancesOf(ObjectMapperTestObjectBClass::class, $target->getH());
-        foreach ($target->getH() as $k => $v) {
+        foreach ($target->getH() as $v) {
             static::assertEquals(1, $v->getA());
         }
 
