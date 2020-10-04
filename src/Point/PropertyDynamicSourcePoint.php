@@ -61,7 +61,7 @@ final class PropertyDynamicSourcePoint extends SourcePoint implements DynamicSou
         if ($sourceClassReflection->hasProperty($matchedName)) {
             $message = \sprintf(
                 '%s is not a property dynamic source point since the point is statically defined.',
-                $fqn,
+                $fqn
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);

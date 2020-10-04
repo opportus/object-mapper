@@ -71,7 +71,7 @@ final class MethodParameterDynamicTargetPoint extends TargetPoint implements Dyn
         if ($targetClassReflection->hasMethod($matchedMethodName)) {
             $message = \sprintf(
                 '%s is not a method parameter dynamic target point since the point is statically defined.',
-                $fqn,
+                $fqn
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);

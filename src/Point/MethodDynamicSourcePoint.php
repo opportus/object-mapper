@@ -61,7 +61,7 @@ final class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourc
         if ($sourceClassReflection->hasMethod($matchedName)) {
             $message = \sprintf(
                 '%s is not a method dynamic source point since the point is statically defined.',
-                $fqn,
+                $fqn
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
