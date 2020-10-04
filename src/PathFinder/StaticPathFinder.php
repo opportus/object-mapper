@@ -70,8 +70,8 @@ class StaticPathFinder implements PathFinderInterface
     {
         $routes = [];
 
-        $sourceReflection = $source->getReflection();
-        $targetReflection = $target->getReflection();
+        $sourceReflection = $source->getClassReflection();
+        $targetReflection = $target->getClassReflection();
 
         try {
             $targetPointReflections = $this->getTargetPointReflections(

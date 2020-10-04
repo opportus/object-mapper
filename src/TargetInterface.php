@@ -13,9 +13,11 @@ namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Point\DynamicTargetPointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use ReflectionClass;
+use ReflectionObject;
 
 /**
  * The target interface.
@@ -34,11 +36,18 @@ interface TargetInterface
     public function getFqn(): string;
 
     /**
-     * Gets the target reflection.
+     * Gets the target class reflection.
      *
      * @return ReflectionClass The class reflection of the target
      */
-    public function getReflection(): ReflectionClass;
+    public function getClassReflection(): ReflectionClass;
+
+    /**
+     * Gets the target object reflection.
+     *
+     * @return null|ReflectionObject The object reflection of the target
+     */
+    public function getObjectReflection(): ?ReflectionObject;
 
     /**
      * Gets the target instance.
@@ -57,6 +66,16 @@ interface TargetInterface
      *                                           or FALSE otherwise
      */
     public function hasStaticPoint(StaticTargetPointInterface $point): bool;
+
+    /**
+     * Checks whether the target has the passed dynamic point.
+     *
+     * @param  DynamicTargetPointInterface $point A dynamic target point
+     * @return bool                               TRUE if the target object has
+     *                                            this point dynamically defined
+     *                                            or FALSE otherwise
+     */
+    public function hasDynamicPoint(DynamicTargetPointInterface $point): bool;
 
     /**
      * Sets the value of the passed target point.

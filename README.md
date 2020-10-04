@@ -229,8 +229,8 @@ class MyPathFinder implements PathFinderInterface
 {
     public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
     {
-        $source->getReflection();
-        $target->getReflection();
+        $source->getClassReflection();
+        $target->getClassReflection();
         
         $routes = new RouteCollection();
 

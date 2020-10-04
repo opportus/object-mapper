@@ -14,6 +14,7 @@ namespace Opportus\ObjectMapper;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Point\DynamicTargetPointInterface;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
@@ -22,6 +23,7 @@ use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionObject;
 
 /**
  * The target.
@@ -33,9 +35,14 @@ use ReflectionException;
 class Target implements TargetInterface
 {
     /**
-     * @var ReflectionClass $reflection
+     * @var ReflectionClass $classReflection
      */
-    private $reflection;
+    private $classReflection;
+
+    /**
+     * @var null|ReflectionObject $objectReflection
+     */
+    private $objectReflection;
 
     /**
      * @var null|object $instance
@@ -70,7 +77,7 @@ class Target implements TargetInterface
         }
 
         try {
-            $this->reflection = new ReflectionClass($target);
+            $this->classReflection = new ReflectionClass($target);
         } catch (ReflectionException $exception) {
             $message = \sprintf(
                 '%s is not a target. %s',
@@ -81,7 +88,11 @@ class Target implements TargetInterface
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        $this->instance = \is_object($target) ? $target : null;
+        if (\is_object($target)) {
+            $this->objectReflection = new ReflectionObject($target);
+            $this->instance = $target;
+        }
+
         $this->isOperated = false;
         $this->pointValues = [
             'static_properties' => [],
@@ -96,15 +107,25 @@ class Target implements TargetInterface
      */
     public function getFqn(): string
     {
-        return $this->reflection->getName();
+        return $this->classReflection->getName();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getReflection(): ReflectionClass
+    public function getClassReflection(): ReflectionClass
     {
-        return new ReflectionClass($this->reflection->getName());
+        return new ReflectionClass($this->classReflection->getName());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectReflection(): ?ReflectionObject
+    {
+        if (null !== $this->instance) {
+            return new ReflectionObject($this->instance);
+        }
     }
 
     /**
@@ -126,6 +147,20 @@ class Target implements TargetInterface
     /**
      * {@inheritdoc}
      */
+    public function hasDynamicPoint(DynamicTargetPointInterface $point): bool
+    {
+        return
+            $this->isInstantiated() &&
+            $point instanceof PropertyDynamicTargetPoint &&
+            $this->objectReflection->hasProperty($point->getName()) ||
+            $this->isInstantiated() &&
+            $point instanceof MethodParameterDynamicTargetPoint &&
+            \is_callable([$this->instance, $point->getMethodName()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setPointValue(TargetPointInterface $point, $pointValue)
     {
         if ($point instanceof StaticTargetPointInterface &&
@@ -134,7 +169,7 @@ class Target implements TargetInterface
             $message = \sprintf(
                 '%s is not a static target point of %s.',
                 $point->getFqn(),
-                $this->reflection->getName()
+                $this->classReflection->getName()
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -205,11 +240,11 @@ class Target implements TargetInterface
 
         if (null === $instance) {
             if (isset($this->pointValues['static_method_parameters']['__construct'])) {
-                $instance = $this->reflection->newInstanceArgs(
+                $instance = $this->classReflection->newInstanceArgs(
                     $this->pointValues['static_method_parameters']['__construct']
                 );
             } else {
-                $instance = $this->reflection->newInstance();
+                $instance = $this->classReflection->newInstance();
             }
         } elseif (false === $isSafeOperation) {
             $instance = clone $instance;
@@ -224,7 +259,7 @@ class Target implements TargetInterface
                 continue;
             }
 
-            $this->reflection->getMethod($methodName)->invokeArgs(
+            $this->classReflection->getMethod($methodName)->invokeArgs(
                 $instance,
                 $methodArguments
             );
@@ -243,7 +278,7 @@ class Target implements TargetInterface
             $propertyName =>
             $propertyValue
         ) {
-            $this->reflection->getProperty($propertyName)->setValue(
+            $this->classReflection->getProperty($propertyName)->setValue(
                 $instance,
                 $propertyValue
             );
@@ -274,7 +309,7 @@ class Target implements TargetInterface
     private function getMethodParameterStaticPointPosition(MethodParameterStaticTargetPoint $point): int
     {
         foreach (
-            $this->reflection->getMethod($point->getMethodName())
+            $this->classReflection->getMethod($point->getMethodName())
                 ->getParameters() as
             $parameter
         ) {

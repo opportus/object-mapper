@@ -51,8 +51,8 @@ class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
     {
         $routes = [];
 
-        $sourceReflection = $source->getReflection();
-        $targetReflection = $target->getReflection();
+        $sourceReflection = $source->getClassReflection();
+        $targetReflection = $target->getClassReflection();
 
         $sourcePointReflections = $this->getSourcePointReflections(
             $sourceReflection
