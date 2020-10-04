@@ -1,6 +1,6 @@
 {
     "name": "opportus/object-mapper",
-    "description": "Maps (differently typed or not) objects via extensible strategies and controls.",
+    "description": "Maps generically source to target objects via extensible strategies and controls.",
     "type": "library",
     "keywords": ["object mapper", "data mapper", "map", "dto", "pathfinding"],
     "homepage": "https://github.com/opportus/object-mapper",
