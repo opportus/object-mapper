@@ -11,8 +11,6 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 
@@ -25,17 +23,19 @@ use Opportus\ObjectMapper\Map\MapBuilderInterface;
  */
 class ObjectMapper implements ObjectMapperInterface
 {
+    use ObjectMapperTrait;
+
     /**
-     * @var null|MapBuilderInterface $mapBuilder
+     * @var MapBuilderInterface $mapBuilder
      */
     private $mapBuilder;
 
     /**
      * Constructs the object mapper.
      *
-     * @param null|MapBuilderInterface $mapBuilder
+     * @param MapBuilderInterface $mapBuilder
      */
-    public function __construct(?MapBuilderInterface $mapBuilder = null)
+    public function __construct(MapBuilderInterface $mapBuilder)
     {
         $this->mapBuilder = $mapBuilder;
     }
@@ -48,52 +48,10 @@ class ObjectMapper implements ObjectMapperInterface
         $source = ($source instanceof SourceInterface) ? $source : new Source($source);
         $target = ($target instanceof TargetInterface) ? $target : new Target($target);
 
-        if (null === $map) {
-            if (null === $this->mapBuilder) {
-                throw new InvalidArgumentException(
-                    3,
-                    __METHOD__,
-                    'The argument is required when no MapBuilderInterface instance is set.'
-                );
-            }
+        $map = $map ?? $this->mapBuilder
+            ->addStaticPathFinder()
+            ->getMap();
 
-            $map = $this->mapBuilder
-                ->addStaticPathFinder()
-                ->getMap();
-        }
-
-        $routes = $map->getRoutes($source, $target);
-
-        if (0 === \count($routes)) {
-            return null;
-        }
-
-        foreach ($routes as $route) {
-            $sourcePoint = $route->getSourcePoint();
-            $targetPoint = $route->getTargetPoint();
-            $checkPoints = $route->getCheckPoints();
-
-            $checkPointSubject = $source->getPointValue($sourcePoint);
-
-            try {
-                foreach ($checkPoints as $checkPoint) {
-                    $checkPointSubject = $checkPoint->control(
-                        $checkPointSubject,
-                        $route,
-                        $map,
-                        $source,
-                        $target
-                    );
-                }
-            } catch (CheckPointSeizingException $e) {
-                continue;
-            }
-
-            $target->setPointValue($targetPoint, $checkPointSubject);
-        }
-
-        $target->operate();
-
-        return $target->getInstance();
+        return $this->mapObjects($source, $target, $map);
     }
 }

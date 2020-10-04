@@ -14,6 +14,7 @@ namespace Opportus\ObjectMapper\Point;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\ObjectMapperInterface;
+use Opportus\ObjectMapper\ObjectMapperTrait;
 use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
@@ -29,6 +30,8 @@ use Opportus\ObjectMapper\TargetInterface;
  */
 final class RecursionCheckPoint implements CheckPointInterface
 {
+    use ObjectMapperTrait;
+
     /**
      * @var string $sourceFqn
      */
@@ -45,28 +48,20 @@ final class RecursionCheckPoint implements CheckPointInterface
     private $targetSourcePoint;
 
     /**
-     * @var ObjectMapperInterface $objectMapper
-     */
-    private $objectMapper;
-
-    /**
      * Constructs the recursion check point.
      *
      * @param string $sourceFqn
      * @param string $targetFqn
      * @param SourcePointInterface $targetSourcePoint
-     * @param ObjectMapperInterface $objectMapper
      */
     public function __construct(
         string $sourceFqn,
         string $targetFqn,
-        SourcePointInterface $targetSourcePoint,
-        ObjectMapperInterface $objectMapper
+        SourcePointInterface $targetSourcePoint
     ) {
         $this->sourceFqn = $sourceFqn;
         $this->targetFqn = $targetFqn;
         $this->targetSourcePoint = $targetSourcePoint;
-        $this->objectMapper = $objectMapper;
     }
 
     /**
@@ -120,7 +115,7 @@ final class RecursionCheckPoint implements CheckPointInterface
             }
         }
 
-        $updatedRecursionTarget = $this->objectMapper->map(
+        $updatedRecursionTarget = $this->mapObjects(
             $recursionSource,
             $recursionTarget,
             $map

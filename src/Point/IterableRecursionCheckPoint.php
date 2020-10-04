@@ -15,6 +15,7 @@ use ArrayAccess;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\ObjectMapperInterface;
+use Opportus\ObjectMapper\ObjectMapperTrait;
 use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
@@ -31,6 +32,8 @@ use Traversable;
  */
 final class IterableRecursionCheckPoint implements CheckPointInterface
 {
+    use ObjectMapperTrait;
+
     /**
      * @var string $sourceFqn
      */
@@ -47,28 +50,20 @@ final class IterableRecursionCheckPoint implements CheckPointInterface
     private $targetIterableSourcePoint;
 
     /**
-     * @var ObjectMapperInterface $objectMapper
-     */
-    private $objectMapper;
-
-    /**
      * Constructs the iterable recursion check point.
      *
      * @param string $sourceFqn
      * @param string $targetFqn
      * @param SourcePointInterface $targetIterableSourcePoint
-     * @param ObjectMapperInterface $objectMapper
      */
     public function __construct(
         string $sourceFqn,
         string $targetFqn,
-        SourcePointInterface $targetIterableSourcePoint,
-        ObjectMapperInterface $objectMapper
+        SourcePointInterface $targetIterableSourcePoint
     ) {
         $this->sourceFqn = $sourceFqn;
         $this->targetFqn = $targetFqn;
         $this->targetIterableSourcePoint = $targetIterableSourcePoint;
-        $this->objectMapper = $objectMapper;
     }
 
     /**
@@ -149,7 +144,7 @@ final class IterableRecursionCheckPoint implements CheckPointInterface
                 }
             }
 
-            $updatedRecursionTarget = $this->objectMapper->map(
+            $updatedRecursionTarget = $this->mapObjects(
                 $recursionSource,
                 $recursionTarget,
                 $map

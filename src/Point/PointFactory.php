@@ -172,8 +172,7 @@ class PointFactory implements PointFactoryInterface
         return new RecursionCheckPoint(
             $sourceFqn,
             $targetFqn,
-            $this->createSourcePoint($targetSourcePointFqn),
-            new ObjectMapper()
+            $this->createSourcePoint($targetSourcePointFqn)
         );
     }
 
@@ -188,8 +187,7 @@ class PointFactory implements PointFactoryInterface
         return new IterableRecursionCheckPoint(
             $sourceFqn,
             $targetFqn,
-            $this->createSourcePoint($targetIterableSourcePointFqn),
-            new ObjectMapper()
+            $this->createSourcePoint($targetIterableSourcePointFqn)
         );
     }
 }

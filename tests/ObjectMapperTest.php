@@ -164,7 +164,7 @@ class ObjectMapperTest extends FinalBypassTestCase
 
     private function getObjectMapper(): ObjectMapperInterface
     {
-        return new ObjectMapper();
+        return new ObjectMapper($this->getMapBuilder());
     }
 }
 
