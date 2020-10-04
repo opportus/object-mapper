@@ -30,18 +30,18 @@
 
 ## Use cases
 
-Use this solution for mapping objects via extensible strategies and controls.
+Use this solution for mapping source to target objects via extensible
+strategies and controls.
 
-Leverage this solution by delegating to it generic controls over source and
-target objects to:
+Leverage this solution by delegating to it mapping strategies and controls of
+source and target objects to:
  
--   Decouple source and target from your codebase
+-   Decouple source and target from mapping logic
 -   Dynamically define control flow over data being transferred from source to
     target
 -   Dynamically define target model depending on source model
 
-This project aims to provide a standard core system to many types of solution
-such as:
+This project aims to provide a standard core system to many solutions such as:
 
 -   Data transformation
 -   ORM
