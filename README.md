@@ -34,7 +34,7 @@ Use this solution for mapping source to target objects via extensible
 strategies and controls.
 
 Leverage this solution by delegating to it mapping strategies and controls of
-source and target objects to:
+objects to:
  
 -   Decouple source and target from mapping logic
 -   Dynamically define control flow over data being transferred from source to
@@ -105,13 +105,21 @@ instantiating your own services, with a DIC system or whatever.
 
 ### How it works
 
-The `ObjectMapper` method presented above iterates through each *route* that it
-gets from the *map*. Doing so, the method assigns the value of the current
-*route*'s *source point* to its *target point*. Optionally, on the *route*,
-*check points* can be defined in order to control the value from the
-*source point* before it reaches the *target point*.
+The
+[ObjectMapper](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
+iterates through each
+[Route](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
+that it gets from the
+[Map](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
 
-A [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
+Doing so, it assigns the value of the current *route*'s *source point* to its
+*target point*.
+
+Optionally, on the *route*, *check points* can be defined in
+order to control the value from the *source point* before it reaches the
+*target point*.
+
+A *route*
 is defined by and composed of its *source point*, its *target point*, and its
 *check points*.
 
@@ -119,19 +127,20 @@ A *source point* can be either:
 
 -   A static/dynamic property
 -   A static/dynamic method
--   An extended type of static/dynamic source point
+-   Any extended type of static/dynamic source point
 
 A *target point* can be either:
 
 -   A static/dynamic property
 -   A static/dynamic method parameter
--   An extended type of static/dynamic target point
+-   Any extended type of static/dynamic target point
 
-A *check point* can be any instance of [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
+A *check point* can be any implementation of
+[`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 
 These *routes* can be defined [automatically](#automatic-mapping) via a *map*'s
 [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php)
-and/or [manually](#manual-mapping) via:
+implementation and/or [manually](#manual-mapping) via:
 
 -   [Map builder API](#via-map-builder-api)
 -   [Map definition preloading](#via-map-definition-preloading)
@@ -205,7 +214,7 @@ this *path finder*. You can map generically differently typed objects only
 accordingly to this convention.
 
 If the default `StaticPathFinder`'s behavior does not fit your needs, you still
-can genericize and encapsulate your domain's mapping logic in a subtype
+can genericize and encapsulate your domain's mapping logic as a subtype
 of `PathFinderInterface`. Doing so effectively, you leverage `ObjectMapper` to
 decouple these objects from your codebase... Indeed, when the mapped objects
 change, the mapping won't.
@@ -361,7 +370,7 @@ get integrated, adapted, and extended seamlessly into any of these contexts.
 Therefore, this solution delegates *map definition preloading* to the
 integrating higher level system which can make use contextually of its own DIC,
 configuration, and cache systems required for achieving
-*map definitionpreloading*.
+*map definition preloading*.
 
 [opportus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
 is one system integrating this library (into Symfony 4 application context).
