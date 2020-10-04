@@ -68,11 +68,11 @@ interface MapBuilderInterface
     public function addStaticPathFinder(): MapBuilderInterface;
 
     /**
-     * Adds a dynamic path finder to the map being built.
+     * Adds a static source to dynamic target path finder to the map being built.
      *
      * @return MapBuilderInterface A map builder
      */
-    public function addDynamicPathFinder(): MapBuilderInterface;
+    public function addStaticSourceToDynamicTargetPathFinder(): MapBuilderInterface;
 
     /**
      * Gets the built map.

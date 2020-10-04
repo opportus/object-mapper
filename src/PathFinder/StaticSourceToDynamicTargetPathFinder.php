@@ -21,13 +21,13 @@ use ReflectionProperty;
 use Reflector;
 
 /**
- * The default dynamic path finder.
+ * The default static source to dynamic target path finder.
  *
  * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class DynamicPathFinder implements PathFinderInterface
+class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder
@@ -35,7 +35,7 @@ class DynamicPathFinder implements PathFinderInterface
     private $routeBuilder;
 
     /**
-     * Constructs the default dynamic path finder.
+     * Constructs the default static source to dynamic target path finder.
      *
      * @param RouteBuilderInterface $routeBuilder
      */

@@ -87,7 +87,7 @@ class ObjectMapperTest extends FinalBypassTestCase
         static::assertEquals(11, $target->getB());
 
         $map = $mapBuilder
-            ->addDynamicPathFinder()
+            ->addStaticSourceToDynamicTargetPathFinder()
             ->getMap();
 
         $target = $objectMapper->map(

@@ -219,7 +219,7 @@ of `PathFinderInterface`. Doing so effectively, you leverage `ObjectMapper` to
 decouple these objects from your codebase... Indeed, when the mapped objects
 change, the mapping won't.
 
-For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php) or [`DynamicPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicPathFinder.php)
+For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php) or [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php)
 implementations.
 
 **Example**
@@ -243,7 +243,7 @@ class MyPathFinder implements PathFinderInterface
 // Pass to the map builder pathfinders you want it to compose the map of
 $map = $mapBuilder
     ->addStaticPathFinder()
-    ->addDynamicPathFinder()
+    ->addStaticSourceToDynamicTargetPathFinder()
     ->addPathFinder(new MyPathFinder())
     ->getMap();
 
