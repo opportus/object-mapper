@@ -106,11 +106,11 @@ instantiating your own services, with a DIC system or whatever.
 ### How it works
 
 The
-[ObjectMapper](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
+[`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
 iterates through each
-[Route](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
+[`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
 that it gets from the
-[Map](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
+[`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php).
 
 Doing so, it assigns the value of the current *route*'s *source point* to its
 *target point*.
@@ -193,7 +193,7 @@ appropriate point of the *source* class to connect to each point of the *target*
 class. The connected *source point* and *target point* compose then a *route*
 which is followed by the `ObjectMapper`.
 
-For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinder.php),
+For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php),
 a *target point* can be:
 
 -   A public property ([`PropertyStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticTargetPoint.php))
