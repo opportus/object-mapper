@@ -79,7 +79,7 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
         );
 
         static::assertSame(
-            \sprintf('%s.%s().$%s', $className, $methodName, $parameterName),
+            \sprintf('#%s.%s().$%s', $className, $methodName, $parameterName),
             $parameterPoint->getFqn()
         );
     }

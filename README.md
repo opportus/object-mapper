@@ -11,7 +11,6 @@
 
 - [Use cases](#use-cases)
 - [Roadmap](#roadmap)
-  - [v1.0.0-beta.1](#v100-beta1)
   - [v1.0.0 (stable)](#v100-stable)
 - [Integrations](#integrations)
 - [Setup](#setup)
@@ -54,13 +53,11 @@ This project aims to provide a standard core system to many solutions such as:
 
 To develop this solution faster, [contributions](https://github.com/opportus/object-mapper/blob/master/.github/CONTRIBUTING.md) are welcome...
 
-### v1.0.0-beta.1
-
--   Implement recursion control system
-
 ### v1.0.0 (stable)
 
 -   Implement last unit tests to reach 100% coverage
+-   Update the doc with description of last features implemented 
+([Dynamic Mapping](#dynamic-mapping), [Recursion](#recursion))
 
 ## Integrations
 
@@ -399,7 +396,7 @@ represented below:
 SourcePoint --> $value' --> CheckPoint1 --> $value'' --> CheckPoint2 --> $value''' --> TargetPoint
 ```
 
-An example of how to use *check points*, implementing [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php) as a sort of presenter:
+A basic example of how to use *check points*, implementing [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php) as a sort of presenter:
 
 ```php
 class Contributor
@@ -470,15 +467,95 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 
 ### Recursion
 
-Although a *recursion* dedicated feature may come later, you can implement [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php)
-such as [introduced previously](#check-point) to recursively map a
-*source point* to a *target point*. For example:
+A *recursion* implements [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
+It is used to recursively map a *source point* to a *target point*. More concretely, it is used:
 
--   If you map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and
-    that you want in the same time to map `C` to `D`, AKA *simple recursion*.
--   If you map an instance of `A` (that *has many* `C`) to `B`
-    (that *has many* `D`) and that you want in the same time to map many `C` to
-    many `D`, AKA *in-width recursion* or *iterable recursion*.
--   If you map an instance of `A` (that *has* `C` which *has* `E`) to `B`
-    (that *has* `D` which *has* `F`) and that you want in the same time to map
-    `C` and `E` to `D` and `F`, AKA *in-depth recursion*.
+-   To map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and
+    in same time map `C` to `D`, AKA *simple recursion*.
+-   To map an instance of `A` (that *has many* `C`) to `B`
+    (that *has many* `D`) and in same time map many `C` to many `D`, AKA
+    *in-width recursion* or *iterable recursion*.
+-   To map an instance of `A` (that *has* `C` which *has* `E`) to `B`
+    (that *has* `D` which *has* `F`) and in same time map `C` and `E` to `D` and
+    `F`, AKA *in-depth recursion*.
+
+A basic example of how to map a `Post` and its composite objects to its
+`PostDto` and its composite DTO objects:
+
+```php
+class Post
+{
+    public Author $author;
+    public Comment[] $comments;
+}
+
+class Author
+{
+    public string $name;
+}
+
+class Comment
+{
+    public Author $author;
+}
+
+class PostDto {}
+class AuthorDto {}
+class CommentDto {}
+
+$comment1 = new Comment();
+$comment1->author = new Author();
+$comment1->author->name = 'clem';
+
+$comment2 = new Comment();
+$comment2->author = new Author();
+$comment2->author->name = 'bob';
+
+$post = new Post();
+$post->author = new Author();
+$post->author->name = 'Martin Fowler';
+$post->comments = [$comment1, $comment2];
+
+// Let's map the Post instance above and its composites to a new PostDto instance and DTO composites...
+$mapBuilder
+    ->getRouteBuilder
+        ->setStaticSourcePoint('Post.$author')
+        ->setDynamicTargetPoint('PostDto.$author')
+        ->addRecursionCheckPoint('Author', 'AuthorDto', 'PostDto.$author') // Mapping also Post's Author to PostDto's AuthorDto
+        ->addRouteToMapBuilder()
+
+        ->setStaticSourcePoint('Comment.$author')
+        ->setDynamicTargetPoint('CommentDto.$author')
+        ->addRecursionCheckPoint('Author', 'AuthorDto', 'CommentDto.$author') // Mapping also Comment's Author to CommentDto's AuthorDto
+        ->addRouteToMapBuilder()
+
+        ->setStaticSourcePoint('Post.$comments')
+        ->setDynamicTargetPoint('PostDto.$comments')
+        ->addIterableRecursionCheckPoint('Comment', 'CommentDto', 'PostDto.$comments') // Mapping also Post's Comment's to PostDto's CommentDto's
+        ->addRouteToMapBuilder()
+    ->getMapBuilder()
+    ->addStaticSourceToDynamicTargetPathFinder()
+    ->getMap();
+
+$postDto = $objectMapper->($post, PostDto::class, $map)
+
+get_class($postDto); // PostDto
+
+get_class($postDto->author); // AuthorDto
+echo $postDto->author->name; // Matin Fowler
+
+get_class($postDto->comments[0]); // CommentDto
+get_class($postDto->comments[0]->author); // AuthorDto
+echo $postDto->comments[0]->author->name; // clem
+
+get_class($postDto->comments[1]); // CommentDto
+get_class($postDto->comments[1]->author); // AuthorDto
+echo $postDto->comments[1]->author->name; // bob
+```
+
+Naturally, all that can get simplified with higher level `PathFinderInterface`
+implementation defining these recursions automatically based on source and
+target point types. These types being hinted in source and target classes
+either with PHP or PHPDoc.
+
+This library may feature such `PathFinder` in near future.

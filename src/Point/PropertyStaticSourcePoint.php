@@ -24,7 +24,7 @@ use ReflectionProperty;
  */
 final class PropertyStaticSourcePoint extends SourcePoint implements StaticSourcePointInterface
 {
-    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property static source point.
@@ -61,7 +61,7 @@ final class PropertyStaticSourcePoint extends SourcePoint implements StaticSourc
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        $this->fqn = $matchedFqn;
+        $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));
         $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
     }

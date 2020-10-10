@@ -59,7 +59,7 @@ class PointFactoryTest extends FinalBypassTestCase
             $point = $pointFactory->createStaticSourcePoint($pointFqn);
 
             static::assertInstanceOf($pointType, $point);
-            static::assertSame($pointFqn, $point->getFqn());
+            static::assertSame(\sprintf('#%s', \ltrim($pointFqn, '#')), $point->getFqn());
         }
 
         $this->expectException(InvalidArgumentException::class);
@@ -72,7 +72,7 @@ class PointFactoryTest extends FinalBypassTestCase
 
         $pointFqns =  [
             PropertyStaticTargetPoint::class => \sprintf(
-                '%s.$%s',
+                '#%s.$%s',
                 PointFactoryTestClass::class,
                 'property'
             ),
@@ -89,7 +89,7 @@ class PointFactoryTest extends FinalBypassTestCase
             $point = $pointFactory->createStaticTargetPoint($pointFqn);
 
             static::assertInstanceOf($pointType, $point);
-            static::assertSame($pointFqn, $point->getFqn());
+            static::assertSame(\sprintf('#%s', \ltrim($pointFqn, '#')), $point->getFqn());
         }
 
         $this->expectException(InvalidArgumentException::class);

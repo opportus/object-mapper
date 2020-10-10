@@ -154,6 +154,36 @@ class RouteBuilder implements RouteBuilderInterface
     /**
      * {@inheritDoc}
      */
+    public function setSourcePoint(
+        string $sourcePointFqn
+    ): RouteBuilderInterface {
+        return new self(
+            $this->pointFactory,
+            $this->mapBuilder,
+            $this->pointFactory->createSourcePoint($sourcePointFqn),
+            $this->targetPoint,
+            $this->checkPoints
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTargetPoint(
+        string $targetPointFqn
+    ): RouteBuilderInterface {
+        return new self(
+            $this->pointFactory,
+            $this->mapBuilder,
+            $this->sourcePoint,
+            $this->pointFactory->createTargetPoint($targetPointFqn),
+            $this->checkPoints
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addCheckPoint(
         CheckPointInterface $checkPoint,
         int $checkPointPosition = null
@@ -172,6 +202,44 @@ class RouteBuilder implements RouteBuilderInterface
             $this->sourcePoint,
             $this->targetPoint,
             new CheckPointCollection($checkPoints)
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetSourcePointFqn,
+        ?int $checkPointPosition = null
+    ): RouteBuilderInterface {
+        return $this->addCheckPoint(
+            $this->pointFactory->createRecursionCheckPoint(
+                $sourceFqn,
+                $targetFqn,
+                $targetSourcePointFqn
+            ),
+            $checkPointPosition
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addIterableRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetIterableSourcePointFqn,
+        ?int $checkPointPosition = null
+    ): RouteBuilderInterface {
+        return $this->addCheckPoint(
+            $this->pointFactory->createIterableRecursionCheckPoint(
+                $sourceFqn,
+                $targetFqn,
+                $targetIterableSourcePointFqn
+            ),
+            $checkPointPosition
         );
     }
 

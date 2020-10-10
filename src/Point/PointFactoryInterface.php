@@ -23,8 +23,7 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 interface PointFactoryInterface
 {
     /**
-     * Creates a static source point of a certain type based
-     * on the passed FQN.
+     * Creates a static source point of a certain type based on the passed FQN.
      *
      * @param  string                     $pointFqn The Fully Qualified Name of
      *                                              a static source point to
@@ -39,8 +38,7 @@ interface PointFactoryInterface
     public function createStaticSourcePoint(string $pointFqn): StaticSourcePointInterface;
 
     /**
-     * Creates a static target point of a certain type based
-     * on the passed FQN.
+     * Creates a static target point of a certain type based on the passed FQN.
      *
      * @param  string                     $pointFqn The Fully Qualified Name of
      *                                              a static target point to
@@ -55,8 +53,7 @@ interface PointFactoryInterface
     public function createStaticTargetPoint(string $pointFqn): StaticTargetPointInterface;
 
     /**
-     * Creates a dynamic source point of a certain type based
-     * on the passed FQN.
+     * Creates a dynamic source point of a certain type based on the passed FQN.
      *
      * @param  string                      $pointFqn The Fully Qualified Name of
      *                                               a dynamic source point to
@@ -71,8 +68,7 @@ interface PointFactoryInterface
     public function createDynamicSourcePoint(string $pointFqn): DynamicSourcePointInterface;
 
     /**
-     * Creates a dynamic target point of a certain type based
-     * on the passed FQN.
+     * Creates a dynamic target point of a certain type based on the passed FQN.
      *
      * @param  string                      $pointFqn The Fully Qualified Name of
      *                                               a dynamic target point to
@@ -85,4 +81,75 @@ interface PointFactoryInterface
      *                                               target point type
      */
     public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface;
+
+    /**
+     * Creates a source point of a certain type based on the passed FQN.
+     *
+     * @param  string                   $pointFqn The Fully Qualified Name of a
+     *                                            source point to create
+     * @return SourcePointInterface               The source point created
+     * @throws InvalidArgumentException           If the first argument does
+     *                                            not match the FQN regex
+     *                                            pattern of any source point
+     *                                            type
+     */
+    public function createSourcePoint(string $pointFqn): SourcePointInterface;
+
+    /**
+     * Creates a target point of a certain type based on the passed FQN.
+     *
+     * @param  string                   $pointFqn The Fully Qualified Name of a
+     *                                            target point to create
+     * @return SourcePointInterface               The target point created
+     * @throws InvalidArgumentException           If the first argument does
+     *                                            not match the FQN regex
+     *                                            pattern of any target point
+     *                                            type
+     */
+    public function createTargetPoint(string $pointFqn): TargetPointInterface;
+
+    /**
+     * Creates a recursion check point.
+     *
+     * @param  string              $sourceFqn            The Fully Qualified
+     *                                                   Name of the recursion
+     *                                                   source to map data from
+     * @param  string              $targetFqn            The Fully Qualified
+     *                                                   Name of the recursion
+     *                                                   target to map data to
+     * @param  string              $targetSourcePointFqn The Fully Qualified
+     *                                                   Name of the source
+     *                                                   point to get recursion
+     *                                                   target instance from
+     * @return RecursionCheckPoint                       A recursion check point
+     */
+    public function createRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetSourcePointFqn
+    ): RecursionCheckPoint;
+
+    /**
+     * Creates a iterable recursion check point.
+     *
+     * @param  string              $sourceFqn            The Fully Qualified
+     *                                                   Name of the iterable
+     *                                                   recursion source to map
+     *                                                   data from
+     * @param  string              $targetFqn            The Fully Qualified
+     *                                                   Name of the iterable
+     *                                                   recursion target to map
+     *                                                   data to
+     * @param  string      $targetIterableSourcePointFqn The Fully Qualified
+     *                                                   Name of the source
+     *                                                   point to get the iterable
+     *                                                   recursion target instance
+     *                                                   from
+     * @return IterableRecursionCheckPoint               A recursion check point
+     */
+    public function createIterableRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        string $targetIterableSourcePointFqn
+    ): IterableRecursionCheckPoint;
 }

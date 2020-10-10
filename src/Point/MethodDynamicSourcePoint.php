@@ -24,7 +24,7 @@ use ReflectionException;
  */
 final class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourcePointInterface
 {
-    private const FQN_REGEX_PATTERN = '/^([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
+    private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)$/';
 
     /**
      * Constructs the method dynamic source point.
@@ -67,7 +67,7 @@ final class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourc
             throw new InvalidArgumentException(1, __METHOD__, $message);
         }
 
-        $this->fqn = $matchedFqn;
+        $this->fqn = \sprintf('~%s', \ltrim($matchedFqn, '~'));
         $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
     }

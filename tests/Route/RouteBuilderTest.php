@@ -63,12 +63,12 @@ class RouteBuilderTest extends FinalBypassTestCase
         static::assertInstanceOf(RouteInterface::class, $route);
 
         static::assertSame(
-            $sourcePointFqn,
+            \sprintf('#%s', \ltrim($sourcePointFqn, '#')),
             $route->getSourcePoint()->getFqn()
         );
 
         static::assertSame(
-            $targetPointFqn,
+            \sprintf('#%s', \ltrim($targetPointFqn, '#')),
             $route->getTargetPoint()->getFqn()
         );
 
