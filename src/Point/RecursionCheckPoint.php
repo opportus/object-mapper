@@ -13,7 +13,6 @@ namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
-use Opportus\ObjectMapper\ObjectMapperInterface;
 use Opportus\ObjectMapper\ObjectMapperTrait;
 use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Source;
