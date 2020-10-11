@@ -142,7 +142,7 @@ abstract class AbstractPathFinder implements PathFinderInterface
     ): string {
         if ($reflection instanceof ReflectionProperty) {
             return \sprintf(
-                '%s.$%s',
+                '%s::$%s',
                 $reflection->getDeclaringClass()->getName(),
                 $reflection->getName()
             );
@@ -150,7 +150,7 @@ abstract class AbstractPathFinder implements PathFinderInterface
         
         if ($reflection instanceof ReflectionMethod) {
             return \sprintf(
-                '%s.%s()',
+                '%s::%s()',
                 $reflection->getDeclaringClass()->getName(),
                 $reflection->getName()
             );
@@ -158,7 +158,7 @@ abstract class AbstractPathFinder implements PathFinderInterface
         
         if ($reflection instanceof ReflectionParameter) {
             return \sprintf(
-                '%s.%s().$%s',
+                '%s::%s()::$%s',
                 $reflection->getDeclaringClass()->getName(),
                 $reflection->getDeclaringFunction()->getName(),
                 $reflection->getName()

@@ -62,7 +62,7 @@ class Route implements RouteInterface
         $this->targetPoint = $targetPoint;
         $this->checkPoints = $checkPoints;
         $this->fqn = \sprintf(
-            '%s:%s',
+            '%s=>%s',
             $sourcePoint->getFqn(),
             $targetPoint->getFqn()
         );

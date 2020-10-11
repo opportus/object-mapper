@@ -40,42 +40,42 @@ class ObjectMapperTest extends FinalBypassTestCase
     {
         $map = $this->getMapBuilder()
             ->getRouteBuilder()
-                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setStaticTargetPoint(\sprintf('%s.__construct().$a', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getA()', ObjectMapperTestObjectClass::class))
+                ->setStaticTargetPoint(\sprintf('%s::__construct()::$a', ObjectMapperTestObjectClass::class))
                 ->addCheckPoint(new ObjectMapperTestCheckPointClass())
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setStaticTargetPoint(\sprintf('%s.setB().$b', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getA()', ObjectMapperTestObjectClass::class))
+                ->setStaticTargetPoint(\sprintf('%s::setB()::$b', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setDynamicTargetPoint(\sprintf('%s.$c', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getA()', ObjectMapperTestObjectClass::class))
+                ->setDynamicTargetPoint(\sprintf('%s::$c', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s.getA()', ObjectMapperTestObjectClass::class))
-                ->setDynamicTargetPoint(\sprintf('%s.setD().$d', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getA()', ObjectMapperTestObjectClass::class))
+                ->setDynamicTargetPoint(\sprintf('%s::setD()::$d', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s.getB()', ObjectMapperTestObjectClass::class))
-                ->setDynamicTargetPoint(\sprintf('%s.setD().$dp', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getB()', ObjectMapperTestObjectClass::class))
+                ->setDynamicTargetPoint(\sprintf('%s::setD()::$dp', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s.getG()', ObjectMapperTestObjectClass::class))
-                ->setStaticTargetPoint(\sprintf('%s.setG().$g', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getG()', ObjectMapperTestObjectClass::class))
+                ->setStaticTargetPoint(\sprintf('%s::setG()::$g', ObjectMapperTestObjectClass::class))
                 ->addRecursionCheckPoint(
                     ObjectMapperTestObjectAClass::class,
                     ObjectMapperTestObjectBClass::class,
-                    \sprintf('%s.getG()', ObjectMapperTestObjectClass::class)
+                    \sprintf('%s::getG()', ObjectMapperTestObjectClass::class)
                 )
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s.getH()', ObjectMapperTestObjectClass::class))
-                ->setStaticTargetPoint(\sprintf('%s.setH().$h', ObjectMapperTestObjectClass::class))
+                ->setStaticSourcePoint(\sprintf('%s::getH()', ObjectMapperTestObjectClass::class))
+                ->setStaticTargetPoint(\sprintf('%s::setH()::$h', ObjectMapperTestObjectClass::class))
                 ->addIterableRecursionCheckPoint(
                     ObjectMapperTestObjectAClass::class,
                     ObjectMapperTestObjectBClass::class,
-                    \sprintf('%s.getG()', ObjectMapperTestObjectClass::class)
+                    \sprintf('%s::getG()', ObjectMapperTestObjectClass::class)
                 )
                 ->addRouteToMapBuilder()
 

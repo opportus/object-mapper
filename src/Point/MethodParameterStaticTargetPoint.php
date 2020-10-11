@@ -24,7 +24,7 @@ use ReflectionParameter;
  */
 final class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTargetPointInterface
 {
-    private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)\.([A-Za-z0-9_]+)\(\)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)::\$([A-Za-z0-9_]+)$/';
 
     /**
      * @var string $methodName

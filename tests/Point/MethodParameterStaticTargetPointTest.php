@@ -51,7 +51,7 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
             MethodParameterStaticTargetPoint::class,
             new MethodParameterStaticTargetPoint(
                 \sprintf(
-                    '%s.%s().$%s',
+                    '%s::%s()::$%s',
                     $className,
                     $methodName,
                     $parameterName
@@ -79,7 +79,7 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
         );
 
         static::assertSame(
-            \sprintf('#%s.%s().$%s', $className, $methodName, $parameterName),
+            \sprintf('#%s::%s()::$%s', $className, $methodName, $parameterName),
             $parameterPoint->getFqn()
         );
     }
@@ -179,19 +179,19 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
         return [
             // Invalid syntax...
             [\sprintf(
-                '%s.%s.$%s',
+                '%s::%s::$%s',
                 MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
-                '%s.%s().%s',
+                '%s::%s()::%s',
                 MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
-                '%s.%s.%s',
+                '%s::%s::%s',
                 MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'publicMethodParameter'
@@ -199,19 +199,19 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
 
             // Invalid reflection...
             [\sprintf(
-                '%s.%s().$%s',
+                '%s::%s()::$%s',
                 'InvalidClass',
                 'publicMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
-                '%s.%s().$%s',
+                '%s::%s()::$%s',
                 MethodParameterStaticTargetPointTestClass::class,
                 'invalidMethod',
                 'publicMethodParameter'
             )],
             [\sprintf(
-                '%s.%s().$%s',
+                '%s::%s()::$%s',
                 MethodParameterStaticTargetPointTestClass::class,
                 'publicMethod',
                 'invalidParameter'
@@ -232,7 +232,7 @@ class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
         string $parameterName
     ): MethodParameterStaticTargetPoint {
         $parameterPointFqn = \sprintf(
-            '%s.%s().$%s',
+            '%s::%s()::$%s',
             $className,
             $methodName,
             $parameterName

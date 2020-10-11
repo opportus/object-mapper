@@ -115,44 +115,44 @@ class RouteBuilderTest extends FinalBypassTestCase
         return [
             [
                 \sprintf(
-                    '%s.$property',
+                    '%s::$property',
                     RouteBuilderTestClass::class
                 ),
                 \sprintf(
-                    '%s.$property',
-                    RouteBuilderTestClass::class
-                ),
-                new CheckPointTestClass()
-            ],
-            [
-                \sprintf(
-                    '%s.$property',
-                    RouteBuilderTestClass::class
-                ),
-                \sprintf(
-                    '%s.method().$parameter',
+                    '%s::$property',
                     RouteBuilderTestClass::class
                 ),
                 new CheckPointTestClass()
             ],
             [
                 \sprintf(
-                    '%s.method()',
+                    '%s::$property',
                     RouteBuilderTestClass::class
                 ),
                 \sprintf(
-                    '%s.$property',
+                    '%s::method()::$parameter',
                     RouteBuilderTestClass::class
                 ),
                 new CheckPointTestClass()
             ],
             [
                 \sprintf(
-                    '%s.method()',
+                    '%s::method()',
                     RouteBuilderTestClass::class
                 ),
                 \sprintf(
-                    '%s.method().$parameter',
+                    '%s::$property',
+                    RouteBuilderTestClass::class
+                ),
+                new CheckPointTestClass()
+            ],
+            [
+                \sprintf(
+                    '%s::method()',
+                    RouteBuilderTestClass::class
+                ),
+                \sprintf(
+                    '%s::method()::$parameter',
                     RouteBuilderTestClass::class
                 ),
                 new CheckPointTestClass()

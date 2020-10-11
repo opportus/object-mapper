@@ -43,12 +43,12 @@ class PointFactoryTest extends FinalBypassTestCase
 
         $pointFqns =  [
             PropertyStaticSourcePoint::class => \sprintf(
-                '%s.$%s',
+                '%s::$%s',
                 PointFactoryTestClass::class,
                 'property'
             ),
             MethodStaticSourcePoint::class => \sprintf(
-                '%s.%s()',
+                '%s::%s()',
                 PointFactoryTestClass::class,
                 'method'
             ),
@@ -72,12 +72,12 @@ class PointFactoryTest extends FinalBypassTestCase
 
         $pointFqns =  [
             PropertyStaticTargetPoint::class => \sprintf(
-                '#%s.$%s',
+                '#%s::$%s',
                 PointFactoryTestClass::class,
                 'property'
             ),
             MethodParameterStaticTargetPoint::class => \sprintf(
-                '%s.%s().$%s',
+                '%s::%s()::$%s',
                 PointFactoryTestClass::class,
                 'method',
                 'parameter'

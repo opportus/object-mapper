@@ -43,11 +43,11 @@ class ObjectMapperBench
 
         $this->noPathFinderMap = $mapBuilder
             ->getRouteBuilder()
-                ->setStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class))
-                ->setStaticTargetPoint(\sprintf('%s.__construct().$a', BenchObject::class))
+                ->setStaticSourcePoint(\sprintf('%s::getA()', BenchObject::class))
+                ->setStaticTargetPoint(\sprintf('%s::__construct()::$a', BenchObject::class))
                 ->addRouteToMapBuilder()
-                ->setStaticSourcePoint(\sprintf('%s.getB()', BenchObject::class))
-                ->setStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class))
+                ->setStaticSourcePoint(\sprintf('%s::getB()', BenchObject::class))
+                ->setStaticTargetPoint(\sprintf('%s::setB()::$b', BenchObject::class))
                 ->addRouteToMapBuilder()
                 ->getMapBuilder()
             ->getMap();

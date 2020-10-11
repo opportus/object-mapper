@@ -296,8 +296,8 @@ $contributorDto = new ContributorDto();
 // Define the route manually
 $map = $mapBuilder
     ->getRouteBuilder()
-        ->setStaticSourcePoint('User.getUsername()')
-        ->setStaticTargetPoint('ContributorDto.$name')
+        ->setStaticSourcePoint('User::getUsername()')
+        ->setStaticTargetPoint('ContributorDto::$name')
         ->addRouteToMapBuilder()
         ->getMapBuilder()
     ->getMap();
@@ -310,8 +310,8 @@ echo $contributorDto->name; // Toto
 // Define the route manually
 $map = $mapBuilder
     ->getRouteBuilder()
-        ->setStaticSourcePoint('ContributorDto.$name')
-        ->setStaticTargetPoint('User.__construct().$username')
+        ->setStaticSourcePoint('ContributorDto::$name')
+        ->setStaticTargetPoint('User::__construct()::$username')
         ->addRouteToMapBuilder()
         ->getMapBuilder()
     ->getMap();
@@ -343,9 +343,9 @@ define it for example by defining its *routes* FQN this way:
 
 ```yaml
 map:
-  - source1.property:target1.property
-  - source1.property:target2.property
-  - source2.property:target2.property
+  - source1::property=>target1::property
+  - source1::property=>target2::property
+  - source2::property=>target2::property
 ```
 
 Then at runtime, in order to create *routes* to compose a *map* of, you can:
@@ -450,8 +450,8 @@ $contributor = new Contributor('<script>**Hello World!**</script>');
 
 $map = $mapBuilder
     ->getRouteBuilder()
-        ->setStaticSourcePoint('Contributor.getBio()')
-        ->setStaticTargetPoint('ContributorView.__construct().$bio')
+        ->setStaticSourcePoint('Contributor::getBio()')
+        ->setStaticTargetPoint('ContributorView::__construct()::$bio')
         ->addCheckPoint(new ContributorViewHtmlTagStripper, 10)
         ->addCheckPoint(new ContributorViewMarkdownTransformer($markdownParser), 20)
         ->addRouteToMapBuilder()
@@ -519,19 +519,19 @@ $post->comments = [$comment1, $comment2];
 // Let's map the Post instance above and its composites to a new PostDto instance and DTO composites...
 $mapBuilder
     ->getRouteBuilder
-        ->setStaticSourcePoint('Post.$author')
-        ->setDynamicTargetPoint('PostDto.$author')
-        ->addRecursionCheckPoint('Author', 'AuthorDto', 'PostDto.$author') // Mapping also Post's Author to PostDto's AuthorDto
+        ->setStaticSourcePoint('Post::$author')
+        ->setDynamicTargetPoint('PostDto::$author')
+        ->addRecursionCheckPoint('Author', 'AuthorDto', 'PostDto::$author') // Mapping also Post's Author to PostDto's AuthorDto
         ->addRouteToMapBuilder()
 
-        ->setStaticSourcePoint('Comment.$author')
-        ->setDynamicTargetPoint('CommentDto.$author')
-        ->addRecursionCheckPoint('Author', 'AuthorDto', 'CommentDto.$author') // Mapping also Comment's Author to CommentDto's AuthorDto
+        ->setStaticSourcePoint('Comment::$author')
+        ->setDynamicTargetPoint('CommentDto::$author')
+        ->addRecursionCheckPoint('Author', 'AuthorDto', 'CommentDto::$author') // Mapping also Comment's Author to CommentDto's AuthorDto
         ->addRouteToMapBuilder()
 
-        ->setStaticSourcePoint('Post.$comments')
-        ->setDynamicTargetPoint('PostDto.$comments')
-        ->addIterableRecursionCheckPoint('Comment', 'CommentDto', 'PostDto.$comments') // Mapping also Post's Comment's to PostDto's CommentDto's
+        ->setStaticSourcePoint('Post::$comments')
+        ->setDynamicTargetPoint('PostDto::$comments')
+        ->addIterableRecursionCheckPoint('Comment', 'CommentDto', 'PostDto::$comments') // Mapping also Post's Comment's to PostDto's CommentDto's
         ->addRouteToMapBuilder()
     ->getMapBuilder()
     ->addStaticSourceToDynamicTargetPathFinder()

@@ -59,7 +59,7 @@ class DynamicSourceToStaticTargetPathFinder extends StaticPathFinder
                 ->hasProperty($targetPointReflection->getName())
         ) {
             $sourcePointFqn = \sprintf(
-                '%s.$%s',
+                '%s::$%s',
                 $sourceClassReflection->getName(),
                 $targetPointReflection->getName()
             );
@@ -73,7 +73,7 @@ class DynamicSourceToStaticTargetPathFinder extends StaticPathFinder
             )])
         ) {
             $sourcePointFqn = \sprintf(
-                '%s.get%s()',
+                '%s::get%s()',
                 $sourceClassReflection->getName(),
                 \ucfirst($targetPointReflection->getName())
             );

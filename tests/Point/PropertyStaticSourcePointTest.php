@@ -45,7 +45,7 @@ class PropertyStaticSourcePointTest extends FinalBypassTestCase
     {
         static::assertInstanceOf(
             PropertyStaticSourcePoint::class,
-            new PropertyStaticSourcePoint(\sprintf('%s.$%s', $className, $propertyName))
+            new PropertyStaticSourcePoint(\sprintf('%s::$%s', $className, $propertyName))
         );
     }
 
@@ -60,7 +60,7 @@ class PropertyStaticSourcePointTest extends FinalBypassTestCase
         $propertyPoint = $this->buildPropertyPoint($className, $propertyName);
 
         static::assertSame(
-            \sprintf('#%s.$%s', $className, $propertyName),
+            \sprintf('#%s::$%s', $className, $propertyName),
             $propertyPoint->getFqn()
         );
     }
@@ -113,7 +113,7 @@ class PropertyStaticSourcePointTest extends FinalBypassTestCase
         return [
             // Invalid syntax...
             [\sprintf(
-                '%s.%s',
+                '%s::%s',
                 PropertyStaticSourcePointTestClass::class,
                 'publicProperty'
             )],
@@ -123,18 +123,18 @@ class PropertyStaticSourcePointTest extends FinalBypassTestCase
                 'publicProperty'
             )],
             [\sprintf(
-                '%s.$',
+                '%s::$',
                 PropertyStaticSourcePointTestClass::class
             )],
 
             // Invalid reflection...
             [\sprintf(
-                '%s.$%s',
+                '%s::$%s',
                 'InvalidClass',
                 'publicProperty'
             )],
             [\sprintf(
-                '%s.$%s',
+                '%s::$%s',
                 PropertyStaticSourcePointTestClass::class,
                 'invalidProperty'
             )],
@@ -151,7 +151,7 @@ class PropertyStaticSourcePointTest extends FinalBypassTestCase
         string $className,
         string $propertyName
     ): PropertyStaticSourcePoint {
-        $propertyPointFqn = \sprintf('%s.$%s', $className, $propertyName);
+        $propertyPointFqn = \sprintf('%s::$%s', $className, $propertyName);
 
         return new PropertyStaticSourcePoint($propertyPointFqn);
     }

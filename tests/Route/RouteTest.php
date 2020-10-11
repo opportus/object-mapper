@@ -64,7 +64,7 @@ class RouteTest extends FinalBypassTestCase
         $route = new Route($sourcePoint, $targetPoint, $checkPoints);
 
         static::assertSame(
-            \sprintf('%s:%s', $sourcePoint->getFqn(), $targetPoint->getFqn()),
+            \sprintf('%s=>%s', $sourcePoint->getFqn(), $targetPoint->getFqn()),
             $route->getFqn()
         );
     }
@@ -144,44 +144,44 @@ class RouteTest extends FinalBypassTestCase
             [
                 $this->buildPoint(
                     PropertyStaticSourcePoint::class,
-                    'Class.$property'
+                    'Class::$property'
                 ),
                 $this->buildPoint(
                     PropertyStaticTargetPoint::class,
-                    'Class.$property'
+                    'Class::$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
                     PropertyStaticSourcePoint::class,
-                    'Class.$property'
+                    'Class::$property'
                 ),
                 $this->buildPoint(
                     MethodParameterStaticTargetPoint::class,
-                    'Class.method().$parameter'
+                    'Class::method()::$parameter'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
                     MethodStaticSourcePoint::class,
-                    'Class.method()'
+                    'Class::method()'
                 ),
                 $this->buildPoint(
                     PropertyStaticTargetPoint::class,
-                    'Class.$property'
+                    'Class::$property'
                 ),
                 new CheckPointCollection(),
             ],
             [
                 $this->buildPoint(
                     MethodStaticSourcePoint::class,
-                    'Class.method()'
+                    'Class::method()'
                 ),
                 $this->buildPoint(
                     MethodParameterStaticTargetPoint::class,
-                    'Class.method().$parameter'
+                    'Class::method()::$parameter'
                 ),
                 new CheckPointCollection(),
             ],

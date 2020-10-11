@@ -24,7 +24,7 @@ use ReflectionException;
  */
 final class PropertyDynamicSourcePoint extends SourcePoint implements DynamicSourcePointInterface
 {
-    private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)\.\$([A-Za-z0-9_]+)$/';
+    private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)$/';
 
     /**
      * Constructs the property dynamic source point.

@@ -45,7 +45,7 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
     {
         static::assertInstanceOf(
             MethodStaticSourcePoint::class,
-            new MethodStaticSourcePoint(\sprintf('%s.%s()', $className, $methodName))
+            new MethodStaticSourcePoint(\sprintf('%s::%s()', $className, $methodName))
         );
     }
 
@@ -60,7 +60,7 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
         $methodPoint = $this->buildMethodPoint($className, $methodName);
 
         static::assertSame(
-            \sprintf('#%s.%s()', $className, $methodName),
+            \sprintf('#%s::%s()', $className, $methodName),
             $methodPoint->getFqn()
         );
     }
@@ -111,7 +111,7 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
         return [
             // Invalid syntax...
             [\sprintf(
-                '%s.%s',
+                '%s::%s',
                 MethodStaticSourcePointTestClass::class,
                 'publicMethod'
             )],
@@ -121,18 +121,18 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
                 'publicMethod'
             )],
             [\sprintf(
-                '%s.',
+                '%s::',
                 MethodStaticSourcePointTestClass::class
             )],
 
             // Invalid reflection...
             [\sprintf(
-                '%s.%s()',
+                '%s::%s()',
                 'InvalidClass',
                 'publicMethod'
             )],
             [\sprintf(
-                '%s.%s()',
+                '%s::%s()',
                 MethodStaticSourcePointTestClass::class,
                 'invalidMethod'
             )],
@@ -149,7 +149,7 @@ class MethodStaticSourcePointTest extends FinalBypassTestCase
         string $className,
         string $methodName
     ): MethodStaticSourcePoint {
-        $methodPointFqn = \sprintf('%s.%s()', $className, $methodName);
+        $methodPointFqn = \sprintf('%s::%s()', $className, $methodName);
 
         return new MethodStaticSourcePoint($methodPointFqn);
     }

@@ -90,7 +90,7 @@ class StaticSourceToDynamicTargetPathFinder extends AbstractPathFinder
         if ($sourcePointReflection instanceof ReflectionProperty) {
             if (!$targetClassReflection->hasProperty($sourcePointReflection->getName())) {
                 $targetPointFqn = \sprintf(
-                    '%s.$%s',
+                    '%s::$%s',
                     $targetClassReflection->getName(),
                     $sourcePointReflection->getName()
                 );
@@ -104,7 +104,7 @@ class StaticSourceToDynamicTargetPathFinder extends AbstractPathFinder
 
             if (!$targetClassReflection->hasProperty($targetPointName)) {
                 $targetPointFqn = \sprintf(
-                    '%s.$%s',
+                    '%s::$%s',
                     $targetClassReflection->getName(),
                     $targetPointName
                 );

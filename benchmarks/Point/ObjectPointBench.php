@@ -32,9 +32,9 @@ class ObjectPointBench
      */
     public function benchConstruct()
     {
-        new MethodStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class));
-        new MethodParameterStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class));
-        new MethodStaticSourcePoint(\sprintf('%s.getA()', BenchObject::class));
-        new MethodParameterStaticTargetPoint(\sprintf('%s.setB().$b', BenchObject::class));
+        new MethodStaticSourcePoint(\sprintf('%s::getA()', BenchObject::class));
+        new MethodParameterStaticTargetPoint(\sprintf('%s::setB()::$b', BenchObject::class));
+        new MethodStaticSourcePoint(\sprintf('%s::getA()', BenchObject::class));
+        new MethodParameterStaticTargetPoint(\sprintf('%s::setB()::$b', BenchObject::class));
     }
 }
