@@ -139,12 +139,14 @@ A *check point* can be any implementation of
 
 These *routes* can be defined [automatically](#automatic-mapping) via a *map*'s
 [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php)
-implementation and/or [manually](#manual-mapping) via:
+strategy implementation and/or [manually](#manual-mapping) via:
 
 -   [Map builder API](#via-map-builder-api)
 -   [Map definition preloading](#via-map-definition-preloading)
 
 ### Automatic mapping
+
+Note that `PathFinderInterface` implementations can get combined...
 
 #### Static path finder
 
@@ -191,9 +193,7 @@ the method build then use a `Map` composed of the default `StaticPathFinder`
 strategy.
 
 The default `StaticPathFinder` strategy determines the appropriate point of the
-*source* class to connect to each point of the *target* class. The connected
-*source point* and *target point* compose then a *route* which is followed by
-the `ObjectMapper`.
+*source* class to connect to each point of the *target* class.
 
 For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php),
 a reference *target point* can be:
@@ -203,7 +203,7 @@ a reference *target point* can be:
 
 The corresponding *source point* can be:
 
--   A public property having for name the same as the target point ([`PropertyStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticSourcePoint.php))
+-   A public property having for name the same as the *target point* ([`PropertyStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticSourcePoint.php))
 -   A public getter having for name `'get'.ucfirst($targetPointName)` and
     requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
@@ -212,7 +212,7 @@ The corresponding *source point* can be:
 A basic example of how to automatically map `User`'s data to `DynamicUserDto`:
 
 ```php
-class DynamicUserDto {}
+class DynamicUserDto{}
 
 $user    = new User('Toto');
 $userDto = new DynamicUserDto();
@@ -241,10 +241,10 @@ a reference *source point* can be:
 The corresponding *target point* can be:
 
 -   A statically non-existing property having for name the same as the property
-    source point or `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
--   A statically non-existing method parameter (passed as an argument to
-    `__call()`) having for name the same as the property source point or
-    `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`MethodParameterDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
+    *source point* or `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
+-   A statically non-existing setter parameter having for name the same as the
+    property *source point* or
+    `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`MethodParameterDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterDynamicTargetPoint.php))
 
 #### Dynamic source to static target path finder
 
@@ -277,9 +277,9 @@ a reference *target point* can be:
 
 The corresponding *source point* can be:
 
--   A statically non-existing property having for name the same as the property
-    target point ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
--   A statically non-existing getter (`__call('getProperty')`) having for name
+-   A statically non-existing property having for name the same as the
+    *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
+-   A statically non-existing getter having for name
     `'get'.ucfirst($targetPointName)` ([`MethodDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodDynamicSourcePoint.php))
 
 #### Custom path finder
