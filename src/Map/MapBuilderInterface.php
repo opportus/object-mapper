@@ -11,7 +11,10 @@
 
 namespace Opportus\ObjectMapper\Map;
 
+use Opportus\ObjectMapper\PathFinder\DynamicSourceToStaticTargetPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
+use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
+use Opportus\ObjectMapper\PathFinder\StaticSourceToDynamicTargetPathFinder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Route\RouteInterface;
@@ -64,20 +67,23 @@ interface MapBuilderInterface
      * Adds a static path finder to the map being built.
      *
      * @return MapBuilderInterface A map builder
+     * @see    StaticPathFinder
      */
     public function addStaticPathFinder(): MapBuilderInterface;
 
     /**
      * Adds a static source to dynamic target path finder to the map being built.
      *
-     * @return MapBuilderInterface A map builder
+     * @return MapBuilderInterface                   A map builder
+     * @see    StaticSourceToDynamicTargetPathFinder
      */
     public function addStaticSourceToDynamicTargetPathFinder(): MapBuilderInterface;
 
     /**
      * Adds a dynamic source to static target path finder to the map being built.
      *
-     * @return MapBuilderInterface A map builder
+     * @return MapBuilderInterface                   A map builder
+     * @see    DynamicSourceToStaticTargetPathFinder
      */
     public function addDynamicSourceToStaticTargetPathFinder(): MapBuilderInterface;
 
