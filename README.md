@@ -32,15 +32,15 @@
 Use this solution for mapping source to target objects via extensible
 strategies and controls.
 
-Leverage this solution by delegating to it mapping strategies and controls of
-objects to:
+Leverage this solution to:
  
 -   Decouple source and target from mapping logic
 -   Dynamically define control flow over data being transferred from source to
     target
--   Dynamically define target model depending on source model
+-   Dynamically define target model depending on source model and reciprocally
 
-This project aims to provide a standard core system to many solutions such as:
+This project aims to provide a standard core system to higher level systems
+such as:
 
 -   Data transformation
 -   ORM
@@ -56,8 +56,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 ### v1.0.0 (stable)
 
 -   Implement last unit tests to reach 100% coverage
--   Update the doc with description of last features implemented 
-([Dynamic Mapping](#dynamic-mapping), [Recursion](#recursion))
+-   Improve doc
 
 ## Integrations
 
@@ -205,16 +204,16 @@ The corresponding *source point* can be:
 #### Custom automatic mapping
 
 The default `StaticPathFinder` strategy presented above implements a specific
-mapping logic. In order for a *pathfinder* to generically map differently
-typed objects, it has to follow a certain convention, de facto established by
-this *path finder*. You can map generically differently typed objects only
-accordingly to this convention.
+mapping logic. In order for it to generically map differently typed objects, it
+has to follow a certain convention, as described above, de facto established by
+this *pathfinder*. You can map generically differently typed objects only
+accordingly to its convention.
 
 If the default `StaticPathFinder`'s behavior does not fit your needs, you still
-can genericize and encapsulate your domain's mapping logic as a subtype
-of `PathFinderInterface`. Doing so effectively, you leverage `ObjectMapper` to
-decouple these objects from your codebase... Indeed, when the mapped objects
-change, the mapping won't.
+can genericize and encapsulate your domain's mapping logic as subtype(s) of
+`PathFinderInterface`. Doing so effectively, you leverage `ObjectMapper` to
+decouple these objects from your mapping logic... Indeed, when the mapped
+objects change, the mapping doesn't.
 
 For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php), [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php), and
 [`DynamicSourceToStaticTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicSourceToStaticTargetPathFinder.php)
@@ -468,7 +467,8 @@ echo $contributorView->getBio(); // <b>Hello World!</b>
 ### Recursion
 
 A *recursion* implements [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
-It is used to recursively map a *source point* to a *target point*. More concretely, it is used:
+It is used to recursively map a *source point* to a *target point*.
+More concretely, it is used:
 
 -   To map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and
     in same time map `C` to `D`, AKA *simple recursion*.
@@ -479,7 +479,7 @@ It is used to recursively map a *source point* to a *target point*. More concret
     (that *has* `D` which *has* `F`) and in same time map `C` and `E` to `D` and
     `F`, AKA *in-depth recursion*.
 
-A basic example of how to map a `Post` and its composite objects to its
+A basic example of how to manually map a `Post` and its composite objects to its
 `PostDto` and its composite DTO objects:
 
 ```php
