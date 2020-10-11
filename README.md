@@ -343,9 +343,9 @@ define it for example by defining its *routes* FQN this way:
 
 ```yaml
 map:
-  - source1::property=>target1::property
-  - source1::property=>target2::property
-  - source2::property=>target2::property
+  - source1::$property=>target1::$property
+  - source1::$property=>target2::$property
+  - source2::$property=>target2::$property
 ```
 
 Then at runtime, in order to create *routes* to compose a *map* of, you can:
