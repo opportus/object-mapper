@@ -146,7 +146,8 @@ strategy implementation and/or [manually](#manual-mapping) via:
 
 ### Automatic mapping
 
-Note that `PathFinderInterface` implementations can get combined...
+Note that `PathFinderInterface` implementations like those presented below can
+get combined...
 
 #### Static path finder
 
@@ -209,10 +210,14 @@ The corresponding *source point* can be:
 
 #### Static source to dynamic target path finder
 
+<details>
+
+<summary>Click for details</summary>
+
 A basic example of how to automatically map `User`'s data to `DynamicUserDto`:
 
 ```php
-class DynamicUserDto{}
+class DynamicUserDto {}
 
 $user    = new User('Toto');
 $userDto = new DynamicUserDto();
@@ -229,8 +234,8 @@ echo $userDto->username; // Toto
 ```
 
 The default `StaticSourceToDynamicTargetPathFinder` strategy determines the
-appropriate point of the *target* object to connect to each point of the
-*source* class. 
+appropriate point of the *target* **object** (*dynamic point*) to connect to
+each point of the *source* **class** (*static point*).
 
 For the default [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php),
 a reference *source point* can be:
@@ -242,11 +247,16 @@ The corresponding *target point* can be:
 
 -   A statically non-existing property having for name the same as the property
     *source point* or `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
--   A statically non-existing setter parameter having for name the same as the
-    property *source point* or
-    `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`MethodParameterDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterDynamicTargetPoint.php))
+-   A parameter of a statically non-existing setter having for name `'set'.ucfirst($propertySourcePoint)`
+    `str_replace('get', 'set', $getterSourcePoint)` ([`MethodParameterDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterDynamicTargetPoint.php))
+
+</details>
 
 #### Dynamic source to static target path finder
+
+<details>
+
+<summary>Click for details</summary>
 
 A basic example of how to automatically map `DynamicUserDto`'s data to `User`:
 
@@ -266,8 +276,8 @@ echo $user->getUsername(); // Toto
 ```
 
 The default `DynamicSourceToStaticTargetPathFinder` strategy determines the
-appropriate point of the *source* object to connect to each point of the
-*target* class. 
+appropriate point of the *source* **object** (*dynamic point*) to connect to
+each point of the *target* **class** (*static point*). 
 
 For the default [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicSourceToStaticTargetPathFinder.php),
 a reference *target point* can be:
@@ -281,6 +291,8 @@ The corresponding *source point* can be:
     *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
 -   A statically non-existing getter having for name
     `'get'.ucfirst($targetPointName)` ([`MethodDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodDynamicSourcePoint.php))
+
+</details>
 
 #### Custom path finder
 
@@ -348,6 +360,10 @@ next sub-sections:
 
 #### Via map builder API
 
+<details>
+
+<summary>Click for details</summary>
+
 The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php)
 is an immutable service which implement a fluent interface.
 
@@ -407,7 +423,13 @@ $user = $objectMapper->map($contributorDto, User::class, $map);
 echo $user->getUsername(); // 'Toto'
 ```
 
+</details>
+
 #### Via map definition preloading
+
+<details>
+
+<summary>Click for details<\summary>
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the
 *map* (adding to it *routes*) *on the go*. There is another way to define the
@@ -458,6 +480,8 @@ configuration, and cache systems required for achieving
 is one system integrating this library (into Symfony 4 application context).
 You can refer to it for concrete examples of how to implement
 *map definition preloading*.
+
+</details>
 
 ### Check point
 
