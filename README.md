@@ -429,7 +429,7 @@ echo $user->getUsername(); // 'Toto'
 
 <details>
 
-<summary>Click for details<\summary>
+<summary>Click for details</summary>
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the
 *map* (adding to it *routes*) *on the go*. There is another way to define the
