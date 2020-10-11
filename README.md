@@ -9,7 +9,8 @@
 
 **Index**
 
-- [Use cases](#use-cases)
+- [Meta](#meta)
+- [Use Cases](#use-cases)
 - [Roadmap](#roadmap)
   - [v1.0.0 (stable)](#v100-stable)
 - [Integrations](#integrations)
@@ -17,20 +18,30 @@
   - [Step 1 - Installation](#step-1---installation)
   - [Step 2 - Initialization](#step-2---initialization)
 - [Mapping](#mapping)
-  - [How it works](#how-it-works)
-  - [Automatic mapping](#automatic-mapping)
-    - [Static path finder](#static-path-finder)
-    - [Static source to dynamic target path finder](#static-source-to-dynamic-target-path-finder)
-    - [Dynamic source to static target path finder](#dynamic-source-to-static-target-path-finder)
-    - [Custom path finder](#custom-path-finder)
-  - [Manual mapping](#manual-mapping)
-    - [Via map builder API](#via-map-builder-api)
-    - [Via map definition preloading](#via-map-definition-preloading)
-  - [Check point](#check-point)
+  - [How It Works](#how-it-works)
+  - [Automatic Mapping](#automatic-mapping)
+    - [Static Path Finder](#static-path-finder)
+    - [Static Source To Dynamic Target Path Finder](#static-source-to-dynamic-target-path-finder)
+    - [Dynamic Source To Static Target Path Finder](#dynamic-source-to-static-target-path-finder)
+    - [Custom Path Finder](#custom-path-finder)
+  - [Manual Mapping](#manual-mapping)
+    - [Via Map Builder API](#via-map-builder-api)
+    - [Via Map Definition Preloading](#via-map-definition-preloading)
+  - [Check Point](#check-point)
   - [Recursion](#recursion)
 
+## Meta
 
-## Use cases
+This document is a guide mainly walking you through the setup, concepts, and use
+cases of this solution.
+
+API documentation is bound to code and complies to PHPDoc standards...
+
+Sections covering optional features for most use cases (yet important to be
+aware of) are collapsed in order to keep this document as easy as possible to
+read by new users.
+
+## Use Cases
 
 Use this solution for mapping source to target objects via extensible
 strategies and controls.
@@ -102,7 +113,7 @@ instantiating your own services, with a DIC system or whatever.
 
 ## Mapping
 
-### How it works
+### How It Works
 
 The
 [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
@@ -144,12 +155,9 @@ strategy implementation and/or [manually](#manual-mapping) via:
 -   [Map builder API](#via-map-builder-api)
 -   [Map definition preloading](#via-map-definition-preloading)
 
-### Automatic mapping
+### Automatic Mapping
 
-Note that `PathFinderInterface` implementations like those presented below can
-get combined...
-
-#### Static path finder
+#### Static Path Finder
 
 A basic example of how to automatically map `User`'s data to `UserDto` and
 vice-versa:
@@ -208,11 +216,12 @@ The corresponding *source point* can be:
 -   A public getter having for name `'get'.ucfirst($targetPointName)` and
     requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
-#### Static source to dynamic target path finder
+#### Static Source To Dynamic Target Path Finder
 
 <details>
 
 <summary>Click for details</summary>
+
 
 A basic example of how to automatically map `User`'s data to `DynamicUserDto`:
 
@@ -252,11 +261,12 @@ The corresponding *target point* can be:
 
 </details>
 
-#### Dynamic source to static target path finder
+#### Dynamic Source To Static Target Path Finder
 
 <details>
 
 <summary>Click for details</summary>
+
 
 A basic example of how to automatically map `DynamicUserDto`'s data to `User`:
 
@@ -294,7 +304,7 @@ The corresponding *source point* can be:
 
 </details>
 
-#### Custom path finder
+#### Custom Path Finder
 
 The default *path finders* presented above implement each a specific mapping
 logic. In order for those to generically map differently typed objects, they
@@ -345,7 +355,7 @@ $map = $mapBuilder
 $user = $objectMapper->map($userDto, User::class, $map);
 ```
 
-### Manual mapping
+### Manual Mapping
 
 If in your context, such as walked through in the previous
 "[automatic mapping](#automatic-mapping)" section, a mapping strategy does not
@@ -358,11 +368,12 @@ next sub-sections:
 -   [Via map builder API](#via-map-builder-api)
 -   [Via map definition preloading](#via-map-definition-preloading)
 
-#### Via map builder API
+#### Via Map Builder API
 
 <details>
 
 <summary>Click for details</summary>
+
 
 The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php)
 is an immutable service which implement a fluent interface.
@@ -425,11 +436,12 @@ echo $user->getUsername(); // 'Toto'
 
 </details>
 
-#### Via map definition preloading
+#### Via Map Definition Preloading
 
 <details>
 
 <summary>Click for details</summary>
+
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the
 *map* (adding to it *routes*) *on the go*. There is another way to define the
@@ -440,7 +452,7 @@ does not provide a way to effectively *preload a map definition* which could be:
 
 -   Any type of file, commonly used for configuration (XML, YAML, JSON, etc...),
     defining statically a *map* to build at runtime
--   Any type of annotation in *source* and *target* classes, defining statically
+-   Any type ofH annotation in *source* and *target* classes, defining statically
     a *map* to build at runtime
 -   Any type of PHP routine, defining dynamically a *map* to build at runtime
 -   ...
@@ -483,7 +495,7 @@ You can refer to it for concrete examples of how to implement
 
 </details>
 
-### Check point
+### Check Point
 
 A *check point*, added to a *route*, allows you to control/transform the value
 from the *source point* before it reaches the *target point*.
