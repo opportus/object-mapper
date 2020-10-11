@@ -19,7 +19,10 @@
 - [Mapping](#mapping)
   - [How it works](#how-it-works)
   - [Automatic mapping](#automatic-mapping)
-    - [Custom automatic mapping](#custom-automatic-mapping)
+    - [Static path finder](#static-path-finder)
+    - [Static source to dynamic target path finder](#static-source-to-dynamic-target-path-finder)
+    - [Dynamic source to static target path finder](#dynamic-source-to-static-target-path-finder)
+    - [Custom path finder](#custom-path-finder)
   - [Manual mapping](#manual-mapping)
     - [Via map builder API](#via-map-builder-api)
     - [Via map definition preloading](#via-map-definition-preloading)
@@ -143,6 +146,8 @@ implementation and/or [manually](#manual-mapping) via:
 
 ### Automatic mapping
 
+#### Static path finder
+
 A basic example of how to automatically map `User`'s data to `UserDto` and
 vice-versa:
 
@@ -181,16 +186,17 @@ $user = $objectMapper->map($userDto, User::class);
 echo $user->getUsername(); // Toto
 ```
 
-Calling the `ObjectMapper::map()` method without passing a `$map` argument makes
-the method build then use a `Map` composed of the default `StaticPathFinder`.
+Calling the `ObjectMapper::map()` method passing no `$map` argument makes
+the method build then use a `Map` composed of the default `StaticPathFinder`
+strategy.
 
-This default `StaticPathFinder` strategy consists of guessing what is the
-appropriate point of the *source* class to connect to each point of the *target*
-class. The connected *source point* and *target point* compose then a *route*
-which is followed by the `ObjectMapper`.
+The default `StaticPathFinder` strategy determines the appropriate point of the
+*source* class to connect to each point of the *target* class. The connected
+*source point* and *target point* compose then a *route* which is followed by
+the `ObjectMapper`.
 
 For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php),
-a *target point* can be:
+a reference *target point* can be:
 
 -   A public property ([`PropertyStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticTargetPoint.php))
 -   A parameter of a public setter or constructor ([`MethodParameterStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterStaticTargetPoint.php))
@@ -201,19 +207,98 @@ The corresponding *source point* can be:
 -   A public getter having for name `'get'.ucfirst($targetPointName)` and
     requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
-#### Custom automatic mapping
+#### Static source to dynamic target path finder
 
-The default `StaticPathFinder` strategy presented above implements a specific
-mapping logic. In order for it to generically map differently typed objects, it
-has to follow a certain convention, as described above, de facto established by
-this *pathfinder*. You can map generically differently typed objects only
-accordingly to its convention.
+A basic example of how to automatically map `User`'s data to `DynamicUserDto`:
 
-If the default `StaticPathFinder`'s behavior does not fit your needs, you still
+```php
+class DynamicUserDto {}
+
+$user    = new User('Toto');
+$userDto = new DynamicUserDto();
+
+// Build the map
+$map = $mapBuilder
+    ->addStaticSourceToDynamicTargetPathFinder()
+    ->getMap();
+
+// Map the data of the User instance to the DynamicUserDto instance
+$objectMapper->map($user, $userDto, $map);
+
+echo $userDto->username; // Toto
+```
+
+The default `StaticSourceToDynamicTargetPathFinder` strategy determines the
+appropriate point of the *target* object to connect to each point of the
+*source* class. 
+
+For the default [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php),
+a reference *source point* can be:
+
+-   A public property ([`PropertyStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticSourcePoint.php))
+-   A public getter ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
+
+The corresponding *target point* can be:
+
+-   A statically non-existing property having for name the same as the property
+    source point or `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
+-   A statically non-existing method parameter (passed as an argument to
+    `__call()`) having for name the same as the property source point or
+    `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`MethodParameterDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
+
+#### Dynamic source to static target path finder
+
+A basic example of how to automatically map `DynamicUserDto`'s data to `User`:
+
+```php
+$userDto = new DynamicUserDto();
+$userDto->username = 'Toto';
+
+// Build the map
+$map = $mapBuilder
+    ->addDynamicSourceToStaticTargetPathFinder()
+    ->getMap();
+
+// Map the data of the DynamicUserDto instance to a new User instance
+$user = $objectMapper->map($userDto, User::class, $map);
+
+echo $user->getUsername(); // Toto
+```
+
+The default `DynamicSourceToStaticTargetPathFinder` strategy determines the
+appropriate point of the *source* object to connect to each point of the
+*target* class. 
+
+For the default [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicSourceToStaticTargetPathFinder.php),
+a reference *target point* can be:
+
+-   A public property ([`PropertyStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticTargetPoint.php))
+-   A parameter of a public setter or constructor ([`MethodParameterStaticTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterStaticTargetPoint.php))
+
+The corresponding *source point* can be:
+
+-   A statically non-existing property having for name the same as the property
+    target point ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
+-   A statically non-existing getter (`__call('getProperty')`) having for name
+    `'get'.ucfirst($targetPointName)` ([`MethodDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodDynamicSourcePoint.php))
+
+#### Custom path finder
+
+The default *path finders* presented above implement each a specific mapping
+logic. In order for those to generically map differently typed objects, they
+have to follow a certain convention de facto established by these
+*path finders*. You can map generically differently typed objects only
+accordingly to the *path finders* the *map* is composed of.
+
+If the default *path finders* do not suit your needs, you still
 can genericize and encapsulate your domain's mapping logic as subtype(s) of
-`PathFinderInterface`. Doing so effectively, you leverage `ObjectMapper` to
+`PathFinderInterface`. Doing so effectively, you leverage *Object Mapper* to
 decouple these objects from your mapping logic... Indeed, when the mapped
 objects change, the mapping doesn't.
+
+Later, we'll cover how to leverage further the *Object Mapper* by encapsulating
+into a *path finder* dynamic control flow (*check points*) over data being
+mapped...
 
 For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php), [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php), and
 [`DynamicSourceToStaticTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicSourceToStaticTargetPathFinder.php)
