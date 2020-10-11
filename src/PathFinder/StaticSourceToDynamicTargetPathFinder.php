@@ -11,99 +11,48 @@
 
 namespace Opportus\ObjectMapper\PathFinder;
 
-use Opportus\ObjectMapper\Route\RouteBuilderInterface;
-use Opportus\ObjectMapper\Route\RouteCollection;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
-use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use Reflector;
 
 /**
  * The default static source to dynamic target path finder.
+ *
+ * This behavior consists of guessing the dynamic point of the target to
+ * connect to each static point of the source following the rules below.
+ *
+ * A source point can be:
+ *
+ * - A public property (`PropertyStaticSourcePoint`)
+ * - A public getter (`MethodStaticSourcePoint`)
+ *
+ * The connectable target point can be:
+ *
+ * - A statically non-existing property having for name the same as the source
+ *   point (`PropertyDynamicSourcePoint`)
+ * - A parameter of a statically non-existing setter having for name the same as
+ *   the source point (`ParameterDynamicTargetPoint`)
  *
  * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
+class StaticSourceToDynamicTargetPathFinder extends AbstractPathFinder
 {
-    /**
-     * @var RouteBuilderInterface $souteBuilder
-     */
-    private $routeBuilder;
-
-    /**
-     * Constructs the default static source to dynamic target path finder.
-     *
-     * @param RouteBuilderInterface $routeBuilder
-     */
-    public function __construct(RouteBuilderInterface $routeBuilder)
-    {
-        $this->routeBuilder = $routeBuilder;
-    }
-
     /**
      * {@inheritdoc}
      */
-    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
-    {
-        $routes = [];
-
-        $sourceReflection = $source->getClassReflection();
-        $targetReflection = $target->getClassReflection();
-
-        $sourcePointReflections = $this->getSourcePointReflections(
-            $sourceReflection
-        );
-
-        foreach ($sourcePointReflections as $sourcePointReflection) {
-            $targetPointFqn = $this->getTargetPointFqn(
-                $targetReflection,
-                $sourcePointReflection
-            );
-
-            if (null === $targetPointFqn) {
-                continue;
-            }
-
-            if ($sourcePointReflection instanceof ReflectionProperty) {
-                $sourcePointFqn = \sprintf(
-                    '%s.$%s',
-                    $sourcePointReflection->getDeclaringClass()->getName(),
-                    $sourcePointReflection->getName()
-                );
-            } elseif ($sourcePointReflection instanceof ReflectionMethod) {
-                $sourcePointFqn = \sprintf(
-                    '%s.%s()',
-                    $sourcePointReflection->getDeclaringClass()->getName(),
-                    $sourcePointReflection->getName()
-                );
-            }
-
-            $routes[] = $this->routeBuilder
-                ->setStaticSourcePoint($sourcePointFqn)
-                ->setDynamicTargetPoint($targetPointFqn)
-                ->getRoute();
-        }
-
-        return new RouteCollection($routes);
-    }
-
-    /**
-     * Gets source point reflections.
-     *
-     * @param ReflectionClass $sourceReflection
-     * @return Reflector[]
-     */
-    private function getSourcePointReflections(
-        ReflectionClass $sourceReflection
+    protected function getReferencePoints(
+        SourceInterface $source,
+        TargetInterface $target
     ): array {
+        $sourceClassReflection = $source->getClassReflection();
         $sourcePointReflections = [];
 
         foreach (
-            $sourceReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
+            $sourceClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
             $methodReflection
         ) {
             if ($methodReflection->getNumberOfParameters() !== 0) {
@@ -118,7 +67,7 @@ class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
         }
 
         foreach (
-            $sourceReflection->getProperties(ReflectionProperty::IS_PUBLIC) as
+            $sourceClassReflection->getProperties(ReflectionProperty::IS_PUBLIC) as
             $propertyReflection
         ) {
             $sourcePointReflections[] = $propertyReflection;
@@ -128,21 +77,21 @@ class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
     }
 
     /**
-     * Gets a target point to pair with the passed source point.
-     *
-     * @param ReflectionClass $targetReflection
-     * @param Reflector $sourcePointReflection
-     * @return null|string
+     * {@inheritdoc}
      */
-    private function getTargetPointFqn(
-        ReflectionClass $targetReflection,
-        Reflector $sourcePointReflection
-    ): ?string {
+    protected function getReferencePointRoute(
+        SourceInterface $source,
+        TargetInterface $target,
+        $referencePoint
+    ): ?RouteInterface {
+        $sourcePointReflection = $referencePoint;
+        $targetClassReflection = $target->getClassReflection();
+
         if ($sourcePointReflection instanceof ReflectionProperty) {
-            if (!$targetReflection->hasProperty($sourcePointReflection->getName())) {
-                return \sprintf(
+            if (!$targetClassReflection->hasProperty($sourcePointReflection->getName())) {
+                $targetPointFqn = \sprintf(
                     '%s.$%s',
-                    $targetReflection->getName(),
+                    $targetClassReflection->getName(),
                     $sourcePointReflection->getName()
                 );
             }
@@ -153,15 +102,23 @@ class StaticSourceToDynamicTargetPathFinder implements PathFinderInterface
                 $sourcePointReflection->getName()
             ));
 
-            if (!$targetReflection->hasProperty($targetPointName)) {
-                return \sprintf(
+            if (!$targetClassReflection->hasProperty($targetPointName)) {
+                $targetPointFqn = \sprintf(
                     '%s.$%s',
-                    $targetReflection->getName(),
+                    $targetClassReflection->getName(),
                     $targetPointName
                 );
             }
+        } else {
+            return null;
         }
 
-        return null;
+        $sourcePointFqn = $this
+            ->getPointFqnFromReflection($sourcePointReflection);
+
+        return $this->getRouteBuilder()
+            ->setStaticSourcePoint($sourcePointFqn)
+            ->setDynamicTargetPoint($targetPointFqn)
+            ->getRoute();
     }
 }

@@ -11,158 +11,54 @@
 
 namespace Opportus\ObjectMapper\PathFinder;
 
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Route\RouteBuilderInterface;
-use Opportus\ObjectMapper\Route\RouteCollection;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
-use ReflectionClass;
-use ReflectionException;
 use ReflectionMethod;
-use ReflectionParameter;
 use ReflectionProperty;
-use Reflector;
 
 /**
  * The default static path finder.
+ *
+ * This behavior consists of guessing the static point of the source to
+ * connect to each static point of the target following the rules below.
+ *
+ * A target point can be:
+ *
+ * - A public property (`PropertyStaticTargetPoint`)
+ * - A parameter of a public setter or a public constructor
+ *   (`ParameterStaticTargetPoint`)
+ *
+ * The connectable source point can be:
+ *
+ * - A public property having for name the same as the target point
+ *   (`PropertyStaticSourcePoint`)
+ * - A public getter having for name `'get'.ucfirst($targetPointName)` and
+ *   requiring no argument (`MethodStaticSourcePoint`)
  *
  * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class StaticPathFinder implements PathFinderInterface
+class StaticPathFinder extends AbstractPathFinder
 {
     /**
-     * @var RouteBuilderInterface $souteBuilder
-     */
-    private $routeBuilder;
-
-    /**
-     * Constructs the default path finder strategy.
-     *
-     * @param RouteBuilderInterface $routeBuilder
-     */
-    public function __construct(RouteBuilderInterface $routeBuilder)
-    {
-        $this->routeBuilder = $routeBuilder;
-    }
-
-    /**
      * {@inheritdoc}
-     *
-     * This behavior consists of guessing which is the appropriate point of the
-     * source to connect to each point of the target following the rules below.
-     *
-     * A TargetPoint can be:
-     *
-     * - A public property (PropertyObjectPoint)
-     * - A parameter of a public setter or a public constructor
-     * (ParameterObjectPoint)
-     *
-     * The connectable SourcePoint can be:
-     *
-     * - A public property having for name the same as the target point
-     * (PropertyObjectPoint)
-     * - A public getter having for name `'get'.ucfirst($targetPointName)` and
-     * requiring no argument (MethodObjectPoint)
      */
-    public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
-    {
-        $routes = [];
-
-        $sourceReflection = $source->getClassReflection();
-        $targetReflection = $target->getClassReflection();
-
-        try {
-            $targetPointReflections = $this->getTargetPointReflections(
-                $target,
-                $targetReflection
-            );
-        } catch (ReflectionException $exception) {
-            throw new InvalidOperationException(
-                __METHOD__,
-                $exception->getMessage()
-            );
-        }
-
-        foreach ($targetPointReflections as $targetPointReflection) {
-            try {
-                $sourcePointReflection = $this->getSourcePointReflection(
-                    $sourceReflection,
-                    $targetPointReflection
-                );
-            } catch (ReflectionException $exception) {
-                throw new InvalidOperationException(
-                    __METHOD__,
-                    $exception->getMessage()
-                );
-            }
-
-            if (null === $sourcePointReflection) {
-                continue;
-            }
-
-            $sourcePointFqn = '';
-            $targetPointFqn = '';
-
-            if ($sourcePointReflection instanceof ReflectionMethod) {
-                $sourcePointFqn = \sprintf(
-                    '%s.%s()',
-                    $sourcePointReflection->getDeclaringClass()->getName(),
-                    $sourcePointReflection->getName()
-                );
-            } elseif ($sourcePointReflection instanceof ReflectionProperty) {
-                $sourcePointFqn = \sprintf(
-                    '%s.$%s',
-                    $sourcePointReflection->getDeclaringClass()->getName(),
-                    $sourcePointReflection->getName()
-                );
-            }
-
-            if ($targetPointReflection instanceof ReflectionParameter) {
-                $targetPointFqn = \sprintf(
-                    '%s.%s().$%s',
-                    $targetPointReflection->getDeclaringClass()->getName(),
-                    $targetPointReflection->getDeclaringFunction()->getName(),
-                    $targetPointReflection->getName()
-                );
-            } elseif ($targetPointReflection instanceof ReflectionProperty) {
-                $targetPointFqn = \sprintf(
-                    '%s.$%s',
-                    $targetPointReflection->getDeclaringClass()->getName(),
-                    $targetPointReflection->getName()
-                );
-            }
-
-            $routes[] = $this->routeBuilder
-                ->setStaticSourcePoint($sourcePointFqn)
-                ->setStaticTargetPoint($targetPointFqn)
-                ->getRoute();
-        }
-
-        return new RouteCollection($routes);
-    }
-
-    /**
-     * Gets target point reflections.
-     *
-     * @param TargetInterface $target
-     * @param ReflectionClass $targetReflection
-     * @return Reflector[]
-     * @throws ReflectionException
-     */
-    private function getTargetPointReflections(
-        TargetInterface $target,
-        ReflectionClass $targetReflection
+    protected function getReferencePoints(
+        SourceInterface $source,
+        TargetInterface $target
     ): array {
+        $targetClassReflection = $target->getClassReflection();
+
         $methodBlackList = [];
         $propertyBlackList = [];
 
         if (
             $target->isInstantiated() === false &&
-            $targetReflection->hasMethod('__construct')
+            $targetClassReflection->hasMethod('__construct')
         ) {
-            $constructorReflection = $targetReflection
+            $constructorReflection = $targetClassReflection
                 ->getMethod('__construct');
 
             foreach (
@@ -181,7 +77,7 @@ class StaticPathFinder implements PathFinderInterface
         $targetPointReflections = [];
 
         foreach (
-            $targetReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
+            $targetClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
             $methodReflection
         ) {
             if (\in_array($methodReflection->getName(), $methodBlackList)) {
@@ -211,7 +107,7 @@ class StaticPathFinder implements PathFinderInterface
         }
 
         foreach (
-            $targetReflection
+            $targetClassReflection
                 ->getProperties(ReflectionProperty::IS_PUBLIC) as
             $propertyReflection
         ) {
@@ -226,21 +122,20 @@ class StaticPathFinder implements PathFinderInterface
     }
 
     /**
-     * Gets a source point to pair with the passed target point.
-     *
-     * @param ReflectionClass $sourceReflection
-     * @param Reflector $targetPointReflection
-     * @return null|Reflector
-     * @throws ReflectionException
+     * {@inheritdoc}
      */
-    private function getSourcePointReflection(
-        ReflectionClass $sourceReflection,
-        Reflector $targetPointReflection
-    ): ?Reflector {
-        if ($sourceReflection->hasMethod(
+    protected function getReferencePointRoute(
+        SourceInterface $source,
+        TargetInterface $target,
+        $referencePoint
+    ): ?RouteInterface {
+        $targetPointReflection = $referencePoint;
+        $sourceClassReflection = $source->getClassReflection();
+
+        if ($sourceClassReflection->hasMethod(
             \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
         )) {
-            $methodReflection = $sourceReflection->getMethod(
+            $methodReflection = $sourceClassReflection->getMethod(
                 \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
             );
 
@@ -248,20 +143,31 @@ class StaticPathFinder implements PathFinderInterface
                 $methodReflection->isPublic() === true &&
                 $methodReflection->getNumberOfRequiredParameters() === 0
             ) {
-                return $methodReflection;
+                $sourcePointReflection = $methodReflection;
             }
-        } elseif ($sourceReflection->hasProperty(
+        } elseif ($sourceClassReflection->hasProperty(
             $targetPointReflection->getName()
         )) {
-            $propertyReflection = $sourceReflection->getProperty(
+            $propertyReflection = $sourceClassReflection->getProperty(
                 $targetPointReflection->getName()
             );
 
             if ($propertyReflection->isPublic() === true) {
-                return $propertyReflection;
+                $sourcePointReflection = $propertyReflection;
             }
+        } else {
+            return null;
         }
 
-        return null;
+        $sourcePointFqn = $this
+            ->getPointFqnFromReflection($sourcePointReflection);
+
+        $targetPointFqn = $this
+            ->getPointFqnFromReflection($targetPointReflection);
+
+        return $this->getRouteBuilder()
+            ->setStaticSourcePoint($sourcePointFqn)
+            ->setStaticTargetPoint($targetPointFqn)
+            ->getRoute();
     }
 }
