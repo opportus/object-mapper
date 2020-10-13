@@ -119,8 +119,8 @@ In order to transfer data from a *source* object to a *target* object, the
 [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
 iterates through each
 [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
-that it gets from the
-[`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php)
+that it gets from a
+[`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php),
 assigning the value of the current *route*'s *source point* to its
 *target point*.
 
@@ -154,9 +154,9 @@ strategy implementation and/or [manually](#manual-mapping) via:
 -   [Map builder API](#via-map-builder-api)
 -   [Map definition preloading](#via-map-definition-preloading)
 
-`PathFinderInterface` strategy implementations like those covered next can be combined.
-
 ### Automatic Mapping
+
+`PathFinderInterface` strategy implementations like those covered next can be combined.
 
 #### Static Path Finder
 
