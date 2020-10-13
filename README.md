@@ -13,6 +13,7 @@
 - [Use Cases](#use-cases)
 - [Roadmap](#roadmap)
   - [v1.0.0 (stable)](#v100-stable)
+  - [v1.1.0](#v110)
 - [Integrations](#integrations)
 - [Setup](#setup)
   - [Step 1 - Installation](#step-1---installation)
@@ -72,9 +73,14 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 -   Implement last unit tests to reach 100% coverage
 -   Improve doc
 
+### v1.1.0
+
+-   Implement recursion path finder feature
+-   Implement callable check point feature
+
 ## Integrations
 
--   Symfony 4 application => [oppotus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
+-   Symfony 4 application => [opportus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
 -   Reference here your own integrations
 
 ## Setup
