@@ -44,7 +44,7 @@ read by new users.
 
 ## Use Cases
 
-Use this solution for mapping source to target objects via extensible
+Use this solution for mapping source to target object via extensible
 strategies and controls.
 
 Leverage this solution to:
@@ -71,6 +71,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 ### v1.0.0 (stable)
 
 -   Implement last unit tests to reach 100% coverage
+-   Update supported version of PHP and other dependencies
 -   Improve doc
 
 ### v1.1.0
