@@ -12,7 +12,6 @@
 namespace Opportus\ObjectMapper\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\ObjectMapper;
 
 /**
  * The point factory.
