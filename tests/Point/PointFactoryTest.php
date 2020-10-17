@@ -18,7 +18,7 @@ use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\PointFactoryInterface;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * The point factory test.
@@ -27,7 +27,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PointFactoryTest extends FinalBypassTestCase
+class PointFactoryTest extends TestCase
 {
     public function testConstruct(): void
     {

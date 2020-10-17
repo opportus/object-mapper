@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * The route builder test.
@@ -31,7 +31,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RouteBuilderTest extends FinalBypassTestCase
+class RouteBuilderTest extends TestCase
 {
     public function testConstruct()
     {

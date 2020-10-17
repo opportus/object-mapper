@@ -23,6 +23,7 @@ use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -34,7 +35,7 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ObjectMapperTest extends FinalBypassTestCase
+class ObjectMapperTest extends TestCase
 {
     public function testMap(): void
     {

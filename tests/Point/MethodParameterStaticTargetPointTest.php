@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * The method parameter static source point test.
@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodParameterStaticTargetPointTest extends FinalBypassTestCase
+class MethodParameterStaticTargetPointTest extends TestCase
 {
     /**
      * @dataProvider provideInvalidParameterPointFqns

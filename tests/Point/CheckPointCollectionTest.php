@@ -20,7 +20,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\ImmutableCollection;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
@@ -30,7 +30,7 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class CheckPointCollectionTest extends FinalBypassTestCase
+class CheckPointCollectionTest extends TestCase
 {
     /**
      * @dataProvider provideCheckPoints

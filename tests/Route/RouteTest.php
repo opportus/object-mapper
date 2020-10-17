@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * The route test.
@@ -30,7 +30,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RouteTest extends FinalBypassTestCase
+class RouteTest extends TestCase
 {
     /**
      * @dataProvider providePoints

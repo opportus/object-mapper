@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
-use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * The property static source point test.
@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Tests\FinalBypassTestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyStaticSourcePointTest extends FinalBypassTestCase
+class PropertyStaticSourcePointTest extends TestCase
 {
     /**
      * @dataProvider provideInvalidPropertyPointFqns
