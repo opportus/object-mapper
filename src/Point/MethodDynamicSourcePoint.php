@@ -22,7 +22,7 @@ use ReflectionException;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourcePointInterface
+class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourcePointInterface
 {
     private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)$/';
 

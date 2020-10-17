@@ -21,7 +21,7 @@ use Opportus\ObjectMapper\ImmutableCollection;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-final class CheckPointCollection extends ImmutableCollection
+class CheckPointCollection extends ImmutableCollection
 {
     /**
      * Constructs the check point collection.
