@@ -304,7 +304,7 @@ class PointFactoryTest extends TestCase
             PropertyStaticSourcePoint::class,
             MethodStaticSourcePoint::class,
             PropertyDynamicSourcePoint::class,
-            MethodDynamicSourcePoint::class,
+            MethodDynamicSourcePoint::class
         );
 
         throw new TestInvalidArgumentException(1, __METHOD__, $message);
