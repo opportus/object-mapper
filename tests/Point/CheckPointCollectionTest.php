@@ -33,7 +33,7 @@ use stdClass;
 class CheckPointCollectionTest extends TestCase
 {
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testConstruct(array $checkPoints): void
     {
@@ -88,7 +88,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideInvalidCheckPoints
+     * @dataProvider provideConstructInvalidArguments
      */
     public function testConstructException(array $checkPoints): void
     {
@@ -98,7 +98,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testToArray(array $checkPoints): void
     {
@@ -118,7 +118,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testGetIterator(array $checkPoints): void
     {
@@ -136,7 +136,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testCount(array $checkPoints): void
     {
@@ -149,7 +149,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetExists(array $checkPoints): void
     {
@@ -165,7 +165,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetGet(array $checkPoints): void
     {
@@ -180,7 +180,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetSet(array $checkPoints): void
     {
@@ -194,7 +194,7 @@ class CheckPointCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideCheckPoints
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetUnset(array $checkPoints): void
     {
@@ -207,7 +207,7 @@ class CheckPointCollectionTest extends TestCase
         }
     }
 
-    public function provideCheckPoints(): array
+    public function provideConstructArguments(): array
     {
         $checkPoints = [];
         for ($i = 0; $i < 3; $i++) {
@@ -225,7 +225,7 @@ class CheckPointCollectionTest extends TestCase
         ];
     }
 
-    public function provideInvalidCheckPoints(): array
+    public function provideConstructInvalidArguments(): array
     {
         return [
             [
