@@ -24,7 +24,8 @@ trait ObjectTrait
     private $b;
     private $c;
     private $d;
-    public $e;
+    protected $e;
+    public $f;
 
     public function __construct(int $a = 22)
     {
@@ -69,5 +70,25 @@ trait ObjectTrait
     public function setD(array $d)
     {
         return $this->d = $d;
+    }
+
+    protected function getE(): int
+    {
+        return $this->e;
+    }
+
+    protected function setE(int $e)
+    {
+        $this->e = $e;
+    }
+
+    private function getF(): int
+    {
+        return $this->f;
+    }
+
+    private function setF(int $f)
+    {
+        $this->f = $f;
     }
 }
