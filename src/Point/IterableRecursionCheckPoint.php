@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Point;
 
 use ArrayAccess;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\ObjectMapperTrait;
@@ -51,19 +52,39 @@ class IterableRecursionCheckPoint implements CheckPointInterface
     /**
      * Constructs the iterable recursion check point.
      *
-     * @param string $sourceFqn
-     * @param string $targetFqn
-     * @param SourcePointInterface $targetIterableSourcePoint
+     * @param  string                   $sourceFqn
+     * @param  string                   $targetFqn
+     * @param  SourcePointInterface     $targetIterableSourcePoint
+     * @throws InvalidArgumentException
      */
     public function __construct(
         string $sourceFqn,
         string $targetFqn,
         SourcePointInterface $targetIterableSourcePoint
     ) {
+        if (false === \class_exists($sourceFqn)) {
+            $message = \sprintf(
+                'Source class %s does not exist.',
+                $sourceFqn
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        if (false === \class_exists($targetFqn)) {
+            $message = \sprintf(
+                'Target class %s does not exist.',
+                $targetFqn
+            );
+
+            throw new InvalidArgumentException(1, __METHOD__, $message);
+        }
+
         $this->sourceFqn = $sourceFqn;
         $this->targetFqn = $targetFqn;
         $this->targetIterableSourcePoint = $targetIterableSourcePoint;
     }
+
 
     /**
      * {@inheritdoc}
