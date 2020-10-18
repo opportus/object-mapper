@@ -204,7 +204,7 @@ class PropertyStaticTargetPointTest extends TestCase
     {
         if (false === \preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                'The argument must match property static source point FQN regex pattern %s, got %s.',
+                'The argument must match property static target point FQN regex pattern %s, got %s.',
                 self::FQN_REGEX_PATTERN,
                 $fqn
             );
@@ -219,7 +219,7 @@ class PropertyStaticTargetPointTest extends TestCase
     {
         if (false === \preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
             $message = \sprintf(
-                'The argument must match property static source point FQN regex pattern %s, got %s.',
+                'The argument must match property static target point FQN regex pattern %s, got %s.',
                 self::FQN_REGEX_PATTERN,
                 $fqn
             );
