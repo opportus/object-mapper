@@ -13,6 +13,11 @@ namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
+use Opportus\ObjectMapper\Point\ObjectPointInterface;
+use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
+use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
+use Opportus\ObjectMapper\Tests\ObjectA;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,167 +29,203 @@ use PHPUnit\Framework\TestCase;
  */
 class MethodStaticSourcePointTest extends TestCase
 {
+    private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)$/';
+
     /**
-     * @dataProvider provideInvalidMethodPointFqns
-     * @param $invalidMethodPointFqn
-     * @throws InvalidArgumentException
+     * @dataProvider provideMethodStaticSourcePointFqn
      */
-    public function testConstructException($invalidMethodPointFqn): void
+    public function testConstruct(string $fqn): void {
+        $point = new MethodStaticSourcePoint($fqn);
+
+        static::assertInstanceOf(MethodStaticSourcePoint::class, $point);
+        static::assertInstanceOf(StaticSourcePointInterface::class, $point);
+        static::assertInstanceOf(SourcePointInterface::class, $point);
+        static::assertInstanceOf(ObjectPointInterface::class, $point);
+    }
+
+    /**
+     * @dataProvider provideMethodStaticSourcePointFqnException
+     */
+    public function testConstructException(string $fqn): void
     {
         $this->expectException(InvalidArgumentException::class);
-        new MethodStaticSourcePoint($invalidMethodPointFqn);
+
+        new MethodStaticSourcePoint($fqn);
     }
 
     /**
-     * @dataProvider provideMethodPointFqnTokens
-     * @param string $className
-     * @param string $methodName
-     * @throws InvalidArgumentException
+     * @dataProvider provideMethodStaticSourcePointFqn
      */
-    public function testConstruct(string $className, string $methodName): void
+    public function testGetFqn(string $fqn): void
     {
-        static::assertInstanceOf(
-            MethodStaticSourcePoint::class,
-            new MethodStaticSourcePoint(\sprintf('%s::%s()', $className, $methodName))
-        );
-    }
+        $point = new MethodStaticSourcePoint($fqn);
 
-    /**
-     * @dataProvider provideMethodPointFqnTokens
-     * @param string $className
-     * @param string $methodName
-     * @throws InvalidArgumentException
-     */
-    public function testGetFqn(string $className, string $methodName): void
-    {
-        $methodPoint = $this->buildMethodPoint($className, $methodName);
+        static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
 
         static::assertSame(
-            \sprintf('#%s::%s()', $className, $methodName),
-            $methodPoint->getFqn()
+            \sprintf(
+                '#%s::%s()',
+                $this->getPointSourceFqn($fqn),
+                $this->getPointName($fqn)
+            ),
+            $point->getFqn()
         );
     }
 
     /**
-     * @dataProvider provideMethodPointFqnTokens
-     * @param string $className
-     * @param string $methodName
-     * @throws InvalidArgumentException
+     * @dataProvider provideMethodStaticSourcePointFqn
      */
-    public function testGetClassFqn(string $className, string $methodName): void
+    public function testGetTargetFqn(string $fqn): void
     {
-        $methodPoint = $this->buildMethodPoint($className, $methodName);
+        $point = new MethodStaticSourcePoint($fqn);
 
-        static::assertSame($className, $methodPoint->getSourceFqn());
+        static::assertSame(
+            $point->getSourceFqn(),
+            $this->getPointSourceFqn($fqn)
+        );
     }
 
     /**
-     * @dataProvider provideMethodPointFqnTokens
-     * @param string $className
-     * @param string $methodName
-     * @throws InvalidArgumentException
+     * @dataProvider provideMethodStaticSourcePointFqn
      */
-    public function testGetName(string $className, string $methodName): void
+    public function testGetName(string $fqn): void
     {
-        $methodPoint = $this->buildMethodPoint($className, $methodName);
+        $point = new MethodStaticSourcePoint($fqn);
 
-        static::assertSame($methodName, $methodPoint->getName());
+        static::assertSame($point->getName(), $this->getPointName($fqn));
     }
 
-    /**
-     * @return array|string[][]
-     */
-    public function provideMethodPointFqnTokens(): array
+    public function provideMethodStaticSourcePointFqn(): array
     {
         return [
-            [MethodStaticSourcePointTestClass::class, 'privateMethod'],
-            [MethodStaticSourcePointTestClass::class, 'protectedMethod'],
-            [MethodStaticSourcePointTestClass::class, 'publicMethod'],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectA::class,
+                    'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()',
+                    ObjectA::class,
+                    'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectA::class,
+                    'getE'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()',
+                    ObjectA::class,
+                    'getE'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectA::class,
+                    'getF'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()',
+                    ObjectA::class,
+                    'getF'
+                ),
+            ],
         ];
     }
 
-    /**
-     * @return array|array[]
-     */
-    public function provideInvalidMethodPointFqns(): array
+    public function provideMethodStaticSourcePointFqnException(): array
     {
         return [
-            // Invalid syntax...
-            [\sprintf(
-                '%s::%s',
-                MethodStaticSourcePointTestClass::class,
-                'publicMethod'
-            )],
-            [\sprintf(
-                '%s%s()',
-                MethodStaticSourcePointTestClass::class,
-                'publicMethod'
-            )],
-            [\sprintf(
-                '%s::',
-                MethodStaticSourcePointTestClass::class
-            )],
-
-            // Invalid reflection...
-            [\sprintf(
-                '%s::%s()',
-                'InvalidClass',
-                'publicMethod'
-            )],
-            [\sprintf(
-                '%s::%s()',
-                MethodStaticSourcePointTestClass::class,
-                'invalidMethod'
-            )],
+            [
+                \sprintf(
+                    '~%s::%s()',
+                    ObjectA::class,
+                    'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '~%s::%s()',
+                    ObjectA::class,
+                    'getE'
+                ),
+            ],
+            [
+                \sprintf(
+                    '~%s::%s()',
+                    ObjectA::class,
+                    'getF'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::$%s',
+                    ObjectA::class,
+                    'f'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()::$%s',
+                    ObjectA::class,
+                    'setA',
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    'NonObject',
+                    'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectA::class,
+                    'nonMethod'
+                ),
+            ],
         ];
     }
 
-    /**
-     * @param string $className
-     * @param string $methodName
-     * @return MethodStaticSourcePoint
-     * @throws InvalidArgumentException
-     */
-    private function buildMethodPoint(
-        string $className,
-        string $methodName
-    ): MethodStaticSourcePoint {
-        $methodPointFqn = \sprintf('%s::%s()', $className, $methodName);
-
-        return new MethodStaticSourcePoint($methodPointFqn);
-    }
-}
-
-/**
- * The method object point test class.
- *
- * @package Opportus\ObjectMapper\Tests\Point
- * @author  Clément Cazaud <clement.cazaud@gmail.com>
- * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
- */
-class MethodStaticSourcePointTestClass
-{
-    /**
-     * @return int
-     */
-    private function privateMethod(): int
+    private function getPointSourceFqn(string $fqn): string
     {
-        return 1;
+        if (false === \preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
+            $message = \sprintf(
+                'The argument must match method static source point FQN regex pattern %s, got %s.',
+                self::FQN_REGEX_PATTERN,
+                $fqn
+            );
+
+            throw new TestInvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        return $matches[1];
     }
 
-    /**
-     * @return int
-     */
-    protected function protectedMethod(): int
+    private function getPointName(string $fqn): string
     {
-        return 1;
-    }
+        if (false === \preg_match(self::FQN_REGEX_PATTERN, $fqn, $matches)) {
+            $message = \sprintf(
+                'The argument must match method static source point FQN regex pattern %s, got %s.',
+                self::FQN_REGEX_PATTERN,
+                $fqn
+            );
 
-    /**
-     * @return int
-     */
-    public function publicMethod(): int
-    {
-        return 1;
+            throw new TestInvalidArgumentException(1, __METHOD__, $message);
+        }
+
+        return $matches[2];
     }
 }
