@@ -34,7 +34,8 @@ class PropertyStaticTargetPointTest extends TestCase
     /**
      * @dataProvider providePropertyStaticTargetPointFqn
      */
-    public function testConstruct(string $fqn): void {
+    public function testConstruct(string $fqn): void
+    {
         $point = new PropertyStaticTargetPoint($fqn);
 
         static::assertInstanceOf(PropertyStaticTargetPoint::class, $point);

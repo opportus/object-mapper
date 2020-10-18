@@ -34,7 +34,8 @@ class MethodStaticSourcePointTest extends TestCase
     /**
      * @dataProvider provideMethodStaticSourcePointFqn
      */
-    public function testConstruct(string $fqn): void {
+    public function testConstruct(string $fqn): void
+    {
         $point = new MethodStaticSourcePoint($fqn);
 
         static::assertInstanceOf(MethodStaticSourcePoint::class, $point);

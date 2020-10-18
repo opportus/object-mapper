@@ -34,7 +34,8 @@ class MethodParameterStaticTargetPointTest extends TestCase
     /**
      * @dataProvider provideMethodParameterStaticTargetPointFqn
      */
-    public function testConstruct(string $fqn): void {
+    public function testConstruct(string $fqn): void
+    {
         $point = new MethodParameterStaticTargetPoint($fqn);
 
         static::assertInstanceOf(MethodParameterStaticTargetPoint::class, $point);
