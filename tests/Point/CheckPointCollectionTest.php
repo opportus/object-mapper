@@ -34,8 +34,6 @@ class CheckPointCollectionTest extends TestCase
 {
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testConstruct(array $checkPoints): void
     {
@@ -71,7 +69,7 @@ class CheckPointCollectionTest extends TestCase
             $checkPointCollection
         );
 
-        static::assertSame(
+        static::assertEquals(
             \count($checkPoints),
             \count($checkPointCollection)
         );
@@ -91,8 +89,6 @@ class CheckPointCollectionTest extends TestCase
 
     /**
      * @dataProvider provideInvalidCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testConstructException(array $checkPoints): void
     {
@@ -103,24 +99,31 @@ class CheckPointCollectionTest extends TestCase
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testToArray(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
-        static::assertSame($checkPoints, $checkPointCollection->toArray());
+        foreach ($checkPoints as $checkPointPosition=> $checkPoint) {
+            static::assertArrayHasKey(
+                $checkPointPosition,
+                $checkPointCollection->toArray()
+            );
+
+            static::assertSame(
+                $checkPoint,
+                $checkPointCollection->toArray()[$checkPointPosition]
+            );
+        }
     }
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testGetIterator(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
+
         $iterator = $checkPointCollection->getIterator();
 
         static::assertInstanceOf(ArrayIterator::class, $iterator);
@@ -134,8 +137,6 @@ class CheckPointCollectionTest extends TestCase
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testCount(array $checkPoints): void
     {
@@ -149,8 +150,6 @@ class CheckPointCollectionTest extends TestCase
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testOffsetExists(array $checkPoints): void
     {
@@ -167,8 +166,6 @@ class CheckPointCollectionTest extends TestCase
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
      */
     public function testOffsetGet(array $checkPoints): void
     {
@@ -184,35 +181,32 @@ class CheckPointCollectionTest extends TestCase
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
      */
     public function testOffsetSet(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
-        $this->expectException(InvalidOperationException::class);
-        $checkPointCollection->offsetSet(0, null);
+        foreach ($checkPoints as $checkPointPosition => $checkPoint) {
+            $this->expectException(InvalidOperationException::class);
+
+            $checkPointCollection->offsetSet($checkPointPosition, $checkPoint);
+        }
     }
 
     /**
      * @dataProvider provideCheckPoints
-     * @param array $checkPoints
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
      */
     public function testOffsetUnset(array $checkPoints): void
     {
         $checkPointCollection = new CheckPointCollection($checkPoints);
 
-        $this->expectException(InvalidOperationException::class);
-        $checkPointCollection->offsetUnset(0);
+        foreach ($checkPoints as $checkPointPosition => $checkPoint) {
+            $this->expectException(InvalidOperationException::class);
+
+            $checkPointCollection->offsetUnset($checkPointPosition);
+        }
     }
 
-    /**
-     * @return array|\array[][]
-     */
     public function provideCheckPoints(): array
     {
         $checkPoints = [];
@@ -224,24 +218,27 @@ class CheckPointCollectionTest extends TestCase
             $checkPoints[$i] = $checkPoint;
         }
 
-        return [[$checkPoints]];
+        return [
+            [
+                $checkPoints
+            ]
+        ];
     }
 
-    /**
-     * @return array|\array[][]
-     */
     public function provideInvalidCheckPoints(): array
     {
-        return [[
+        return [
             [
-                'checkPoint',
-                123,
-                1.23,
-                function () {
-                },
-                [],
-                new stdClass(),
+                [
+                    'checkPoint',
+                    123,
+                    1.23,
+                    function () {
+                    },
+                    [],
+                    new stdClass(),
+                ]
             ]
-        ]];
+        ];
     }
 }
