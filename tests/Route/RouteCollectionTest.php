@@ -33,9 +33,7 @@ use stdClass;
 class RouteCollectionTest extends TestCase
 {
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructArguments
      */
     public function testConstruct(array $routes): void
     {
@@ -83,9 +81,7 @@ class RouteCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideInvalidRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructInvalidArguments
      */
     public function testConstructException(array $routes): void
     {
@@ -95,21 +91,27 @@ class RouteCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructArguments
      */
     public function testToArray(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
-        static::assertSame($routes, $routeCollection->toArray());
+        foreach ($routes as $routeFqn => $route) {
+            static::assertArrayHasKey(
+                $routeFqn,
+                $routeCollection->toArray()
+            );
+
+            static::assertSame(
+                $route,
+                $routeCollection->toArray()[$routeFqn]
+            );
+        }
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructArguments
      */
     public function testGetIterator(array $routes): void
     {
@@ -126,9 +128,7 @@ class RouteCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructArguments
      */
     public function testCount(array $routes): void
     {
@@ -138,9 +138,7 @@ class RouteCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetExists(array $routes): void
     {
@@ -154,9 +152,7 @@ class RouteCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetGet(array $routes): void
     {
@@ -168,34 +164,34 @@ class RouteCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetSet(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
-        $this->expectException(InvalidOperationException::class);
-        $routeCollection->offsetSet('route_0', null);
+        foreach ($routes as $routeFqn => $route) {
+            $this->expectException(InvalidOperationException::class);
+
+            $routeCollection->offsetSet($routeFqn, $route);
+        }
     }
 
     /**
-     * @dataProvider provideRoutes
-     * @param array $routes
-     * @throws InvalidArgumentException
-     * @throws InvalidOperationException
+     * @dataProvider provideConstructArguments
      */
     public function testOffsetUnset(array $routes): void
     {
         $routeCollection = new RouteCollection($routes);
 
-        $this->expectException(InvalidOperationException::class);
-        $routeCollection->offsetUnset('route_0');
+        foreach ($routes as $routeFqn => $route) {
+            $this->expectException(InvalidOperationException::class);
+
+            $routeCollection->offsetUnset($routeFqn);
+        }
     }
 
-    public function provideRoutes(): array
+    public function provideConstructArguments(): array
     {
         $routes = [];
         for ($i = 0; $i < 3; $i++) {
@@ -210,21 +206,27 @@ class RouteCollectionTest extends TestCase
             $routes[$route->getFqn()] = $route;
         }
 
-        return [[$routes]];
+        return [
+            [
+                $routes
+            ]
+        ];
     }
 
-    public function provideInvalidRoutes(): array
+    public function provideConstructInvalidArguments(): array
     {
-        return [[
+        return [
             [
-                'route',
-                123,
-                1.23,
-                function () {
-                },
-                [],
-                new stdClass(),
+                [
+                    'route',
+                    123,
+                    1.23,
+                    function () {
+                    },
+                    [],
+                    new stdClass(),
+                ]
             ]
-        ]];
+        ];
     }
 }
