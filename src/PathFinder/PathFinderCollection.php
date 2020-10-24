@@ -31,7 +31,7 @@ class PathFinderCollection extends ImmutableCollection
      */
     public function __construct(array $pathFinders = [])
     {
-        foreach ($pathFinders as $pathFinder) {
+        foreach ($pathFinders as $index => $pathFinder) {
             if (!\is_object($pathFinder) || !$pathFinder instanceof PathFinderInterface) {
                 $message = \sprintf(
                     'The array must contain exclusively elements of type %s, got an element of type %s.',
@@ -41,7 +41,18 @@ class PathFinderCollection extends ImmutableCollection
 
                 throw new InvalidArgumentException(1, __METHOD__, $message);
             }
+
+            if (false === \is_int($index)) {
+                $message = \sprintf(
+                    'The array must contain exclusively indexes of type integer, got an index of type %s.',
+                    \gettype($index)
+                );
+
+                throw new InvalidArgumentException(1, __METHOD__, $message);
+            }
         }
+
+        \ksort($pathFinders, \SORT_NUMERIC);
 
         parent::__construct($pathFinders);
     }
