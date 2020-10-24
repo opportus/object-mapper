@@ -31,7 +31,7 @@ class CheckPointCollection extends ImmutableCollection
      */
     public function __construct(array $checkPoints = [])
     {
-        foreach ($checkPoints as $checkPoint) {
+        foreach ($checkPoints as $index=> $checkPoint) {
             if (
                 !\is_object($checkPoint) ||
                 !$checkPoint instanceof CheckPointInterface
@@ -45,7 +45,18 @@ class CheckPointCollection extends ImmutableCollection
 
                 throw new InvalidArgumentException(1, __METHOD__, $message);
             }
+
+            if (false === \is_int($index)) {
+                $message = \sprintf(
+                    'The array must contain exclusively indexes of type integer, got an index of type %s.',
+                    \gettype($index)
+                );
+
+                throw new InvalidArgumentException(1, __METHOD__, $message);
+            }
         }
+
+        \ksort($checkPoints, \SORT_NUMERIC);
 
         parent::__construct($checkPoints);
     }

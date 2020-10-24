@@ -74,16 +74,27 @@ class CheckPointCollectionTest extends TestCase
             \count($checkPointCollection)
         );
 
-        foreach ($checkPoints as $checkPointPosition=> $checkPoint) {
+        foreach ($checkPoints as $index => $checkPoint) {
             static::assertArrayHasKey(
-                $checkPointPosition,
+                $index,
                 $checkPointCollection
             );
 
             static::assertSame(
                 $checkPoint,
-                $checkPointCollection[$checkPointPosition]
+                $checkPointCollection[$index]
             );
+        }
+
+        $i = 1;
+
+        foreach ($checkPointCollection as $index => $checkPoint) {
+            static::assertSame(
+                $i*10,
+                $index
+            );
+
+            $i++;
         }
     }
 
@@ -115,6 +126,17 @@ class CheckPointCollectionTest extends TestCase
                 $checkPointCollection->toArray()[$checkPointPosition]
             );
         }
+
+        $i = 1;
+
+        foreach ($checkPointCollection->toArray() as $index => $checkPoint) {
+            static::assertSame(
+                $i*10,
+                $index
+            );
+
+            $i++;
+        }
     }
 
     /**
@@ -132,6 +154,17 @@ class CheckPointCollectionTest extends TestCase
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
             static::assertArrayHasKey($checkPointPosition, $iterator);
             static::assertSame($checkPoint, $iterator[$checkPointPosition]);
+        }
+
+        $i = 1;
+
+        foreach ($checkPointCollection->toArray() as $index => $checkPoint) {
+            static::assertSame(
+                $i*10,
+                $index
+            );
+
+            $i++;
         }
     }
 
@@ -161,7 +194,7 @@ class CheckPointCollectionTest extends TestCase
             );
         }
 
-        static::assertFalse($checkPointCollection->offsetExists(4));
+        static::assertFalse($checkPointCollection->offsetExists(0));
     }
 
     /**
@@ -209,19 +242,21 @@ class CheckPointCollectionTest extends TestCase
 
     public function provideConstructArguments(): array
     {
-        $checkPoints = [];
-        for ($i = 0; $i < 3; $i++) {
-            $checkPoint = $this->getMockBuilder(CheckPointInterface::class)
-                ->getMock()
-            ;
-
-            $checkPoints[$i] = $checkPoint;
-        }
-
         return [
             [
-                $checkPoints
-            ]
+                [
+                    40 => $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
+                    20=> $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
+                    30 => $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
+                    50 => $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
+                    10 => $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
+                ],
+            ],
         ];
     }
 
@@ -237,6 +272,14 @@ class CheckPointCollectionTest extends TestCase
                     },
                     [],
                     new stdClass(),
+                ],
+            ],
+            [
+                [
+                    'a' => $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
+                    1 => $this->getMockBuilder(CheckPointInterface::class)
+                        ->getMock(),
                 ]
             ]
         ];
