@@ -48,7 +48,7 @@ strategies and controls.
 
 Leverage this solution to:
  
--   Decouple source and target from mapping logic
+-   Decouple your codebase from source and target mapping logic
 -   Dynamically define control flow over data being transferred from source to
     target
 -   Dynamically define target model depending on source model and reciprocally
@@ -127,16 +127,15 @@ iterates through each
 [`Route`](https://github.com/opportus/object-mapper/blob/master/src/Route/Route.php)
 that it gets from a
 [`Map`](https://github.com/opportus/object-mapper/blob/master/src/Map/Map.php),
-assigning the value of the current *route*'s *source point* to its
+assigning the value of the current *route*'s *source point* to this *route*'s
 *target point*.
 
 Optionally, on the *route*, *check points* can be defined in
 order to control the value from the *source point* before it reaches the
 *target point*.
 
-A *route*
-is defined by and composed of its *source point*, its *target point*, and its
-*check points*.
+A *route* is defined by and composed of its *source point*, its *target point*,
+and its *check points*.
 
 A *source point* can be either:
 
@@ -162,7 +161,8 @@ strategy implementation and/or [manually](#manual-mapping) via:
 
 ### Automatic Mapping
 
-`PathFinderInterface` strategy implementations like those covered next can be combined.
+Remember that `PathFinderInterface` implementations such as those covered next
+in this section can get combined.
 
 #### Static Path Finder
 
