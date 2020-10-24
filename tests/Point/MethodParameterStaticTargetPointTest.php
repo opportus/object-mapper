@@ -17,7 +17,7 @@ use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\ObjectA;
+use Opportus\ObjectMapper\Tests\PointProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,6 +29,8 @@ use PHPUnit\Framework\TestCase;
  */
 class MethodParameterStaticTargetPointTest extends TestCase
 {
+    use PointProviderTrait;
+
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)::\$([A-Za-z0-9_]+)$/';
 
     /**
@@ -45,7 +47,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
     }
 
     /**
-     * @dataProvider provideMethodParameterStaticTargetPointFqnException
+     * @dataProvider provideInvalidMethodParameterStaticTargetPointFqn
      */
     public function testConstructException(string $fqn): void
     {
@@ -108,128 +110,6 @@ class MethodParameterStaticTargetPointTest extends TestCase
             $point->getMethodName(),
             $this->getPointMethodName($fqn)
         );
-    }
-
-    public function provideMethodParameterStaticTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setE',
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setE',
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-        ];
-    }
-
-    public function provideMethodParameterStaticTargetPointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setE',
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    'NonObject',
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'nonMethod',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'nonParameter'
-                ),
-            ],
-        ];
     }
 
     private function getPointTargetFqn(string $fqn): string

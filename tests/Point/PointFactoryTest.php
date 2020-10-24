@@ -23,7 +23,7 @@ use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\ObjectA;
+use Opportus\ObjectMapper\Tests\PointProviderTrait;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -36,6 +36,8 @@ use PHPUnit\Framework\TestCase;
  */
 class PointFactoryTest extends TestCase
 {
+    use PointProviderTrait;
+
     private function createPointFactory(): PointFactoryInterface
     {
         return new PointFactory();
@@ -80,8 +82,8 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSourcePointFqnException
-     * @dataProvider provideStaticSourcePointFqnException
+     * @dataProvider provideInvalidSourcePointFqn
+     * @dataProvider provideInvalidStaticSourcePointFqn
      */
     public function testCreateStaticSourcePointException(string $fqn): void
     {
@@ -123,8 +125,8 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTargetPointFqnException
-     * @dataProvider provideStaticTargetPointFqnException
+     * @dataProvider provideInvalidTargetPointFqn
+     * @dataProvider provideInvalidStaticTargetPointFqn
      */
     public function testCreateStaticTargetPointException(string $fqn): void
     {
@@ -166,8 +168,8 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSourcePointFqnException
-     * @dataProvider provideDynamicSourcePointFqnException
+     * @dataProvider provideInvalidSourcePointFqn
+     * @dataProvider provideInvalidDynamicSourcePointFqn
      */
     public function testCreateDynamicSourcePointException(string $fqn): void
     {
@@ -207,8 +209,8 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTargetPointFqnException
-     * @dataProvider provideDynamicTargetPointFqnException
+     * @dataProvider provideInvalidTargetPointFqn
+     * @dataProvider provideInvalidDynamicTargetPointFqn
      */
     public function testCreateDynamicTargetPointException(string $fqn): void
     {
@@ -220,8 +222,7 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideStaticSourcePointFqn
-     * @dataProvider provideDynamicSourcePointFqn
+     * @dataProvider provideSourcePointFqn
      */
     public function testCreateSourcePoint(string $fqn): void
     {
@@ -311,7 +312,7 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSourcePointFqnException
+     * @dataProvider provideInvalidSourcePointFqn
      */
     public function testCreateSourcePointException(string $fqn): void
     {
@@ -323,8 +324,7 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideStaticTargetPointFqn
-     * @dataProvider provideDynamicTargetPointFqn
+     * @dataProvider provideTargetPointFqn
      */
     public function testCreateTargetPoint(string $fqn): void
     {
@@ -414,7 +414,7 @@ class PointFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTargetPointFqnException
+     * @dataProvider provideInvalidTargetPointFqn
      */
     public function testCreateTargetPointException(string $fqn): void
     {
@@ -423,445 +423,5 @@ class PointFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $pointFactory->createTargetPoint($fqn);
-    }
-
-    public function provideStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-        ];
-    }
-
-    public function provideStaticSourcePointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-        ];
-    }
-
-    public function provideStaticTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$a',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-        ];
-    }
-
-    public function provideStaticTargetPointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-        ];
-    }
-
-    public function provideDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getY'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    ObjectA::class,
-                    'getY'
-                ),
-            ],
-        ];
-    }
-
-    public function provideDynamicSourcePointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-        ];
-    }
-
-    public function provideDynamicTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setY',
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$a',
-                    ObjectA::class,
-                    'setY',
-                    'y'
-                ),
-            ],
-        ];
-    }
-
-    public function provideDynamicTargetPointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-        ];
-    }
-
-    public function provideSourcePointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-        ];
-    }
-
-    public function provideTargetPointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-        ];
     }
 }

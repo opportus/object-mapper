@@ -17,7 +17,7 @@ use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\ObjectA;
+use Opportus\ObjectMapper\Tests\PointProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,6 +29,8 @@ use PHPUnit\Framework\TestCase;
  */
 class PropertyDynamicTargetPointTest extends TestCase
 {
+    use PointProviderTrait;
+
     private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)$/';
 
     /**
@@ -45,7 +47,7 @@ class PropertyDynamicTargetPointTest extends TestCase
     }
 
     /**
-     * @dataProvider providePropertyDynamicTargetPointFqnException
+     * @dataProvider provideInvalidPropertyDynamicTargetPointFqn
      */
     public function testConstructException(string $fqn): void
     {
@@ -94,68 +96,6 @@ class PropertyDynamicTargetPointTest extends TestCase
         $point = new PropertyDynamicTargetPoint($fqn);
 
         static::assertSame($point->getName(), $this->getPointName($fqn));
-    }
-
-    public function providePropertyDynamicTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-        ];
-    }
-
-    public function providePropertyDynamicTargetPointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    'NonObject',
-                    'z'
-                ),
-            ],
-        ];
     }
 
     private function getPointTargetFqn(string $fqn): string

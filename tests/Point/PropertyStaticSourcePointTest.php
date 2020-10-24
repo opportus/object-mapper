@@ -17,7 +17,7 @@ use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\ObjectA;
+use Opportus\ObjectMapper\Tests\PointProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,6 +29,8 @@ use PHPUnit\Framework\TestCase;
  */
 class PropertyStaticSourcePointTest extends TestCase
 {
+    use PointProviderTrait;
+
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)$/';
 
     /**
@@ -45,7 +47,7 @@ class PropertyStaticSourcePointTest extends TestCase
     }
 
     /**
-     * @dataProvider providePropertyStaticSourcePointFqnException
+     * @dataProvider provideInvalidPropertyStaticSourcePointFqn
      */
     public function testConstructException(string $fqn): void
     {
@@ -94,110 +96,6 @@ class PropertyStaticSourcePointTest extends TestCase
         $point = new PropertyStaticSourcePoint($fqn);
 
         static::assertSame($point->getName(), $this->getPointName($fqn));
-    }
-
-    public function providePropertyStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    ObjectA::class,
-                    'f'
-                ),
-            ],
-        ];
-    }
-
-    public function providePropertyStaticSourcePointFqnException(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    ObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    ObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    'NonObject',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'nonProperty'
-                ),
-            ],
-        ];
     }
 
     private function getPointSourceFqn(string $fqn): string

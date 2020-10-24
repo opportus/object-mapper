@@ -12,21 +12,11 @@
 namespace Opportus\ObjectMapper\Tests\Route;
 
 use Opportus\ObjectMapper\Point\CheckPointCollection;
-use Opportus\ObjectMapper\Point\CheckPointInterface;
-use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
-use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
-use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
-use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
-use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\PointProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -38,8 +28,10 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteTest extends TestCase
 {
+    use PointProviderTrait;
+
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideRoutePoints
      */
     public function testConstruct(
         SourcePointInterface $sourcePoint,
@@ -52,7 +44,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideRoutePoints
      */
     public function testGetFqn(
         SourcePointInterface $sourcePoint,
@@ -68,7 +60,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideRoutePoints
      */
     public function testGetSourcePoint(
         SourcePointInterface $sourcePoint,
@@ -89,7 +81,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideRoutePoints
      */
     public function testGetTargetPoint(
         SourcePointInterface $sourcePoint,
@@ -110,7 +102,7 @@ class RouteTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideRoutePoints
      */
     public function testGetCheckPoints(
         SourcePointInterface $sourcePoint,
@@ -121,294 +113,5 @@ class RouteTest extends TestCase
 
         static::assertCount(\count($checkPoints), $route->getCheckPoints());
         static::assertSame($checkPoints, $route->getCheckPoints());
-    }
-
-    public function provideConstructArguments(): array
-    {
-        return [
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'a'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getA'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    ObjectA::class,
-                    'z'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    ObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    ObjectA::class,
-                    'getZ'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    ObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-        ];
     }
 }
