@@ -186,7 +186,7 @@ class RouteBuilder implements RouteBuilderInterface
      */
     public function addCheckPoint(
         CheckPointInterface $checkPoint,
-        int $checkPointPosition = null
+        ?int $checkPointPosition = null
     ): RouteBuilderInterface {
         $checkPoints = $this->checkPoints->toArray();
 

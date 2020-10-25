@@ -116,14 +116,14 @@ interface RouteBuilderInterface
      *
      * @param  CheckPointInterface   $checkPoint         A check point to add to
      *                                                   route being built
-     * @param  int                   $checkPointPosition The position of the
+     * @param  null|int              $position           The position of the
      *                                                   check point on the
      *                                                   route being built
      * @return RouteBuilderInterface                     A route builder
      */
     public function addCheckPoint(
         CheckPointInterface $checkPoint,
-        int $checkPointPosition = null
+        ?int $position = null
     ): RouteBuilderInterface;
 
     /**
@@ -139,16 +139,16 @@ interface RouteBuilderInterface
      *                                                   Name of the source
      *                                                   point to get recursion
      *                                                   target instance from
-     * @param int                  $checkPointPosition   The position of the
+     * @param null|int             $position             The position of the
      *                                                   check point on the
-     *                                                   route
+     *                                                   route being built
      * @return RouteBuilderInterface                     A route builder
      */
     public function addRecursionCheckPoint(
         string $sourceFqn,
         string $targetFqn,
         string $targetSourcePointFqn,
-        int $checkPointPosition = null
+        ?int $position = null
     ): RouteBuilderInterface;
 
     /**
@@ -167,16 +167,16 @@ interface RouteBuilderInterface
      *                                                   point to get the iterable
      *                                                   recursion target instance
      *                                                   from
-     * @param int                  $checkPointPosition   The position of the
+     * @param null|int               $position           The position of the
      *                                                   check point on the
-     *                                                   route
+     *                                                   route being built
      * @return RouteBuilderInterface                     A route builder
      */
     public function addIterableRecursionCheckPoint(
         string $sourceFqn,
         string $targetFqn,
         string $targetIterableSourcePointFqn,
-        int $checkPointPosition = null
+        ?int $position = null
     ): RouteBuilderInterface;
 
     /**
