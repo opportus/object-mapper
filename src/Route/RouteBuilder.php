@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Route;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
@@ -97,10 +98,23 @@ class RouteBuilder implements RouteBuilderInterface
     public function setStaticSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface {
+        try {
+            $sourcePoint = $this->pointFactory
+                ->createStaticSourcePoint($sourcePointFqn);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
-            $this->pointFactory->createStaticSourcePoint($sourcePointFqn),
+            $sourcePoint,
             $this->targetPoint,
             $this->checkPoints
         );
@@ -112,11 +126,24 @@ class RouteBuilder implements RouteBuilderInterface
     public function setStaticTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface {
+        try {
+            $targetPoint = $this->pointFactory
+                ->createStaticTargetPoint($targetPointFqn);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
             $this->sourcePoint,
-            $this->pointFactory->createStaticTargetPoint($targetPointFqn),
+            $targetPoint,
             $this->checkPoints
         );
     }
@@ -127,10 +154,23 @@ class RouteBuilder implements RouteBuilderInterface
     public function setDynamicSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface {
+        try {
+            $sourcePoint = $this->pointFactory
+                ->createDynamicSourcePoint($sourcePointFqn);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
-            $this->pointFactory->createDynamicSourcePoint($sourcePointFqn),
+            $sourcePoint,
             $this->targetPoint,
             $this->checkPoints
         );
@@ -142,11 +182,24 @@ class RouteBuilder implements RouteBuilderInterface
     public function setDynamicTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface {
+        try {
+            $targetPoint = $this->pointFactory
+                ->createDynamicTargetPoint($targetPointFqn);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
             $this->sourcePoint,
-            $this->pointFactory->createDynamicTargetPoint($targetPointFqn),
+            $targetPoint,
             $this->checkPoints
         );
     }
@@ -157,10 +210,23 @@ class RouteBuilder implements RouteBuilderInterface
     public function setSourcePoint(
         string $sourcePointFqn
     ): RouteBuilderInterface {
+        try {
+            $sourcePoint = $this->pointFactory
+                ->createSourcePoint($sourcePointFqn);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
-            $this->pointFactory->createSourcePoint($sourcePointFqn),
+            $sourcePoint,
             $this->targetPoint,
             $this->checkPoints
         );
@@ -172,11 +238,24 @@ class RouteBuilder implements RouteBuilderInterface
     public function setTargetPoint(
         string $targetPointFqn
     ): RouteBuilderInterface {
+        try {
+            $targetPoint = $this->pointFactory
+                ->createTargetPoint($targetPointFqn);
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
         return new self(
             $this->pointFactory,
             $this->mapBuilder,
             $this->sourcePoint,
-            $this->pointFactory->createTargetPoint($targetPointFqn),
+            $targetPoint,
             $this->checkPoints
         );
     }
@@ -214,12 +293,24 @@ class RouteBuilder implements RouteBuilderInterface
         string $targetSourcePointFqn,
         ?int $checkPointPosition = null
     ): RouteBuilderInterface {
-        return $this->addCheckPoint(
-            $this->pointFactory->createRecursionCheckPoint(
+        try {
+            $checkPoint = $this->pointFactory->createRecursionCheckPoint(
                 $sourceFqn,
                 $targetFqn,
                 $targetSourcePointFqn
-            ),
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                $exception->getArgument(),
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
+        return $this->addCheckPoint(
+            $checkPoint,
             $checkPointPosition
         );
     }
@@ -233,12 +324,24 @@ class RouteBuilder implements RouteBuilderInterface
         string $targetIterableSourcePointFqn,
         ?int $checkPointPosition = null
     ): RouteBuilderInterface {
-        return $this->addCheckPoint(
-            $this->pointFactory->createIterableRecursionCheckPoint(
+        try {
+            $checkPoint = $this->pointFactory->createIterableRecursionCheckPoint(
                 $sourceFqn,
                 $targetFqn,
                 $targetIterableSourcePointFqn
-            ),
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                $exception->getArgument(),
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
+        return $this->addCheckPoint(
+            $checkPoint,
             $checkPointPosition
         );
     }
@@ -279,7 +382,9 @@ class RouteBuilder implements RouteBuilderInterface
         } catch (InvalidOperationException $exception) {
             throw new InvalidOperationException(
                 __METHOD__,
-                $exception->getMessage()
+                '',
+                0,
+                $exception
             );
         }
 
