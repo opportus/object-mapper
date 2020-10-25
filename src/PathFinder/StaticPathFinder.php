@@ -167,7 +167,7 @@ class StaticPathFinder extends PathFinder
         $targetPointFqn = $this
             ->getPointFqnFromReflection($targetPointReflection);
 
-        return $this->getRouteBuilder()
+        return $this->routeBuilder
             ->setStaticSourcePoint($sourcePointFqn)
             ->setStaticTargetPoint($targetPointFqn)
             ->getRoute();

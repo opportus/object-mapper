@@ -118,7 +118,7 @@ class StaticSourceToDynamicTargetPathFinder extends PathFinder
         $sourcePointFqn = $this
             ->getPointFqnFromReflection($sourcePointReflection);
 
-        return $this->getRouteBuilder()
+        return $this->routeBuilder
             ->setStaticSourcePoint($sourcePointFqn)
             ->setDynamicTargetPoint($targetPointFqn)
             ->getRoute();

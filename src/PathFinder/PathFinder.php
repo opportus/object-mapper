@@ -36,7 +36,7 @@ abstract class PathFinder implements PathFinderInterface
     /**
      * @var RouteBuilderInterface $souteBuilder
      */
-    private $routeBuilder;
+    protected $routeBuilder;
 
     /**
      * Constructs the path finder.
@@ -115,16 +115,6 @@ abstract class PathFinder implements PathFinderInterface
         TargetInterface $target,
         $referencePoint
     ): ?RouteInterface;
-
-    /**
-     * Gets the route builder.
-     *
-     * @return RouteBuilderInterface
-     */
-    protected function getRouteBuilder(): RouteBuilderInterface
-    {
-        return $this->routeBuilder;
-    }
 
     /**
      * Gets the FQN of the point based on its passed reflection.
