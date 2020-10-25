@@ -31,12 +31,32 @@ class PointFactory implements PointFactoryInterface
             MethodStaticSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new MethodStaticSourcePoint($pointFqn);
+            try {
+                return new MethodStaticSourcePoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         } elseif (\preg_match(
             PropertyStaticSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new PropertyStaticSourcePoint($pointFqn);
+            try {
+                return new PropertyStaticSourcePoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         }
 
         $message = \sprintf('%s is not a static source point FQN.', $pointFqn);
@@ -53,12 +73,32 @@ class PointFactory implements PointFactoryInterface
             MethodParameterStaticTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new MethodParameterStaticTargetPoint($pointFqn);
+            try {
+                return new MethodParameterStaticTargetPoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         } elseif (\preg_match(
             PropertyStaticTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new PropertyStaticTargetPoint($pointFqn);
+            try {
+                return new PropertyStaticTargetPoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         }
 
         $message = \sprintf('%s is not a static target point FQN.', $pointFqn);
@@ -75,12 +115,32 @@ class PointFactory implements PointFactoryInterface
             MethodDynamicSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new MethodDynamicSourcePoint($pointFqn);
+            try {
+                return new MethodDynamicSourcePoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         } elseif (\preg_match(
             PropertyDynamicSourcePoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new PropertyDynamicSourcePoint($pointFqn);
+            try {
+                return new PropertyDynamicSourcePoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         }
 
         $message = \sprintf('%s is not a dynamic source point FQN.', $pointFqn);
@@ -97,12 +157,32 @@ class PointFactory implements PointFactoryInterface
             MethodParameterDynamicTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new MethodParameterDynamicTargetPoint($pointFqn);
+            try {
+                return new MethodParameterDynamicTargetPoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         } elseif (\preg_match(
             PropertyDynamicTargetPoint::getFqnRegexPattern(),
             $pointFqn
         )) {
-            return new PropertyDynamicTargetPoint($pointFqn);
+            try {
+                return new PropertyDynamicTargetPoint($pointFqn);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         }
 
         $message = \sprintf('%s is not a dynamic target point FQN.', $pointFqn);
@@ -117,22 +197,15 @@ class PointFactory implements PointFactoryInterface
     {
         try {
             return $this->createStaticSourcePoint($pointFqn);
-        } catch (InvalidArgumentException $staticPointException) {
+        } catch (InvalidArgumentException $exception) {
         }
 
         try {
             return $this->createDynamicSourcePoint($pointFqn);
-        } catch (InvalidArgumentException $dynamicPointException) {
+        } catch (InvalidArgumentException $exception) {
         }
 
-        $message = \sprintf(
-            '%s%s%s',
-            $staticPointException->getMessage(),
-            \PHP_EOL,
-            $dynamicPointException->getMessage()
-        );
-
-        throw new InvalidArgumentException(1, __METHOD__, $message);
+        throw new InvalidArgumentException(1, __METHOD__, '', 0, $exception);
     }
 
     /**
@@ -142,22 +215,15 @@ class PointFactory implements PointFactoryInterface
     {
         try {
             return $this->createStaticTargetPoint($pointFqn);
-        } catch (InvalidArgumentException $staticPointException) {
+        } catch (InvalidArgumentException $exception) {
         }
 
         try {
             return $this->createDynamicTargetPoint($pointFqn);
-        } catch (InvalidArgumentException $dynamicPointException) {
+        } catch (InvalidArgumentException $exception) {
         }
 
-        $message = \sprintf(
-            '%s%s%s',
-            $staticPointException->getMessage(),
-            \PHP_EOL,
-            $dynamicPointException->getMessage()
-        );
-
-        throw new InvalidArgumentException(1, __METHOD__, $message);
+        throw new InvalidArgumentException(1, __METHOD__, '', 0, $exception);
     }
 
     /**
@@ -168,11 +234,21 @@ class PointFactory implements PointFactoryInterface
         string $targetFqn,
         string $targetSourcePointFqn
     ): RecursionCheckPoint {
-        return new RecursionCheckPoint(
-            $sourceFqn,
-            $targetFqn,
-            $this->createSourcePoint($targetSourcePointFqn)
-        );
+        try {
+            return new RecursionCheckPoint(
+                $sourceFqn,
+                $targetFqn,
+                $this->createSourcePoint($targetSourcePointFqn)
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                $exception->getArgument(),
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
     }
 
     /**
@@ -183,10 +259,20 @@ class PointFactory implements PointFactoryInterface
         string $targetFqn,
         string $targetIterableSourcePointFqn
     ): IterableRecursionCheckPoint {
-        return new IterableRecursionCheckPoint(
-            $sourceFqn,
-            $targetFqn,
-            $this->createSourcePoint($targetIterableSourcePointFqn)
-        );
+        try {
+            return new IterableRecursionCheckPoint(
+                $sourceFqn,
+                $targetFqn,
+                $this->createSourcePoint($targetIterableSourcePointFqn)
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                $exception->getArgument(),
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
     }
 }
