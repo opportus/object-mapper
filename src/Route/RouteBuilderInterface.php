@@ -11,9 +11,10 @@
 
 namespace Opportus\ObjectMapper\Route;
 
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 
 /**
  * The route builder interface.
@@ -38,11 +39,13 @@ interface RouteBuilderInterface
     /**
      * Sets the static source point of the route.
      *
-     * @param  string                $sourcePointFqn The Fully Qualified Name
-     *                                               of a static source point
-     *                                               to compose the route being
-     *                                               build of
-     * @return RouteBuilderInterface                 A route builder
+     * @param  string                   $sourcePointFqn The Fully Qualified Name
+     *                                                  of a static source point
+     *                                                  to compose the route
+     *                                                  being build of
+     * @return RouteBuilderInterface                    A route builder
+     * @throws InvalidArgumentException                 If the argument is
+     *                                                  invalid for any reason
      */
     public function setStaticSourcePoint(
         string $sourcePointFqn
@@ -51,11 +54,13 @@ interface RouteBuilderInterface
     /**
      * Sets the static target point of the route.
      *
-     * @param  string                $targetPointFqn The Fully Qualified Name
-     *                                               of a static target point
-     *                                               to compose the route being
-     *                                               built of
-     * @return RouteBuilderInterface                 A route builder
+     * @param  string                   $targetPointFqn The Fully Qualified Name
+     *                                                  of a static target point
+     *                                                  to compose the route
+     *                                                  being built of
+     * @return RouteBuilderInterface                    A route builder
+     * @throws InvalidArgumentException                 If the argument is
+     *                                                  invalid for any reason
      */
     public function setStaticTargetPoint(
         string $targetPointFqn
@@ -64,11 +69,13 @@ interface RouteBuilderInterface
     /**
      * Sets the dynamic source point of the route.
      *
-     * @param  string                $sourcePointFqn The Fully Qualified Name
-     *                                               of a dynamic source point
-     *                                               to compose the route being
-     *                                               build of
-     * @return RouteBuilderInterface                 A route builder
+     * @param  string                   $sourcePointFqn The Fully Qualified Name
+     *                                                  of a dynamic source
+     *                                                  point to compose the
+     *                                                  route being build of
+     * @return RouteBuilderInterface                    A route builder
+     * @throws InvalidArgumentException                 If the argument is
+     *                                                  invalid for any reason
      */
     public function setDynamicSourcePoint(
         string $sourcePointFqn
@@ -77,11 +84,13 @@ interface RouteBuilderInterface
     /**
      * Sets the dynamic target point of the route.
      *
-     * @param  string                $targetPointFqn The Fully Qualified Name
-     *                                               of a dynamic target point
-     *                                               to compose the route being
-     *                                               built of
-     * @return RouteBuilderInterface                 A route builder
+     * @param  string                   $targetPointFqn The Fully Qualified Name
+     *                                                  of a dynamic target
+     *                                                  point to compose the
+     *                                                  route being built of
+     * @return RouteBuilderInterface                    A route builder
+     * @throws InvalidArgumentException                 If the argument is
+     *                                                  invalid for any reason
      */
     public function setDynamicTargetPoint(
         string $targetPointFqn
@@ -90,10 +99,12 @@ interface RouteBuilderInterface
     /**
      * Sets the source point of the route.
      *
-     * @param  string                $sourcePointFqn The Fully Qualified Name
-     *                                               of a static or dynamic
-     *                                               source point
-     * @return RouteBuilderInterface                 A route builder
+     * @param  string                   $sourcePointFqn The Fully Qualified
+     *                                                  Name of a static or
+     *                                                  dynamic source point
+     * @return RouteBuilderInterface                    A route builder
+     * @throws InvalidArgumentException                 If the argument is
+     *                                                  invalid for any reason
      */
     public function setSourcePoint(
         string $sourcePointFqn
@@ -102,10 +113,12 @@ interface RouteBuilderInterface
     /**
      * Sets the target point of the route.
      *
-     * @param  string                $targetPointFqn The Fully Qualified Name
-     *                                               of a static or dynamic
-     *                                               target point
-     * @return RouteBuilderInterface                 A route builder
+     * @param  string                   $targetPointFqn The Fully Qualified Name
+     *                                                  of a static or dynamic
+     *                                                  target point
+     * @return RouteBuilderInterface                    A route builder
+     * @throws InvalidArgumentException                 If the argument is
+     *                                                  invalid for any reason
      */
     public function setTargetPoint(
         string $targetPointFqn
@@ -143,6 +156,8 @@ interface RouteBuilderInterface
      *                                                   check point on the
      *                                                   route being built
      * @return RouteBuilderInterface                     A route builder
+     * @throws InvalidArgumentException                  If the arguments are
+     *                                                   invalid for any reason
      */
     public function addRecursionCheckPoint(
         string $sourceFqn,
@@ -171,6 +186,8 @@ interface RouteBuilderInterface
      *                                                   check point on the
      *                                                   route being built
      * @return RouteBuilderInterface                     A route builder
+     * @throws InvalidArgumentException                  If the arguments are
+     *                                                   invalid for any reason
      */
     public function addIterableRecursionCheckPoint(
         string $sourceFqn,
