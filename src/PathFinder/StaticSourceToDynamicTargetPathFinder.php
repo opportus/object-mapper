@@ -39,7 +39,7 @@ use ReflectionProperty;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class StaticSourceToDynamicTargetPathFinder extends AbstractPathFinder
+class StaticSourceToDynamicTargetPathFinder extends PathFinder
 {
     /**
      * {@inheritdoc}

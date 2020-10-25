@@ -25,13 +25,13 @@ use ReflectionProperty;
 use Reflector;
 
 /**
- * The abstract path finder.
+ * The path finder.
  *
  * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-abstract class AbstractPathFinder implements PathFinderInterface
+abstract class PathFinder implements PathFinderInterface
 {
     /**
      * @var RouteBuilderInterface $souteBuilder

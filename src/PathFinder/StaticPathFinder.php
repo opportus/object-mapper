@@ -40,7 +40,7 @@ use ReflectionProperty;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class StaticPathFinder extends AbstractPathFinder
+class StaticPathFinder extends PathFinder
 {
     /**
      * {@inheritdoc}
