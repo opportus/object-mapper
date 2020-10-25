@@ -14,7 +14,6 @@ namespace Opportus\ObjectMapper\Tests\Route;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapBuilder;
-use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\IterableRecursionCheckPoint;
 use Opportus\ObjectMapper\Point\PointFactory;
