@@ -33,9 +33,13 @@ interface PointFactoryInterface
      * @throws InvalidArgumentException             If the first argument does
      *                                              not match the FQN regex
      *                                              pattern of any static source
-     *                                              point type
+     *                                              point type or if the first
+     *                                              argument is invalid for any
+     *                                              other reason
      */
-    public function createStaticSourcePoint(string $pointFqn): StaticSourcePointInterface;
+    public function createStaticSourcePoint(
+        string $pointFqn
+    ): StaticSourcePointInterface;
 
     /**
      * Creates a static target point of a certain type based on the passed FQN.
@@ -48,9 +52,13 @@ interface PointFactoryInterface
      * @throws InvalidArgumentException             If the first argument does
      *                                              not match the FQN regex
      *                                              pattern of any static target
-     *                                              point type
+     *                                              point type or if the first
+     *                                              argument is invalid for any
+     *                                              other reason
      */
-    public function createStaticTargetPoint(string $pointFqn): StaticTargetPointInterface;
+    public function createStaticTargetPoint(
+        string $pointFqn
+    ): StaticTargetPointInterface;
 
     /**
      * Creates a dynamic source point of a certain type based on the passed FQN.
@@ -63,9 +71,13 @@ interface PointFactoryInterface
      * @throws InvalidArgumentException              If the first argument does
      *                                               not match the FQN regex
      *                                               pattern of any dynamic
-     *                                               source point type
+     *                                               source point type or if the
+     *                                               first argument is invalid
+     *                                               for any other reason
      */
-    public function createDynamicSourcePoint(string $pointFqn): DynamicSourcePointInterface;
+    public function createDynamicSourcePoint(
+        string $pointFqn
+    ): DynamicSourcePointInterface;
 
     /**
      * Creates a dynamic target point of a certain type based on the passed FQN.
@@ -78,9 +90,13 @@ interface PointFactoryInterface
      * @throws InvalidArgumentException              If the first argument does
      *                                               not match the FQN regex
      *                                               pattern of any dynamic
-     *                                               target point type
+     *                                               target point type or if the
+     *                                               first argument is invalid
+     *                                               for any other reason
      */
-    public function createDynamicTargetPoint(string $pointFqn): DynamicTargetPointInterface;
+    public function createDynamicTargetPoint(
+        string $pointFqn
+    ): DynamicTargetPointInterface;
 
     /**
      * Creates a source point of a certain type based on the passed FQN.
@@ -91,9 +107,13 @@ interface PointFactoryInterface
      * @throws InvalidArgumentException           If the first argument does
      *                                            not match the FQN regex
      *                                            pattern of any source point
-     *                                            type
+     *                                            type or if the first argument
+     *                                            is invalid for any other
+     *                                            reason
      */
-    public function createSourcePoint(string $pointFqn): SourcePointInterface;
+    public function createSourcePoint(
+        string $pointFqn
+    ): SourcePointInterface;
 
     /**
      * Creates a target point of a certain type based on the passed FQN.
@@ -104,9 +124,13 @@ interface PointFactoryInterface
      * @throws InvalidArgumentException           If the first argument does
      *                                            not match the FQN regex
      *                                            pattern of any target point
-     *                                            type
+     *                                            type or if the first argument
+     *                                            is invalid for any other
+     *                                            reason
      */
-    public function createTargetPoint(string $pointFqn): TargetPointInterface;
+    public function createTargetPoint(
+        string $pointFqn
+    ): TargetPointInterface;
 
     /**
      * Creates a recursion check point.
@@ -122,6 +146,9 @@ interface PointFactoryInterface
      *                                                   point to get recursion
      *                                                   target instance from
      * @return RecursionCheckPoint                       A recursion check point
+     * @throws InvalidArgumentException                  If the first or second
+     *                                                   argument is invalid for
+     *                                                   any reason
      */
     public function createRecursionCheckPoint(
         string $sourceFqn,
@@ -146,6 +173,9 @@ interface PointFactoryInterface
      *                                                   recursion target instance
      *                                                   from
      * @return IterableRecursionCheckPoint               A recursion check point
+     * @throws InvalidArgumentException                  If the first or second
+     *                                                   argument is invalid for
+     *                                                   any reason
      */
     public function createIterableRecursionCheckPoint(
         string $sourceFqn,
