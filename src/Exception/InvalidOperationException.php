@@ -23,6 +23,11 @@ use Throwable;
 class InvalidOperationException extends Exception
 {
     /**
+     * @var string
+     */
+    private $function;
+
+    /**
      * Constructs the invalid operation exception.
      *
      * @param string $function
@@ -36,12 +41,24 @@ class InvalidOperationException extends Exception
         int $code = 0,
         Throwable $previous = null
     ) {
+        $this->function = $function;
+
         $message = \sprintf(
             'Operation %s is invalid. %s',
-            $function,
+            $this->function,
             $message
         );
 
         parent::__construct($message, $code, $previous);
+    }
+
+    /**
+     * Gets the function.
+     *
+     * @return string
+     */
+    public function getFunction(): string
+    {
+        return $this->function;
     }
 }
