@@ -73,7 +73,7 @@ class Map implements MapInterface
             } catch (Exception $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
-                    $exception->getMessage(),
+                    '',
                     0,
                     $exception
                 );
