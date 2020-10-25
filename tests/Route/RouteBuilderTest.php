@@ -18,6 +18,7 @@ use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\IterableRecursionCheckPoint;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\RecursionCheckPoint;
+use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Tests\ObjectA;
@@ -38,19 +39,21 @@ class RouteBuilderTest extends TestCase
 
     public function testConstruct()
     {
-        $routeBuilder = new RouteBuilder(new PointFactory());
+        $routeBuilder = $this->buildRouteBuilder();
 
         static::assertInstanceOf(RouteBuilderInterface::class, $routeBuilder);
     }
 
     public function testSetMapBuilder(): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setMapBuilder($this->buildMapBuilder())
+        $routeBuilder2 = $routeBuilder1->setMapBuilder(
+            $this->buildMapBuilder()
         );
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -58,12 +61,12 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetStaticSourcePoint(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setStaticSourcePoint($pointFqn)
-        );
+        $routeBuilder2 = $routeBuilder1->setStaticSourcePoint($pointFqn);
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -83,12 +86,12 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetStaticTargetPoint(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setStaticTargetPoint($pointFqn)
-        );
+        $routeBuilder2 = $routeBuilder1->setStaticTargetPoint($pointFqn);
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -108,12 +111,12 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetDynamicSourcePoint(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setDynamicSourcePoint($pointFqn)
-        );
+        $routeBuilder2 = $routeBuilder1->setDynamicSourcePoint($pointFqn);
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -133,12 +136,12 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetDynamicTargetPoint(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setDynamicTargetPoint($pointFqn)
-        );
+        $routeBuilder2 = $routeBuilder1->setDynamicTargetPoint($pointFqn);
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -158,12 +161,12 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetSourcePoint(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setSourcePoint($pointFqn)
-        );
+        $routeBuilder2 = $routeBuilder1->setSourcePoint($pointFqn);
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -183,12 +186,12 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetTargetPoint(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->setTargetPoint($pointFqn)
-        );
+        $routeBuilder2 = $routeBuilder1->setTargetPoint($pointFqn);
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -205,14 +208,14 @@ class RouteBuilderTest extends TestCase
 
     public function testAddCheckPoint(): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->addCheckPoint(
-                $this->getMockBuilder(CheckPointInterface::class)->getMock()
-            )
+        $routeBuilder2 = $routeBuilder1->addCheckPoint(
+            $this->getMockBuilder(CheckPointInterface::class)->getMock()
         );
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -221,16 +224,16 @@ class RouteBuilderTest extends TestCase
     public function testAddRecursionCheckPoint(
         string $targetSourcePointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
-                $targetSourcePointFqn
-            )
+        $routeBuilder2 = $routeBuilder1->addRecursionCheckPoint(
+            ObjectA::class,
+            ObjectB::class,
+            $targetSourcePointFqn
         );
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -256,16 +259,16 @@ class RouteBuilderTest extends TestCase
     public function testAddIterableRecursionCheckPoint(
         string $targetSourcePointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder1 = $this->buildRouteBuilder();
 
-        static::assertNotSame(
-            $routeBuilder,
-            $routeBuilder->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
-                $targetSourcePointFqn
-            )
+        $routeBuilder2 = $routeBuilder1->addIterableRecursionCheckPoint(
+            ObjectA::class,
+            ObjectB::class,
+            $targetSourcePointFqn
         );
+
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -309,11 +312,19 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock(),
                 10
             )
+            ->addCheckPoint(
+                $this->getMockBuilder(CheckPointInterface::class)->getMock()
+            )
             ->addRecursionCheckPoint(
                 ObjectA::class,
                 ObjectB::class,
                 $sourcePointFqn,
                 40
+            )
+            ->addRecursionCheckPoint(
+                ObjectA::class,
+                ObjectB::class,
+                $sourcePointFqn
             )
             ->addIterableRecursionCheckPoint(
                 ObjectA::class,
@@ -321,7 +332,14 @@ class RouteBuilderTest extends TestCase
                 $sourcePointFqn,
                 10
             )
+            ->addIterableRecursionCheckPoint(
+                ObjectA::class,
+                ObjectB::class,
+                $sourcePointFqn
+            )
             ->getRoute();
+
+        static::assertInstanceOf(Route::class, $route);
 
         static::assertSame(
             \ltrim($sourcePointFqn, '#~'),
@@ -333,24 +351,70 @@ class RouteBuilderTest extends TestCase
             \ltrim($route->getTargetPoint()->getFqn(), '#~')
         );
 
-        static::assertCount(4, $route->getCheckPoints());
+        static::assertCount(7, $route->getCheckPoints());
 
         static::assertArrayHasKey(10, $route->getCheckPoints());
         static::assertArrayHasKey(20, $route->getCheckPoints());
         static::assertArrayHasKey(30, $route->getCheckPoints());
+        static::assertArrayHasKey(31, $route->getCheckPoints());
         static::assertArrayHasKey(40, $route->getCheckPoints());
+        static::assertArrayHasKey(41, $route->getCheckPoints());
+        static::assertArrayHasKey(42, $route->getCheckPoints());
 
         static::assertArrayNotHasKey(50, $route->getCheckPoints());
 
-        static::assertInstanceOf(IterableRecursionCheckPoint::class, $route->getCheckPoints()[10]);
-        static::assertInstanceOf(CheckPointInterface::class, $route->getCheckPoints()[20]);
-        static::assertInstanceOf(CheckPointInterface::class, $route->getCheckPoints()[30]);
-        static::assertInstanceOf(RecursionCheckPoint::class, $route->getCheckPoints()[40]);
+        static::assertInstanceOf(
+            IterableRecursionCheckPoint::class,
+            $route->getCheckPoints()[10]
+        );
 
-        $i = 1;
+        static::assertInstanceOf(
+            CheckPointInterface::class,
+            $route->getCheckPoints()[20]
+        );
+
+        static::assertInstanceOf(
+            CheckPointInterface::class,
+            $route->getCheckPoints()[30]
+        );
+
+        static::assertInstanceOf(
+            CheckPointInterface::class,
+            $route->getCheckPoints()[31]
+        );
+
+        static::assertInstanceOf(
+            RecursionCheckPoint::class,
+            $route->getCheckPoints()[40]
+        );
+
+        static::assertInstanceOf(
+            RecursionCheckPoint::class,
+            $route->getCheckPoints()[41]
+        );
+
+        static::assertInstanceOf(
+            IterableRecursionCheckPoint::class,
+            $route->getCheckPoints()[42]
+        );
+
+        $expectedCheckPointPositions = [
+            10,
+            20,
+            30,
+            31,
+            40,
+            41,
+            42,
+        ];
+
+        $i = 0;
 
         foreach ($route->getCheckPoints() as $checkPointPosition => $checkPoint) {
-            static::assertEquals($i*10, $checkPointPosition);
+            static::assertEquals(
+                $expectedCheckPointPositions[$i],
+                $checkPointPosition
+            );
 
             $i++;
         }
@@ -486,11 +550,19 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock(),
                 10
             )
+            ->addCheckPoint(
+                $this->getMockBuilder(CheckPointInterface::class)->getMock()
+            )
             ->addRecursionCheckPoint(
                 ObjectA::class,
                 ObjectB::class,
                 $sourcePointFqn,
                 40
+            )
+            ->addRecursionCheckPoint(
+                ObjectA::class,
+                ObjectB::class,
+                $sourcePointFqn
             )
             ->addIterableRecursionCheckPoint(
                 ObjectA::class,
@@ -498,9 +570,15 @@ class RouteBuilderTest extends TestCase
                 $sourcePointFqn,
                 10
             )
+            ->addIterableRecursionCheckPoint(
+                ObjectA::class,
+                ObjectB::class,
+                $sourcePointFqn
+            )
             ->addRouteToMapBuilder();
 
-        static::assertNotSame($routeBuilder1, $routeBuilder2);
+        static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
+        static::assertNotEquals($routeBuilder1, $routeBuilder2);
     }
 
     /**
@@ -731,11 +809,19 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock(),
                 10
             )
+            ->addCheckPoint(
+                $this->getMockBuilder(CheckPointInterface::class)->getMock()
+            )
             ->addRecursionCheckPoint(
                 ObjectA::class,
                 ObjectB::class,
                 $sourcePointFqn,
                 40
+            )
+            ->addRecursionCheckPoint(
+                ObjectA::class,
+                ObjectB::class,
+                $sourcePointFqn
             )
             ->addIterableRecursionCheckPoint(
                 ObjectA::class,
@@ -743,10 +829,15 @@ class RouteBuilderTest extends TestCase
                 $sourcePointFqn,
                 10
             )
+            ->addIterableRecursionCheckPoint(
+                ObjectA::class,
+                ObjectB::class,
+                $sourcePointFqn
+            )
             ->addRouteToMapBuilder()
             ->getMapBuilder();
 
-        static::assertNotSame($mapBuilder1, $mapBuilder2);
+        static::assertNotEquals($mapBuilder1, $mapBuilder2);
     }
 
     public function provideAddRecursionCheckPointArguments(): array
