@@ -46,7 +46,7 @@ class Map implements MapInterface
      * @param null|RouteCollection $routes
      */
     public function __construct(
-        ?PathFinderCollection $pathFinders,
+        ?PathFinderCollection $pathFinders = null,
         ?RouteCollection $routes = null
     ) {
         $this->pathFinders = $pathFinders ?? new PathFinderCollection();
