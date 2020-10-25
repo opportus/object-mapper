@@ -40,7 +40,7 @@ trait ProviderTrait
             $routes[] = [new Route(
                 $routePoints[0],
                 $routePoints[1],
-                $routePoints[2],
+                $routePoints[2]
             )];
         }
 
