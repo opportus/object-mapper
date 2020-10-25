@@ -109,7 +109,9 @@ class StaticSourceToDynamicTargetPathFinder extends AbstractPathFinder
                     $targetPointName
                 );
             }
-        } else {
+        }
+        
+        if (false === isset($targetPointFqn)) {
             return null;
         }
 
