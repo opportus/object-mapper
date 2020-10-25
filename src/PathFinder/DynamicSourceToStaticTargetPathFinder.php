@@ -77,7 +77,9 @@ class DynamicSourceToStaticTargetPathFinder extends StaticPathFinder
                 $sourceClassReflection->getName(),
                 \ucfirst($targetPointReflection->getName())
             );
-        } else {
+        }
+        
+        if (false === isset($sourcePointFqn)) {
             return null;
         }
 
