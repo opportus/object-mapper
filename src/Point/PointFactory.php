@@ -235,10 +235,24 @@ class PointFactory implements PointFactoryInterface
         string $targetSourcePointFqn
     ): RecursionCheckPoint {
         try {
+            $targetSourcePoint = $this->createSourcePoint(
+                $targetSourcePointFqn
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
+        try {
             return new RecursionCheckPoint(
                 $sourceFqn,
                 $targetFqn,
-                $this->createSourcePoint($targetSourcePointFqn)
+                $targetSourcePoint
             );
         } catch (InvalidArgumentException $exception) {
             throw new InvalidArgumentException(
@@ -260,10 +274,24 @@ class PointFactory implements PointFactoryInterface
         string $targetIterableSourcePointFqn
     ): IterableRecursionCheckPoint {
         try {
+            $targetIterableSourcePoint = $this->createSourcePoint(
+                $targetIterableSourcePointFqn
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidArgumentException(
+                1,
+                __METHOD__,
+                '',
+                0,
+                $exception
+            );
+        }
+
+        try {
             return new IterableRecursionCheckPoint(
                 $sourceFqn,
                 $targetFqn,
-                $this->createSourcePoint($targetIterableSourcePointFqn)
+                $targetIterableSourcePoint
             );
         } catch (InvalidArgumentException $exception) {
             throw new InvalidArgumentException(
