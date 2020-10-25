@@ -23,13 +23,13 @@ use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 
 /**
- * The point provider trait.
+ * The provider trait.
  *
  * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-trait PointProviderTrait
+trait ProviderTrait
 {
     public function providePointsFqn(): array
     {
