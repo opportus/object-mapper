@@ -62,7 +62,9 @@ abstract class PathFinder implements PathFinderInterface
         } catch (Exception $exception) {
             throw new InvalidOperationException(
                 __METHOD__,
-                $exception->getMessage()
+                '',
+                0,
+                $exception
             );
         }
 
@@ -76,7 +78,9 @@ abstract class PathFinder implements PathFinderInterface
             } catch (Exception $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
-                    $exception->getMessage()
+                    '',
+                    0,
+                    $exception
                 );
             }
 
