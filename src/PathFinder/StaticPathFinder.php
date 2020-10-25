@@ -155,7 +155,9 @@ class StaticPathFinder extends AbstractPathFinder
             if ($propertyReflection->isPublic() === true) {
                 $sourcePointReflection = $propertyReflection;
             }
-        } else {
+        }
+        
+        if (false === isset($sourcePointReflection)) {
             return null;
         }
 
