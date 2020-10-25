@@ -103,11 +103,16 @@ class MapBuilder implements MapBuilderInterface
      * {@inheritdoc}
      */
     public function addPathFinder(
-        PathFinderInterface $pathFinder
+        PathFinderInterface $pathFinder,
+        ?int $priority = null
     ): MapBuilderInterface {
         $pathFinders = $this->pathFinders->toArray();
 
-        $pathFinders[] = $pathFinder;
+        if (null === $priority) {
+            $pathFinders[] = $pathFinder;
+        } else {
+            $pathFinders[$priority] = $pathFinder;
+        }
 
         return new self(
             $this->routeBuilder,
@@ -119,25 +124,37 @@ class MapBuilder implements MapBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function addStaticPathFinder(): MapBuilderInterface
-    {
-        return $this->addPathFinder(new StaticPathFinder($this->routeBuilder));
+    public function addStaticPathFinder(
+        ?int $priority = null
+    ): MapBuilderInterface {
+        return $this->addPathFinder(
+            new StaticPathFinder($this->routeBuilder),
+            $priority
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addStaticSourceToDynamicTargetPathFinder(): MapBuilderInterface
-    {
-        return $this->addPathFinder(new StaticSourceToDynamicTargetPathFinder($this->routeBuilder));
+    public function addStaticSourceToDynamicTargetPathFinder(
+        ?int $priority = null
+    ): MapBuilderInterface {
+        return $this->addPathFinder(
+            new StaticSourceToDynamicTargetPathFinder($this->routeBuilder),
+            $priority
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addDynamicSourceToStaticTargetPathFinder(): MapBuilderInterface
-    {
-        return $this->addPathFinder(new DynamicSourceToStaticTargetPathFinder($this->routeBuilder));
+    public function addDynamicSourceToStaticTargetPathFinder(
+        ?int $priority = null
+    ): MapBuilderInterface {
+        return $this->addPathFinder(
+            new DynamicSourceToStaticTargetPathFinder($this->routeBuilder),
+            $priority
+        );
     }
 
     /**
