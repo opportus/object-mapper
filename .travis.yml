@@ -9,7 +9,7 @@ install:
     - composer install --prefer-dist --no-interaction --no-progress
 
 script:
-    - vendor/bin/phpunit coverage-text=/dev/stdout
+    - vendor/bin/phpunit --coverage-text=/dev/stdout
     - vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no .
 
 after_script:
