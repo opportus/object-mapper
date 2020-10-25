@@ -66,9 +66,15 @@ class MapTest extends TestCase
     public function testGetRoutes(): void
     {
         $pathFinders = new PathFinderCollection([
-            new StaticPathFinder(new RouteBuilder(new PointFactory)),
-            new StaticSourceToDynamicTargetPathFinder(new RouteBuilder(new PointFactory)),
-            new DynamicSourceToStaticTargetPathFinder(new RouteBuilder(new PointFactory)),
+            new StaticPathFinder(
+                new RouteBuilder(new PointFactory)
+            ),
+            new StaticSourceToDynamicTargetPathFinder(
+                new RouteBuilder(new PointFactory)
+            ),
+            new DynamicSourceToStaticTargetPathFinder(
+                new RouteBuilder(new PointFactory)
+            ),
         ]);
 
         $routes = [];
