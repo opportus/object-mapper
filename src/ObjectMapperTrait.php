@@ -37,7 +37,7 @@ trait ObjectMapperTrait
      * @throws InvalidOperationException         If the operation fails for any
      *                                           reason
      */
-    private function mapObjects(
+    private function mapSourceToTarget(
         SourceInterface $source,
         TargetInterface $target,
         MapInterface $map

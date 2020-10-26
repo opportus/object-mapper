@@ -134,7 +134,7 @@ class RecursionCheckPoint implements CheckPointInterface
             }
         }
 
-        $updatedRecursionTarget = $this->mapObjects(
+        $updatedRecursionTarget = $this->mapSourceToTarget(
             $recursionSource,
             $recursionTarget,
             $map

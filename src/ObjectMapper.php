@@ -81,6 +81,6 @@ class ObjectMapper implements ObjectMapperInterface
             ->addStaticPathFinder()
             ->getMap();
 
-        return $this->mapObjects($source, $target, $map);
+        return $this->mapSourceToTarget($source, $target, $map);
     }
 }
