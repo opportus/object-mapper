@@ -11,9 +11,9 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Map\MapInterface;
 
 /**
  * The object mapper interface.
