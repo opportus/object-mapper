@@ -3,7 +3,7 @@
 [![License](https://poser.pugx.org/opportus/object-mapper/license)](https://packagist.org/packages/opportus/object-mapper)
 [![Latest Stable Version](https://poser.pugx.org/opportus/object-mapper/v/stable)](https://packagist.org/packages/opportus/object-mapper)
 [![Latest Unstable Version](https://poser.pugx.org/opportus/object-mapper/v/unstable)](https://packagist.org/packages/opportus/object-mapper)
-![Build](https://github.com/opportus/object-mapper/workflows/Build/badge.svg)
+[![Build](https://github.com/opportus/object-mapper/workflows/Build/badge.svg)](https://github.com/opportus/object-mapper/actions?query=workflow%3ABuild)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d3f5178323844f59a6ef5647cb11d9d7)](https://www.codacy.com/manual/opportus/object-mapper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opportus/object-mapper&amp;utm_campaign=Badge_Grade)
 
 **Index**
