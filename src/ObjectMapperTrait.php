@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 
@@ -59,7 +60,7 @@ trait ObjectMapperTrait
 
             try {
                 $checkPointSubject = $source->getPointValue($sourcePoint);
-            } catch (InvalidOperationException $exception) {
+            } catch (InvalidArgumentException | InvalidOperationException $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
                     '',
@@ -91,7 +92,7 @@ trait ObjectMapperTrait
 
             try {
                 $target->setPointValue($targetPoint, $checkPointSubject);
-            } catch (InvalidOperationException $exception) {
+            } catch (InvalidArgumentException $exception) {
                 throw new InvalidOperationException(
                     __METHOD__,
                     '',
