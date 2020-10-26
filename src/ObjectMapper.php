@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\Map\MapInterface;
 
@@ -81,6 +82,10 @@ class ObjectMapper implements ObjectMapperInterface
             ->addStaticPathFinder()
             ->getMap();
 
-        return $this->mapSourceToTarget($source, $target, $map);
+        try {
+            return $this->mapSourceToTarget($source, $target, $map);
+        } catch (InvalidOperationException $exception) {
+            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+        }
     }
 }
