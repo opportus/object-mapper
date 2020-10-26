@@ -11,8 +11,9 @@
 
 namespace Opportus\ObjectMapper;
 
-use Opportus\ObjectMapper\Map\MapInterface;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
+use Opportus\ObjectMapper\Map\MapInterface;
 
 /**
  * The object mapper.
@@ -43,10 +44,38 @@ class ObjectMapper implements ObjectMapperInterface
     /**
      * {@inheritdoc}
      */
-    public function map(object $source, $target, ?MapInterface $map = null): ?object
-    {
-        $source = ($source instanceof SourceInterface) ? $source : new Source($source);
-        $target = ($target instanceof TargetInterface) ? $target : new Target($target);
+    public function map(
+        object $source,
+        $target,
+        ?MapInterface $map = null
+    ): ?object {
+        if (!$source instanceof SourceInterface) {
+            try {
+                $source = new Source($source);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    1,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
+        }
+
+        if (!$target instanceof TargetInterface) {
+            try {
+                $target = new Target($target);
+            } catch (InvalidArgumentException $exception) {
+                throw new InvalidArgumentException(
+                    2,
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
+        }
 
         $map = $map ?? $this->mapBuilder
             ->addStaticPathFinder()
