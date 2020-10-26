@@ -51,17 +51,7 @@ class ObjectMapper implements ObjectMapperInterface
         ?MapInterface $map = null
     ): ?object {
         if (!$source instanceof SourceInterface) {
-            try {
-                $source = new Source($source);
-            } catch (InvalidArgumentException $exception) {
-                throw new InvalidArgumentException(
-                    1,
-                    __METHOD__,
-                    '',
-                    0,
-                    $exception
-                );
-            }
+            $source = new Source($source);
         }
 
         if (!$target instanceof TargetInterface) {
