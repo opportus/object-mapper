@@ -304,6 +304,7 @@ class Target implements TargetInterface
      *
      * @param MethodParameterStaticTargetPoint $point
      * @return int
+     * @noinspection PhpInconsistentReturnPointsInspection
      */
     private function getMethodParameterStaticPointPosition(MethodParameterStaticTargetPoint $point): int
     {
