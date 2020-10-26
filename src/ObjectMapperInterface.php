@@ -12,6 +12,8 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Map\MapInterface;
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 
 /**
  * The object mapper interface.
@@ -23,17 +25,26 @@ use Opportus\ObjectMapper\Map\MapInterface;
 interface ObjectMapperInterface
 {
     /**
-     * Maps source points values to target points following routes on the map.
+     * Transfers data of the source to the target following routes on the map.
      *
-     * @param object            $source The instance to map data from
-     * @param object|string     $target The instance (or the Fully Qualified
-     *                                  Name of the class to instantiate and)
-     *                                  to map data to
-     * @param null|MapInterface $map    An instance of `MapInterface`. If it is
-     *                                  null, the method builds itself a map.
-     * @return null|object              The instantiated and/or updated target
-     *                                  or NULL if the there is no route mapping
-     *                                  source and target
+     * @param object                     $source The object to map data from
+     * @param object|string              $target The object (or the Fully
+     *                                           Qualified Name of the class to
+     *                                           instantiate and) to map data to
+     * @param null|MapInterface          $map    An instance of `MapInterface`
+     *                                           or NULL
+     * @return null|object                       The instantiated and/or updated
+     *                                           target or NULL if the there is
+     *                                           no route mapping source and
+     *                                           target
+     * @throws InvalidArgumentException          If source or target arguments
+     *                                           are invalid
+     * @throws InvalidOperationException         If the operation fails for any
+     *                                           reason
      */
-    public function map(object $source, $target, ?MapInterface $map = null): ?object;
+    public function map(
+        object $source,
+        $target,
+        ?MapInterface $map = null
+    ): ?object;
 }
