@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 
 /**
@@ -24,21 +25,28 @@ use Opportus\ObjectMapper\Map\MapInterface;
 trait ObjectMapperTrait
 {
     /**
-     * Maps source points values to target points following routes on the map.
+     * Transfers data of the source to the target following routes on the map.
      *
-     * @param SourceInterface $source The source to map data from
-     * @param TargetInterface $target The target to map data to
-     * @param MapInterface    $map    An instance of map.
-     * @return null|object            The instance of the operated target or
-     *                                NULL if the there is no route mapping
-     *                                source and target
+     * @param SourceInterface            $source The source to map data from
+     * @param TargetInterface            $target The target to map data to
+     * @param MapInterface               $map    An instance of map
+     * @return null|object                       The instantiated and/or updated
+     *                                           target or NULL if the there is
+     *                                           no route mapping source and
+     *                                           target
+     * @throws InvalidOperationException         If the operation fails for any
+     *                                           reason
      */
     private function mapObjects(
         SourceInterface $source,
         TargetInterface $target,
         MapInterface $map
     ): ?object {
-        $routes = $map->getRoutes($source, $target);
+        try {
+            $routes = $map->getRoutes($source, $target);
+        } catch (InvalidOperationException $exception) {
+            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+        }
 
         if (0 === \count($routes)) {
             return null;
@@ -49,10 +57,19 @@ trait ObjectMapperTrait
             $targetPoint = $route->getTargetPoint();
             $checkPoints = $route->getCheckPoints();
 
-            $checkPointSubject = $source->getPointValue($sourcePoint);
-
             try {
-                foreach ($checkPoints as $checkPoint) {
+                $checkPointSubject = $source->getPointValue($sourcePoint);
+            } catch (InvalidOperationException $exception) {
+                throw new InvalidOperationException(
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
+
+            foreach ($checkPoints as $checkPoint) {
+                try {
                     $checkPointSubject = $checkPoint->control(
                         $checkPointSubject,
                         $route,
@@ -60,16 +77,40 @@ trait ObjectMapperTrait
                         $source,
                         $target
                     );
+                } catch (CheckPointSeizingException $exception) {
+                    continue 2;
+                } catch (InvalidOperationException $exception) {
+                    throw new InvalidOperationException(
+                        __METHOD__,
+                        '',
+                        0,
+                        $exception
+                    );
                 }
-            } catch (CheckPointSeizingException $e) {
-                continue;
             }
 
-            $target->setPointValue($targetPoint, $checkPointSubject);
+            try {
+                $target->setPointValue($targetPoint, $checkPointSubject);
+            } catch (InvalidOperationException $exception) {
+                throw new InvalidOperationException(
+                    __METHOD__,
+                    '',
+                    0,
+                    $exception
+                );
+            }
         }
 
-        $target->operate();
+        try {
+            $target->operate();
+        } catch (InvalidOperationException $exception) {
+            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+        }
 
-        return $target->getInstance();
+        try {
+            return $target->getInstance();
+        } catch (InvalidOperationException $exception) {
+            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+        }
     }
 }
