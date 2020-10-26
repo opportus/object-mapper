@@ -87,8 +87,6 @@ interface TargetInterface
      * @throws InvalidArgumentException              If the target point is
      *                                               static and the target class
      *                                               has no such point defined
-     * @throws InvalidOperationException             If the operation fails for
-     *                                               any reason
      */
     public function setPointValue(TargetPointInterface $point, $pointValue);
 
