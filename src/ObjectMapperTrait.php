@@ -107,10 +107,6 @@ trait ObjectMapperTrait
             throw new InvalidOperationException(__METHOD__, '', 0, $exception);
         }
 
-        try {
-            return $target->getInstance();
-        } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
-        }
+        return $target->getInstance();
     }
 }
