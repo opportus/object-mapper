@@ -1,117 +1,111 @@
 name: Build
+
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+
 jobs:
+
   setup:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [ 7.2, 7.3, 7.4 ]
     steps:
-    - name: Run checkout
-      uses: actions/checkout@v2
-    - name: Run cache
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
       id: composer-cache
-      uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run manifest validation
-      run: composer validate
-    - name: Run package installation
+          ${{ runner.os }}-php-${{ matrix.php }}-
+    - run: composer validate
+    - run: composer install --prefer-dist --no-progress --no-suggest
       if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
+
   test-suite:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [7.2, 7.3, 7.4]
+        php: [ 7.2, 7.3, 7.4 ]
     steps:
-    - name: Run checkout
-      uses: actions/checkout@v2
-    - name: Run cache
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
       id: composer-cache
-      uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run test suite
-      run: vendor/bin/phpunit --coverage-text
+          ${{ runner.os }}-php-${{ matrix.php }}-
+    - run: vendor/bin/phpunit --coverage-text --coverage-clover coverage-${{ matrix.php }}.clover.xml
+    - uses: actions/upload-artifact@v2
+      with:
+        name: coverage
+        path: coverage-${{ matrix.php }}.clover.xml
+    - uses: codacy/codacy-coverage-reporter-action@0.2.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: coverage-${{ matrix.php }}.clover.xml
+
   benchmark-suite:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [7.2, 7.3, 7.4]
+        php: [ 7.2, 7.3, 7.4 ]
     steps:
-    - name: Run checkout
-      uses: actions/checkout@v2
-    - name: Run cache
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
       id: composer-cache
-      uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run benchmark suite
-      run: vendor/bin/phpbench run --report=aggregate --retry-threshold=2
+          ${{ runner.os }}-php-${{ matrix.php }}-
+    - run: vendor/bin/phpbench run --report=aggregate --retry-threshold=2
+
   code-standards-checking:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-    - name: Run checkout
-      uses: actions/checkout@v2
-    - name: Run cache
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
       id: composer-cache
-      uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run code standards checking
-      run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no .
+          ${{ runner.os }}-php-${{ matrix.php }}-
+    - run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no .
+
   code-analysis:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-    - name: Run checkout
-      uses: actions/checkout@v2
-    - name: Run cache
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
       id: composer-cache
-      uses: actions/cache@v2
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run code analysis
-      uses: codacy/codacy-analysis-cli-action@1.1.0
+          ${{ runner.os }}-php-${{ matrix.php }}-
+    - uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        upload: true
         verbose: true
-        output: results.xml
-        format: xml
         max-allowed-issues: 2147483647
-    - name: Run code coverage
-      uses: codacy/codacy-coverage-reporter-action@0.2.0
-      with:
-        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: results.xml
-    - name: Run code analysis
-      uses: codacy/codacy-analysis-cli-action@1.1.0
+    - uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
         output: results.sarif
         format: sarif
         gh-code-scanning-compat: true
         max-allowed-issues: 2147483647
-    - name: Upload code analysis
-      uses: github/codeql-action/upload-sarif@v1
+    - uses: github/codeql-action/upload-sarif@v1
       with:
         sarif_file: results.sarif
