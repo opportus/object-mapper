@@ -97,9 +97,14 @@ jobs:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         upload: true
         verbose: true
-        output: results.sarif
-        format: sarif
+        output: results.xml
+        format: xml
         max-allowed-issues: 2147483647
+    - name: Run code coverage
+      uses: codacy/codacy-coverage-reporter-action@0.2.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: results.xml
     - name: Run code analysis
       uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
