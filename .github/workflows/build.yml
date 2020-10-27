@@ -60,7 +60,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
     - name: Run benchmark suite
-      run: vendor/bin/phpbench run --report=aggregate --retry-threshold=2 --progress=dots
+      run: vendor/bin/phpbench run --report=aggregate --retry-threshold=2
   code-standards-checking:
     needs: setup
     runs-on: ubuntu-latest
@@ -97,11 +97,12 @@ jobs:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         upload: true
         verbose: true
+        output: results.sarif
+        format: sarif
         max-allowed-issues: 2147483647
     - name: Run code analysis
       uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
-        verbose: true
         output: results.sarif
         format: sarif
         gh-code-scanning-compat: true
