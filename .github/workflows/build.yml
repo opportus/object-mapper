@@ -51,19 +51,19 @@ jobs:
     steps:
     - name: Run code analysis
       uses: codacy/codacy-analysis-cli-action@1.1.0
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          upload: true
-          verbose: true
-          max-allowed-issues: 2147483647
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        upload: true
+        verbose: true
+        max-allowed-issues: 2147483647
     - name: Run code analysis
       uses: codacy/codacy-analysis-cli-action@1.1.0
-        with:
-          verbose: true
-          output: results.sarif
-          format: sarif
-          gh-code-scanning-compat: true
-          max-allowed-issues: 2147483647
+      with:
+        verbose: true
+        output: results.sarif
+        format: sarif
+        gh-code-scanning-compat: true
+        max-allowed-issues: 2147483647
     - name: Upload SARIF results file
       uses: github/codeql-action/upload-sarif@v1
       with:
