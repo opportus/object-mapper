@@ -95,7 +95,6 @@ jobs:
       uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        upload: true
         verbose: true
         output: results.xml
         format: xml
