@@ -5,13 +5,9 @@ on:
   pull_request:
     branches: [ master ]
 jobs:
-  test-suite:
+  setup:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php: [7.2, 7.3, 7.4]
     steps:
-    - uses: actions/checkout@v2
     - name: Run manifest validation
       run: composer validate
     - name: Run package caching
@@ -25,65 +21,50 @@ jobs:
     - name: Run package installation
       if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
+  test-suite:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [7.2, 7.3, 7.4]
+    steps:
     - name: Run test suite
       run: vendor/bin/phpunit --coverage-text
   benchmark-suite:
+    needs: setup
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php: [7.2, 7.3, 7.4]
     steps:
-    - uses: actions/checkout@v2
-    - name: Run manifest validation
-      run: composer validate
-    - name: Run package caching
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run package installation
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
     - name: Run benchmark suite
       run: vendor/bin/phpbench run --report=aggregate --retry-threshold=2 --progress=dots
   code-standards-checking:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Run manifest validation
-      run: composer validate
-    - name: Run package caching
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run package installation
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
     - name: Run code standards checking
       run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no .
   code-analysis:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Run manifest validation
-      run: composer validate
-    - name: Run package caching
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Run package installation
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
     - name: Run code analysis
-      uses: codecov/codecov-action@v1.0.14
+      uses: codacy/codacy-analysis-cli-action@1.1.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          upload: true
+          verbose: true
+          max-allowed-issues: 2147483647
+    - name: Run code analysis
+      uses: codacy/codacy-analysis-cli-action@1.1.0
+        with:
+          verbose: true
+          output: results.sarif
+          format: sarif
+          gh-code-scanning-compat: true
+          max-allowed-issues: 2147483647
+    - name: Upload SARIF results file
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: results.sarif
