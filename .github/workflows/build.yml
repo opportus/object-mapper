@@ -8,6 +8,8 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
+    - name: Run checkout
+      uses: actions/checkout@v2
     - name: Run manifest validation
       run: composer validate
     - name: Run package caching
