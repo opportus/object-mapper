@@ -41,10 +41,9 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
-    - run: vendor/bin/phpunit --coverage-text --coverage-clover coverage-${{ matrix.php }}.clover.xml
+    - run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage-${{ matrix.php }}.clover.xml
     - uses: actions/upload-artifact@v2
       with:
-        name: coverage
         path: coverage-${{ matrix.php }}.clover.xml
     - uses: codacy/codacy-coverage-reporter-action@0.2.0
       with:
@@ -66,11 +65,17 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
-    - run: vendor/bin/phpbench run --report=aggregate --retry-threshold=2
+    - run: vendor/bin/phpbench run --retry-threshold=2 --report=aggregate --report=default --report=compare --report=memory --report=env | tee benchmark-${{ matrix.php }}.txt
+    - uses: actions/upload-artifact@v2
+      with:
+        path: benchmark-${{ matrix.php }}.txt
 
-  code-standards-checking:
+  code-standards-check:
     needs: setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: 7.4
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -85,6 +90,9 @@ jobs:
   code-analysis:
     needs: setup
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: 7.4
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
