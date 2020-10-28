@@ -330,15 +330,11 @@ have to follow a certain convention de facto established by these
 *path finders*. You can map generically differently typed objects only
 accordingly to the *path finders* the *map* is composed of.
 
-If the default *path finders* do not suit your needs, you still
-can genericize and encapsulate your domain's mapping logic as subtype(s) of
+If the default *path finders* do not suit your needs, you still can genericize
+and encapsulate your domain's mapping logic as subtype(s) of
 `PathFinderInterface`. Doing so effectively, you leverage *Object Mapper* to
 decouple these objects from your mapping logic... Indeed, when the mapped
 objects change, the mapping doesn't.
-
-Later, we'll cover how to leverage further the *Object Mapper* by encapsulating
-into a *path finder* dynamic control flow (*check points*) over data being
-mapped...
 
 For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php), [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php), and
 [`DynamicSourceToStaticTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicSourceToStaticTargetPathFinder.php)
