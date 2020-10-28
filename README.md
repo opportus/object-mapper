@@ -62,7 +62,15 @@ such as:
 -   Form handling
 -   Serialization
 -   Interlayer data mapping
+-   Data file import
 -   ...
+
+Indeed, many systems have in common the essential and fundamental task of
+mapping data. Yet, most of the time, this aspect is neglected. Consequently,
+it gets badly designed, reducing ilities of the integrating system.  
+At contrario, developing that kind of system around a well designed and tested
+mapper as a robust spine allows that system and its users to leverage it the
+ways mentioned above.
 
 ## Roadmap
 
@@ -78,6 +86,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 
 -   Implement recursion path finder feature
 -   Implement callable check point feature
+-   Implement seizing check point feature
 
 ## Integrations
 
