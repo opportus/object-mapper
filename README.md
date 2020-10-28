@@ -52,7 +52,7 @@ Leverage this solution to:
 -   Decouple your codebase from source and target mapping logic
 -   Dynamically define control flow over data being transferred from source to
     target
--   Dynamically define target model depending on source model and reciprocally
+-   Generically define target model depending on source model and reciprocally
 
 This project aims to provide a standard core system to higher level systems
 such as:
@@ -62,15 +62,15 @@ such as:
 -   Form handling
 -   Serialization
 -   Interlayer data mapping
--   Data file import
+-   Data import
 -   ...
 
 Indeed, many systems have in common the essential and fundamental task of
 mapping data. Yet, most of the time, this aspect is neglected. Consequently,
-it gets badly designed, reducing ilities of the integrating system.  
-At contrario, developing that kind of system around a well designed and tested
-mapper as a robust spine allows that system and its users to leverage it the
-ways mentioned above.
+this mapping gets badly designed, reducing ilities of the integrating system.  
+At contrario, developing that kind of system around a well designed, tested and
+optimized mapper allows that system and its users to leverage it the ways
+mentioned above.
 
 ## Roadmap
 
