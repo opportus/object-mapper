@@ -239,7 +239,6 @@ The corresponding *source point* can be:
 
 <summary>Click for details</summary>
 
-
 A basic example of how to automatically map `User`'s data to `DynamicUserDto`:
 
 ```php
@@ -283,7 +282,6 @@ The corresponding *target point* can be:
 <details>
 
 <summary>Click for details</summary>
-
 
 A basic example of how to automatically map `DynamicUserDto`'s data to `User`:
 
@@ -391,7 +389,6 @@ next sub-sections:
 
 <summary>Click for details</summary>
 
-
 The [`MapBuilder`](https://github.com/opportus/object-mapper/blob/master/src/Map/MapBuilder.php)
 is an immutable service which implement a fluent interface.
 
@@ -458,7 +455,6 @@ echo $user->getUsername(); // 'Toto'
 <details>
 
 <summary>Click for details</summary>
-
 
 [Via the map builder API](#via-map-builder-api) presented above, we define the
 *map* (adding to it *routes*) *on the go*. There is another way to define the
