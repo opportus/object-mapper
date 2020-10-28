@@ -38,39 +38,42 @@ cases of this solution.
 
 API documentation is bound to code and complies to PHPDoc standards...
 
-Sections covering optional features for most use cases (yet important to be
-aware of) are collapsed in order to keep this document as easy as possible to
-read by new users.
+Sections covering *optional* features are collapsed in order to keep this
+document as easy as possible to read by new users.
 
 ## Use Cases
 
-Use this solution for mapping source to target object via extensible
-strategies and controls.
+Use this solution for mapping generically data from source to target object via
+extensible strategies and controls.
 
-Leverage this solution to:
+Delegate responsibility of all of your data mapping to a generic, extensible,
+optimized, and tested mapping system.
+
+Leverage that system to:
  
 -   Decouple your codebase from source and target mapping logic
 -   Dynamically define control flow over data being transferred from source to
-    target
+    to target
 -   Generically define target model depending on source model and reciprocally
+-   Easily genericize, centralize, optimize and test your custom data mapping
 
 This project aims to provide a standard core system to higher level systems
 such as:
 
--   Data transformation
+-   Data transformer
 -   ORM
--   Form handling
--   Serialization
+-   Form handler
+-   Serializer
 -   Interlayer data mapping
 -   Data import
 -   ...
 
 Indeed, many systems have in common the essential and fundamental task of
-mapping data. Yet, most of the time, this aspect is neglected. Consequently,
-this mapping gets badly designed, reducing ilities of the integrating system.  
-At contrario, developing that kind of system around a well designed, tested and
-optimized mapper allows that system and its users to leverage it the ways
-mentioned above.
+mapping data. Yet, most of the time, this aspect is conceptually neglected.
+Consequently, this mapping gets badly designed, reducing ilities of the system
+it is the essence of. At contrario, architecturing and developing that kind of
+system around a well designed, tested and optimized mapper allows that system
+and its users to leverage it such as mentioned above.
 
 ## Roadmap
 
