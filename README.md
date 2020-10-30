@@ -528,7 +528,7 @@ represented below:
 SourcePoint --> $value' --> CheckPoint1 --> $value'' --> CheckPoint2 --> $value''' --> TargetPoint
 ```
 
-A basic example of how to use *check points*, implementing [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php) as a sort of presenter:
+A simple example implementing [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php), and `PathFinderInterface`, to form what we could call a presentation layer:
 
 ```php
 class Contributor
@@ -548,20 +548,10 @@ class Contributor
 
 class ContributorView
 {
-    private $bio;
-
-    public function __construct(string $bio)
-    {
-        $this->bio = $bio;
-    }
-
-    public function getBio(): string
-    {
-        return $this->bio;
-    }
+    public $bio;
 }
 
-class ContributorViewHtmlTagStripper implements CheckPointInterface
+class GenericViewHtmlTagStripper implements CheckPointInterface
 {
     public function control($value, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target)
     {
@@ -569,48 +559,87 @@ class ContributorViewHtmlTagStripper implements CheckPointInterface
     }
 }
 
-class ContributorViewMarkdownTransformer implements CheckPointInterface
+class GenericViewMarkdownTransformer implements CheckPointInterface
 {
     // ...
-
     public function control($value, RouteInterface $route, MapInterface $map, SourceInterface $source, TargetInterface $target)
     {
         return $this->markdownParser->transform($value);
     }
 }
 
+class GenericPresentation extends StaticPathFinder
+{
+    // ...
+    public function getRoutes(Source $source, Target $target): RouteCollection
+    {
+        $routes = parent::getRoutes($source, $target);
+
+        $controlledRoutes = [];
+
+        foreach ($routes as $route) {
+            $controlledRoutes[] = $this->routeBuilder
+                ->setSourcePoint($route->getSourcePoint()->getFqn())
+                ->setTargetPoint($route->getTargetPoint()->getFqn())
+                ->addCheckPoint(new GenericViewHtmlTagStripper(), 10)
+                ->addCheckPoint(new GenericViewMarkdownTransformer($this->markdownParser), 20)
+                ->getRoute();
+        }
+
+        return new RouteCollection($controlledRoutes);
+    }
+}
+
 $contributor = new Contributor('<script>**Hello World!**</script>');
 
 $map = $mapBuilder
-    ->getRouteBuilder()
-        ->setStaticSourcePoint('Contributor::getBio()')
-        ->setStaticTargetPoint('ContributorView::__construct()::$bio')
-        ->addCheckPoint(new ContributorViewHtmlTagStripper, 10)
-        ->addCheckPoint(new ContributorViewMarkdownTransformer($markdownParser), 20)
-        ->addRouteToMapBuilder()
-        ->getMapBuilder()
+    ->addPathFinder(new GenericPresentation($markdownTransformer))
     ->getMap();
-;
 
 $objectMapper->map($contributor, ContributorView::class, $map);
 
-echo $contributorView->getBio(); // <b>Hello World!</b>
+echo $contributorView->bio; // <b>Hello World!</b>
 ```
+
+In this example, based on the *Object Mapper*'s abilities, we literally code a
+whole application layer with no effort... But how does it do that so well?
+
+First, what is a layer?
+
+Accordingly to [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
+
+> An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
+
+So maybe a layer hides so well the working details of a subsystem, that
+architects forgot what a subsystem does a little more concretely?
+
+More concretely, such system transforms income data to outcome, based on the
+logic it is composed of. This logic is what is called the *flow of control*
+(over data).
+
+Reffering to our example... These controls are defined by our *check points*.
+The flow of these controls is defined by the *path finder*. The `ObjectMapper`
+service is nothing but that concrete system itself. Such layered OOP system is
+an *object mapper*.
+
+A whole enterprise application can be efficiently architectured around that
+*object mapper*...
 
 ### Recursion
 
 A *recursion* implements [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
 It is used to recursively map a *source point* to a *target point*.
-More concretely, it is used:
 
--   To map an instance of `A` (that *has* `C`) to `B` (that *has* `D`) and
-    in same time map `C` to `D`, AKA *simple recursion*.
--   To map an instance of `A` (that *has many* `C`) to `B`
-    (that *has many* `D`) and in same time map many `C` to many `D`, AKA
+This means:
+
+-   During mapping an instance of `A` (that *has* `C`) to `B` (that *has* `D`),
+    mapping in same time map `C` to `D`, AKA *simple recursion*.
+-   During mapping an instance of `A` (that *has many* `C`) to `B`
+    (that *has many* `D`), mapping in same time map many `C` to many `D`, AKA
     *in-width recursion* or *iterable recursion*.
--   To map an instance of `A` (that *has* `C` which *has* `E`) to `B`
-    (that *has* `D` which *has* `F`) and in same time map `C` and `E` to `D` and
-    `F`, AKA *in-depth recursion*.
+-   During mapping an instance of `A` (that *has* `C` which *has* `E`) to `B`
+    (that *has* `D` which *has* `F`), mapping in same time map `C` and `E` to
+    `D` and `F`, AKA *in-depth recursion*.
 
 A basic example of how to manually map a `Post` and its composite objects to its
 `PostDto` and its composite DTO objects:
@@ -686,9 +715,10 @@ get_class($postDto->comments[1]->author); // AuthorDto
 echo $postDto->comments[1]->author->name; // bob
 ```
 
-Naturally, all that can get simplified with higher level `PathFinderInterface`
+Naturally, all that can get simplified with a higher level `PathFinderInterface`
 implementation defining these recursions automatically based on source and
 target point types. These types being hinted in source and target classes
 either with PHP or PHPDoc.
 
-This library may feature such `PathFinder` in near future.
+This library may feature such `PathFinder` in near future. Meanwhile, you still
+can implement yours, and maybe submit it to pull request... :)
