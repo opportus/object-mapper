@@ -616,25 +616,24 @@ another.
 
 Think for exemple of the Clean Architecture:
 
-- Controller transforms the (POST) request model representation to the
-  corresponding interactor/usecase request model representation
-- Interactor transforms the usecase request model representation to the
-  corresponding domain model representation (entity)
-- Entity gateway transforms the domain model representation to the corresponding
-  persistence model representation
-- Presenter transforms the domain model representation to the corresponding view
-  model representation
+- Controller transforms the (POST) request model to the corresponding
+  interactor/usecase request model
+- Interactor transforms the usecase request model to the corresponding domain
+  model (entity)
+- Entity gateway transforms the domain model to the corresponding persistence
+  model and vice-versa
+- Presenter transforms the domain model to the corresponding view model
 
 Each of these layers' essence is to transform data based on the logic they are
 composed of. This logic is what is called the *flow of control* (over data).
 
-Reffering to our example... The flow of these controls is defined by the
+Reffering to our example... This flow of control is defined by the
 *path finder*. These controls are our *check points*. The `ObjectMapper`
 service is nothing but that concrete layered system itself. Such layered OOP
 system is an *object mapper*.
 
 A whole application can be **efficiently** architectured around that
-*object mapper* being somehow its spine...
+*object mapper* becoming somehow its articulated spine...
 
 ### Recursion
 
