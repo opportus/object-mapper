@@ -601,29 +601,40 @@ $objectMapper->map($contributor, ContributorView::class, $map);
 echo $contributorView->bio; // <b>Hello World!</b>
 ```
 
-In this example, based on the *Object Mapper*'s abilities, we literally code a
-whole application layer with no effort... But how does it do that so well?
+In this example, based on the *Object Mapper*'s abilities, we code a whole
+application layer with no effort...
 
-First, what is a layer?
+But what is a layer?
 
 Accordingly to [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
 
 > An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
 
-So maybe a layer hides so well the working details of a subsystem, that
-architects forgot what a subsystem does a little more concretely?
+The more the *root* system has layers (say an application), the more it has data
+representations, the more it has to transform data from one representation to
+another.
 
-More concretely, such system transforms income data to outcome, based on the
-logic it is composed of. This logic is what is called the *flow of control*
-(over data).
+Think for exemple of the Clean Architecture:
 
-Reffering to our example... These controls are defined by our *check points*.
-The flow of these controls is defined by the *path finder*. The `ObjectMapper`
-service is nothing but that concrete system itself. Such layered OOP system is
-an *object mapper*.
+- Controller transforms the (POST) request model representation to the
+  corresponding interactor/usecase request model representation
+- Interactor transforms the usecase request model representation to the
+  corresponding domain model representation (entity)
+- Entity gateway transforms the domain model representation to the corresponding
+  persistence model representation
+- Presenter transforms the domain model representation to the corresponding view
+  model representation
 
-A whole enterprise application can be efficiently architectured around that
-*object mapper*...
+Each of these layers' essence is to transform data based on the logic they are
+composed of. This logic is what is called the *flow of control* (over data).
+
+Reffering to our example... The flow of these controls is defined by the
+*path finder*. These controls are our *check points*. The `ObjectMapper`
+service is nothing but that concrete layered system itself. Such layered OOP
+system is an *object mapper*.
+
+A whole application can be **efficiently** architectured around that
+*object mapper* being somehow its spine...
 
 ### Recursion
 
