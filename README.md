@@ -464,7 +464,7 @@ does not provide a way to effectively *preload a map definition* which could be:
 
 -   Any type of file, commonly used for configuration (XML, YAML, JSON, etc...),
     defining statically a *map* to build at runtime
--   Any type ofH annotation in *source* and *target* classes, defining statically
+-   Any type of annotation in *source* and *target* classes, defining statically
     a *map* to build at runtime
 -   Any type of PHP routine, defining dynamically a *map* to build at runtime
 -   ...
@@ -610,9 +610,9 @@ Accordingly to [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
 
 > An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
 
-The more the *root* system has layers (say an application), the more it has data
-representations, the more it has to transform data from one representation to
-another.
+The more the *root* system has isolated layers (say an application), the more it
+has data representations, the more it has to transform data from one
+representation to another.
 
 Think for exemple of the Clean Architecture:
 
