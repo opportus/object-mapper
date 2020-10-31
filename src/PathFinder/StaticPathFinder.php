@@ -84,10 +84,6 @@ class StaticPathFinder extends PathFinder
                 continue;
             }
 
-            if ($methodReflection->getNumberOfParameters() === 0) {
-                continue;
-            }
-
             if (
                 \strpos($methodReflection->getName(), 'set') !== 0 &&
                 (
@@ -102,6 +98,8 @@ class StaticPathFinder extends PathFinder
                 $methodReflection->getParameters() as
                 $parameterReflection
             ) {
+                $propertyBlackList[] = $parameterReflection->getName();
+
                 $targetPointReflections[] = $parameterReflection;
             }
         }
@@ -132,6 +130,18 @@ class StaticPathFinder extends PathFinder
         $targetPointReflection = $referencePoint;
         $sourceClassReflection = $source->getClassReflection();
 
+        if ($sourceClassReflection->hasProperty(
+            $targetPointReflection->getName()
+        )) {
+            $propertyReflection = $sourceClassReflection->getProperty(
+                $targetPointReflection->getName()
+            );
+
+            if ($propertyReflection->isPublic() === true) {
+                $sourcePointReflection = $propertyReflection;
+            }
+        }
+        
         if ($sourceClassReflection->hasMethod(
             \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
         )) {
@@ -144,16 +154,6 @@ class StaticPathFinder extends PathFinder
                 $methodReflection->getNumberOfRequiredParameters() === 0
             ) {
                 $sourcePointReflection = $methodReflection;
-            }
-        } elseif ($sourceClassReflection->hasProperty(
-            $targetPointReflection->getName()
-        )) {
-            $propertyReflection = $sourceClassReflection->getProperty(
-                $targetPointReflection->getName()
-            );
-
-            if ($propertyReflection->isPublic() === true) {
-                $sourcePointReflection = $propertyReflection;
             }
         }
         
