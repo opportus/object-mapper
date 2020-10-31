@@ -382,12 +382,11 @@ $user = $objectMapper->map($userDto, User::class, $map);
 ### Manual Mapping
 
 If in your context, such as walked through in the previous
-"[automatic mapping](#automatic-mapping)" section, a mapping strategy does not
-scale well, or is either impossible or overkill, you can manually map the
-*source* to the *target*.
+"[automatic mapping](#automatic-mapping)" section, a mapping strategy is
+impossible, you can manually map the *source* to the *target*.
 
 There are multiple ways to define manually the mapping such as introduced in the
-next sub-sections:
+2 next sub-sections:
 
 -   [Via map builder API](#via-map-builder-api)
 -   [Via map definition preloading](#via-map-definition-preloading)
