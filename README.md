@@ -56,6 +56,7 @@ Leverage that system to:
     to target
 -   Generically define target model depending on source model and reciprocally
 -   Easily genericize, centralize, optimize and test your custom data mapping
+-   Design efficiently your system
 
 This project aims to provide a standard core system to higher level systems
 such as:
@@ -64,16 +65,25 @@ such as:
 -   ORM
 -   Form handler
 -   Serializer
--   Interlayer data mapping
 -   Data import
+-   Application lossely coupled layered system
 -   ...
 
 Indeed, many systems have in common the essential and fundamental task of
 mapping data. Yet, most of the time, this aspect is conceptually neglected.
 Consequently, this mapping gets badly designed, reducing ilities of the system
 it is the essence of. At contrario, architecturing and developing that kind of
-system around a well designed, tested and optimized mapper allows that system
-and its users to leverage it such as mentioned above.
+system around a well designed mapper allows that system and its users to
+leverage it for huge benefits presented above and described more in details
+later.
+
+Whole applications can get efficiently architectured around this solution.
+The more the application architecture is elaborated, the more this solution
+brings benefits, the more you're able to elaborate the application architecture.  
+Later, when you'll be ready, I concretely demonstrate all that in
+[Check Point section](#check-point). 
+
+Follow the guide...
 
 ## Roadmap
 
