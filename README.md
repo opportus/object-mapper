@@ -10,7 +10,7 @@
 **Index**
 
 - [Meta](#meta)
-- [Use Cases](#use-cases)
+- [Introduction](#introduction)
 - [Roadmap](#roadmap)
   - [v1.0.0 (stable)](#v100-stable)
   - [v1.1.0](#v110)
@@ -19,7 +19,7 @@
   - [Step 1 - Installation](#step-1---installation)
   - [Step 2 - Initialization](#step-2---initialization)
 - [Mapping](#mapping)
-  - [How It Works](#how-it-works)
+  - [Overview](#overview)
   - [Automatic Mapping](#automatic-mapping)
     - [Static Path Finder](#static-path-finder)
     - [Static Source To Dynamic Target Path Finder](#static-source-to-dynamic-target-path-finder)
@@ -41,7 +41,7 @@ API documentation is bound to code and complies to PHPDoc standards...
 Sections covering *optional* features are collapsed in order to keep this
 document as easy as possible to read by new users.
 
-## Use Cases
+## Introduction
 
 Use this solution for mapping generically data from source to target object via
 extensible strategies and controls.
@@ -142,7 +142,7 @@ instantiating your own services, with a DIC system or whatever.
 
 ## Mapping
 
-### How It Works
+### Overview
 
 In order to transfer data from a *source* object to a *target* object, the
 [`ObjectMapper`](https://github.com/opportus/object-mapper/blob/master/src/ObjectMapper.php)
@@ -619,8 +619,8 @@ Accordingly to [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
 
 > An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
 
-The more the *root* system has isolated layers (say an application), the more it
-has data representations, the more it has to transform data from one
+The more the *root* system has lossely coupled layers (say an application), the
+more it has data representations, the more it has to transform data from one
 representation to another.
 
 Think for exemple of the Clean Architecture:
