@@ -106,7 +106,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 ## Integrations
 
 -   Symfony 4 application => [opportus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
--   {{ Reference here your own integrations }}
+-   {{ reference_here_your_own_integration }}
 
 ## Setup
 
