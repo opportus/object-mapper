@@ -77,13 +77,14 @@ system around a well designed mapper allows that system and its users to
 leverage it for huge benefits presented above and described more in details
 later.
 
-Whole applications can get efficiently architectured around this solution.
-The more the application architecture is elaborated, the more it has [layer data
-representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498) to
-map, the more this solution brings benefits, the more you can elaborate further
+Whole applications can get efficiently architectured around this solution
+becoming their flexible backbone. The more the application architecture is
+elaborated, the more it has
+[layer data representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498)
+to map, the more this solution brings benefits, the more you can elaborate further
 this application architecture.  
 Later, when you'll be ready, I concretely demonstrate all that in
-[Check Point section](#check-point). 
+[Check Point section](#check-point).
 
 Follow the guide...
 
@@ -106,7 +107,7 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 ## Integrations
 
 -   Symfony 4 application => [opportus/object-mapper-bundle](https://github.com/opportus/ObjectMapperBundle)
--   Reference here your own integrations
+-   {{ Reference here your own integrations }}
 
 ## Setup
 
@@ -164,14 +165,14 @@ and its *check points*.
 
 A *source point* can be either:
 
--   A static/dynamic property
--   A static/dynamic method
+-   A statically/dynamically defined property
+-   A statically/dynamically defined method
 -   Any extended type of static/dynamic source point
 
 A *target point* can be either:
 
--   A static/dynamic property
--   A static/dynamic method parameter
+-   A statically/dynamically defined property
+-   A statically/dynamically defined method parameter
 -   Any extended type of static/dynamic target point
 
 A *check point* can be any implementation of
@@ -281,7 +282,7 @@ For the default [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opp
 a reference *source point* can be:
 
 -   A public property ([`PropertyStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyStaticSourcePoint.php))
--   A public getter ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
+-   A public getter requiring no argument ([`MethodStaticSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodStaticSourcePoint.php))
 
 The corresponding *target point* can be:
 
@@ -613,9 +614,8 @@ echo $contributorView->bio; // <b>Hello World!</b>
 In this example, based on the *Object Mapper*'s abilities, we code a whole
 application layer with no effort...
 
-But what is a layer?
-
-Accordingly to [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
+But what is a layer? Accordingly to
+[Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
 
 > An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
 
@@ -625,13 +625,13 @@ representation to another.
 
 Think for exemple of the Clean Architecture:
 
-- Controller transforms the (POST) request to the corresponding representation
+- Controller transforms its (POST) request representation to its corresponding
   interactor/usecase request representation
-- Interactor transforms the usecase request representation to the corresponding
+- Interactor transforms its usecase request representation to its corresponding
   domain entity representation
-- Entity gateway transforms the domain entity representation to the
-  corresponding persistence representation and vice-versa
-- Presenter transforms the domain entity representation to the corresponding
+- Entity gateway transforms its domain entity representation to its
+  corresponding persistence representation, and vice-versa
+- Presenter transforms its domain entity representation to its corresponding
   view representation
 
 Each of these layers' essence is to map data based on the logic they are
@@ -641,9 +641,6 @@ Reffering to our example... This flow of control is defined by the
 *path finder*. These flowed controls are our *check points*. The `ObjectMapper`
 service is nothing but that concrete layered system. Such layered OOP system is
 an *object mapper*.
-
-A whole application can be efficiently architectured around that *object mapper*
-becoming its flexible backbone...
 
 ### Recursion
 
