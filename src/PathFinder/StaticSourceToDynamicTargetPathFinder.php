@@ -49,19 +49,23 @@ class StaticSourceToDynamicTargetPathFinder extends PathFinder
         TargetInterface $target
     ): array {
         $sourceClassReflection = $source->getClassReflection();
+
+        $propertyBlackList = [];
         $sourcePointReflections = [];
 
         foreach (
             $sourceClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
             $methodReflection
         ) {
-            if ($methodReflection->getNumberOfParameters() !== 0) {
-                continue;
-            }
-
             if (\strpos($methodReflection->getName(), 'get') !== 0) {
                 continue;
             }
+
+            if ($methodReflection->getNumberOfRequiredParameters() !== 0) {
+                continue;
+            }
+
+            $propertyBlackList[] = \lcfirst(\substr($methodReflection->getName(), 3));
 
             $sourcePointReflections[] = $methodReflection;
         }
@@ -70,6 +74,10 @@ class StaticSourceToDynamicTargetPathFinder extends PathFinder
             $sourceClassReflection->getProperties(ReflectionProperty::IS_PUBLIC) as
             $propertyReflection
         ) {
+            if (\in_array($propertyReflection->getName(), $propertyBlackList)) {
+                continue;
+            }
+
             $sourcePointReflections[] = $propertyReflection;
         }
 
