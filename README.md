@@ -66,7 +66,7 @@ such as:
 -   Form handler
 -   Serializer
 -   Data import
--   Application lossely coupled layered system
+-   Layers data representation mapper
 -   ...
 
 Indeed, many systems have in common the essential and fundamental task of
@@ -78,8 +78,10 @@ leverage it for huge benefits presented above and described more in details
 later.
 
 Whole applications can get efficiently architectured around this solution.
-The more the application architecture is elaborated, the more this solution
-brings benefits, the more you're able to elaborate the application architecture.  
+The more the application architecture is elaborated, the more it has [layer data
+representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498) to
+map, the more this solution brings benefits, the more you can elaborate further
+this application architecture.  
 Later, when you'll be ready, I concretely demonstrate all that in
 [Check Point section](#check-point). 
 
@@ -617,30 +619,31 @@ Accordingly to [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
 
 > An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
 
-The more the *root* system has lossely coupled layers (say an application), the
+The more the *root* system (say an application) has independent layers, the
 more it has data representations, the more it has to transform data from one
 representation to another.
 
 Think for exemple of the Clean Architecture:
 
-- Controller transforms the (POST) request model to the corresponding
-  interactor/usecase request model
-- Interactor transforms the usecase request model to the corresponding domain
-  model (entity)
-- Entity gateway transforms the domain model to the corresponding persistence
-  model and vice-versa
-- Presenter transforms the domain model to the corresponding view model
+- Controller transforms the (POST) request to the corresponding representation
+  interactor/usecase request representation
+- Interactor transforms the usecase request representation to the corresponding
+  domain entity representation
+- Entity gateway transforms the domain entity representation to the
+  corresponding persistence representation and vice-versa
+- Presenter transforms the domain entity representation to the corresponding
+  view representation
 
-Each of these layers' essence is to transform data based on the logic they are
+Each of these layers' essence is to map data based on the logic they are
 composed of. This logic is what is called the *flow of control* (over data).
 
 Reffering to our example... This flow of control is defined by the
-*path finder*. These controls are our *check points*. The `ObjectMapper`
-service is nothing but that concrete layered system itself. Such layered OOP
-system is an *object mapper*.
+*path finder*. These flowed controls are our *check points*. The `ObjectMapper`
+service is nothing but that concrete layered system. Such layered OOP system is
+an *object mapper*.
 
-A whole application can be **efficiently** architectured around that
-*object mapper* becoming somehow its articulated spine...
+A whole application can be efficiently architectured around that *object mapper*
+becoming its flexible backbone...
 
 ### Recursion
 
