@@ -47,4 +47,8 @@ class ObjectA
     {
         $this->m = $m;
     }
+
+    public function __call($name, $value)
+    {
+    }
 }
