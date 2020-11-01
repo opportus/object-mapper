@@ -30,10 +30,9 @@ use ReflectionProperty;
  *
  * The connectable target point can be:
  *
- * - A statically non-existing property having for name the same as the source
- *   point (`PropertyDynamicSourcePoint`)
- * - A parameter of a statically non-existing setter having for name the same as
- *   the source point (`ParameterDynamicTargetPoint`)
+ * - A statically non-existing property having for name the same as the property
+ *   source point or `lcfirst(substr($getterSourcePoint, 3))`
+ *   (`PropertyDynamicSourcePoint`)
  *
  * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
@@ -96,35 +95,28 @@ class StaticSourceToDynamicTargetPathFinder extends PathFinder
         $targetClassReflection = $target->getClassReflection();
 
         if ($sourcePointReflection instanceof ReflectionProperty) {
-            if (!$targetClassReflection->hasProperty($sourcePointReflection->getName())) {
-                $targetPointFqn = \sprintf(
-                    '%s::$%s',
-                    $targetClassReflection->getName(),
-                    $sourcePointReflection->getName()
-                );
-            }
+            $targetPointName = $sourcePointReflection->getName();
         } elseif ($sourcePointReflection instanceof ReflectionMethod) {
-            $targetPointName = \lcfirst(\str_replace(
-                'get',
-                '',
-                $sourcePointReflection->getName()
+            $targetPointName = \lcfirst(\substr(
+                $sourcePointReflection->getName(),
+                3
             ));
-
-            if (!$targetClassReflection->hasProperty($targetPointName)) {
-                $targetPointFqn = \sprintf(
-                    '%s::$%s',
-                    $targetClassReflection->getName(),
-                    $targetPointName
-                );
-            }
+        } else {
+            return null;
         }
-        
-        if (false === isset($targetPointFqn)) {
+
+        if ($targetClassReflection->hasProperty($targetPointName)) {
             return null;
         }
 
         $sourcePointFqn = $this
             ->getPointFqnFromReflection($sourcePointReflection);
+
+        $targetPointFqn = \sprintf(
+            '%s::$%s',
+            $targetClassReflection->getName(),
+            $targetPointName
+        );
 
         return $this->routeBuilder
             ->setStaticSourcePoint($sourcePointFqn)

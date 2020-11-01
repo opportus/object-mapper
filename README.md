@@ -284,9 +284,7 @@ a reference *source point* can be:
 The corresponding *target point* can be:
 
 -   A statically non-existing property having for name the same as the property
-    *source point* or `lcfirst(str_replace('get', '', $getterSourcePoint))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
--   A parameter of a statically non-existing setter having for name `'set'.ucfirst($propertySourcePoint)`
-    `str_replace('get', 'set', $getterSourcePoint)` ([`MethodParameterDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodParameterDynamicTargetPoint.php))
+    *source point* or `lcfirst(substr($getterSourcePoint, 3))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
 
 </details>
 

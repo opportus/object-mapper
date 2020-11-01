@@ -263,14 +263,6 @@ class ObjectMapperTestObjectClass
  */
 class DynamicObjectMapperTestObjectClass
 {
-    public function __call($name, $args)
-    {
-        if ($name === 'getA') {
-            return 33;
-        } elseif ($name === 'getG') {
-            return new stdClass();
-        }
-    }
 }
 
 /**
