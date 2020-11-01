@@ -129,9 +129,7 @@ class ObjectMapperTest extends TestCase
             $map
         );
 
-        static::assertEquals(33, $target->getA());
         static::assertEquals(44, $target->getB());
-        static::assertInstanceOf(stdClass::class, $target->getG());
         static::assertIsArray($target->getH());
     }
 

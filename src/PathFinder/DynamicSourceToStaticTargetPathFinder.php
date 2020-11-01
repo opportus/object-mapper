@@ -29,11 +29,8 @@ use Opportus\ObjectMapper\TargetInterface;
  *
  * The connectable source point can be:
  *
- * - A dynamic (overloaded) property having for name the same as the target
+ * - A dynamically defined property having for name the same as the target
  *   point (`PropertyDynamicSourcePoint`)
- * - A dynamic (overloaded) getter having for name
- *   `'get'.ucfirst($targetPointName)` and requiring no argument
- *   (`MethodDynamicSourcePoint`)
  *
  * @package Opportus\ObjectMapper\PathFinder
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
@@ -53,35 +50,19 @@ class DynamicSourceToStaticTargetPathFinder extends StaticPathFinder
         $sourceClassReflection = $source->getClassReflection();
         $sourceObjectReflection = $source->getObjectReflection();
 
-        if (!$sourceClassReflection
-                ->hasProperty($targetPointReflection->getName()) &&
-            $sourceObjectReflection
+        if ($sourceClassReflection
+                ->hasProperty($targetPointReflection->getName()) ||
+            !$sourceObjectReflection
                 ->hasProperty($targetPointReflection->getName())
         ) {
-            $sourcePointFqn = \sprintf(
-                '%s::$%s',
-                $sourceClassReflection->getName(),
-                $targetPointReflection->getName()
-            );
-        } elseif (!$sourceClassReflection->hasMethod(\sprintf(
-            'get%s',
-            \ucfirst($targetPointReflection->getName())
-        )) &&
-            \is_callable([$source->getInstance(), \sprintf(
-                'get%s',
-                \ucfirst($targetPointReflection->getName())
-            )])
-        ) {
-            $sourcePointFqn = \sprintf(
-                '%s::get%s()',
-                $sourceClassReflection->getName(),
-                \ucfirst($targetPointReflection->getName())
-            );
-        }
-        
-        if (false === isset($sourcePointFqn)) {
             return null;
         }
+
+        $sourcePointFqn = \sprintf(
+            '%s::$%s',
+            $sourceClassReflection->getName(),
+            $targetPointReflection->getName()
+        );
 
         $targetPointFqn = $this
             ->getPointFqnFromReflection($targetPointReflection);

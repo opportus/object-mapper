@@ -299,6 +299,8 @@ The corresponding *target point* can be:
 A basic example of how to automatically map `DynamicUserDto`'s data to `User`:
 
 ```php
+class DynamicUserDto {}
+
 $userDto = new DynamicUserDto();
 $userDto->username = 'Toto';
 
@@ -325,10 +327,8 @@ a reference *target point* can be:
 
 The corresponding *source point* can be:
 
--   A statically non-existing property having for name the same as the
-    *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
--   A statically non-existing getter having for name
-    `'get'.ucfirst($targetPointName)` ([`MethodDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/MethodDynamicSourcePoint.php))
+-   A statically non-existing property (defined dynamically) having for name
+    the same as the *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
 
 </details>
 
