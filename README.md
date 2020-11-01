@@ -53,7 +53,7 @@ Leverage that system to:
  
 -   Decouple your codebase from source and target mapping logic
 -   Dynamically define control flow over data being transferred from source to
-    to target
+    target
 -   Generically define target model depending on source model and vice-versa
 -   Easily genericize, centralize, optimize and test specific data mapping
 -   Design efficiently your system
@@ -234,7 +234,8 @@ the method build then use a `Map` composed of the default `StaticPathFinder`
 strategy.
 
 The default `StaticPathFinder` strategy determines the appropriate point of the
-*source* class to connect to each point of the *target* class.
+*source* class to connect to each point of the *target* class. Doing so, it
+defines a *route* to follow by the *object mapper*.
 
 For the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php),
 a reference *target point* can be:
