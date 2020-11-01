@@ -21,4 +21,30 @@ namespace Opportus\ObjectMapper\Tests;
 class ObjectA
 {
     use ObjectTrait;
+
+    private $j;
+    private $k;
+    protected $l;
+    public $m;
+    public $n;
+
+    public function getJ(): int
+    {
+        return $this->j;
+    }
+
+    public function setJ(int $j)
+    {
+        $this->j = $j;
+    }
+
+    public function getM(): int
+    {
+        return $this->m;
+    }
+
+    public function setM(int $m)
+    {
+        $this->m = $m;
+    }
 }
