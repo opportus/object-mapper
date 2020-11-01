@@ -650,15 +650,15 @@ It is used to recursively map a *source point* to a *target point*.
 This means:
 
 -   During mapping an instance of `A` (that *has* `C`) to `B` (that *has* `D`),
-    mapping in same time map `C` to `D`, AKA *simple recursion*.
+    mapping in same time `C` to `D`, AKA *simple recursion*.
 -   During mapping an instance of `A` (that *has many* `C`) to `B`
-    (that *has many* `D`), mapping in same time map many `C` to many `D`, AKA
+    (that *has many* `D`), mapping in same time many `C` to many `D`, AKA
     *in-width recursion* or *iterable recursion*.
 -   During mapping an instance of `A` (that *has* `C` which *has* `E`) to `B`
-    (that *has* `D` which *has* `F`), mapping in same time map `C` and `E` to
-    `D` and `F`, AKA *in-depth recursion*.
+    (that *has* `D` which *has* `F`), mapping in same time `C` and `E` to `D`
+    and `F`, AKA *in-depth recursion*.
 
-A basic example of how to manually map a `Post` and its composite objects to its
+An example of how to manually map a `Post` and its composite objects to its
 `PostDto` and its composite DTO objects:
 
 ```php
