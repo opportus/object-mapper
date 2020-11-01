@@ -17,6 +17,7 @@ use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
+use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
@@ -32,6 +33,18 @@ use Opportus\ObjectMapper\Route\Route;
  */
 trait ProviderTrait
 {
+    public function provideSource(): array
+    {
+        return [
+            [
+                new ObjectA(),
+            ],
+            [
+                new ObjectB(),
+            ],
+        ];
+    }
+
     public function provideRoute(): array
     {
         $routes = [];
@@ -351,6 +364,12 @@ trait ProviderTrait
         return $pointsFqn;
     }
 
+    public function provideSourcePoint(): array
+    {
+        return $this->provideStaticSourcePoint() +
+            $this->provideDynamicSourcePoint();
+    }
+
     public function provideSourcePointFqn(): array
     {
         return $this->provideStaticSourcePointFqn() +
@@ -465,6 +484,19 @@ trait ProviderTrait
         ];
     }
 
+    public function provideStaticSourcePoint(): array
+    {
+        $pointFactory = new PointFactory();
+
+        $points = [];
+
+        foreach ($this->provideStaticSourcePointFqn() as $pointFqn) {
+            $points[] = [$pointFactory->createStaticSourcePoint($pointFqn[0])];
+        }
+
+        return $points;
+    }
+
     public function provideStaticSourcePointFqn(): array
     {
         return [
@@ -494,6 +526,62 @@ trait ProviderTrait
                     '#%s::%s()',
                     ObjectA::class,
                     'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectA::class,
+                    'getF'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()',
+                    ObjectA::class,
+                    'getF'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::$%s',
+                    ObjectB::class,
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::$%s',
+                    ObjectB::class,
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectB::class,
+                    'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()',
+                    ObjectB::class,
+                    'getA'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectB::class,
+                    'getF'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()',
+                    ObjectB::class,
+                    'getF'
                 ),
             ],
         ];
@@ -547,6 +635,19 @@ trait ProviderTrait
         ];
     }
 
+    public function provideDynamicSourcePoint(): array
+    {
+        $pointFactory = new PointFactory();
+
+        $points = [];
+
+        foreach ($this->provideDynamicSourcePointFqn() as $pointFqn) {
+            $points[] = [$pointFactory->createDynamicSourcePoint($pointFqn[0])];
+        }
+
+        return $points;
+    }
+
     public function provideDynamicSourcePointFqn(): array
     {
         return [
@@ -575,6 +676,34 @@ trait ProviderTrait
                 \sprintf(
                     '~%s::%s()',
                     ObjectA::class,
+                    'getY'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::$%s',
+                    ObjectB::class,
+                    'y'
+                ),
+            ],
+            [
+                \sprintf(
+                    '~%s::$%s',
+                    ObjectB::class,
+                    'y'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()',
+                    ObjectB::class,
+                    'getY'
+                ),
+            ],
+            [
+                \sprintf(
+                    '~%s::%s()',
+                    ObjectB::class,
                     'getY'
                 ),
             ],
@@ -662,6 +791,68 @@ trait ProviderTrait
                     'a'
                 ),
             ],
+            [
+                \sprintf(
+                    '%s::%s()::$%s',
+                    ObjectA::class,
+                    'setF',
+                    'f'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()::$%s',
+                    ObjectA::class,
+                    'setF',
+                    'f'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::$%s',
+                    ObjectB::class,
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::$%s',
+                    ObjectB::class,
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()::$%s',
+                    ObjectB::class,
+                    'setA',
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()::$a',
+                    ObjectB::class,
+                    'setA',
+                    'a'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()::$%s',
+                    ObjectB::class,
+                    'setF',
+                    'f'
+                ),
+            ],
+            [
+                \sprintf(
+                    '#%s::%s()::$%s',
+                    ObjectB::class,
+                    'setF',
+                    'f'
+                ),
+            ],
         ];
     }
 
@@ -745,6 +936,36 @@ trait ProviderTrait
                 \sprintf(
                     '~%s::%s()::$a',
                     ObjectA::class,
+                    'setY',
+                    'y'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::$%s',
+                    ObjectB::class,
+                    'y'
+                ),
+            ],
+            [
+                \sprintf(
+                    '~%s::$%s',
+                    ObjectB::class,
+                    'y'
+                ),
+            ],
+            [
+                \sprintf(
+                    '%s::%s()::$%s',
+                    ObjectB::class,
+                    'setY',
+                    'y'
+                ),
+            ],
+            [
+                \sprintf(
+                    '~%s::%s()::$a',
+                    ObjectB::class,
                     'setY',
                     'y'
                 ),
