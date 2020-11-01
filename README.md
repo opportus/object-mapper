@@ -54,8 +54,8 @@ Leverage that system to:
 -   Decouple your codebase from source and target mapping logic
 -   Dynamically define control flow over data being transferred from source to
     to target
--   Generically define target model depending on source model and reciprocally
--   Easily genericize, centralize, optimize and test your custom data mapping
+-   Generically define target model depending on source model and vice-versa
+-   Easily genericize, centralize, optimize and test specific data mapping
 -   Design efficiently your system
 
 This project aims to provide a standard core system to higher level systems
@@ -78,12 +78,12 @@ leverage it for huge benefits presented above and described more in details
 later.
 
 Whole applications can get efficiently architectured around this solution
-becoming their flexible backbone. The more the application architecture is
-elaborated, the more it has
+as a flexible backbone... The more the application architecture is elaborated,
+the more it has
 [layer data representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498)
 to map, the more this solution brings benefits, the more you can elaborate further
 this application architecture.  
-Later, when you'll be ready, I concretely demonstrate all that in
+Later, when you'll be ready, I concretely demonstrate that in
 [Check Point section](#check-point).
 
 Follow the guide...
