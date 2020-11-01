@@ -106,10 +106,13 @@ class Source implements SourceInterface
     public function hasDynamicPoint(DynamicSourcePointInterface $point): bool
     {
         return
-            $point instanceof PropertyDynamicSourcePoint &&
-            $this->objectReflection->hasProperty($point->getName()) ||
-            $point instanceof MethodDynamicSourcePoint &&
-            \is_callable([$this->instance, $point->getName()]);
+            $this->getFqn() === $point->getSourceFqn() &&
+            (
+                $point instanceof PropertyDynamicSourcePoint &&
+                $this->objectReflection->hasProperty($point->getName()) ||
+                $point instanceof MethodDynamicSourcePoint &&
+                \is_callable([$this->instance, $point->getName()])
+            );
     }
 
     /**
@@ -143,11 +146,19 @@ class Source implements SourceInterface
 
         try {
             if ($point instanceof PropertyStaticSourcePoint) {
-                return $this->classReflection->getProperty($point->getName())
-                    ->getValue($this->instance);
+                $propertyReflection = $this->classReflection
+                    ->getProperty($point->getName());
+
+                $propertyReflection->setAccessible(true);
+
+                return $propertyReflection->getValue($this->instance);
             } elseif ($point instanceof MethodStaticSourcePoint) {
-                return $this->classReflection->getMethod($point->getName())
-                    ->invoke($this->instance);
+                $methodReflection = $this->classReflection
+                    ->getMethod($point->getName());
+
+                $methodReflection->setAccessible(true);
+
+                return $methodReflection->invoke($this->instance);
             } elseif ($point instanceof PropertyDynamicSourcePoint) {
                 return $this->objectReflection->getProperty($point->getName())
                     ->getValue($this->instance);
