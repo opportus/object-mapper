@@ -236,8 +236,6 @@ class SourceTest extends TestCase
                 $source->getPointValue($point)
             );
         } elseif ($point instanceof MethodDynamicSourcePoint) {
-            $pointReflection = $sourceReflection->getMethod($point->getName());
-
             if (
                 $sourceReflection->getName() !== $point->getSourceFqn() ||
                 false === \is_callable([$sourceInstance, $point->getName()])
