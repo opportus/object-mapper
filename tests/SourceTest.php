@@ -200,7 +200,10 @@ class SourceTest extends TestCase
             $pointReflection = $sourceReflection
                 ->getProperty($point->getName());
 
-            if (false === $sourceReflection->hasProperty($point->getName())) {
+            if (
+                $sourceReflection->getName() !== $point->getSourceFqn() ||
+                false === $sourceReflection->hasProperty($point->getName())
+            ) {
                 $this->expectException(InvalidArgumentException::class);
 
                 $source->getPointValue($point);
@@ -235,7 +238,10 @@ class SourceTest extends TestCase
         } elseif ($point instanceof MethodDynamicSourcePoint) {
             $pointReflection = $sourceReflection->getMethod($point->getName());
 
-            if (false === \is_callable([$sourceInstance, $point->getName()])) {
+            if (
+                $sourceReflection->getName() !== $point->getSourceFqn() ||
+                false === \is_callable([$sourceInstance, $point->getName()])
+            ) {
                 $this->expectException(InvalidArgumentException::class);
 
                 $source->getPointValue($point);
