@@ -366,8 +366,10 @@ trait ProviderTrait
 
     public function provideSourcePoint(): array
     {
-        return $this->provideStaticSourcePoint() +
-            $this->provideDynamicSourcePoint();
+        return \array_merge(
+            $this->provideStaticSourcePoint(),
+            $this->provideDynamicSourcePoint()
+        );
     }
 
     public function provideSourcePointFqn(): array
