@@ -374,8 +374,10 @@ trait ProviderTrait
 
     public function provideSourcePointFqn(): array
     {
-        return $this->provideStaticSourcePointFqn() +
-            $this->provideDynamicSourcePointFqn();
+        return \array_merge(
+            $this->provideStaticSourcePointFqn(),
+            $this->provideDynamicSourcePointFqn()
+        );
     }
 
     public function provideInvalidSourcePointFqn(): array
@@ -432,10 +434,20 @@ trait ProviderTrait
         ];
     }
 
+    public function provideTargetPoint(): array
+    {
+        return \array_merge(
+            $this->provideStaticTargetPoint(),
+            $this->provideDynamicTargetPoint()
+        );
+    }
+
     public function provideTargetPointFqn(): array
     {
-        return $this->provideStaticTargetPointFqn() +
-            $this->provideDynamicTargetPointFqn();
+        return \array_merge(
+            $this->provideStaticTargetPointFqn(),
+            $this->provideDynamicTargetPointFqn()
+        );
     }
 
     public function provideInvalidTargetPointFqn(): array
@@ -760,6 +772,19 @@ trait ProviderTrait
         ];
     }
 
+    public function provideStaticTargetPoint(): array
+    {
+        $pointFactory = new PointFactory();
+
+        $points = [];
+
+        foreach ($this->provideStaticTargetPointFqn() as $pointFqn) {
+            $points[] = [$pointFactory->createStaticTargetPoint($pointFqn[0])];
+        }
+
+        return $points;
+    }
+
     public function provideStaticTargetPointFqn(): array
     {
         return [
@@ -907,6 +932,19 @@ trait ProviderTrait
                 ),
             ],
         ];
+    }
+
+    public function provideDynamicTargetPoint(): array
+    {
+        $pointFactory = new PointFactory();
+
+        $points = [];
+
+        foreach ($this->provideDynamicTargetPointFqn() as $pointFqn) {
+            $points[] = [$pointFactory->createDynamicTargetPoint($pointFqn[0])];
+        }
+
+        return $points;
     }
 
     public function provideDynamicTargetPointFqn(): array
