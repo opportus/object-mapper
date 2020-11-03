@@ -75,15 +75,7 @@ Consequently, this mapping gets badly designed, reducing ilities of the system
 it is the essence of. At contrario, architecturing and developing that kind of
 system around a well designed mapper, allows that system and its users to
 leverage it for the benefits presented above and described more in details
-later.
-
-Whole applications can get efficiently architectured around this solution...
-The more the application architecture is elaborated, the more it has
-[layer data representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498)
-to map, the more this solution brings benefits, the more you can elaborate further
-this application architecture.  
-Later, when you'll be ready, I concretely demonstrate that in
-[Check Point section](#check-point).
+below.
 
 Follow the guide...
 
@@ -619,9 +611,10 @@ But what is a layer? Accordingly to
 
 > An abstraction layer is a way of hiding the working details of a subsystem, allowing the separation of concerns to facilitate interoperability and platform independence.
 
-The more the *root* system (say an application) has independent layers, the
-more it has data representations, the more it has to transform data from one
-representation to another.
+The more the *root* system (say an application) has independent layers, the more
+it has
+[data representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498),
+the more it has to transform data from one representation to another.
 
 Think for exemple of the Clean Architecture:
 
