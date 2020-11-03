@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper;
 
+use Error;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
@@ -125,7 +126,7 @@ class Source implements SourceInterface
             } elseif ($point instanceof MethodDynamicSourcePoint) {
                 return $this->instance->{$point->getName()}();
             }
-        } catch (Exception $exception) {
+        } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
                 __METHOD__,
                 $exception->getMessage(),
