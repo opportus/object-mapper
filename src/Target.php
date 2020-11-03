@@ -124,6 +124,8 @@ class Target implements TargetInterface
         if (null !== $this->instance) {
             return new ReflectionObject($this->instance);
         }
+
+        return null;
     }
 
     /**
