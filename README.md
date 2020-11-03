@@ -73,9 +73,9 @@ Indeed, many systems have in common the essential and fundamental task of
 mapping data. Yet, most of the time, this aspect is conceptually neglected.
 Consequently, this mapping gets badly designed, reducing ilities of the system
 it is the essence of. At contrario, architecturing and developing that kind of
-system around a well designed mapper as a flexible backbone, allows that system
-and its users to leverage it for the benefits presented above and described more
-in details later.
+system around a well designed mapper, allows that system and its users to
+leverage it for the benefits presented above and described more in details
+later.
 
 Whole applications can get efficiently architectured around this solution...
 The more the application architecture is elaborated, the more it has
