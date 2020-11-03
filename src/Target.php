@@ -171,6 +171,9 @@ class Target implements TargetInterface
             );
         } finally {
             $this->pointValues = $this->initializePointValues();
+        }
+
+        if (null === $this->getObjectReflection()) {
             $this->objectReflection = new ReflectionObject(
                 $this->getInstance()
             );
