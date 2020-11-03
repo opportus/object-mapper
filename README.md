@@ -54,8 +54,8 @@ Leverage that system to:
 -   Decouple your codebase from source and target mapping logic
 -   Dynamically define control flow over data being transferred from source to
     target
--   Generically define target model depending on source model and vice-versa
--   Easily genericize, centralize, optimize and test specific data mapping
+-   Generically define target model based on source model and vice-versa
+-   Easily genericize, centralize, optimize, test, and run specific data mapping
 -   Design efficiently your system
 
 This project aims to provide a standard core system to higher level systems
@@ -73,7 +73,7 @@ Indeed, many systems have in common the essential and fundamental task of
 mapping data. Yet, most of the time, this aspect is conceptually neglected.
 Consequently, this mapping gets badly designed, reducing ilities of the system
 it is the essence of. At contrario, architecturing and developing that kind of
-system around a well designed mapper, allows that system and its users to
+system around a well designed mapper allows that system and its users to
 leverage it for the benefits presented above and described more in details
 below.
 
