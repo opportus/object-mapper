@@ -77,13 +77,6 @@ interface TargetInterface
     public function operate();
 
     /**
-     * Checks whether the target is operated.
-     *
-     * @return bool TRUE if the target is operated or FALSE otherwise
-     */
-    public function isOperated(): bool;
-
-    /**
      * Checks whether the target is instantiated.
      *
      * @return bool TRUE if the target is instantiated or FALSE otherwise

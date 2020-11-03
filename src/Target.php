@@ -196,14 +196,6 @@ class Target implements TargetInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function isOperated(): bool
-    {
-        return $this->isOperated;
-    }
-
-    /**
      * Operates instance safely.
      *
      * @param boolean $isSafeOperation
