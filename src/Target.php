@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper;
 
+use Error;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
@@ -174,7 +175,7 @@ class Target implements TargetInterface
             $this->operateSafely(
                 $isSafeOperation = (false === $this->isInstantiated())
             );
-        } catch (Exception $exception) {
+        } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
                 __METHOD__,
                 $exception->getMessage(),
