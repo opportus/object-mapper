@@ -13,8 +13,6 @@ namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\DynamicTargetPointInterface;
-use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use ReflectionClass;
 use ReflectionObject;
@@ -58,35 +56,15 @@ interface TargetInterface
     public function getInstance(): ?object;
 
     /**
-     * Checks whether the target has the passed static point.
-     *
-     * @param  StaticTargetPointInterface $point A static target point
-     * @return bool                              TRUE if the target class has
-     *                                           this point statically defined
-     *                                           or FALSE otherwise
-     */
-    public function hasStaticPoint(StaticTargetPointInterface $point): bool;
-
-    /**
-     * Checks whether the target has the passed dynamic point.
-     *
-     * @param  DynamicTargetPointInterface $point A dynamic target point
-     * @return bool                               TRUE if the target object has
-     *                                            this point dynamically defined
-     *                                            or FALSE otherwise
-     */
-    public function hasDynamicPoint(DynamicTargetPointInterface $point): bool;
-
-    /**
      * Sets the value of the passed target point.
      *
      * @param  TargetPointInterface      $point      The target point to assign
      *                                               the value to
      * @param  mixed                     $pointValue The value to assign to the
      *                                               target
-     * @throws InvalidArgumentException              If the target point is
-     *                                               static and the target class
-     *                                               has no such point defined
+     * @throws InvalidArgumentException              If the target FQN of the
+     *                                               point does not match the
+     *                                               target FQN
      */
     public function setPointValue(TargetPointInterface $point, $pointValue);
 

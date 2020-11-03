@@ -14,12 +14,10 @@ namespace Opportus\ObjectMapper;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\DynamicTargetPointInterface;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
-use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use ReflectionClass;
 use ReflectionException;
@@ -139,37 +137,13 @@ class Target implements TargetInterface
     /**
      * {@inheritdoc}
      */
-    public function hasStaticPoint(StaticTargetPointInterface $point): bool
-    {
-        return $this->getFqn() === $point->getTargetFqn();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasDynamicPoint(DynamicTargetPointInterface $point): bool
-    {
-        return
-            $this->isInstantiated() &&
-            $point instanceof PropertyDynamicTargetPoint &&
-            $this->objectReflection->hasProperty($point->getName()) ||
-            $this->isInstantiated() &&
-            $point instanceof MethodParameterDynamicTargetPoint &&
-            \is_callable([$this->instance, $point->getMethodName()]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function setPointValue(TargetPointInterface $point, $pointValue)
     {
-        if ($point instanceof StaticTargetPointInterface &&
-            false === $this->hasStaticPoint($point)
-        ) {
+        if ($this->getFqn() !== $point->getTargetFqn()) {
             $message = \sprintf(
-                '%s is not a static target point of %s.',
+                '%s is not a point of target %s.',
                 $point->getFqn(),
-                $this->classReflection->getName()
+                $this->getFqn()
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);

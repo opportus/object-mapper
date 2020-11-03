@@ -14,13 +14,11 @@ namespace Opportus\ObjectMapper;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\DynamicSourcePointInterface;
 use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use ReflectionClass;
 use ReflectionObject;
 
@@ -95,50 +93,13 @@ class Source implements SourceInterface
     /**
      * {@inheritdoc}
      */
-    public function hasStaticPoint(StaticSourcePointInterface $point): bool
-    {
-        return $this->getFqn() === $point->getSourceFqn();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasDynamicPoint(DynamicSourcePointInterface $point): bool
-    {
-        return
-            $this->getFqn() === $point->getSourceFqn() &&
-            (
-                $point instanceof PropertyDynamicSourcePoint &&
-                $this->objectReflection->hasProperty($point->getName()) ||
-                $point instanceof MethodDynamicSourcePoint &&
-                \is_callable([$this->instance, $point->getName()])
-            );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getPointValue(SourcePointInterface $point)
     {
-        if ($point instanceof StaticSourcePointInterface &&
-            false === $this->hasStaticPoint($point)
-        ) {
+        if ($this->getFqn() !== $point->getSourceFqn()) {
             $message = \sprintf(
-                '%s is not a static source point of %s.',
+                '%s is not a point of source %s.',
                 $point->getFqn(),
-                $this->classReflection->getName()
-            );
-
-            throw new InvalidArgumentException(1, __METHOD__, $message);
-        }
-
-        if ($point instanceof DynamicSourcePointInterface &&
-            false === $this->hasDynamicPoint($point)
-        ) {
-            $message = \sprintf(
-                '%s is not a dynamic source point of %s.',
-                $point->getFqn(),
-                $this->classReflection->getName()
+                $this->getFqn()
             );
 
             throw new InvalidArgumentException(1, __METHOD__, $message);
@@ -160,8 +121,7 @@ class Source implements SourceInterface
 
                 return $methodReflection->invoke($this->instance);
             } elseif ($point instanceof PropertyDynamicSourcePoint) {
-                return $this->objectReflection->getProperty($point->getName())
-                    ->getValue($this->instance);
+                return $this->instance->{$point->getName()};
             } elseif ($point instanceof MethodDynamicSourcePoint) {
                 return $this->instance->{$point->getName()}();
             }

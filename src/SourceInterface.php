@@ -13,9 +13,7 @@ namespace Opportus\ObjectMapper;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\DynamicSourcePointInterface;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use ReflectionClass;
 use ReflectionObject;
 
@@ -57,34 +55,13 @@ interface SourceInterface
     public function getInstance(): object;
 
     /**
-     * Checks whether the source has the passed static point.
-     *
-     * @param  StaticSourcePointInterface $point A static source point
-     * @return bool                              TRUE if the source class has
-     *                                           this point statically defined
-     *                                           or FALSE otherwise
-     */
-    public function hasStaticPoint(StaticSourcePointInterface $point): bool;
-
-    /**
-     * Checks whether the source has the passed dynamic point.
-     *
-     * @param  DynamicSourcePointInterface $point A dynamic source point
-     * @return bool                               TRUE if the source object has
-     *                                            this point dynamically defined
-     *                                            or FALSE otherwise
-     */
-    public function hasDynamicPoint(DynamicSourcePointInterface $point): bool;
-
-    /**
      * Gets the value of the passed source point.
      *
      * @param  SourcePointInterface      $point The source point to get the
      *                                          value from
      * @return mixed                            The value of the source point
-     * @throws InvalidArgumentException         If the source point is static
-     *                                          and the source class has no
-     *                                          such point defined
+     * @throws InvalidArgumentException         If the source FQN of the point
+     *                                          does not match the source FQN
      * @throws InvalidOperationException        If the operation fails for any
      *                                          reason
      */

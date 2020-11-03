@@ -103,14 +103,9 @@ class MapTest extends TestCase
         }
 
         foreach ($routes as $route) {
-            if ($route->getSourcePoint() instanceof StaticSourcePointInterface &&
-                false === $source->hasStaticPoint($route->getSourcePoint())
-            ) {
-                continue;
-            }
-
-            if ($route->getTargetPoint() instanceof StaticTargetPointInterface &&
-                false === $target->hasStaticPoint($route->getTargetPoint())
+            if (
+                $route->getSourcePoint()->getSourceFqn() !== $source->getFqn() ||
+                $route->getTargetPoint()->getTargetFqn() !== $target->getFqn()
             ) {
                 continue;
             }
