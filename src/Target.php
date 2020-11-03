@@ -87,12 +87,7 @@ class Target implements TargetInterface
             $this->instance = $target;
         }
 
-        $this->pointValues = [
-            'static_properties' => [],
-            'static_method_parameters' => [],
-            'dynamic_properties' => [],
-            'dynamic_method_parameters' => [],
-        ];
+        $this->pointValues = $this->initializePointValues();
     }
 
     /**
@@ -166,15 +161,18 @@ class Target implements TargetInterface
     public function operate()
     {
         try {
-            $this->operateSafely(
-                $isSafeOperation = (null === $this->getInstance())
-            );
+            $this->operateSafely(null === $this->getInstance());
         } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
                 __METHOD__,
                 $exception->getMessage(),
                 0,
                 $exception
+            );
+        } finally {
+            $this->pointValues = $this->initializePointValues();
+            $this->objectReflection = new ReflectionObject(
+                $this->getInstance()
             );
         }
     }
@@ -277,5 +275,20 @@ class Target implements TargetInterface
                 return $parameter->getPosition();
             }
         }
+    }
+
+    /**
+     * Initializes point values.
+     *
+     * @return array
+     */
+    private function initializePointValues(): array
+    {
+        return [
+            'static_properties' => [],
+            'static_method_parameters' => [],
+            'dynamic_properties' => [],
+            'dynamic_method_parameters' => [],
+        ];
     }
 }
