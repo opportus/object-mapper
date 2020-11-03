@@ -54,11 +54,6 @@ class Target implements TargetInterface
     private $pointValues;
 
     /**
-     * @var bool $isOperated
-     */
-    private $isOperated;
-
-    /**
      * Constructs the target.
      *
      * @param object|string $target
@@ -92,7 +87,6 @@ class Target implements TargetInterface
             $this->instance = $target;
         }
 
-        $this->isOperated = false;
         $this->pointValues = [
             'static_properties' => [],
             'static_method_parameters' => [],
@@ -182,8 +176,6 @@ class Target implements TargetInterface
                 0,
                 $exception
             );
-        } finally {
-            $this->isOperated = true;
         }
     }
 
