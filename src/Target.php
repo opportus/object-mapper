@@ -234,8 +234,11 @@ class Target implements TargetInterface
             if ('__construct' === $methodName) {
                 continue;
             }
+            $methodReflection = $this->classReflection->getMethod($methodName);
 
-            $this->classReflection->getMethod($methodName)->invokeArgs(
+            $methodReflection->setAccessible(true);
+
+            $methodReflection->invokeArgs(
                 $instance,
                 $methodArguments
             );
@@ -254,7 +257,11 @@ class Target implements TargetInterface
             $propertyName =>
             $propertyValue
         ) {
-            $this->classReflection->getProperty($propertyName)->setValue(
+            $propertyReflection = $this->classReflection->getProperty($propertyName);
+
+            $propertyReflection->setAccessible(true);
+            
+            $propertyReflection->setValue(
                 $instance,
                 $propertyValue
             );
