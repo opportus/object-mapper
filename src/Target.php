@@ -173,7 +173,7 @@ class Target implements TargetInterface
     {
         try {
             $this->operateSafely(
-                $isSafeOperation = (false === $this->isInstantiated())
+                $isSafeOperation = (null === $this->getInstance())
             );
         } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
@@ -185,14 +185,6 @@ class Target implements TargetInterface
         } finally {
             $this->isOperated = true;
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isInstantiated(): bool
-    {
-        return (bool)$this->instance;
     }
 
     /**

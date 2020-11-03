@@ -114,7 +114,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
             throw new InvalidOperationException(__METHOD__, $message);
         }
 
-        if (false === $target->isInstantiated()) {
+        if (null === $target->getInstance()) {
             $recursionTargetIterable = [];
         } else {
             $recursionTargetIterable = (new Source($target->getInstance()))

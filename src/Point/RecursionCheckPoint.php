@@ -110,7 +110,7 @@ class RecursionCheckPoint implements CheckPointInterface
             throw new InvalidOperationException(__METHOD__, $message);
         }
 
-        if (false === $target->isInstantiated()) {
+        if (null === $target->getInstance()) {
             $recursionTarget = new Target($this->targetFqn);
         } else {
             $recursionTarget = (new Source($target->getInstance()))

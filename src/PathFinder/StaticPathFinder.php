@@ -55,7 +55,7 @@ class StaticPathFinder extends PathFinder
         $propertyBlackList = [];
 
         if (
-            $target->isInstantiated() === false &&
+            $target->getInstance() === null &&
             $targetClassReflection->hasMethod('__construct')
         ) {
             $constructorReflection = $targetClassReflection
@@ -87,7 +87,7 @@ class StaticPathFinder extends PathFinder
             if (
                 \strpos($methodReflection->getName(), 'set') !== 0 &&
                 (
-                    $target->isInstantiated() ||
+                    $target->getInstance() ||
                     $methodReflection->getName() !== '__construct'
                 )
             ) {

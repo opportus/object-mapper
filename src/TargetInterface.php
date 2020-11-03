@@ -75,11 +75,4 @@ interface TargetInterface
      * @throws InvalidOperationException If the operation fails for any reason
      */
     public function operate();
-
-    /**
-     * Checks whether the target is instantiated.
-     *
-     * @return bool TRUE if the target is instantiated or FALSE otherwise
-     */
-    public function isInstantiated(): bool;
 }
