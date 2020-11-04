@@ -25,13 +25,13 @@ use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Route\Route;
 
 /**
- * The provider trait.
+ * The test data provider trait.
  *
  * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-trait ProviderTrait
+trait TestDataProviderTrait
 {
     public function provideSource(): array
     {

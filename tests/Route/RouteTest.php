@@ -16,7 +16,7 @@ use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Tests\ProviderTrait;
+use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     /**
      * @dataProvider provideRoutePoints

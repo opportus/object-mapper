@@ -23,7 +23,7 @@ use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\ProviderTrait;
+use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -36,7 +36,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PointFactoryTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     private function createPointFactory(): PointFactoryInterface
     {

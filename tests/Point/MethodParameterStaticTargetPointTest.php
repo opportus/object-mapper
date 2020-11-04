@@ -17,7 +17,7 @@ use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\ProviderTrait;
+use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MethodParameterStaticTargetPointTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)::\$([A-Za-z0-9_]+)$/';
 

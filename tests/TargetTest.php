@@ -31,7 +31,7 @@ use stdClass;
  */
 class TargetTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     /**
      * @dataProvider provideTarget

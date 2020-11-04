@@ -27,7 +27,7 @@ use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\ObjectA;
 use Opportus\ObjectMapper\Tests\ObjectB;
-use Opportus\ObjectMapper\Tests\ProviderTrait;
+use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -39,7 +39,7 @@ use PHPUnit\Framework\TestCase;
  */
 class MapTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     public function testConstruct(): void
     {

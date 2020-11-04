@@ -23,7 +23,7 @@ use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
 use Opportus\ObjectMapper\Tests\ObjectA;
 use Opportus\ObjectMapper\Tests\ObjectB;
-use Opportus\ObjectMapper\Tests\ProviderTrait;
+use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -35,7 +35,7 @@ use PHPUnit\Framework\TestCase;
  */
 class RouteBuilderTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     public function testConstruct()
     {

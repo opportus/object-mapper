@@ -35,7 +35,7 @@ use ReflectionObject;
  */
 class SourceTest extends TestCase
 {
-    use ProviderTrait;
+    use TestDataProviderTrait;
 
     /**
      * @dataProvider provideSource
