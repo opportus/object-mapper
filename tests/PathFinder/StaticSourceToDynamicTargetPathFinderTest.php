@@ -19,8 +19,8 @@ use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,8 +44,8 @@ class StaticSourceToDynamicTargetPathFinderTest extends TestCase
     {
         $pathFinder = $this->buildPathFinder();
 
-        $source = new Source(new ObjectA());
-        $target = new Target(ObjectB::class);
+        $source = new Source(new TestObjectA());
+        $target = new Target(TestObjectB::class);
 
         $routes = $pathFinder->getRoutes($source, $target);
 
@@ -70,33 +70,33 @@ class StaticSourceToDynamicTargetPathFinderTest extends TestCase
         $routes[0] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '#%s::getJ()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '~%s::$j',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[1] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '#%s::getM()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '~%s::$m',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[2] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '#%s::$n',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '~%s::$n',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 

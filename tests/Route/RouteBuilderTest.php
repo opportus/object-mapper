@@ -21,8 +21,8 @@ use Opportus\ObjectMapper\Point\RecursionCheckPoint;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -227,8 +227,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder1 = $this->buildRouteBuilder();
 
         $routeBuilder2 = $routeBuilder1->addRecursionCheckPoint(
-            ObjectA::class,
-            ObjectB::class,
+            TestObjectA::class,
+            TestObjectB::class,
             $targetSourcePointFqn
         );
 
@@ -247,8 +247,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $routeBuilder->addRecursionCheckPoint(
-            ObjectA::class,
-            ObjectB::class,
+            TestObjectA::class,
+            TestObjectB::class,
             $targetSourcePointFqn
         );
     }
@@ -262,8 +262,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder1 = $this->buildRouteBuilder();
 
         $routeBuilder2 = $routeBuilder1->addIterableRecursionCheckPoint(
-            ObjectA::class,
-            ObjectB::class,
+            TestObjectA::class,
+            TestObjectB::class,
             $targetSourcePointFqn
         );
 
@@ -282,8 +282,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $routeBuilder->addIterableRecursionCheckPoint(
-            ObjectA::class,
-            ObjectB::class,
+            TestObjectA::class,
+            TestObjectB::class,
             $targetIterableSourcePointFqn
         );
     }
@@ -316,25 +316,25 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn,
                 40
             )
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn,
                 10
             )
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -468,8 +468,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -478,8 +478,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -488,8 +488,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -497,8 +497,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -507,8 +507,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -517,8 +517,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->getRoute();
@@ -554,25 +554,25 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn,
                 40
             )
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn,
                 10
             )
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -629,8 +629,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -639,8 +639,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -649,8 +649,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -658,8 +658,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -668,8 +668,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -678,8 +678,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -727,8 +727,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -737,8 +737,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -747,8 +747,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -756,8 +756,8 @@ class RouteBuilderTest extends TestCase
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -766,8 +766,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -776,8 +776,8 @@ class RouteBuilderTest extends TestCase
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder();
@@ -813,25 +813,25 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn,
                 40
             )
             ->addRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn,
                 10
             )
             ->addIterableRecursionCheckPoint(
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $sourcePointFqn
             )
             ->addRouteToMapBuilder()

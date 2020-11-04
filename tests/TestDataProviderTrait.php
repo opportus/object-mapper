@@ -37,10 +37,10 @@ trait TestDataProviderTrait
     {
         return [
             [
-                new ObjectA(),
+                new TestObjectA(),
             ],
             [
-                new ObjectB(),
+                new TestObjectB(),
             ],
         ];
     }
@@ -49,16 +49,16 @@ trait TestDataProviderTrait
     {
         return [
             [
-                new ObjectA(),
+                new TestObjectA(),
             ],
             [
-                new ObjectB(),
+                new TestObjectB(),
             ],
             [
-                ObjectA::class,
+                TestObjectA::class,
             ],
             [
-                ObjectB::class,
+                TestObjectB::class,
             ],
         ];
     }
@@ -105,12 +105,12 @@ trait TestDataProviderTrait
             [
                 new PropertyStaticSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 )),
                 new PropertyStaticTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 )),
                 new CheckPointCollection([
@@ -122,12 +122,12 @@ trait TestDataProviderTrait
             [
                 new PropertyStaticSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 )),
                 new MethodParameterStaticTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setA',
                     'a'
                 )),
@@ -140,12 +140,12 @@ trait TestDataProviderTrait
             [
                 new PropertyStaticSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 )),
                 new PropertyDynamicTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'z'
                 )),
                 new CheckPointCollection([
@@ -157,12 +157,12 @@ trait TestDataProviderTrait
             [
                 new PropertyStaticSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 )),
                 new MethodParameterDynamicTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setZ',
                     'z'
                 )),
@@ -176,12 +176,12 @@ trait TestDataProviderTrait
             [
                 new MethodStaticSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 )),
                 new PropertyStaticTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 )),
                 new CheckPointCollection([
@@ -193,12 +193,12 @@ trait TestDataProviderTrait
             [
                 new MethodStaticSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 )),
                 new MethodParameterStaticTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setA',
                     'a'
                 )),
@@ -211,12 +211,12 @@ trait TestDataProviderTrait
             [
                 new MethodStaticSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 )),
                 new PropertyDynamicTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'z'
                 )),
                 new CheckPointCollection([
@@ -228,12 +228,12 @@ trait TestDataProviderTrait
             [
                 new MethodStaticSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 )),
                 new MethodParameterDynamicTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setZ',
                     'z'
                 )),
@@ -247,12 +247,12 @@ trait TestDataProviderTrait
             [
                 new PropertyDynamicSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 )),
                 new PropertyStaticTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 )),
                 new CheckPointCollection([
@@ -264,12 +264,12 @@ trait TestDataProviderTrait
             [
                 new PropertyDynamicSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 )),
                 new MethodParameterStaticTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setA',
                     'a'
                 )),
@@ -282,12 +282,12 @@ trait TestDataProviderTrait
             [
                 new PropertyDynamicSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 )),
                 new PropertyDynamicTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'z'
                 )),
                 new CheckPointCollection([
@@ -299,12 +299,12 @@ trait TestDataProviderTrait
             [
                 new PropertyDynamicSourcePoint(\sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 )),
                 new MethodParameterDynamicTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setZ',
                     'z'
                 )),
@@ -318,12 +318,12 @@ trait TestDataProviderTrait
             [
                 new MethodDynamicSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 )),
                 new PropertyStaticTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 )),
                 new CheckPointCollection([
@@ -335,12 +335,12 @@ trait TestDataProviderTrait
             [
                 new MethodDynamicSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 )),
                 new MethodParameterStaticTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setA',
                     'a'
                 )),
@@ -353,12 +353,12 @@ trait TestDataProviderTrait
             [
                 new MethodDynamicSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 )),
                 new PropertyDynamicTargetPoint(\sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'z'
                 )),
                 new CheckPointCollection([
@@ -370,12 +370,12 @@ trait TestDataProviderTrait
             [
                 new MethodDynamicSourcePoint(\sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 )),
                 new MethodParameterDynamicTargetPoint(\sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setZ',
                     'z'
                 )),
@@ -425,7 +425,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -433,7 +433,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -441,7 +441,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -449,7 +449,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -457,7 +457,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -465,7 +465,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -495,42 +495,42 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
@@ -556,84 +556,84 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getF'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getF'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'getF'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'getF'
                 ),
             ],
@@ -646,42 +646,42 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
@@ -707,56 +707,56 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getY'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getY'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'getY'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'getY'
                 ),
             ],
@@ -769,42 +769,42 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
@@ -830,21 +830,21 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -852,7 +852,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$a',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -860,7 +860,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setF',
                     'f'
                 ),
@@ -868,7 +868,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setF',
                     'f'
                 ),
@@ -876,21 +876,21 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setA',
                     'a'
                 ),
@@ -898,7 +898,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$a',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setA',
                     'a'
                 ),
@@ -906,7 +906,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setF',
                     'f'
                 ),
@@ -914,7 +914,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setF',
                     'f'
                 ),
@@ -928,28 +928,28 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -957,7 +957,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -965,7 +965,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -992,21 +992,21 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setY',
                     'y'
                 ),
@@ -1014,7 +1014,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$a',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setY',
                     'y'
                 ),
@@ -1022,21 +1022,21 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'y'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setY',
                     'y'
                 ),
@@ -1044,7 +1044,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$a',
-                    ObjectB::class,
+                    TestObjectB::class,
                     'setY',
                     'y'
                 ),
@@ -1058,28 +1058,28 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1087,7 +1087,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1095,7 +1095,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1109,42 +1109,42 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'e'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'e'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
@@ -1157,28 +1157,28 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'e'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1186,7 +1186,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
@@ -1200,7 +1200,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'nonProperty'
                 ),
             ],
@@ -1213,14 +1213,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
@@ -1233,14 +1233,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1248,14 +1248,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
@@ -1275,42 +1275,42 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getE'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getE'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getF'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getF'
                 ),
             ],
@@ -1323,35 +1323,35 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getE'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getF'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1366,7 +1366,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'nonMethod'
                 ),
             ],
@@ -1379,14 +1379,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
@@ -1399,21 +1399,21 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1421,7 +1421,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
@@ -1441,42 +1441,42 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'e'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'e'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
@@ -1489,28 +1489,28 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'e'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1518,7 +1518,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
@@ -1532,7 +1532,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'nonProperty'
                 ),
             ],
@@ -1545,14 +1545,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '~%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
@@ -1565,14 +1565,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1580,14 +1580,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'a'
                 ),
             ],
@@ -1606,7 +1606,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1614,7 +1614,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1622,7 +1622,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setE',
                     'e'
                 ),
@@ -1630,7 +1630,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setE',
                     'e'
                 ),
@@ -1638,7 +1638,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setF',
                     'f'
                 ),
@@ -1646,7 +1646,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setF',
                     'f'
                 ),
@@ -1660,7 +1660,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1668,7 +1668,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setE',
                     'e'
                 ),
@@ -1676,7 +1676,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setF',
                     'f'
                 ),
@@ -1684,14 +1684,14 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'f'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getA'
                 ),
             ],
@@ -1706,7 +1706,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'nonMethod',
                     'a'
                 ),
@@ -1714,7 +1714,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'nonParameter'
                 ),
@@ -1728,7 +1728,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1736,7 +1736,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '~%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1750,7 +1750,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '#%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setZ',
                     'z'
                 ),
@@ -1758,21 +1758,21 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'z'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'getZ'
                 ),
             ],
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'a'
                 ),
@@ -1788,7 +1788,7 @@ trait TestDataProviderTrait
             [
                 \sprintf(
                     '%s::%s()::$%s',
-                    ObjectA::class,
+                    TestObjectA::class,
                     'setA',
                     'nonParameter'
                 ),

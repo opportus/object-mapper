@@ -259,9 +259,9 @@ class TargetTest extends TestCase
                 $target->setPointValue($point, 1);
             }
 
-            if ($target->getFqn() === ObjectA::class) {
+            if ($target->getFqn() === TestObjectA::class) {
                 $target->setPointValue($this->provideTargetPoint()[3][0], null);
-            } elseif ($target->getFqn() === ObjectB::class) {
+            } elseif ($target->getFqn() === TestObjectB::class) {
                 $target->setPointValue($this->provideTargetPoint()[9][0], null);
             }
 

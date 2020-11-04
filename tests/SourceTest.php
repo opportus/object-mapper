@@ -92,7 +92,7 @@ class SourceTest extends TestCase
      */
     public function testGetPointvalue(SourcePointInterface $point): void
     {
-        $sourceInstance = new ObjectA();
+        $sourceInstance = new TestObjectA();
         $sourceInstance->f = 1;
         $sourceInstance->y = 1;
 

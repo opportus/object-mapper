@@ -12,39 +12,13 @@
 namespace Opportus\ObjectMapper\Tests;
 
 /**
- * The object A.
+ * The test object B.
  *
  * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ObjectA
+class TestObjectB
 {
     use TestObjectTrait;
-
-    private $j;
-    private $k;
-    protected $l;
-    public $m;
-    public $n;
-
-    public function getJ(): int
-    {
-        return $this->j;
-    }
-
-    public function setJ(int $j)
-    {
-        $this->j = $j;
-    }
-
-    public function getM(): int
-    {
-        return $this->m;
-    }
-
-    public function setM(int $m)
-    {
-        $this->m = $m;
-    }
 }

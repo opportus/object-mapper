@@ -15,8 +15,8 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\RecursionCheckPoint;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -68,8 +68,8 @@ class RecursionCheckPointTest extends TestCase
     {
         return [
             [
-                ObjectA::class,
-                ObjectB::class,
+                TestObjectA::class,
+                TestObjectB::class,
                 $this->getMockBuilder(SourcePointInterface::class)->getMock()
             ],
         ];
@@ -79,13 +79,13 @@ class RecursionCheckPointTest extends TestCase
     {
         return [
             [
-                ObjectA::class,
+                TestObjectA::class,
                 'NonObject',
                 $this->getMockBuilder(SourcePointInterface::class)->getMock()
             ],
             [
                 'NonObject',
-                ObjectB::class,
+                TestObjectB::class,
                 $this->getMockBuilder(SourcePointInterface::class)->getMock()
             ],
             [

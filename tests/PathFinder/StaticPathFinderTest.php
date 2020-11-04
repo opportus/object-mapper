@@ -19,8 +19,8 @@ use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,8 +44,8 @@ class StaticPathFinderTest extends TestCase
     {
         $pathFinder = $this->buildPathFinder();
 
-        $source = new Source(new ObjectA());
-        $target = new Target(ObjectB::class);
+        $source = new Source(new TestObjectA());
+        $target = new Target(TestObjectB::class);
 
         $routes = $pathFinder->getRoutes($source, $target);
 
@@ -70,88 +70,88 @@ class StaticPathFinderTest extends TestCase
         $routes[0] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::getA()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::__construct()::$a',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[1] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::getB()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::setB()::$b',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[2] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::getC()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::setC()::$c',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[3] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::getD()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::setD()::$d',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[4] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::$f',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::$f',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[5] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::getG()',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::$g',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[6] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::$h',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::setH()::$h',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 
         $routes[7] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '%s::$i',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->setTargetPoint(\sprintf(
                 '%s::$i',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->getRoute();
 

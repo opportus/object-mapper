@@ -19,8 +19,8 @@ use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -44,14 +44,14 @@ class DynamicSourceToStaticTargetPathFinderTest extends TestCase
     {
         $pathFinder = $this->buildPathFinder();
 
-        $source = new ObjectB();
+        $source = new TestObjectB();
         $source->j = 1;
         $source->k = 1;
         $source->m = 1;
         $source->n = 1;
 
         $source = new Source($source);
-        $target = new Target(ObjectA::class);
+        $target = new Target(TestObjectA::class);
 
         $routes = $pathFinder->getRoutes($source, $target);
 
@@ -76,33 +76,33 @@ class DynamicSourceToStaticTargetPathFinderTest extends TestCase
         $routes[0] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '~%s::$j',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->setTargetPoint(\sprintf(
                 '#%s::setJ()::$j',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->getRoute();
 
         $routes[1] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '~%s::$m',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->setTargetPoint(\sprintf(
                 '#%s::setM()::$m',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->getRoute();
 
         $routes[2] = $routeBuilder
             ->setSourcePoint(\sprintf(
                 '~%s::$n',
-                ObjectB::class
+                TestObjectB::class
             ))
             ->setTargetPoint(\sprintf(
                 '#%s::$n',
-                ObjectA::class
+                TestObjectA::class
             ))
             ->getRoute();
 

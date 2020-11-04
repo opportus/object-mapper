@@ -25,8 +25,8 @@ use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\ObjectA;
-use Opportus\ObjectMapper\Tests\ObjectB;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
@@ -91,8 +91,8 @@ class MapTest extends TestCase
 
         $map = new Map($pathFinders, $routes);
 
-        $source = new Source(new ObjectA());
-        $target = new Target(new ObjectB());
+        $source = new Source(new TestObjectA());
+        $target = new Target(new TestObjectB());
 
         $expectedRoutes = [];
 
