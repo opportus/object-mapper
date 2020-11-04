@@ -45,6 +45,45 @@ trait ProviderTrait
         ];
     }
 
+    public function provideTarget(): array
+    {
+        return [
+            [
+                new ObjectA(),
+            ],
+            [
+                new ObjectB(),
+            ],
+            [
+                ObjectA::class,
+            ],
+            [
+                ObjectB::class,
+            ],
+        ];
+    }
+
+    public function provideInvalidTarget(): array
+    {
+        return [
+            [
+                'Test',
+            ],
+            [
+                true,
+            ],
+            [
+                false,
+            ],
+            [
+                3,
+            ],
+            [
+                3.14,
+            ],
+        ];
+    }
+
     public function provideRoute(): array
     {
         $routes = [];
