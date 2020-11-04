@@ -11,15 +11,16 @@
 
 namespace Opportus\ObjectMapper\Tests\Route;
 
+use Exception;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\PathFinder\DynamicSourceToStaticTargetPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
+use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\PathFinder\StaticSourceToDynamicTargetPathFinder;
 use Opportus\ObjectMapper\Point\PointFactory;
-use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
-use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
@@ -29,6 +30,7 @@ use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * The map test.
@@ -46,21 +48,6 @@ class MapTest extends TestCase
         $map = new Map();
 
         static::assertInstanceOf(MapInterface::class, $map);
-
-        $map = new Map(
-            $this->getMockBuilder(PathFinderCollection::class)->getMock(),
-            null
-        );
-
-        $map = new Map(
-            null,
-            $this->getMockBuilder(RouteCollection::class)->getMock()
-        );
-
-        $map = new Map(
-            $this->getMockBuilder(PathFinderCollection::class)->getMock(),
-            $this->getMockBuilder(RouteCollection::class)->getMock()
-        );
     }
 
     public function testGetRoutes(): void
@@ -117,11 +104,26 @@ class MapTest extends TestCase
 
         $returnedRoutes = $map->getRoutes($source, $target);
 
-        static::assertCount($expectedRoutes->count(), $returnedRoutes);
+        static::assertEquals($expectedRoutes, $returnedRoutes);
+    }
 
-        foreach ($returnedRoutes as $index => $returnedRoute) {
-            static::assertSame($expectedRoutes[$index]->getFqn(), $returnedRoute->getFqn());
-            static::assertCount($expectedRoutes[$index]->getCheckPoints()->count(), $returnedRoute->getCheckPoints());
-        }
+    public function testGetRouteException(): void
+    {
+        $pathFinder = $this->getMockBuilder(PathFinderInterface::class)
+            ->getMock();
+
+        $pathFinder->method('getRoutes')
+            ->willThrowException(new Exception());
+
+        $pathFinderCollection = new PathFinderCollection([$pathFinder]);
+
+        $map = new Map($pathFinderCollection);
+
+        $source = new Source(new TestObjectA());
+        $target = new Target(new TestObjectB());
+
+        $this->expectException(InvalidOperationException::class);
+
+        $map->getRoutes($source, $target);
     }
 }
