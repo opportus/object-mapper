@@ -44,7 +44,7 @@ class InvalidArgumentException extends Exception
     public function __construct(
         int $argument,
         string $function,
-        string $message,
+        string $message = '',
         int $code = 0,
         Throwable $previous = null
     ) {
