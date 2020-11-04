@@ -223,7 +223,6 @@ class TargetTest extends TestCase
                     if ($propertyName === $propertyReflection->getName()) {
                         continue 2;
                     }
-
                 }
 
                 $propertyReflection->setAccessible(true);
