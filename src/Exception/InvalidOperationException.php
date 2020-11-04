@@ -37,7 +37,7 @@ class InvalidOperationException extends Exception
      */
     public function __construct(
         string $function,
-        string $message,
+        string $message = '',
         int $code = 0,
         Throwable $previous = null
     ) {
