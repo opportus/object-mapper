@@ -41,7 +41,7 @@ class PropertyStaticTargetPoint extends TargetPoint implements StaticTargetPoint
                 self::FQN_REGEX_PATTERN
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         [$matchedFqn, $matchedTargetFqn, $matchedName] = $matches;
@@ -58,7 +58,7 @@ class PropertyStaticTargetPoint extends TargetPoint implements StaticTargetPoint
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));

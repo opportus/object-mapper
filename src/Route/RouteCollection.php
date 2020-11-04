@@ -41,7 +41,7 @@ class RouteCollection extends ImmutableCollection
                     \is_object($route) ? \get_class($route) : \gettype($route)
                 );
 
-                throw new InvalidArgumentException(1, __METHOD__, $message);
+                throw new InvalidArgumentException(1, $message);
             }
 
             $indexedRoutes[$route->getFqn()] = $route;

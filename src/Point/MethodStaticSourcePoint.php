@@ -41,7 +41,7 @@ class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointIn
                 self::FQN_REGEX_PATTERN
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
@@ -55,7 +55,7 @@ class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointIn
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));

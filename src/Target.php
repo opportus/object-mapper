@@ -67,7 +67,7 @@ class Target implements TargetInterface
                 \gettype($target)
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         try {
@@ -79,7 +79,7 @@ class Target implements TargetInterface
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if (\is_object($target)) {
@@ -138,7 +138,7 @@ class Target implements TargetInterface
                 $this->getFqn()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if ($point instanceof PropertyStaticTargetPoint) {
@@ -164,7 +164,6 @@ class Target implements TargetInterface
             $this->operateSafely(null === $this->getInstance());
         } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
-                __METHOD__,
                 $exception->getMessage(),
                 0,
                 $exception

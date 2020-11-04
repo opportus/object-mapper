@@ -39,7 +39,7 @@ class PathFinderCollection extends ImmutableCollection
                     \is_object($pathFinder) ? \get_class($pathFinder) : \gettype($pathFinder)
                 );
 
-                throw new InvalidArgumentException(1, __METHOD__, $message);
+                throw new InvalidArgumentException(1, $message);
             }
 
             if (false === \is_int($index)) {
@@ -48,7 +48,7 @@ class PathFinderCollection extends ImmutableCollection
                     \gettype($index)
                 );
 
-                throw new InvalidArgumentException(1, __METHOD__, $message);
+                throw new InvalidArgumentException(1, $message);
             }
         }
 

@@ -43,7 +43,7 @@ class CheckPointCollection extends ImmutableCollection
                         \get_class($checkPoint) : \gettype($checkPoint)
                 );
 
-                throw new InvalidArgumentException(1, __METHOD__, $message);
+                throw new InvalidArgumentException(1, $message);
             }
 
             if (false === \is_int($index)) {
@@ -52,7 +52,7 @@ class CheckPointCollection extends ImmutableCollection
                     \gettype($index)
                 );
 
-                throw new InvalidArgumentException(1, __METHOD__, $message);
+                throw new InvalidArgumentException(1, $message);
             }
         }
 

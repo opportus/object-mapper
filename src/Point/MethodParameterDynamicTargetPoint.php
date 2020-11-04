@@ -46,7 +46,7 @@ class MethodParameterDynamicTargetPoint extends TargetPoint implements DynamicTa
                 self::FQN_REGEX_PATTERN
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         [
@@ -65,7 +65,7 @@ class MethodParameterDynamicTargetPoint extends TargetPoint implements DynamicTa
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if ($targetClassReflection->hasMethod($matchedMethodName)) {
@@ -74,7 +74,7 @@ class MethodParameterDynamicTargetPoint extends TargetPoint implements DynamicTa
                 $fqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->fqn = \sprintf('~%s', \ltrim($matchedFqn, '~'));

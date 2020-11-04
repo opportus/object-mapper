@@ -102,13 +102,7 @@ class RouteBuilder implements RouteBuilderInterface
             $sourcePoint = $this->pointFactory
                 ->createStaticSourcePoint($sourcePointFqn);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(
-                1,
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException(1, '', 0, $exception);
         }
 
         return new self(
@@ -130,13 +124,7 @@ class RouteBuilder implements RouteBuilderInterface
             $targetPoint = $this->pointFactory
                 ->createStaticTargetPoint($targetPointFqn);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(
-                1,
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException(1, '', 0, $exception);
         }
 
         return new self(
@@ -158,13 +146,7 @@ class RouteBuilder implements RouteBuilderInterface
             $sourcePoint = $this->pointFactory
                 ->createDynamicSourcePoint($sourcePointFqn);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(
-                1,
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException(1, '', 0, $exception);
         }
 
         return new self(
@@ -186,13 +168,7 @@ class RouteBuilder implements RouteBuilderInterface
             $targetPoint = $this->pointFactory
                 ->createDynamicTargetPoint($targetPointFqn);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(
-                1,
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException(1, '', 0, $exception);
         }
 
         return new self(
@@ -214,13 +190,7 @@ class RouteBuilder implements RouteBuilderInterface
             $sourcePoint = $this->pointFactory
                 ->createSourcePoint($sourcePointFqn);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(
-                1,
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException(1, '', 0, $exception);
         }
 
         return new self(
@@ -242,13 +212,7 @@ class RouteBuilder implements RouteBuilderInterface
             $targetPoint = $this->pointFactory
                 ->createTargetPoint($targetPointFqn);
         } catch (InvalidArgumentException $exception) {
-            throw new InvalidArgumentException(
-                1,
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidArgumentException(1, '', 0, $exception);
         }
 
         return new self(
@@ -302,7 +266,6 @@ class RouteBuilder implements RouteBuilderInterface
         } catch (InvalidArgumentException $exception) {
             throw new InvalidArgumentException(
                 $exception->getArgument(),
-                __METHOD__,
                 '',
                 0,
                 $exception
@@ -333,7 +296,6 @@ class RouteBuilder implements RouteBuilderInterface
         } catch (InvalidArgumentException $exception) {
             throw new InvalidArgumentException(
                 $exception->getArgument(),
-                __METHOD__,
                 '',
                 0,
                 $exception
@@ -353,7 +315,6 @@ class RouteBuilder implements RouteBuilderInterface
     {
         if (null === $this->sourcePoint || null === $this->targetPoint) {
             throw new InvalidOperationException(
-                __METHOD__,
                 'The source or target point of the route have not been set.'
             );
         }
@@ -372,7 +333,6 @@ class RouteBuilder implements RouteBuilderInterface
     {
         if (null === $this->mapBuilder) {
             throw new InvalidOperationException(
-                __METHOD__,
                 'The map builder has not been set.'
             );
         }
@@ -380,12 +340,7 @@ class RouteBuilder implements RouteBuilderInterface
         try {
             $route = $this->getRoute();
         } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException(
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidOperationException('', 0, $exception);
         }
 
         return new self(

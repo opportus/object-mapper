@@ -71,12 +71,7 @@ class Map implements MapInterface
                     $routes[] = $route;
                 }
             } catch (Exception $exception) {
-                throw new InvalidOperationException(
-                    __METHOD__,
-                    '',
-                    0,
-                    $exception
-                );
+                throw new InvalidOperationException('', 0, $exception);
             }
         }
 

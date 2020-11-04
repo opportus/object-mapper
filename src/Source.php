@@ -103,7 +103,7 @@ class Source implements SourceInterface
                 $this->getFqn()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         try {
@@ -128,7 +128,6 @@ class Source implements SourceInterface
             }
         } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
-                __METHOD__,
                 $exception->getMessage(),
                 0,
                 $exception

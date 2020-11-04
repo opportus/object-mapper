@@ -46,7 +46,7 @@ class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTarg
                 self::FQN_REGEX_PATTERN
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         [
@@ -69,7 +69,7 @@ class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTarg
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));

@@ -60,12 +60,7 @@ abstract class PathFinder implements PathFinderInterface
         try {
             $referencePoints = $this->getReferencePoints($source, $target);
         } catch (Exception $exception) {
-            throw new InvalidOperationException(
-                __METHOD__,
-                '',
-                0,
-                $exception
-            );
+            throw new InvalidOperationException('', 0, $exception);
         }
 
         foreach ($referencePoints as $referencePoint) {
@@ -76,12 +71,7 @@ abstract class PathFinder implements PathFinderInterface
                     $referencePoint
                 );
             } catch (Exception $exception) {
-                throw new InvalidOperationException(
-                    __METHOD__,
-                    '',
-                    0,
-                    $exception
-                );
+                throw new InvalidOperationException('', 0, $exception);
             }
 
             if (null === $route) {
@@ -169,6 +159,6 @@ abstract class PathFinder implements PathFinderInterface
             get_class($reflection)
         );
 
-        throw new InvalidArgumentException(1, __METHOD__, $message);
+        throw new InvalidArgumentException(1, $message);
     }
 }

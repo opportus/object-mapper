@@ -41,7 +41,7 @@ class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTargetPoi
                 self::FQN_REGEX_PATTERN
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         [$matchedFqn, $matchedTargetFqn, $matchedName] = $matches;
@@ -55,7 +55,7 @@ class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTargetPoi
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if ($targetClassReflection->hasProperty($matchedName)) {
@@ -64,7 +64,7 @@ class PropertyDynamicTargetPoint extends TargetPoint implements DynamicTargetPoi
                 $fqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->fqn = \sprintf('~%s', \ltrim($matchedFqn, '~'));

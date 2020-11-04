@@ -68,7 +68,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                 $sourceFqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if (false === \class_exists($targetFqn)) {
@@ -77,7 +77,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                 $targetFqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->sourceFqn = $sourceFqn;
@@ -111,7 +111,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                 $route->getFqn()
             );
 
-            throw new InvalidOperationException(__METHOD__, $message);
+            throw new InvalidOperationException($message);
         }
 
         if (null === $target->getInstance()) {
@@ -130,7 +130,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                 $route->getFqn()
             );
 
-            throw new InvalidOperationException(__METHOD__, $message);
+            throw new InvalidOperationException($message);
         }
 
         foreach ($recursionSourceIterable as $i => $recursionSource) {
@@ -144,7 +144,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                     $route->getFqn()
                 );
 
-                throw new InvalidOperationException(__METHOD__, $message);
+                throw new InvalidOperationException($message);
             }
 
             if (!isset($recursionTargetIterable[$i])) {
@@ -160,7 +160,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                         $route->getFqn()
                     );
 
-                    throw new InvalidOperationException(__METHOD__, $message);
+                    throw new InvalidOperationException($message);
                 }
             }
 
@@ -178,7 +178,7 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                     $route->getFqn()
                 );
 
-                throw new InvalidOperationException(__METHOD__, $message);
+                throw new InvalidOperationException($message);
             }
 
             $recursionTargetIterable[$i] = $updatedRecursionTarget;

@@ -46,7 +46,7 @@ trait ObjectMapperTrait
         try {
             $routes = $map->getRoutes($source, $target);
         } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+            throw new InvalidOperationException('', 0, $exception);
         }
 
         if (0 === \count($routes)) {
@@ -61,12 +61,7 @@ trait ObjectMapperTrait
             try {
                 $checkPointSubject = $source->getPointValue($sourcePoint);
             } catch (InvalidArgumentException | InvalidOperationException $exception) {
-                throw new InvalidOperationException(
-                    __METHOD__,
-                    '',
-                    0,
-                    $exception
-                );
+                throw new InvalidOperationException('', 0, $exception);
             }
 
             foreach ($checkPoints as $checkPoint) {
@@ -81,31 +76,21 @@ trait ObjectMapperTrait
                 } catch (CheckPointSeizingException $exception) {
                     continue 2;
                 } catch (InvalidOperationException $exception) {
-                    throw new InvalidOperationException(
-                        __METHOD__,
-                        '',
-                        0,
-                        $exception
-                    );
+                    throw new InvalidOperationException('', 0, $exception);
                 }
             }
 
             try {
                 $target->setPointValue($targetPoint, $checkPointSubject);
             } catch (InvalidArgumentException $exception) {
-                throw new InvalidOperationException(
-                    __METHOD__,
-                    '',
-                    0,
-                    $exception
-                );
+                throw new InvalidOperationException('', 0, $exception);
             }
         }
 
         try {
             $target->operate();
         } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+            throw new InvalidOperationException('', 0, $exception);
         }
 
         return $target->getInstance();

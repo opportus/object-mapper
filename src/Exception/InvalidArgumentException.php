@@ -28,33 +28,24 @@ class InvalidArgumentException extends Exception
     private $argument;
 
     /**
-     * @var string $function
-     */
-    private $function;
-
-    /**
      * Constructs the invalid argument exception.
      *
      * @param int $argument
-     * @param string $function
      * @param string $message
      * @param int $code
      * @param null|Throwable $previous
      */
     public function __construct(
         int $argument,
-        string $function,
         string $message = '',
         int $code = 0,
         Throwable $previous = null
     ) {
         $this->argument = $argument;
-        $this->function = $function;
 
         $message = \sprintf(
-            'Argument %d passed to %s is invalid. %s',
+            'Argument %d is invalid. %s',
             $this->argument,
-            $this->function,
             $message
         );
 
@@ -69,15 +60,5 @@ class InvalidArgumentException extends Exception
     public function getArgument(): int
     {
         return $this->argument;
-    }
-
-    /**
-     * Gets the function.
-     *
-     * @return string
-     */
-    public function getFunction(): string
-    {
-        return $this->function;
     }
 }

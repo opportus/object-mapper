@@ -41,7 +41,7 @@ class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourcePoint
                 self::FQN_REGEX_PATTERN
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
@@ -55,7 +55,7 @@ class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourcePoint
                 $exception->getMessage()
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if ($sourceClassReflection->hasMethod($matchedName)) {
@@ -64,7 +64,7 @@ class MethodDynamicSourcePoint extends SourcePoint implements DynamicSourcePoint
                 $fqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->fqn = \sprintf('~%s', \ltrim($matchedFqn, '~'));

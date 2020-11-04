@@ -66,7 +66,7 @@ class RecursionCheckPoint implements CheckPointInterface
                 $sourceFqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         if (false === \class_exists($targetFqn)) {
@@ -75,7 +75,7 @@ class RecursionCheckPoint implements CheckPointInterface
                 $targetFqn
             );
 
-            throw new InvalidArgumentException(1, __METHOD__, $message);
+            throw new InvalidArgumentException(1, $message);
         }
 
         $this->sourceFqn = $sourceFqn;
@@ -107,7 +107,7 @@ class RecursionCheckPoint implements CheckPointInterface
                 $route->getFqn()
             );
 
-            throw new InvalidOperationException(__METHOD__, $message);
+            throw new InvalidOperationException($message);
         }
 
         if (null === $target->getInstance()) {
@@ -129,7 +129,7 @@ class RecursionCheckPoint implements CheckPointInterface
                         $route->getFqn()
                     );
 
-                    throw new InvalidOperationException(__METHOD__, $message);
+                    throw new InvalidOperationException($message);
                 }
             }
         }
@@ -148,7 +148,7 @@ class RecursionCheckPoint implements CheckPointInterface
                 $route->getFqn()
             );
 
-            throw new InvalidOperationException(__METHOD__, $message);
+            throw new InvalidOperationException($message);
         }
 
         return $updatedRecursionTarget;

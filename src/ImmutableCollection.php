@@ -94,7 +94,6 @@ abstract class ImmutableCollection implements
     public function offsetSet($offset, $value)
     {
         throw new InvalidOperationException(
-            __METHOD__,
             'Attempting to set an element of an immutable array.'
         );
     }
@@ -107,7 +106,6 @@ abstract class ImmutableCollection implements
     public function offsetUnset($offset)
     {
         throw new InvalidOperationException(
-            __METHOD__,
             'Attempting to set an element of an immutable array.'
         );
     }

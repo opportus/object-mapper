@@ -58,13 +58,7 @@ class ObjectMapper implements ObjectMapperInterface
             try {
                 $target = new Target($target);
             } catch (InvalidArgumentException $exception) {
-                throw new InvalidArgumentException(
-                    2,
-                    __METHOD__,
-                    '',
-                    0,
-                    $exception
-                );
+                throw new InvalidArgumentException(2, '', 0, $exception);
             }
         }
 
@@ -75,7 +69,7 @@ class ObjectMapper implements ObjectMapperInterface
         try {
             return $this->mapSourceToTarget($source, $target, $map);
         } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException(__METHOD__, '', 0, $exception);
+            throw new InvalidOperationException('', 0, $exception);
         }
     }
 }
