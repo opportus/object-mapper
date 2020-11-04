@@ -20,7 +20,7 @@ namespace Opportus\ObjectMapper\Tests;
  */
 class ObjectA
 {
-    use ObjectTrait;
+    use TestObjectTrait;
 
     private $j;
     private $k;

@@ -20,5 +20,5 @@ namespace Opportus\ObjectMapper\Tests;
  */
 class ObjectB
 {
-    use ObjectTrait;
+    use TestObjectTrait;
 }

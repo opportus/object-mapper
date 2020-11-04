@@ -12,13 +12,13 @@
 namespace Opportus\ObjectMapper\Tests;
 
 /**
- * The object trait.
+ * The test object trait.
  *
  * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-trait ObjectTrait
+trait TestObjectTrait
 {
     private $a;
     private $b;
