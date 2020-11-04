@@ -12,16 +12,10 @@
 namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Point\DynamicSourcePointInterface;
-use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
-use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
-use Opportus\ObjectMapper\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\Target;
+use Opportus\ObjectMapper\TargetInterface;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionObject;
@@ -64,7 +58,23 @@ class SourceTest extends TestCase
     {
         $source = $this->buildSource($providedSource);
 
-        static::assertEquals(new ReflectionClass($providedSource), $source->getClassReflection());
+        $sourceClassReflection1 = $source->getClassReflection();
+        $sourceClassReflection2 = $source->getClassReflection();
+
+        static::assertEquals(
+            new ReflectionClass($providedSource),
+            $sourceClassReflection1
+        );
+
+        static::assertEquals(
+            new ReflectionClass($providedSource),
+            $sourceClassReflection2
+        );
+
+        static::assertNotSame(
+            $sourceClassReflection1,
+            $sourceClassReflection2
+        );
     }
 
     /**
@@ -74,7 +84,23 @@ class SourceTest extends TestCase
     {
         $source = $this->buildSource($providedSource);
 
-        static::assertEquals(new ReflectionObject($providedSource), $source->getObjectReflection());
+        $sourceObjectReflection1 = $source->getObjectReflection();
+        $sourceObjectReflection2 = $source->getObjectReflection();
+
+        static::assertEquals(
+            new ReflectionObject($providedSource),
+            $sourceObjectReflection1
+        );
+
+        static::assertEquals(
+            new ReflectionObject($providedSource),
+            $sourceObjectReflection2
+        );
+
+        static::assertNotSame(
+            $sourceObjectReflection1,
+            $sourceObjectReflection2
+        );
     }
 
     /**
@@ -88,96 +114,52 @@ class SourceTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSourcePoint
+     * @dataProvider provideSource
      */
-    public function testGetPointvalue(SourcePointInterface $point): void
+    public function testGetPointvalue(object $providedSource): void
     {
-        $sourceInstance = new TestObjectA();
-        $sourceInstance->f = 1;
-        $sourceInstance->y = 1;
+        $target = $this->buildTarget($providedSource);
 
-        $sourceReflection = new ReflectionObject($sourceInstance);
+        foreach ($this->provideTargetPoint() as $point) {
+            $point = $point[0];
 
-        $source = $this->buildSource($sourceInstance);
-
-        if ($point instanceof PropertyStaticSourcePoint) {
-            $pointReflection = $sourceReflection
-                ->getProperty($point->getName());
-
-            $pointReflection->setAccessible(true);
-
-            if (
-                $sourceReflection->getName() !== $point->getSourceFqn() ||
-                false === $sourceReflection->hasProperty($point->getName())
-            ) {
-                $this->expectException(InvalidArgumentException::class);
-
-                $source->getPointValue($point);
-
-                return;
+            if ($target->getFqn() !== $point->getTargetFqn()) {
+                continue;
             }
 
-            static::assertEquals(
-                $pointReflection->getValue($sourceInstance),
-                $source->getPointValue($point)
-            );
-        } elseif ($point instanceof PropertyDynamicSourcePoint) {
-            $pointReflection = $sourceReflection
-                ->getProperty($point->getName());
+            $target->setPointValue($point, 1);
+        }
 
-            if (
-                $sourceReflection->getName() !== $point->getSourceFqn() ||
-                false === $sourceReflection->hasProperty($point->getName())
-            ) {
-                $this->expectException(InvalidArgumentException::class);
+        $target->operate();
 
-                $source->getPointValue($point);
+        $source = $this->buildSource($providedSource);
 
-                return;
+        foreach ($this->provideSourcePoint() as $point) {
+            $point = $point[0];
+
+            if ($source->getFqn() !== $point->getSourceFqn()) {
+                continue;
             }
 
-            static::assertEquals(
-                $pointReflection->getValue($sourceInstance),
-                $source->getPointValue($point)
-            );
-        } elseif ($point instanceof MethodStaticSourcePoint) {
-            $pointReflection = $sourceReflection->getMethod($point->getName());
+            static::assertEquals(1, $source->getPointValue($point));
+        }
+    }
 
-            $pointReflection->setAccessible(true);
+    /**
+     * @dataProvider provideSource
+     */
+    public function testGetPointvalueException(object $providedSource): void
+    {
+        $source = $this->buildSource($providedSource);
 
-            if (
-                $sourceReflection->getName() !== $point->getSourceFqn() ||
-                false === $sourceReflection->hasMethod($point->getName())
-            ) {
-                $this->expectException(InvalidArgumentException::class);
+        foreach ($this->provideSourcePoint() as $point) {
+            $point = $point[0];
 
-                $source->getPointValue($point);
-
-                return;
+            if ($source->getFqn() === $point->getSourceFqn()) {
+                continue;
             }
 
-            static::assertEquals(
-                $pointReflection->invoke($sourceInstance),
-                $source->getPointValue($point)
-            );
-        } elseif ($point instanceof MethodDynamicSourcePoint) {
-            if (
-                $sourceReflection->getName() !== $point->getSourceFqn() ||
-                false === \is_callable([$sourceInstance, $point->getName()])
-            ) {
-                $this->expectException(InvalidArgumentException::class);
-
-                $source->getPointValue($point);
-
-                return;
-            }
-
-            static::assertEquals(
-                $sourceInstance->{$point->getName()}(),
-                $source->getPointValue($point)
-            );
-        } else {
-            $this->expectException(InvalidOperationException::class);
+            $this->expectException(InvalidArgumentException::class);
 
             $source->getPointValue($point);
         }
@@ -186,5 +168,10 @@ class SourceTest extends TestCase
     private function buildSource(object $source): Source
     {
         return new Source($source);
+    }
+
+    private function buildTarget($target): TargetInterface
+    {
+        return new Target($target);
     }
 }
