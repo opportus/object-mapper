@@ -16,7 +16,7 @@ use Opportus\ObjectMapper\Point\DynamicSourcePointInterface;
 use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
-use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
+use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 

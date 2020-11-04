@@ -15,13 +15,13 @@ use Exception;
 use Throwable;
 
 /**
- * The invalid argument exception.
+ * The test invalid argument exception.
  *
  * @package Opportus\ObjectMapper\Tests
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class InvalidArgumentException extends Exception
+class TestInvalidArgumentException extends Exception
 {
     /**
      * Constructs the invalid argument exception.

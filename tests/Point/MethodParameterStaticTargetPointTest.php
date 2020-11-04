@@ -16,7 +16,7 @@ use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
-use Opportus\ObjectMapper\Tests\InvalidArgumentException as TestInvalidArgumentException;
+use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
 
