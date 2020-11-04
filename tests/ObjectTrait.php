@@ -47,7 +47,7 @@ trait ObjectTrait
 
     public function getB($b = 0): int
     {
-        return $b ?? $this->b;
+        return $this->b;
     }
 
     public function setB(int $b)
@@ -107,5 +107,18 @@ trait ObjectTrait
     public function setH(int $h)
     {
         $this->h = $h;
+    }
+
+    public function __call(string $dynamicMethodName, array $parameters)
+    {
+        if ('getY' === $dynamicMethodName) {
+            return $this->y;
+        }
+
+        if ('setY' === $dynamicMethodName) {
+            $this->y = $parameters[0];
+
+            return;
+        }
     }
 }
