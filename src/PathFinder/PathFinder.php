@@ -99,10 +99,11 @@ abstract class PathFinder implements PathFinderInterface
     /**
      * Gets the reference point route.
      *
-     * @param  SourceInterface     $source
-     * @param  TargetInterface     $target
-     * @param  mixed               $referencePoint
+     * @param  SourceInterface          $source
+     * @param  TargetInterface          $target
+     * @param  mixed                    $referencePoint
      * @return null|RouteInterface
+     * @throws InvalidArgumentException
      */
     abstract protected function getReferencePointRoute(
         SourceInterface $source,

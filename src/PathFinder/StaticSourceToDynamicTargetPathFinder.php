@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\PathFinder;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
@@ -91,6 +92,23 @@ class StaticSourceToDynamicTargetPathFinder extends PathFinder
         TargetInterface $target,
         $referencePoint
     ): ?RouteInterface {
+        if (false === \is_object($referencePoint)
+            || (
+                !$referencePoint instanceof ReflectionProperty
+                && !$referencePoint instanceof ReflectionMethod
+            )
+        ) {
+            $message = \sprintf(
+                'The argument must be an object of type % or %s, got an argument of type %s.',
+                ReflectionProperty::class,
+                ReflectionParameter::class,
+                \is_object($referencePoint) ?
+                    \get_class($referencePoint) : \gettype($referencePoint)
+            );
+
+            throw new InvalidArgumentException(3, $message);
+        }
+
         $sourcePointReflection = $referencePoint;
         $targetClassReflection = $target->getClassReflection();
 
@@ -101,8 +119,6 @@ class StaticSourceToDynamicTargetPathFinder extends PathFinder
                 $sourcePointReflection->getName(),
                 3
             ));
-        } else {
-            return null;
         }
 
         if ($targetClassReflection->hasProperty($targetPointName)) {

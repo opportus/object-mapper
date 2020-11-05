@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests\PathFinder;
 
+use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\PathFinder\DynamicSourceToStaticTargetPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
@@ -22,6 +23,7 @@ use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 
 /**
  * The dynamic source to static target path finder test.
@@ -58,6 +60,31 @@ class DynamicSourceToStaticTargetPathFinderTest extends TestCase
         $expectedRoutes = $this->getExpectedRoutes();
 
         static::assertEquals($expectedRoutes, $routes);
+    }
+
+    public function testGetReferencePointRouteException(): void
+    {
+        $pathFinder = $this->buildPathFinder();
+
+        $source = new Source(new TestObjectB());
+        $target = new Target(TestObjectA::class);
+
+        $pathFinderReflection = new ReflectionClass($pathFinder);
+        $pathFinderTestMethodReflection = $pathFinderReflection
+            ->getMethod('getReferencePointRoute');
+        
+        $pathFinderTestMethodReflection->setAccessible(true);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $pathFinderTestMethodReflection->invokeArgs(
+            $pathFinder,
+            [
+                $source,
+                $target,
+                'test',
+            ]
+        );
     }
 
     private function buildPathFinder(): DynamicSourceToStaticTargetPathFinder
