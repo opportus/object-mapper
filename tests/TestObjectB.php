@@ -21,4 +21,30 @@ namespace Opportus\ObjectMapper\Tests;
 class TestObjectB
 {
     use TestObjectTrait;
+
+    private $p;
+    private $q;
+    protected $r;
+    public $s;
+    public $t;
+
+    public function getP(): int
+    {
+        return $this->p;
+    }
+
+    public function setP(int $p)
+    {
+        $this->p = $p;
+    }
+
+    public function getS(): int
+    {
+        return $this->s;
+    }
+
+    public function setS(int $s)
+    {
+        $this->s = $s;
+    }
 }

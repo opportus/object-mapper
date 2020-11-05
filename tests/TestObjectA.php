@@ -47,4 +47,9 @@ class TestObjectA
     {
         $this->m = $m;
     }
+
+    public function getO(int $o)
+    {
+        return $o;
+    }
 }
