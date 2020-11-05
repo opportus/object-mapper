@@ -12,6 +12,9 @@
 namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
+use Opportus\ObjectMapper\Point\SourcePoint;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\Target;
@@ -116,7 +119,7 @@ class SourceTest extends TestCase
     /**
      * @dataProvider provideSource
      */
-    public function testGetPointvalue(object $providedSource): void
+    public function testGetPointValue(object $providedSource): void
     {
         $target = $this->buildTarget($providedSource);
 
@@ -148,8 +151,9 @@ class SourceTest extends TestCase
     /**
      * @dataProvider provideSource
      */
-    public function testGetPointvalueException(object $providedSource): void
-    {
+    public function testGetPointValueFirstInvalidArgumentException(
+        object $providedSource
+    ): void {
         $source = $this->buildSource($providedSource);
 
         foreach ($this->provideSourcePoint() as $point) {
@@ -163,6 +167,51 @@ class SourceTest extends TestCase
 
             $source->getPointValue($point);
         }
+    }
+
+    /**
+     * @dataProvider provideSource
+     * @depends testGetFqn
+     */
+    public function testGetPointValueSecondInvalidArgumentException(
+        object $providedSource
+    ): void {
+        $source = $this->buildSource($providedSource);
+
+        $point = $this->getMockForAbstractClass(
+            SourcePoint::class,
+            [],
+            '',
+            false,
+            true,
+            true,
+            ['getSourceFqn']
+        );
+
+        $point->method('getSourceFqn')->willReturn($source->getFqn());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $source->getPointValue($point);
+    }
+
+    /**
+     * @dataProvider provideSource
+     */
+    public function testGetPointValueInvalidOperationException(
+        object $providedSource
+    ): void {
+        $source = $this->buildSource($providedSource);
+
+        $point = $this->getMockBuilder(PropertyStaticSourcePoint::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $point->method('getSourceFqn')->willReturn($source->getFqn());
+
+        $this->expectException(InvalidOperationException::class);
+
+        $source->getPointValue($point);
     }
 
     private function buildSource(object $source): Source
