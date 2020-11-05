@@ -64,7 +64,8 @@ interface TargetInterface
      *                                               target
      * @throws InvalidArgumentException              If the target FQN of the
      *                                               point does not match the
-     *                                               target FQN
+     *                                               target FQN or if the point
+     *                                               type is not supported
      */
     public function setPointValue(TargetPointInterface $point, $pointValue);
 

@@ -152,6 +152,13 @@ class Target implements TargetInterface
         } elseif ($point instanceof MethodParameterDynamicTargetPoint) {
             $this->pointValues['dynamic_method_parameters']
                 [$point->getMethodName()][] = $pointValue;
+        } else {
+            $message = \sprintf(
+                'Target point type %s not supported.',
+                \get_class($point)
+            );
+
+            throw new InvalidArgumentException(1, $message);
         }
     }
 
