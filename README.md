@@ -51,12 +51,12 @@ optimized, and tested mapping system.
 
 Leverage that system to:
  
--   Decouple your codebase from source and target mapping logic
+-   Decouple your codebase from data mapping
 -   Dynamically define control flow over data being transferred from source to
     target
--   Generically define target model based on source model and vice-versa
--   Easily genericize, centralize, optimize, test, and run specific data mapping
--   Design efficiently your system
+-   Dynamically define target model based on source model and vice-versa
+-   Easily genericize, centralize, optimize, test, and run data mapping
+-   Design efficiently and simplify your system
 
 This project aims to provide a standard core system to higher level systems
 such as:
@@ -77,7 +77,8 @@ system around a well designed mapper allows that system and its users to
 leverage it for the benefits presented above and described more in details
 below.
 
-Follow the guide...
+If you need to map from/to `array` data structure, simply cast it to/from
+`object` `stdClass`.
 
 ## Roadmap
 
@@ -156,15 +157,15 @@ and its *check points*.
 
 A *source point* can be either:
 
--   A statically/dynamically defined property
--   A statically/dynamically defined method
--   Any extended type of static/dynamic source point
+-   A property
+-   A method
+-   Any extended type of *source point*
 
 A *target point* can be either:
 
--   A statically/dynamically defined property
--   A statically/dynamically defined method parameter
--   Any extended type of static/dynamic target point
+-   A property
+-   A method parameter
+-   Any extended type of *target point*
 
 A *check point* can be any implementation of
 [`CheckPointInterface`](https://github.com/opportus/object-mapper/blob/master/src/Point/CheckPointInterface.php).
