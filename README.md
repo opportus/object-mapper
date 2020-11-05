@@ -51,7 +51,7 @@ optimized, and tested mapping system.
 
 Leverage that system to:
  
--   Decouple your codebase from data mapping
+-   Decouple your codebase from data mapping logic
 -   Dynamically define control flow over data being transferred from source to
     target
 -   Dynamically define target model based on source model and vice-versa
