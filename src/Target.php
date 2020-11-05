@@ -185,13 +185,7 @@ class Target implements TargetInterface
             $this->pointValues = $this->initializePointValues();
         }
 
-        $this->instance = $instance;
-
-        if (null === $this->getObjectReflection()) {
-            $this->objectReflection = new ReflectionObject(
-                $this->getInstance()
-            );
-        }
+        $this->update($instance);
     }
 
     /**
@@ -264,6 +258,21 @@ class Target implements TargetInterface
         }
 
         return $instance;
+    }
+
+    /**
+     * Updates.
+     *
+     * @param  object $instance
+     * @return void
+     */
+    private function update(object $instance)
+    {
+        $this->instance = $instance;
+
+        if (null === $this->objectReflection) {
+            $this->objectReflection = new ReflectionObject($instance);
+        }
     }
 
     /**
