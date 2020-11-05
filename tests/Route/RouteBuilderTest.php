@@ -290,6 +290,11 @@ class RouteBuilderTest extends TestCase
 
     /**
      * @dataProvider providePointsFqn
+     * @depends testSetSourcePoint
+     * @depends testSetTargetPoint
+     * @depends testAddCheckPoint
+     * @depends testAddRecursionCheckPoint
+     * @depends testAddIterableRecursionCheckPoint
      */
     public function testGetRoute(
         string $sourcePointFqn,
@@ -420,27 +425,44 @@ class RouteBuilderTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider providePointsFqn
-     */
-    public function testGetRouteException(
-        string $sourcePointFqn,
-        string $targetPointFqn
-    ): void {
+    public function testGetRouteException0(): void {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder->getRoute();
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     * @depends testSetSourcePoint
+     */
+    public function testGetRouteException1(string $sourcePointFqn): void {
+        $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->getRoute();
+    }
+
+    /**
+     * @dataProvider provideTargetPointFqn
+     * @depends testSetTargetPoint
+     */
+    public function testGetRouteException2(string $targetPointFqn): void {
+        $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->getRoute();
+    }
+
+    /**
+     * @depends testAddCheckPoint
+     */
+    public function testGetRouteException3(): void {
+        $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -448,6 +470,15 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->getRoute();
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     * @depends testSetSourcePoint
+     * @depends testAddCheckPoint
+     */
+    public function testGetRouteException4(string $sourcePointFqn): void {
+        $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -456,76 +487,33 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->getRoute();
+    }
+
+    /**
+     * @dataProvider provideTargetPointFqn
+     * @depends testSetTargetPoint
+     * @depends testAddCheckPoint
+     */
+    public function testGetRouteException5(string $targetPointFqn): void {
+        $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addCheckPoint(
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
-            )
-            ->getRoute();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->getRoute();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->getRoute();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->getRoute();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->getRoute();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->getRoute();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
             )
             ->getRoute();
     }
 
     /**
      * @dataProvider providePointsFqn
+     * @depends testSetMapBuilder
+     * @depends testSetSourcePoint
+     * @depends testSetTargetPoint
+     * @depends testAddCheckPoint
+     * @depends testAddRecursionCheckPoint
+     * @depends testAddIterableRecursionCheckPoint
      */
     public function testAddRouteToMapBuilder(
         string $sourcePointFqn,
@@ -583,123 +571,83 @@ class RouteBuilderTest extends TestCase
 
     /**
      * @dataProvider providePointsFqn
+     * @depends testSetSourcePoint
+     * @depends testSetTargetPoint
      */
-    public function testAddRouteToMapBuilderException(
+    public function testAddRouteToMapBuilderFirstException(
         string $sourcePointFqn,
         string $targetPointFqn
     ): void {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
-        $routeBuilder->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addRouteToMapBuilder();
+    }
 
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addCheckPoint(
-                $this->getMockBuilder(CheckPointInterface::class)->getMock()
-            )
-            ->addRouteToMapBuilder();
+    /**
+     * @depends testSetMapBuilder
+     */
+    public function testAddRouteToMapBuilderSecondException0(): void {
+        $routeBuilder = $this->buildRouteBuilder();
+        $mapBuilder = $this->buildMapBuilder();
 
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addCheckPoint(
-                $this->getMockBuilder(CheckPointInterface::class)->getMock()
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addCheckPoint(
-                $this->getMockBuilder(CheckPointInterface::class)->getMock()
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $routeBuilder = $routeBuilder->setMapBuilder(
-            $this->buildMapBuilder()
-        );
+        $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder->addRouteToMapBuilder();
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     * @depends testSetMapBuilder
+     * @depends testSetSourcePoint
+     */
+    public function testAddRouteToMapBuilderSecondException1(
+        string $sourcePointFqn
+    ): void {
+        $routeBuilder = $this->buildRouteBuilder();
+        $mapBuilder = $this->buildMapBuilder();
+
+        $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setSourcePoint($sourcePointFqn)
             ->addRouteToMapBuilder();
+    }
+
+    /**
+     * @dataProvider provideTargetPointFqn
+     * @depends testSetMapBuilder
+     * @depends testSetTargetPoint
+     */
+    public function testAddRouteToMapBuilderSecondException2(
+        string $targetPointFqn
+    ): void {
+        $routeBuilder = $this->buildRouteBuilder();
+        $mapBuilder = $this->buildMapBuilder();
+
+        $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addRouteToMapBuilder();
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     * @depends testSetMapBuilder
+     * @depends testAddCheckPoint
+     */
+    public function testAddRouteToMapBuilderSecondException3(): void {
+        $routeBuilder = $this->buildRouteBuilder();
+        $mapBuilder = $this->buildMapBuilder();
+
+        $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -707,6 +655,21 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->addRouteToMapBuilder();
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     * @depends testSetMapBuilder
+     * @depends testSetSourcePoint
+     * @depends testAddCheckPoint
+     */
+    public function testAddRouteToMapBuilderSecondException4(
+        string $sourcePointFqn
+    ): void {
+        $routeBuilder = $this->buildRouteBuilder();
+        $mapBuilder = $this->buildMapBuilder();
+
+        $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -715,76 +678,40 @@ class RouteBuilderTest extends TestCase
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
             )
             ->addRouteToMapBuilder();
+    }
+
+    /**
+     * @dataProvider provideTargetPointFqn
+     * @depends testSetMapBuilder
+     * @depends testSetTargetPoint
+     * @depends testAddCheckPoint
+     */
+    public function testAddRouteToMapBuilderSecondException5(
+        string $targetPointFqn
+    ): void {
+        $routeBuilder = $this->buildRouteBuilder();
+        $mapBuilder = $this->buildMapBuilder();
+
+        $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
             ->setTargetPoint($targetPointFqn)
             ->addCheckPoint(
                 $this->getMockBuilder(CheckPointInterface::class)->getMock()
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setSourcePoint($sourcePointFqn)
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
-            )
-            ->addRouteToMapBuilder();
-
-        $this->expectException(InvalidOperationException::class);
-        $routeBuilder
-            ->setTargetPoint($targetPointFqn)
-            ->addIterableRecursionCheckPoint(
-                TestObjectA::class,
-                TestObjectB::class,
-                $sourcePointFqn
             )
             ->addRouteToMapBuilder();
     }
 
     /**
      * @dataProvider providePointsFqn
+     * @depends testSetMapBuilder
+     * @depends testSetSourcePoint
+     * @depends testSetTargetPoint
+     * @depends testAddCheckPoint
+     * @depends testAddRecursionCheckPoint
+     * @depends testAddIterableRecursionCheckPoint
+     * @depends testAddRouteToMapBuilder
      */
     public function testGetMapBuilder(
         string $sourcePointFqn,
