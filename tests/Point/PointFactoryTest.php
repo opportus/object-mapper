@@ -12,6 +12,7 @@
 namespace Opportus\ObjectMapper\Tests\Point;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Point\IterableRecursionCheckPoint;
 use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
@@ -22,8 +23,11 @@ use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
+use Opportus\ObjectMapper\Point\RecursionCheckPoint;
 use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
+use Opportus\ObjectMapper\Tests\TestObjectA;
+use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -423,5 +427,179 @@ class PointFactoryTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $pointFactory->createTargetPoint($fqn);
+    }
+
+    /**
+     * @depends testCreateSourcePoint
+     *
+     * @return void
+     */
+    public function testCreateRecursionCheckPoint(): void {
+        foreach ($this->provideSourcePointFqn() as $targetSourcePointFqn) {
+            $targetSourcePointFqn = $targetSourcePointFqn[0];
+
+            if (false !== \strpos($targetSourcePointFqn, TestObjectB::class)) {
+                continue;
+            }
+
+            $pointFactory1 = $this->createPointFactory();
+            $pointFactory2 = $this->createPointFactory();
+
+            $point1 = $pointFactory1->createRecursionCheckPoint(
+                TestObjectA::class,
+                TestObjectB::class,
+                $targetSourcePointFqn
+            );
+
+            $point2 = new RecursionCheckPoint(
+                TestObjectA::class,
+                TestObjectB::class,
+                $pointFactory2->createSourcePoint($targetSourcePointFqn)
+            );
+
+            static::assertEquals($point2, $point1);
+
+        }
+    }
+
+    /**
+     * @dataProvider provideInvalidSourcePointFqn
+     *
+     * @return void
+     */
+    public function testCreateRecursionCheckPointFirstException(
+        string $targetSourcePointFqn
+    ): void {
+        $pointFactory = $this->createPointFactory();
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createRecursionCheckPoint(
+            TestObjectA::class,
+            TestObjectB::class,
+            $targetSourcePointFqn
+        );
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     *
+     * @return void
+     */
+    public function testCreateRecursionCheckPointSecondException1(
+        string $targetSourcePointFqn
+    ): void {
+        $pointFactory = $this->createPointFactory();
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createRecursionCheckPoint(
+            'Test',
+            TestObjectB::class,
+            $targetSourcePointFqn
+        );
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     *
+     * @return void
+     */
+    public function testCreateRecursionCheckPointSecondException2(
+        string $targetSourcePointFqn
+    ): void {
+        $pointFactory = $this->createPointFactory();
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createRecursionCheckPoint(
+            TestObjectA::class,
+            'Test',
+            $targetSourcePointFqn
+        );
+    }
+
+    /**
+     * @depends testCreateSourcePoint
+     *
+     * @return void
+     */
+    public function testCreateIterableRecursionCheckPoint(): void {
+        foreach ($this->provideSourcePointFqn() as $iterableTargetSourcePointFqn) {
+            $iterableTargetSourcePointFqn = $iterableTargetSourcePointFqn[0];
+
+            if (false !== \strpos($iterableTargetSourcePointFqn, TestObjectB::class)) {
+                continue;
+            }
+
+            $pointFactory1 = $this->createPointFactory();
+            $pointFactory2 = $this->createPointFactory();
+
+            $point1 = $pointFactory1->createIterableRecursionCheckPoint(
+                TestObjectA::class,
+                TestObjectB::class,
+                $iterableTargetSourcePointFqn
+            );
+
+            $point2 = new IterableRecursionCheckPoint(
+                TestObjectA::class,
+                TestObjectB::class,
+                $pointFactory2->createSourcePoint($iterableTargetSourcePointFqn)
+            );
+
+            static::assertEquals($point2, $point1);
+
+        }
+    }
+
+    /**
+     * @dataProvider provideInvalidSourcePointFqn
+     *
+     * @return void
+     */
+    public function testCreateIterableRecursionCheckPointFirstException(
+        string $targetSourcePointFqn
+    ): void {
+        $pointFactory = $this->createPointFactory();
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createIterableRecursionCheckPoint(
+            TestObjectA::class,
+            TestObjectB::class,
+            $targetSourcePointFqn
+        );
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     *
+     * @return void
+     */
+    public function testCreateIterableRecursionCheckPointSecondException1(
+        string $targetSourcePointFqn
+    ): void {
+        $pointFactory = $this->createPointFactory();
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createIterableRecursionCheckPoint(
+            'Test',
+            TestObjectB::class,
+            $targetSourcePointFqn
+        );
+    }
+
+    /**
+     * @dataProvider provideSourcePointFqn
+     *
+     * @return void
+     */
+    public function testCreateIterableRecursionCheckPointSecondException2(
+        string $targetSourcePointFqn
+    ): void {
+        $pointFactory = $this->createPointFactory();
+
+        $this->expectException(InvalidArgumentException::class);
+        $pointFactory->createIterableRecursionCheckPoint(
+            TestObjectA::class,
+            'Test',
+            $targetSourcePointFqn
+        );
     }
 }
