@@ -425,7 +425,8 @@ class RouteBuilderTest extends TestCase
         }
     }
 
-    public function testGetRouteException0(): void {
+    public function testGetRouteException0(): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
@@ -436,7 +437,8 @@ class RouteBuilderTest extends TestCase
      * @dataProvider provideSourcePointFqn
      * @depends testSetSourcePoint
      */
-    public function testGetRouteException1(string $sourcePointFqn): void {
+    public function testGetRouteException1(string $sourcePointFqn): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
@@ -449,7 +451,8 @@ class RouteBuilderTest extends TestCase
      * @dataProvider provideTargetPointFqn
      * @depends testSetTargetPoint
      */
-    public function testGetRouteException2(string $targetPointFqn): void {
+    public function testGetRouteException2(string $targetPointFqn): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
@@ -461,7 +464,8 @@ class RouteBuilderTest extends TestCase
     /**
      * @depends testAddCheckPoint
      */
-    public function testGetRouteException3(): void {
+    public function testGetRouteException3(): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
@@ -477,7 +481,8 @@ class RouteBuilderTest extends TestCase
      * @depends testSetSourcePoint
      * @depends testAddCheckPoint
      */
-    public function testGetRouteException4(string $sourcePointFqn): void {
+    public function testGetRouteException4(string $sourcePointFqn): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
@@ -494,7 +499,8 @@ class RouteBuilderTest extends TestCase
      * @depends testSetTargetPoint
      * @depends testAddCheckPoint
      */
-    public function testGetRouteException5(string $targetPointFqn): void {
+    public function testGetRouteException5(string $targetPointFqn): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
@@ -590,7 +596,8 @@ class RouteBuilderTest extends TestCase
     /**
      * @depends testSetMapBuilder
      */
-    public function testAddRouteToMapBuilderSecondException0(): void {
+    public function testAddRouteToMapBuilderSecondException0(): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
         $mapBuilder = $this->buildMapBuilder();
 
@@ -643,7 +650,8 @@ class RouteBuilderTest extends TestCase
      * @depends testSetMapBuilder
      * @depends testAddCheckPoint
      */
-    public function testAddRouteToMapBuilderSecondException3(): void {
+    public function testAddRouteToMapBuilderSecondException3(): void
+    {
         $routeBuilder = $this->buildRouteBuilder();
         $mapBuilder = $this->buildMapBuilder();
 

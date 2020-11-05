@@ -434,7 +434,8 @@ class PointFactoryTest extends TestCase
      *
      * @return void
      */
-    public function testCreateRecursionCheckPoint(): void {
+    public function testCreateRecursionCheckPoint(): void
+    {
         foreach ($this->provideSourcePointFqn() as $targetSourcePointFqn) {
             $targetSourcePointFqn = $targetSourcePointFqn[0];
 
@@ -458,7 +459,6 @@ class PointFactoryTest extends TestCase
             );
 
             static::assertEquals($point2, $point1);
-
         }
     }
 
@@ -521,7 +521,8 @@ class PointFactoryTest extends TestCase
      *
      * @return void
      */
-    public function testCreateIterableRecursionCheckPoint(): void {
+    public function testCreateIterableRecursionCheckPoint(): void
+    {
         foreach ($this->provideSourcePointFqn() as $iterableTargetSourcePointFqn) {
             $iterableTargetSourcePointFqn = $iterableTargetSourcePointFqn[0];
 
@@ -545,7 +546,6 @@ class PointFactoryTest extends TestCase
             );
 
             static::assertEquals($point2, $point1);
-
         }
     }
 
