@@ -61,7 +61,9 @@ interface SourceInterface
      *                                          value from
      * @return mixed                            The value of the source point
      * @throws InvalidArgumentException         If the source FQN of the point
-     *                                          does not match the source FQN
+     *                                          does not match the source FQN or
+     *                                          if the point type is not
+     *                                          supported
      * @throws InvalidOperationException        If the operation fails for any
      *                                          reason
      */

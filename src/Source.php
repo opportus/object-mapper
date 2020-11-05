@@ -133,5 +133,12 @@ class Source implements SourceInterface
                 $exception
             );
         }
+
+        $message = \sprintf(
+            'Source point type %s not supported.',
+            \get_class($point)
+        );
+
+        throw new InvalidArgumentException(1, $message);
     }
 }
