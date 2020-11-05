@@ -160,8 +160,14 @@ class Target implements TargetInterface
      */
     public function operate()
     {
+        $instance = $this->getInstance();
+
         try {
-            $this->operateSafely(null === $this->getInstance());
+            if (null !== $instance) {
+                $this->operateInstance(clone $instance);
+            }
+
+            $instance = $this->operateInstance($instance);
         } catch (Error|Exception $exception) {
             throw new InvalidOperationException(
                 $exception->getMessage(),
@@ -172,6 +178,8 @@ class Target implements TargetInterface
             $this->pointValues = $this->initializePointValues();
         }
 
+        $this->instance = $instance;
+
         if (null === $this->getObjectReflection()) {
             $this->objectReflection = new ReflectionObject(
                 $this->getInstance()
@@ -180,17 +188,13 @@ class Target implements TargetInterface
     }
 
     /**
-     * Operates instance safely.
+     * Operated an instance.
      *
-     * @param boolean $isSafeOperation
-     * @param null|object $instance
+     * @param  null|object $instance
+     * @return object
      */
-    private function operateSafely($isSafeOperation = false, ?object $instance = null)
+    private function operateInstance(?object $instance = null): object
     {
-        if ($isSafeOperation) {
-            $instance = $this->instance;
-        }
-
         if (null === $instance) {
             if (isset($this->pointValues['static_method_parameters']['__construct'])) {
                 $instance = $this->classReflection->newInstanceArgs(
@@ -199,8 +203,6 @@ class Target implements TargetInterface
             } else {
                 $instance = $this->classReflection->newInstance();
             }
-        } elseif (false === $isSafeOperation) {
-            $instance = clone $instance;
         }
 
         foreach (
@@ -211,6 +213,7 @@ class Target implements TargetInterface
             if ('__construct' === $methodName) {
                 continue;
             }
+
             $methodReflection = $this->classReflection->getMethod($methodName);
 
             $methodReflection->setAccessible(true);
@@ -234,7 +237,8 @@ class Target implements TargetInterface
             $propertyName =>
             $propertyValue
         ) {
-            $propertyReflection = $this->classReflection->getProperty($propertyName);
+            $propertyReflection = $this->classReflection
+                ->getProperty($propertyName);
 
             $propertyReflection->setAccessible(true);
             
@@ -252,11 +256,7 @@ class Target implements TargetInterface
             $instance->{$propertyName} = $propertyValue;
         }
 
-        if ($isSafeOperation) {
-            $this->instance = $instance;
-        } else {
-            $this->operateSafely(true, $instance);
-        }
+        return $instance;
     }
 
     /**
@@ -264,19 +264,22 @@ class Target implements TargetInterface
      *
      * @param MethodParameterStaticTargetPoint $point
      * @return int
-     * @noinspection PhpInconsistentReturnPointsInspection
      */
-    private function getMethodParameterStaticPointPosition(MethodParameterStaticTargetPoint $point): int
-    {
+    private function getMethodParameterStaticPointPosition(
+        MethodParameterStaticTargetPoint $point
+    ): int {
         foreach (
             $this->classReflection->getMethod($point->getMethodName())
                 ->getParameters() as
             $parameter
         ) {
             if ($parameter->getName() === $point->getName()) {
-                return $parameter->getPosition();
+                $position = $parameter->getPosition();
+                break;
             }
         }
+
+        return $position;
     }
 
     /**
