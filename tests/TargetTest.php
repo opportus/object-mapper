@@ -13,6 +13,7 @@ namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Point\TargetPoint;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\Target;
@@ -153,7 +154,7 @@ class TargetTest extends TestCase
     /**
      * @depends testGetFqn
      */
-    public function testSetPointValueException(): void
+    public function testSetPointValueFirstInvalidArgumentException(): void
     {
         foreach ($this->provideTarget() as $providedTarget) {
             $providedTarget = $providedTarget[0];
@@ -176,7 +177,34 @@ class TargetTest extends TestCase
 
     /**
      * @dataProvider provideTarget
-     * @depends testSetPointValueException
+     * @depends testGetFqn
+     */
+    public function testSetPointValueSecondInvalidArgumentException(
+        $providedTarget
+    ): void {
+        $target = $this->buildTarget($providedTarget);
+
+        $point = $this->getMockForAbstractClass(
+            TargetPoint::class,
+            [],
+            '',
+            false,
+            true,
+            true,
+            ['getTargetFqn']
+        );
+
+        $point->method('getTargetFqn')->willReturn($target->getFqn());
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $target->setPointValue($point, 1);
+    }
+
+    /**
+     * @dataProvider provideTarget
+     * @depends testSetPointValueFirstInvalidArgumentException
+     * @depends testSetPointValueSecondInvalidArgumentException
      * @depends testGetFqn
      * @depends testGetInstance
      * @depends testGetObjectReflection
@@ -243,7 +271,8 @@ class TargetTest extends TestCase
 
     /**
      * @dataProvider provideTarget
-     * @depends testSetPointValueException
+     * @depends testSetPointValueFirstInvalidArgumentException
+     * @depends testSetPointValueSecondInvalidArgumentException
      * @depends testGetFqn
      */
     public function testOperateException($providedTarget): void
