@@ -340,7 +340,7 @@ and encapsulate your domain's mapping logic as subtype(s) of
 decouple these objects from your mapping logic... Indeed, when the mapped
 objects change, the mapping doesn't.
 
-For concrete example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php), [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php), and
+For best example of how to implement [`PathFinderInterface`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/PathFinderInterface.php), refer to the default [`StaticPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticPathFinder.php), [`StaticSourceToDynamicTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/StaticSourceToDynamicTargetPathFinder.php), and
 [`DynamicSourceToStaticTargetPathFinder`](https://github.com/opportus/object-mapper/blob/master/src/PathFinder/DynamicSourceToStaticTargetPathFinder.php)
 implementations.
 
@@ -349,24 +349,32 @@ implementations.
 ```php
 class MyPathFinder implements PathFinderInterface
 {
+    private $routeBuilder;
+
+    // ...
+
     public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
     {
         $source->getClassReflection();
         $target->getClassReflection();
         
-        $routes = new RouteCollection();
+        $routes = [];
 
-        // Custom mapping algorithm
+        /**
+         * Custom mapping algorithm based on source/target relection and
+         * possibly their data...
+         * 
+         * Use route builder to build routes...
+         */
 
-        return $routes;
+        return new RouteCollection($routes);
     }
 }
 
 // Pass to the map builder pathfinders you want it to compose the map of
 $map = $mapBuilder
     ->addStaticPathFinder()
-    ->addStaticSourceToDynamicTargetPathFinder()
-    ->addPathFinder(new MyPathFinder())
+    ->addPathFinder(new MyPathFinder($routeBuilder))
     ->getMap();
 
 // Use the map
