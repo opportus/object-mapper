@@ -7,3 +7,4 @@ phpunit*.phar
 .phpunit.result.cache
 .php_cs.cache
 MEMO.md
+coverage*
