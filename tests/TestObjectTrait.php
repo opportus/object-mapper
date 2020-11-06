@@ -11,6 +11,10 @@
 
 namespace Opportus\ObjectMapper\Tests;
 
+use Exception;
+use \ReflectionClass;
+use \stdClass;
+
 /**
  * The test object trait.
  *
@@ -24,39 +28,29 @@ trait TestObjectTrait
     private $b;
     private $c;
     private $d;
-    protected $e;
+    public $e;
     public $f;
     public $g;
     public $h;
-    public $i;
 
-    public function __construct(int $a = 22)
-    {
-        $this->a = $a;
-    }
-
-    public function getA(): int
+    public function getA()
     {
         return $this->a;
     }
 
-    public function setA(int $a)
+    public function setA($a)
     {
         $this->a = $a;
     }
 
-    public function getB($b = 0): int
+    public function getB()
     {
         return $this->b;
     }
 
-    public function setB(int $b)
+    public function setB($b)
     {
         $this->b = $b;
-    }
-
-    public function b()
-    {
     }
 
     public function getC()
@@ -64,61 +58,58 @@ trait TestObjectTrait
         return $this->c;
     }
 
-    public function setC(object $c)
+    public function setC($c)
     {
         $this->c = $c;
     }
 
-    public function getD(): array
+    public function getD()
     {
         return $this->d;
     }
 
-    public function setD(array $d)
+    public function setD($d)
     {
         $this->d = $d;
     }
 
-    protected function getE(): int
+    public function __call(string $dynamicMethodName, array $arguments)
     {
-        return $this->e;
-    }
+        if (\preg_match('/^get([A-Z]1)$/', $dynamicMethodName, $matches)) {
+            $property = \strtolower($matches[1]);
 
-    protected function setE(int $e)
-    {
-        $this->e = $e;
-    }
+            return $this->{$property};
+        } elseif (\preg_match('/^set([A-Z]1)$/', $dynamicMethodName, $matches)) {
+            $property = \strtolower($matches[1]);
 
-    private function getF(): int
-    {
-        return $this->f;
-    }
-
-    private function setF(int $f)
-    {
-        $this->f = $f;
-    }
-
-    public function getG(): int
-    {
-        return $this->g;
-    }
-
-    public function setH(int $h)
-    {
-        $this->h = $h;
-    }
-
-    public function __call(string $dynamicMethodName, array $parameters)
-    {
-        if ('getY' === $dynamicMethodName) {
-            return $this->y;
+            $this->{$property} = $arguments[0];
         }
+    }
 
-        if ('setY' === $dynamicMethodName) {
-            $this->y = $parameters[0];
+    private function initialize(
+        $a = null,
+        $b = null,
+        $c = null,
+        $d = null,
+        $e = null,
+        $f = null,
+        $g = null,
+        $h = null
+    ) {
+        $class = new ReflectionClass(self::class);
 
-            return;
+        foreach ($class->getProperties() as $property) {
+            $staticPropertyName = $property->getName();
+            $dynamicPropertyName = \sprintf('%s1', $property->getName());
+
+            if (isset(${$staticPropertyName})) {
+                $value = ${$staticPropertyName};
+            } else {
+                $value = 0;
+            }
+
+            $this->{$staticPropertyName} = $value;
+            $this->{$dynamicPropertyName} = $value;
         }
     }
 }

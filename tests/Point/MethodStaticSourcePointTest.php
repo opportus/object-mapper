@@ -16,9 +16,8 @@ use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The method static source point test.
@@ -27,10 +26,8 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodStaticSourcePointTest extends TestCase
+class MethodStaticSourcePointTest extends Test
 {
-    use TestDataProviderTrait;
-
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)$/';
 
     /**
@@ -38,7 +35,7 @@ class MethodStaticSourcePointTest extends TestCase
      */
     public function testConstruct(string $fqn): void
     {
-        $point = new MethodStaticSourcePoint($fqn);
+        $point = $this->createMethodStaticSourcePoint($fqn);
 
         static::assertInstanceOf(MethodStaticSourcePoint::class, $point);
         static::assertInstanceOf(StaticSourcePointInterface::class, $point);
@@ -53,7 +50,7 @@ class MethodStaticSourcePointTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MethodStaticSourcePoint($fqn);
+        $this->createMethodStaticSourcePoint($fqn);
     }
 
     /**
@@ -61,7 +58,7 @@ class MethodStaticSourcePointTest extends TestCase
      */
     public function testGetFqn(string $fqn): void
     {
-        $point = new MethodStaticSourcePoint($fqn);
+        $point = $this->createMethodStaticSourcePoint($fqn);
 
         static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
 
@@ -80,7 +77,7 @@ class MethodStaticSourcePointTest extends TestCase
      */
     public function testGetTargetFqn(string $fqn): void
     {
-        $point = new MethodStaticSourcePoint($fqn);
+        $point = $this->createMethodStaticSourcePoint($fqn);
 
         static::assertSame(
             $point->getSourceFqn(),
@@ -93,7 +90,7 @@ class MethodStaticSourcePointTest extends TestCase
      */
     public function testGetName(string $fqn): void
     {
-        $point = new MethodStaticSourcePoint($fqn);
+        $point = $this->createMethodStaticSourcePoint($fqn);
 
         static::assertSame($point->getName(), $this->getPointName($fqn));
     }
@@ -126,5 +123,11 @@ class MethodStaticSourcePointTest extends TestCase
         }
 
         return $matches[2];
+    }
+
+    private function createMethodStaticSourcePoint(
+        string $fqn
+    ): MethodStaticSourcePoint {
+        return new MethodStaticSourcePoint($fqn);
     }
 }

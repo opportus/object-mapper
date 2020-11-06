@@ -15,9 +15,9 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\IterableRecursionCheckPoint;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The iterable recursion check point test.
@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class IterableRecursionCheckPointTest extends TestCase
+class IterableRecursionCheckPointTest extends Test
 {
     /**
      * @dataProvider provideConstructArguments
@@ -38,7 +38,7 @@ class IterableRecursionCheckPointTest extends TestCase
         string $targetFqn,
         SourcePointInterface $targetIterableSourcePoint
     ): void {
-        $point = new IterableRecursionCheckPoint(
+        $point = $this->createIterableRecursionCheckPoint(
             $sourceFqn,
             $targetFqn,
             $targetIterableSourcePoint
@@ -57,7 +57,7 @@ class IterableRecursionCheckPointTest extends TestCase
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        new IterableRecursionCheckPoint(
+        $this->createIterableRecursionCheckPoint(
             $sourceFqn,
             $targetFqn,
             $targetSourcePoint
@@ -94,5 +94,17 @@ class IterableRecursionCheckPointTest extends TestCase
                 $this->getMockBuilder(SourcePointInterface::class)->getMock()
             ],
         ];
+    }
+
+    private function createIterableRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        SourcePointInterface $targetSourcePoint
+    ): IterableRecursionCheckPoint {
+        return new IterableRecursionCheckPoint(
+            $sourceFqn,
+            $targetFqn,
+            $targetSourcePoint
+        );
     }
 }

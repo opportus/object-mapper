@@ -15,9 +15,9 @@ use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\RecursionCheckPoint;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The recursion check point test.
@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RecursionCheckPointTest extends TestCase
+class RecursionCheckPointTest extends Test
 {
     /**
      * @dataProvider provideConstructArguments
@@ -38,7 +38,7 @@ class RecursionCheckPointTest extends TestCase
         string $targetFqn,
         SourcePointInterface $targetSourcePoint
     ): void {
-        $point = new RecursionCheckPoint(
+        $point = $this->createRecursionCheckPoint(
             $sourceFqn,
             $targetFqn,
             $targetSourcePoint
@@ -57,7 +57,7 @@ class RecursionCheckPointTest extends TestCase
     ): void {
         $this->expectException(InvalidArgumentException::class);
 
-        new RecursionCheckPoint(
+        $this->createRecursionCheckPoint(
             $sourceFqn,
             $targetFqn,
             $targetSourcePoint
@@ -70,7 +70,7 @@ class RecursionCheckPointTest extends TestCase
             [
                 TestObjectA::class,
                 TestObjectB::class,
-                $this->getMockBuilder(SourcePointInterface::class)->getMock()
+                $this->getMockBuilder(SourcePointInterface::class)->getMock(),
             ],
         ];
     }
@@ -81,18 +81,30 @@ class RecursionCheckPointTest extends TestCase
             [
                 TestObjectA::class,
                 'NonObject',
-                $this->getMockBuilder(SourcePointInterface::class)->getMock()
+                $this->getMockBuilder(SourcePointInterface::class)->getMock(),
             ],
             [
                 'NonObject',
                 TestObjectB::class,
-                $this->getMockBuilder(SourcePointInterface::class)->getMock()
+                $this->getMockBuilder(SourcePointInterface::class)->getMock(),
             ],
             [
                 'NonObject',
                 'NonObject',
-                $this->getMockBuilder(SourcePointInterface::class)->getMock()
+                $this->getMockBuilder(SourcePointInterface::class)->getMock(),
             ],
         ];
+    }
+
+    private function createRecursionCheckPoint(
+        string $sourceFqn,
+        string $targetFqn,
+        SourcePointInterface $targetSourcePoint
+    ): RecursionCheckPoint {
+        return new RecursionCheckPoint(
+            $sourceFqn,
+            $targetFqn,
+            $targetSourcePoint
+        );
     }
 }

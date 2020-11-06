@@ -15,13 +15,16 @@ use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\PathFinder\PathFinder;
+use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Route\RouteBuilder;
+use Opportus\ObjectMapper\Route\RouteCollection;
+use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\Source;
+use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\TestObjectA;
-use Opportus\ObjectMapper\Tests\TestObjectB;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\TargetInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use ReflectionClass;
 use stdClass;
 
@@ -32,12 +35,58 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PathFinderTest extends TestCase
+abstract class PathFinderTest extends Test
 {
-    public function testGetRoutesFirstException(): void
+    public function testConstruct(): void
     {
-        $source = new Source(new TestObjectA());
-        $target = new Target(new TestObjectB());
+        $pathFinder = $this->createPathFinder();
+
+        static::assertInstanceOf(PathFinderInterface::class, $pathFinder);
+        static::assertInstanceOf(PathFinder::class, $pathFinder);
+    }
+
+    /**
+     * @dataProvider provideObjects
+     */
+    public function testGetRoutes(object $providedSource, $providedTarget): void
+    {
+        $pathFinder = $this->createPathFinder();
+
+        $source = new Source($providedSource);
+        $target = new Target($providedTarget);
+
+        $expectedRoutes = [];
+
+        $referencePoints = $this->getReferencePoints($source, $target);
+
+        foreach ($referencePoints as $referencePoint) {
+            $expectedRoute = $this->getReferencePointRoute(
+                $source,
+                $target,
+                $referencePoint
+            );
+
+            if (null === $expectedRoute) {
+                continue;
+            }
+
+            $expectedRoutes[] = $expectedRoute;
+        }
+
+        $routes = $pathFinder->getRoutes($source, $target);
+
+        static::assertEquals(new RouteCollection($expectedRoutes), $routes);
+    }
+
+    /**
+     * @dataProvider provideObjects
+     */
+    public function testGetRoutesFirstException(
+        object $providedSource,
+        $providedTarget
+    ): void {
+        $source = new Source($providedSource);
+        $target = new Target($providedTarget);
 
         $pathFinder = $this->getMockForAbstractClass(
             PathFinder::class,
@@ -53,10 +102,15 @@ class PathFinderTest extends TestCase
         $pathFinder->getRoutes($source, $target);
     }
 
-    public function testGetRoutesSecondException(): void
-    {
-        $source = new Source(new TestObjectA());
-        $target = new Target(new TestObjectB());
+    /**
+     * @dataProvider provideObjects
+     */
+    public function testGetRoutesSecondException(
+        object $providedSource,
+        $providedTarget
+    ): void {
+        $source = new Source($providedSource);
+        $target = new Target($providedTarget);
 
         $pathFinder = $this->getMockForAbstractClass(
             PathFinder::class,
@@ -75,7 +129,37 @@ class PathFinderTest extends TestCase
         $pathFinder->getRoutes($source, $target);
     }
 
-    public function testGetReferencePointRouteException(): void
+    /**
+     * @dataProvider provideObjects
+     */
+    public function testGetReferencePointRouteException(
+        object $providedSource,
+        $providedTarget
+    ): void {
+        $pathFinder = $this->createPathFinder();
+
+        $source = new Source($providedSource);
+        $target = new Target($providedTarget);
+
+        $pathFinderReflection = new ReflectionClass($pathFinder);
+        $pathFinderTestMethodReflection = $pathFinderReflection
+            ->getMethod('getReferencePointRoute');
+        
+        $pathFinderTestMethodReflection->setAccessible(true);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $pathFinderTestMethodReflection->invokeArgs(
+            $pathFinder,
+            [
+                $source,
+                $target,
+                'test',
+            ]
+        );
+    }
+
+    public function testGetPointFqnFromReflection(): void
     {
         $pathFinder = $this->getMockBuilder(PathFinder::class)
             ->disableOriginalConstructor()
@@ -94,4 +178,17 @@ class PathFinderTest extends TestCase
             [new ReflectionClass(stdClass::class)]
         );
     }
+
+    abstract protected function getReferencePoints(
+        SourceInterface $source,
+        TargetInterface $target
+    ): array;
+
+    abstract protected function getReferencePointRoute(
+        SourceInterface $source,
+        TargetInterface $target,
+        $referencePoint
+    ): ?RouteInterface;
+
+    abstract protected function createPathFinder(): PathFinder;
 }

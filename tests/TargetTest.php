@@ -18,7 +18,6 @@ use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\Target;
 use Opportus\ObjectMapper\TargetInterface;
-use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionObject;
 
@@ -29,16 +28,14 @@ use ReflectionObject;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class TargetTest extends TestCase
+class TargetTest extends Test
 {
-    use TestDataProviderTrait;
-
     /**
      * @dataProvider provideTarget
      */
     public function testConstruct($providedTarget): void
     {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         static::assertInstanceOf(TargetInterface::class, $target);
     }
@@ -54,7 +51,7 @@ class TargetTest extends TestCase
         ) {
             $this->expectException(InvalidArgumentException::class);
 
-            $this->buildTarget($providedTarget);
+            $this->createTarget($providedTarget);
         }
 
         if (
@@ -63,7 +60,7 @@ class TargetTest extends TestCase
         ) {
             $this->expectException(InvalidArgumentException::class);
 
-            $this->buildTarget($providedTarget);
+            $this->createTarget($providedTarget);
         }
     }
 
@@ -72,7 +69,7 @@ class TargetTest extends TestCase
      */
     public function testGetFqn($providedTarget): void
     {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         $targetClass = \is_object($providedTarget) ?
             \get_class($providedTarget) : $providedTarget;
@@ -85,7 +82,7 @@ class TargetTest extends TestCase
      */
     public function testGetClassReflection($providedTarget): void
     {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         $targetClassReflection1 = $target->getClassReflection();
         $targetClassReflection2 = $target->getClassReflection();
@@ -112,7 +109,7 @@ class TargetTest extends TestCase
      */
     public function testGetObjectReflection($providedTarget): void
     {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         $targetObjectReflection1 = $target->getObjectReflection();
         $targetObjectReflection2 = $target->getObjectReflection();
@@ -142,7 +139,7 @@ class TargetTest extends TestCase
      */
     public function testGetInstance($providedTarget): void
     {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         if (\is_string($providedTarget)) {
             static::assertNull($target->getInstance());
@@ -159,7 +156,7 @@ class TargetTest extends TestCase
         foreach ($this->provideTarget() as $providedTarget) {
             $providedTarget = $providedTarget[0];
 
-            $target = $this->buildTarget($providedTarget);
+            $target = $this->createTarget($providedTarget);
 
             foreach ($this->provideTargetPoint() as $point) {
                 $point = $point[0];
@@ -182,7 +179,7 @@ class TargetTest extends TestCase
     public function testSetPointValueSecondInvalidArgumentException(
         $providedTarget
     ): void {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         $point = $this->getMockForAbstractClass(
             TargetPoint::class,
@@ -211,7 +208,7 @@ class TargetTest extends TestCase
      */
     public function testOperate($providedTarget): void
     {
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         foreach ($this->provideTargetPoint() as $point) {
             $point = $point[0];
@@ -230,7 +227,7 @@ class TargetTest extends TestCase
             static::assertIsObject($target->getObjectReflection());
         }
 
-        $source = $this->buildSource($target->getInstance());
+        $source = $this->createSource($target->getInstance());
         $setPoints = [];
 
         foreach ($this->provideSourcePoint() as $point) {
@@ -263,7 +260,8 @@ class TargetTest extends TestCase
 
             $propertyReflection->setAccessible(true);
 
-            static::assertNull(
+            static::assertSame(
+                0,
                 $propertyReflection->getValue($source->getInstance())
             );
         }
@@ -281,7 +279,7 @@ class TargetTest extends TestCase
             $originalTargetSnapshot = \serialize($providedTarget);
         }
 
-        $target = $this->buildTarget($providedTarget);
+        $target = $this->createTarget($providedTarget);
 
         foreach ($this->provideTargetPoint() as $point) {
             $point = $point[0];
@@ -293,11 +291,12 @@ class TargetTest extends TestCase
             $target->setPointValue($point, 1);
         }
 
-        if ($target->getFqn() === TestObjectA::class) {
-            $target->setPointValue($this->provideTargetPoint()[3][0], null);
-        } elseif ($target->getFqn() === TestObjectB::class) {
-            $target->setPointValue($this->provideTargetPoint()[9][0], null);
-        }
+        $targetReflection = new ReflectionClass($target);
+        $pointValuesProperty = $targetReflection->getProperty('pointValues');
+        $pointValuesProperty->setAccessible(true);
+        $pointValues = $pointValuesProperty->getValue($target);
+        $pointValues['static_method_parameters']['non_existing_method'] = [];
+        $pointValuesProperty->setValue($target, $pointValues);
 
         if (\is_object($providedTarget)) {
             try {
@@ -317,12 +316,12 @@ class TargetTest extends TestCase
         }
     }
 
-    private function buildTarget($target): Target
+    private function createTarget($target): Target
     {
         return new Target($target);
     }
 
-    private function buildSource(object $source): SourceInterface
+    private function createSource(object $source): SourceInterface
     {
         return new Source($source);
     }

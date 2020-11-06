@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Tests\Exception;
 
 use Opportus\ObjectMapper\Exception\Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 
 /**
  * The invalid argument exception test.
@@ -22,19 +22,25 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class InvalidArgumentExceptionTest extends TestCase
+class InvalidArgumentExceptionTest extends Test
 {
     public function testConstruct(): void
     {
-        $exception = new InvalidArgumentException(1);
+        $exception = $this->createInvalidArgumentException(1);
 
         static::assertInstanceOf(Exception::class, $exception);
     }
 
     public function testGetArgument(): void
     {
-        $exception = new InvalidArgumentException(1);
+        $exception = $this->createInvalidArgumentException(1);
 
         static::assertSame(1, $exception->getArgument());
+    }
+
+    private function createInvalidArgumentException(
+        int $argument
+    ): InvalidArgumentException {
+        return new InvalidArgumentException($argument);
     }
 }

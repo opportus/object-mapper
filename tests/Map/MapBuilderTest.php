@@ -15,13 +15,12 @@ use Opportus\ObjectMapper\Map\Map;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
-use Opportus\ObjectMapper\Point\PointFactory;
+use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 
 /**
  * The map builder test.
@@ -30,20 +29,18 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MapBuilderTest extends TestCase
+class MapBuilderTest extends Test
 {
-    use TestDataProviderTrait;
-
     public function testConstruct(): void
     {
-        $mapBuilder = $this->buildMapBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         static::assertInstanceOf(MapBuilderInterface::class, $mapBuilder);
     }
 
     public function testGetRouteBuilder(): void
     {
-        $mapBuilder = $this->buildMapBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $mapBuilder->getRouteBuilder();
 
@@ -56,8 +53,7 @@ class MapBuilderTest extends TestCase
      */
     public function testAddRoute(RouteInterface $route): void
     {
-        $mapBuilder1 = $this->buildMapBuilder();
-
+        $mapBuilder1 = $this->createMapBuilder();
         $mapBuilder2 = $mapBuilder1->addRoute($route);
 
         static::assertInstanceOf(MapBuilder::class, $mapBuilder2);
@@ -66,16 +62,12 @@ class MapBuilderTest extends TestCase
 
     public function testAddRoutes(): void
     {
-        $mapBuilder1 = $this->buildMapBuilder();
+        $mapBuilder1 = $this->createMapBuilder();
 
         $routes = [];
 
-        foreach ($this->provideRoutePoints() as $routePoints) {
-            $routes[] = new Route(
-                $routePoints[0],
-                $routePoints[1],
-                $routePoints[2]
-            );
+        foreach ($this->provideRoute() as $route) {
+            $routes[] = $route[0];
         }
 
         $routes = new RouteCollection($routes);
@@ -88,10 +80,9 @@ class MapBuilderTest extends TestCase
 
     public function testAddPathFinder(): void
     {
-        $mapBuilder1 = $this->buildMapBuilder();
-
+        $mapBuilder1 = $this->createMapBuilder();
         $mapBuilder2 = $mapBuilder1->addPathFinder(
-            $this->getMockBuilder(PathFinderInterface::class)->getMock()
+            $this->createPathFinder()
         );
 
         static::assertInstanceOf(MapBuilder::class, $mapBuilder2);
@@ -100,8 +91,7 @@ class MapBuilderTest extends TestCase
 
     public function testAddStaticPathFinder(): void
     {
-        $mapBuilder1 = $this->buildMapBuilder();
-
+        $mapBuilder1 = $this->createMapBuilder();
         $mapBuilder2 = $mapBuilder1->addStaticPathFinder();
 
         static::assertInstanceOf(MapBuilder::class, $mapBuilder2);
@@ -110,8 +100,7 @@ class MapBuilderTest extends TestCase
 
     public function testAddStaticSourceToDynamicTargetPathFinder(): void
     {
-        $mapBuilder1 = $this->buildMapBuilder();
-
+        $mapBuilder1 = $this->createMapBuilder();
         $mapBuilder2 = $mapBuilder1->addStaticSourceToDynamicTargetPathFinder();
 
         static::assertInstanceOf(MapBuilder::class, $mapBuilder2);
@@ -120,8 +109,7 @@ class MapBuilderTest extends TestCase
 
     public function testAddDynamicSourceToStaticTargetPathFinder(): void
     {
-        $mapBuilder1 = $this->buildMapBuilder();
-
+        $mapBuilder1 = $this->createMapBuilder();
         $mapBuilder2 = $mapBuilder1->addDynamicSourceToStaticTargetPathFinder();
 
         static::assertInstanceOf(MapBuilder::class, $mapBuilder2);
@@ -130,32 +118,17 @@ class MapBuilderTest extends TestCase
 
     public function testGetMap(): void
     {
-        $mapBuilder = $this->buildMapBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
-        foreach ($this->provideRoutePoints() as $routePoints) {
-            $mapBuilder = $mapBuilder->addRoute(new Route(
-                $routePoints[0],
-                $routePoints[1],
-                $routePoints[2]
-            ));
+        foreach ($this->provideRoute() as $route) {
+            $mapBuilder = $mapBuilder->addRoute($route[0]);
         }
 
         $map = $mapBuilder
-            ->addPathFinder(
-                $this->getMockBuilder(PathFinderInterface::class)->getMock(),
-                20
-            )
-            ->addPathFinder(
-                $this->getMockBuilder(PathFinderInterface::class)->getMock(),
-                30
-            )
-            ->addPathFinder(
-                $this->getMockBuilder(PathFinderInterface::class)->getMock(),
-                10
-            )
-            ->addPathFinder(
-                $this->getMockBuilder(PathFinderInterface::class)->getMock()
-            )
+            ->addPathFinder($this->createPathFinder(), 20)
+            ->addPathFinder($this->createPathFinder(), 30)
+            ->addPathFinder($this->createPathFinder(), 10)
+            ->addPathFinder($this->createPathFinder())
             ->addStaticPathFinder(40)
             ->addStaticPathFinder()
             ->addStaticSourceToDynamicTargetPathFinder(10)
@@ -170,12 +143,8 @@ class MapBuilderTest extends TestCase
         static::assertInstanceOf(Map::class, $map);
     }
 
-    private function buildMapBuilder(): MapBuilder
+    private function createPathFinder(): PathFinderInterface
     {
-        $pointFactory = new PointFactory();
-        $routeBuilder = new RouteBuilder($pointFactory);
-        $mapBuilder = new MapBuilder($routeBuilder);
-
-        return $mapBuilder;
+        return new StaticPathFinder($this->createRouteBuilder());
     }
 }

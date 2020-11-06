@@ -16,9 +16,8 @@ use Opportus\ObjectMapper\Point\DynamicTargetPointInterface;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The method parameter dynamic target point test.
@@ -27,10 +26,8 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodParameterDynamicTargetPointTest extends TestCase
+class MethodParameterDynamicTargetPointTest extends Test
 {
-    use TestDataProviderTrait;
-
     private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)::\$([A-Za-z0-9_]+)$/';
 
     /**
@@ -38,7 +35,7 @@ class MethodParameterDynamicTargetPointTest extends TestCase
      */
     public function testConstruct(string $fqn): void
     {
-        $point = new MethodParameterDynamicTargetPoint($fqn);
+        $point = $this->createMethodParameterDynamicTargetPoint($fqn);
 
         static::assertInstanceOf(MethodParameterDynamicTargetPoint::class, $point);
         static::assertInstanceOf(DynamicTargetPointInterface::class, $point);
@@ -53,7 +50,7 @@ class MethodParameterDynamicTargetPointTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MethodParameterDynamicTargetPoint($fqn);
+        $this->createMethodParameterDynamicTargetPoint($fqn);
     }
 
     /**
@@ -61,7 +58,7 @@ class MethodParameterDynamicTargetPointTest extends TestCase
      */
     public function testGetFqn(string $fqn): void
     {
-        $point = new MethodParameterDynamicTargetPoint($fqn);
+        $point = $this->createMethodParameterDynamicTargetPoint($fqn);
 
         static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
 
@@ -81,7 +78,7 @@ class MethodParameterDynamicTargetPointTest extends TestCase
      */
     public function testGetTargetFqn(string $fqn): void
     {
-        $point = new MethodParameterDynamicTargetPoint($fqn);
+        $point = $this->createMethodParameterDynamicTargetPoint($fqn);
 
         static::assertSame(
             $point->getTargetFqn(),
@@ -94,7 +91,7 @@ class MethodParameterDynamicTargetPointTest extends TestCase
      */
     public function testGetName(string $fqn): void
     {
-        $point = new MethodParameterDynamicTargetPoint($fqn);
+        $point = $this->createMethodParameterDynamicTargetPoint($fqn);
 
         static::assertSame($point->getName(), $this->getPointName($fqn));
     }
@@ -104,7 +101,7 @@ class MethodParameterDynamicTargetPointTest extends TestCase
      */
     public function testGetMethodName(string $fqn): void
     {
-        $point = new MethodParameterDynamicTargetPoint($fqn);
+        $point = $this->createMethodParameterDynamicTargetPoint($fqn);
 
         static::assertSame(
             $point->getMethodName(),
@@ -155,5 +152,11 @@ class MethodParameterDynamicTargetPointTest extends TestCase
         }
 
         return $matches[3];
+    }
+
+    private function createMethodParameterDynamicTargetPoint(
+        string $fqn
+    ): MethodParameterDynamicTargetPoint {
+        return new MethodParameterDynamicTargetPoint($fqn);
     }
 }

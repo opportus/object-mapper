@@ -24,12 +24,11 @@ use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Point\RecursionCheckPoint;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
 use PHPUnit\Framework\ExpectationFailedException;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The point factory test.
@@ -38,15 +37,8 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PointFactoryTest extends TestCase
+class PointFactoryTest extends Test
 {
-    use TestDataProviderTrait;
-
-    private function createPointFactory(): PointFactoryInterface
-    {
-        return new PointFactory();
-    }
-
     public function testConstruct(): void
     {
         $pointFactory = $this->createPointFactory();

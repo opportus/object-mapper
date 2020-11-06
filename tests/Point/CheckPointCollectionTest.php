@@ -20,7 +20,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\ImmutableCollection;
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 use stdClass;
 
 /**
@@ -30,14 +30,14 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class CheckPointCollectionTest extends TestCase
+class CheckPointCollectionTest extends Test
 {
     /**
      * @dataProvider provideConstructArguments
      */
     public function testConstruct(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         static::assertInstanceOf(
             CheckPointCollection::class,
@@ -105,7 +105,7 @@ class CheckPointCollectionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new CheckPointCollection($checkPoints);
+        $this->createCheckPointCollection($checkPoints);
     }
 
     /**
@@ -113,7 +113,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testToArray(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition=> $checkPoint) {
             static::assertArrayHasKey(
@@ -144,7 +144,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testGetIterator(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         $iterator = $checkPointCollection->getIterator();
 
@@ -173,7 +173,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testCount(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         static::assertSame(
             \count($checkPoints),
@@ -186,7 +186,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testOffsetExists(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
             static::assertTrue(
@@ -202,7 +202,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testOffsetGet(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
             static::assertSame(
@@ -217,7 +217,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testOffsetSet(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
             $this->expectException(InvalidOperationException::class);
@@ -231,7 +231,7 @@ class CheckPointCollectionTest extends TestCase
      */
     public function testOffsetUnset(array $checkPoints): void
     {
-        $checkPointCollection = new CheckPointCollection($checkPoints);
+        $checkPointCollection = $this->createCheckPointCollection($checkPoints);
 
         foreach ($checkPoints as $checkPointPosition => $checkPoint) {
             $this->expectException(InvalidOperationException::class);
@@ -283,5 +283,12 @@ class CheckPointCollectionTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    private function createCheckPointCollection(
+        array $checkPoints
+    ): CheckPointCollection
+    {
+        return new CheckPointCollection($checkPoints);
     }
 }

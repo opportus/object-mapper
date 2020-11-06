@@ -20,7 +20,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\ImmutableCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 use stdClass;
 
 /**
@@ -30,14 +30,14 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PathFinderCollectionTest extends TestCase
+class PathFinderCollectionTest extends Test
 {
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testConstruct(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         static::assertInstanceOf(
             PathFinderCollection::class,
@@ -74,24 +74,24 @@ class PathFinderCollectionTest extends TestCase
             \count($pathFinderCollection)
         );
 
-        foreach ($pathFinders as $index => $pathFinder) {
+        foreach ($pathFinders as $key => $pathFinder) {
             static::assertArrayHasKey(
-                $index,
+                $key,
                 $pathFinderCollection
             );
 
             static::assertSame(
                 $pathFinder,
-                $pathFinderCollection[$index]
+                $pathFinderCollection[$key]
             );
         }
 
         $i = 1;
 
-        foreach ($pathFinderCollection as $index => $pathFinder) {
+        foreach ($pathFinderCollection as $key => $pathFinder) {
             static::assertSame(
                 $i*10,
-                $index
+                $key
             );
 
             $i++;
@@ -99,21 +99,21 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructInvalidArguments
+     * @dataProvider provideInvalidConstructArgument
      */
     public function testConstructException(array $pathFinders): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new PathFinderCollection($pathFinders);
+        $this->createPathFinderCollection($pathFinders);
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testToArray(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         foreach ($pathFinders as $pathFinderPriority => $pathFinder) {
             static::assertArrayHasKey(
@@ -129,10 +129,10 @@ class PathFinderCollectionTest extends TestCase
 
         $i = 1;
 
-        foreach ($pathFinderCollection->toArray() as $index => $pathFinder) {
+        foreach ($pathFinderCollection->toArray() as $key => $pathFinder) {
             static::assertSame(
                 $i*10,
-                $index
+                $key
             );
 
             $i++;
@@ -140,11 +140,11 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testGetIterator(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         $iterator = $pathFinderCollection->getIterator();
 
@@ -158,10 +158,10 @@ class PathFinderCollectionTest extends TestCase
 
         $i = 1;
 
-        foreach ($pathFinderCollection->toArray() as $index => $pathFinder) {
+        foreach ($pathFinderCollection->toArray() as $key => $pathFinder) {
             static::assertSame(
                 $i*10,
-                $index
+                $key
             );
 
             $i++;
@@ -169,11 +169,11 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testCount(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         static::assertSame(
             \count($pathFinders),
@@ -182,11 +182,11 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testOffsetExists(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         foreach ($pathFinders as $pathFinderPriority => $pathFinder) {
             static::assertTrue(
@@ -198,11 +198,11 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testOffsetGet(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         foreach ($pathFinders as $pathFinderPriority => $pathFinder) {
             static::assertSame(
@@ -213,11 +213,11 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testOffsetSet(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         foreach ($pathFinders as $pathFinderPriority => $pathFinder) {
             $this->expectException(InvalidOperationException::class);
@@ -227,11 +227,11 @@ class PathFinderCollectionTest extends TestCase
     }
 
     /**
-     * @dataProvider provideConstructArguments
+     * @dataProvider provideConstructArgument
      */
     public function testOffsetUnset(array $pathFinders): void
     {
-        $pathFinderCollection = new PathFinderCollection($pathFinders);
+        $pathFinderCollection = $this->createPathFinderCollection($pathFinders);
 
         foreach ($pathFinders as $pathFinderPriority => $pathFinder) {
             $this->expectException(InvalidOperationException::class);
@@ -240,7 +240,7 @@ class PathFinderCollectionTest extends TestCase
         }
     }
 
-    public function provideConstructArguments(): array
+    public function provideConstructArgument(): array
     {
         return [
             [
@@ -260,7 +260,7 @@ class PathFinderCollectionTest extends TestCase
         ];
     }
 
-    public function provideConstructInvalidArguments(): array
+    public function provideInvalidConstructArgument(): array
     {
         return [
             [
@@ -280,8 +280,14 @@ class PathFinderCollectionTest extends TestCase
                         ->getMock(),
                     1 => $this->getMockBuilder(PathFinderInterface::class)
                         ->getMock(),
-                ]
-            ]
+                ],
+            ],
         ];
+    }
+
+    private function createPathFinderCollection(
+        array $pathFinders
+    ): PathFinderCollection {
+        return new PathFinderCollection($pathFinders);
     }
 }

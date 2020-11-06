@@ -16,8 +16,7 @@ use Opportus\ObjectMapper\Point\SourcePointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 
 /**
  * The route test.
@@ -26,10 +25,8 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RouteTest extends TestCase
+class RouteTest extends Test
 {
-    use TestDataProviderTrait;
-
     /**
      * @dataProvider provideRoutePoints
      */
@@ -38,7 +35,7 @@ class RouteTest extends TestCase
         TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
-        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
+        $route = $this->createRoute($sourcePoint, $targetPoint, $checkPoints);
 
         static::assertInstanceOf(RouteInterface::class, $route);
     }
@@ -51,7 +48,7 @@ class RouteTest extends TestCase
         TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
-        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
+        $route = $this->createRoute($sourcePoint, $targetPoint, $checkPoints);
 
         static::assertSame(
             \sprintf('%s=>%s', $sourcePoint->getFqn(), $targetPoint->getFqn()),
@@ -67,7 +64,7 @@ class RouteTest extends TestCase
         TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
-        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
+        $route = $this->createRoute($sourcePoint, $targetPoint, $checkPoints);
 
         static::assertInstanceOf(
             \get_class($sourcePoint),
@@ -88,7 +85,7 @@ class RouteTest extends TestCase
         TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
-        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
+        $route = $this->createRoute($sourcePoint, $targetPoint, $checkPoints);
 
         static::assertInstanceOf(
             \get_class($targetPoint),
@@ -109,9 +106,17 @@ class RouteTest extends TestCase
         TargetPointInterface $targetPoint,
         CheckPointCollection $checkPoints
     ): void {
-        $route = new Route($sourcePoint, $targetPoint, $checkPoints);
+        $route = $this->createRoute($sourcePoint, $targetPoint, $checkPoints);
 
         static::assertCount(\count($checkPoints), $route->getCheckPoints());
         static::assertSame($checkPoints, $route->getCheckPoints());
+    }
+
+    private function createRoute(
+        SourcePointInterface $sourcePoint,
+        TargetPointInterface $targetPoint,
+        CheckPointCollection $checkPoints
+    ): Route {
+        return new Route($sourcePoint, $targetPoint, $checkPoints);
     }
 }

@@ -11,19 +11,13 @@
 
 namespace Opportus\ObjectMapper\Tests\PathFinder;
 
-use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\PathFinder\StaticSourceToDynamicTargetPathFinder;
 use Opportus\ObjectMapper\PathFinder\PathFinder;
-use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
-use Opportus\ObjectMapper\Point\PointFactory;
-use Opportus\ObjectMapper\Route\RouteBuilder;
-use Opportus\ObjectMapper\Route\RouteCollection;
-use Opportus\ObjectMapper\Source;
-use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\TestObjectA;
-use Opportus\ObjectMapper\Tests\TestObjectB;
-use PHPUnit\Framework\TestCase;
-use ReflectionClass;
+use Opportus\ObjectMapper\PathFinder\StaticSourceToDynamicTargetPathFinder;
+use Opportus\ObjectMapper\Route\RouteInterface;
+use Opportus\ObjectMapper\SourceInterface;
+use Opportus\ObjectMapper\TargetInterface;
+use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * The static source to dynamic target path finder test.
@@ -32,101 +26,99 @@ use ReflectionClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class StaticSourceToDynamicTargetPathFinderTest extends TestCase
+class StaticSourceToDynamicTargetPathFinderTest extends PathFinderTest
 {
-    public function testConstruct(): void
-    {
-        $pathFinder = $this->buildPathFinder();
-
-        static::assertInstanceOf(PathFinderInterface::class, $pathFinder);
-        static::assertInstanceOf(PathFinder::class, $pathFinder);
-    }
-
-    public function testGetRoutes(): void
-    {
-        $pathFinder = $this->buildPathFinder();
-
-        $source = new Source(new TestObjectA());
-        $target = new Target(TestObjectB::class);
-
-        $routes = $pathFinder->getRoutes($source, $target);
-
-        $expectedRoutes = $this->getExpectedRoutes();
-
-        static::assertEquals($expectedRoutes, $routes);
-    }
-
-    public function testGetReferencePointRouteException(): void
-    {
-        $pathFinder = $this->buildPathFinder();
-
-        $source = new Source(new TestObjectA());
-        $target = new Target(TestObjectB::class);
-
-        $pathFinderReflection = new ReflectionClass($pathFinder);
-        $pathFinderTestMethodReflection = $pathFinderReflection
-            ->getMethod('getReferencePointRoute');
-        
-        $pathFinderTestMethodReflection->setAccessible(true);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $pathFinderTestMethodReflection->invokeArgs(
-            $pathFinder,
-            [
-                $source,
-                $target,
-                'test',
-            ]
-        );
-    }
-
-    private function buildPathFinder(): StaticSourceToDynamicTargetPathFinder
+    protected function createPathFinder(): PathFinder
     {
         return new StaticSourceToDynamicTargetPathFinder(
-            new RouteBuilder(new PointFactory())
+            $this->createRouteBuilder()
         );
     }
 
-    private function getExpectedRoutes(): RouteCollection
-    {
-        $routeBuilder = new RouteBuilder(new PointFactory());
+    protected function getReferencePoints(
+        SourceInterface $source,
+        TargetInterface $target
+    ): array {
+        $sourceClassReflection = $source->getClassReflection();
 
-        $routes = [];
+        $propertyBlackList = [];
+        $sourcePointReflections = [];
 
-        $routes[0] = $routeBuilder
-            ->setSourcePoint(\sprintf(
-                '#%s::getJ()',
-                TestObjectA::class
-            ))
-            ->setTargetPoint(\sprintf(
-                '~%s::$j',
-                TestObjectB::class
-            ))
+        foreach (
+            $sourceClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
+            $methodReflection
+        ) {
+            if (\strpos($methodReflection->getName(), 'get') !== 0) {
+                continue;
+            }
+
+            if ($methodReflection->getNumberOfRequiredParameters() !== 0) {
+                continue;
+            }
+
+            $propertyBlackList[] = \lcfirst(\substr($methodReflection->getName(), 3));
+
+            $sourcePointReflections[] = $methodReflection;
+        }
+
+        foreach (
+            $sourceClassReflection->getProperties(ReflectionProperty::IS_PUBLIC) as
+            $propertyReflection
+        ) {
+            if (\in_array($propertyReflection->getName(), $propertyBlackList)) {
+                continue;
+            }
+
+            $sourcePointReflections[] = $propertyReflection;
+        }
+
+        return $sourcePointReflections;
+    }
+
+    protected function getReferencePointRoute(
+        SourceInterface $source,
+        TargetInterface $target,
+        $referencePoint
+    ): ?RouteInterface {
+        $sourcePointReflection = $referencePoint;
+        $targetClassReflection = $target->getClassReflection();
+
+        if ($sourcePointReflection instanceof ReflectionProperty) {
+            $targetPointName = $sourcePointReflection->getName();
+        } elseif ($sourcePointReflection instanceof ReflectionMethod) {
+            $targetPointName = \lcfirst(\substr(
+                $sourcePointReflection->getName(),
+                3
+            ));
+        }
+
+        if ($targetClassReflection->hasProperty($targetPointName)) {
+            return null;
+        }
+
+        if ($sourcePointReflection instanceof ReflectionProperty) {
+            $sourcePointFqn = \sprintf(
+                '#%s::$%s',
+                $sourcePointReflection->getDeclaringClass()->getName(),
+                $sourcePointReflection->getName()
+            );
+        } elseif ($sourcePointReflection instanceof ReflectionMethod) {
+            $sourcePointFqn = \sprintf(
+                '#%s::%s()',
+                $sourcePointReflection->getDeclaringClass()->getName(),
+                $sourcePointReflection->getName()
+            );
+        }
+
+        $targetPointFqn = \sprintf(
+            '~%s::$%s',
+            $targetClassReflection->getName(),
+            $targetPointName
+        );
+
+        return $this->createRouteBuilder()
+            ->setStaticSourcePoint($sourcePointFqn)
+            ->setDynamicTargetPoint($targetPointFqn)
             ->getRoute();
-
-        $routes[1] = $routeBuilder
-            ->setSourcePoint(\sprintf(
-                '#%s::getM()',
-                TestObjectA::class
-            ))
-            ->setTargetPoint(\sprintf(
-                '~%s::$m',
-                TestObjectB::class
-            ))
-            ->getRoute();
-
-        $routes[2] = $routeBuilder
-            ->setSourcePoint(\sprintf(
-                '#%s::$n',
-                TestObjectA::class
-            ))
-            ->setTargetPoint(\sprintf(
-                '~%s::$n',
-                TestObjectB::class
-            ))
-            ->getRoute();
-
-        return new RouteCollection($routes);
     }
 }

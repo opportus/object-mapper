@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Tests\Exception;
 
 use \Exception as BaseException;
 use Opportus\ObjectMapper\Exception\Exception;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 
 /**
  * The exception test.
@@ -22,12 +22,17 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class ExceptionTest extends TestCase
+class ExceptionTest extends Test
 {
     public function testConstruct(): void
     {
-        $exception = new Exception();
+        $exception = $this->createException();
 
         static::assertInstanceOf(BaseException::class, $exception);
+    }
+
+    private function createException(): Exception
+    {
+        return new Exception();
     }
 }

@@ -13,16 +13,9 @@ namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Point\CheckPointCollection;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
-use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
-use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
-use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
-use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
 use Opportus\ObjectMapper\Point\PointFactory;
-use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyDynamicTargetPoint;
-use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
-use Opportus\ObjectMapper\Point\PropertyStaticTargetPoint;
 use Opportus\ObjectMapper\Route\Route;
+use ReflectionClass;
 
 /**
  * The test data provider trait.
@@ -33,9 +26,30 @@ use Opportus\ObjectMapper\Route\Route;
  */
 trait TestDataProviderTrait
 {
+    public function provideObjects(): array
+    {
+        $sources = $this->provideSource();
+        $targets = $this->provideTarget();
+
+        $objects = [];
+
+        foreach ($sources as $key=> $source) {
+            $objects[$key][0] = $source[0];
+            $objects[$key][1] = $targets[$key][0];
+        }
+
+        return $objects;
+    }
+
     public function provideSource(): array
     {
         return [
+            [
+                new TestObjectA(),
+            ],
+            [
+                new TestObjectB(),
+            ],
             [
                 new TestObjectA(),
             ],
@@ -49,16 +63,16 @@ trait TestDataProviderTrait
     {
         return [
             [
-                new TestObjectA(),
-            ],
-            [
                 new TestObjectB(),
             ],
             [
-                TestObjectA::class,
+                new TestObjectA(),
             ],
             [
                 TestObjectB::class,
+            ],
+            [
+                TestObjectA::class,
             ],
         ];
     }
@@ -99,293 +113,31 @@ trait TestDataProviderTrait
         return $routes;
     }
 
+    /**************************************************************************
+     * 
+     * POINTS
+     * 
+     *************************************************************************/
+
     public function provideRoutePoints(): array
     {
-        return [
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyStaticSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
+        $sourcePoints = $this->provideSourcePoint();
+        $targetPoints = $this->provideTargetPoint();
 
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodStaticSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
+        $points = [];
 
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new PropertyDynamicSourcePoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
+        foreach ($sourcePoints as $key => $sourcePoint) {
+            $points[$key][0] = $sourcePoint[0];
+            $points[$key][1] = $targetPoints[$key][0];
 
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                )),
-                new PropertyStaticTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                )),
-                new MethodParameterStaticTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setA',
-                    'a'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                )),
-                new PropertyDynamicTargetPoint(\sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-            [
-                new MethodDynamicSourcePoint(\sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                )),
-                new MethodParameterDynamicTargetPoint(\sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setZ',
-                    'z'
-                )),
-                new CheckPointCollection([
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                    $this->getMockBuilder(CheckPointInterface::class)->getMock(),
-                ]),
-            ],
-        ];
+            if (0 === $key% 2) {
+                $points[$key][2] = $this->createCheckPointCollection();
+            } else {
+                $points[$key][2] = $this->createEmptyCheckPointCollection();
+            }
+        }
+
+        return $points;
     }
 
     public function providePointsFqn(): array
@@ -402,6 +154,12 @@ trait TestDataProviderTrait
 
         return $pointsFqn;
     }
+
+    /**************************************************************************
+     * 
+     * SOURCE POINTS
+     * 
+     *************************************************************************/
 
     public function provideSourcePoint(): array
     {
@@ -421,57 +179,338 @@ trait TestDataProviderTrait
 
     public function provideInvalidSourcePointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-        ];
+        $invalidPointFqn = [];
+
+        foreach ($this->provideSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
     }
+
+    /**************************************************************************
+     * 
+     * STATIC SOURCE POINTS
+     * 
+     *************************************************************************/
+
+    public function provideStaticSourcePoint(): array
+    {
+        $points = [];
+
+        foreach ($this->provideStaticSourcePointFqn() as $pointFqn) {
+            $points[] = [
+                $this->createPointFactory()
+                    ->createStaticSourcePoint($pointFqn[0])
+            ];
+        }
+
+        return $points;
+    }
+
+    public function provideStaticSourcePointFqn(): array
+    {
+        return \array_merge(
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn()
+        );
+    }
+
+    public function provideInvalidStaticSourcePointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->provideStaticSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    public function providePropertyStaticSourcePointFqn(): array
+    {
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getProperties() as $property) {
+                $points[] = [\sprintf(
+                    '#%s::$%s',
+                    $property->getDeclaringClass()->getName(),
+                    $property->getName()
+                )];
+            }
+        }
+
+        return $points;
+    }
+
+    public function provideInvalidPropertyStaticSourcePointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->providePropertyStaticSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    public function provideMethodStaticSourcePointFqn(): array
+    {
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getMethods() as $method) {
+                if (0 !== \strpos($method->getName(), 'get')) {
+                    continue;
+                }
+
+                $points[] = [\sprintf(
+                    '#%s::%s()',
+                    $method->getDeclaringClass()->getName(),
+                    $method->getName()
+                )];
+            }
+        }
+
+        return $points;
+    }
+
+    public function provideInvalidMethodStaticSourcePointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->provideMethodStaticSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    /**************************************************************************
+     * 
+     * DYNAMIC SOURCE POINTS
+     * 
+     *************************************************************************/
+
+    public function provideDynamicSourcePoint(): array
+    {
+        $points = [];
+
+        foreach ($this->provideDynamicSourcePointFqn() as $pointFqn) {
+            $points[] = [
+                $this->createPointFactory()
+                    ->createDynamicSourcePoint($pointFqn[0])
+            ];
+        }
+
+        return $points;
+    }
+
+    public function provideDynamicSourcePointFqn(): array
+    {
+        return \array_merge(
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn()
+        );
+    }
+
+    public function provideInvalidDynamicSourcePointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->provideDynamicSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+
+            $invalidPointFqn[] = [\str_replace('1', '', $pointFqn)];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    public function providePropertyDynamicSourcePointFqn(): array
+    {
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getProperties() as $property) {
+                $points[] = [\sprintf(
+                    '~%s::$%s1',
+                    $property->getDeclaringClass()->getName(),
+                    $property->getName()
+                )];
+            }
+        }
+
+        return $points;
+    }
+
+    public function provideInvalidPropertyDynamicSourcePointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->providePropertyDynamicSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+
+            $invalidPointFqn[] = [\str_replace('1', '', $pointFqn)];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    public function provideMethodDynamicSourcePointFqn(): array
+    {
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getMethods() as $method) {
+                if (0 !== \strpos($method->getName(), 'get')) {
+                    continue;
+                }
+
+                $points[] = [\sprintf(
+                    '~%s::%s1()',
+                    $method->getDeclaringClass()->getName(),
+                    $method->getName()
+                )];
+            }
+        }
+
+        return $points;
+    }
+
+    public function provideInvalidMethodDynamicSourcePointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->provideMethodDynamicSourcePointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+
+            $invalidPointFqn[] = [\str_replace('1', '', $pointFqn)];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    /**************************************************************************
+     * 
+     * TARGET POINTS
+     * 
+     *************************************************************************/
 
     public function provideTargetPoint(): array
     {
@@ -491,334 +530,40 @@ trait TestDataProviderTrait
 
     public function provideInvalidTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-        ];
-    }
+        $invalidPointFqn = [];
 
-    public function provideStaticSourcePoint(): array
-    {
-        $pointFactory = new PointFactory();
+        foreach ($this->provideTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
 
-        $points = [];
-
-        foreach ($this->provideStaticSourcePointFqn() as $pointFqn) {
-            $points[] = [$pointFactory->createStaticSourcePoint($pointFqn[0])];
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
         }
 
-        return $points;
+        return \array_merge(
+            $invalidPointFqn,
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn()
+        );
     }
 
-    public function provideStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getF'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getF'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectB::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectB::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectB::class,
-                    'getF'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectB::class,
-                    'getF'
-                ),
-            ],
-        ];
-    }
-
-    public function provideInvalidStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-        ];
-    }
-
-    public function provideDynamicSourcePoint(): array
-    {
-        $pointFactory = new PointFactory();
-
-        $points = [];
-
-        foreach ($this->provideDynamicSourcePointFqn() as $pointFqn) {
-            $points[] = [$pointFactory->createDynamicSourcePoint($pointFqn[0])];
-        }
-
-        return $points;
-    }
-
-    public function provideDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getY'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getY'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectB::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectB::class,
-                    'getY'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectB::class,
-                    'getY'
-                ),
-            ],
-        ];
-    }
-
-    public function provideInvalidDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-        ];
-    }
+    /**************************************************************************
+     * 
+     * STATIC TARGET POINTS
+     * 
+     *************************************************************************/
 
     public function provideStaticTargetPoint(): array
     {
-        $pointFactory = new PointFactory();
-
         $points = [];
 
         foreach ($this->provideStaticTargetPointFqn() as $pointFqn) {
-            $points[] = [$pointFactory->createStaticTargetPoint($pointFqn[0])];
+            $points[] = [
+                $this->createPointFactory()
+                    ->createStaticTargetPoint($pointFqn[0])
+            ];
         }
 
         return $points;
@@ -826,161 +571,156 @@ trait TestDataProviderTrait
 
     public function provideStaticTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$a',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectB::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$a',
-                    TestObjectB::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-        ];
+        return \array_merge(
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+        );
     }
 
     public function provideInvalidStaticTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-        ];
+        $invalidPointFqn = [];
+
+        foreach ($this->provideStaticTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
     }
 
-    public function provideDynamicTargetPoint(): array
+    public function providePropertyStaticTargetPointFqn(): array
     {
-        $pointFactory = new PointFactory();
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
 
         $points = [];
 
+        foreach ($classes as $class) {
+            foreach ($class->getProperties() as $property) {
+                $points[] = [\sprintf(
+                    '#%s::$%s',
+                    $property->getDeclaringClass()->getName(),
+                    $property->getName()
+                )];
+            }
+        }
+
+        return $points;
+    }
+
+    public function provideInvalidPropertyStaticTargetPointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->providePropertyStaticTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    public function provideMethodParameterStaticTargetPointFqn(): array
+    {
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getMethods() as $method) {
+                if (
+                    0 !== \strpos($method->getName(), 'set') &&
+                    $method->getName() !== '__construct'
+                ) {
+                    continue;
+                }
+
+                foreach ($method->getParameters() as $parameter) {
+                    $points[] = [\sprintf(
+                        '#%s::%s()::$%s',
+                        $parameter->getDeclaringClass()->getName(),
+                        $parameter->getDeclaringFunction()->getName(),
+                        $parameter->getName()
+                    )];
+                }
+            }
+        }
+
+        return $points;
+    }
+
+    public function provideInvalidMethodParameterStaticTargetPointFqn(): array
+    {
+        $invalidPointFqn = [];
+
+        foreach ($this->provideMethodParameterStaticTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
+    }
+
+    /**************************************************************************
+     * 
+     * DYNAMIC TARGET POINTS
+     * 
+     *************************************************************************/
+
+    public function provideDynamicTargetPoint(): array
+    {
+        $points = [];
+
         foreach ($this->provideDynamicTargetPointFqn() as $pointFqn) {
-            $points[] = [$pointFactory->createDynamicTargetPoint($pointFqn[0])];
+            $points[] = [
+                $this->createPointFactory()
+                    ->createDynamicTargetPoint($pointFqn[0])
+            ];
         }
 
         return $points;
@@ -988,811 +728,160 @@ trait TestDataProviderTrait
 
     public function provideDynamicTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setY',
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$a',
-                    TestObjectA::class,
-                    'setY',
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectB::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectB::class,
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectB::class,
-                    'setY',
-                    'y'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$a',
-                    TestObjectB::class,
-                    'setY',
-                    'y'
-                ),
-            ],
-        ];
+        return \array_merge(
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
     }
 
     public function provideInvalidDynamicTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-        ];
-    }
+        $invalidPointFqn = [];
 
-    public function providePropertyStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-        ];
-    }
+        foreach ($this->provideDynamicTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
 
-    public function provideInvalidPropertyStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    'NonObject',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'nonProperty'
-                ),
-            ],
-        ];
-    }
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
 
-    public function providePropertyDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-        ];
-    }
+            $invalidPointFqn[] = [\str_replace('1', '', $pointFqn)];
+        }
 
-    public function provideInvalidPropertyDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    'NonObject',
-                    'z'
-                ),
-            ],
-        ];
-    }
-
-    public function provideMethodStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getE'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getE'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getF'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getF'
-                ),
-            ],
-        ];
-    }
-
-    public function provideInvalidMethodStaticSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getE'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getF'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    'NonObject',
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'nonMethod'
-                ),
-            ],
-        ];
-    }
-
-    public function provideMethodDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-        ];
-    }
-
-    public function provideInvalidMethodDynamicSourcePointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '#%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    'NonObject',
-                    'getZ'
-                ),
-            ],
-        ];
-    }
-
-    public function providePropertyStaticTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-        ];
-    }
-
-    public function provideInvalidPropertyStaticTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    'NonObject',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'nonProperty'
-                ),
-            ],
-        ];
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn()
+        );
     }
 
     public function providePropertyDynamicTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
         ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getProperties() as $property) {
+                $points[] = [\sprintf(
+                    '~%s::$%s1',
+                    $property->getDeclaringClass()->getName(),
+                    $property->getName()
+                )];
+            }
+        }
+
+        return $points;
     }
 
     public function provideInvalidPropertyDynamicTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '#%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    'NonObject',
-                    'z'
-                ),
-            ],
-        ];
-    }
-    public function provideMethodParameterStaticTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setE',
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setE',
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-        ];
-    }
+        $invalidPointFqn = [];
 
-    public function provideInvalidMethodParameterStaticTargetPointFqn(): array
-    {
-        return [
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setE',
-                    'e'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setF',
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'f'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getA'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    'NonObject',
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'nonMethod',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'nonParameter'
-                ),
-            ],
-        ];
+        foreach ($this->providePropertyDynamicTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+
+            $invalidPointFqn[] = [\str_replace('1', '', $pointFqn)];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterDynamicTargetPointFqn()
+        );
     }
 
     public function provideMethodParameterDynamicTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '~%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
         ];
+
+        $points = [];
+
+        foreach ($classes as $class) {
+            foreach ($class->getMethods() as $method) {
+                if (0 !== \strpos($method->getName(), 'set')) {
+                    continue;
+                }
+
+                foreach ($method->getParameters() as $parameter) {
+                    $points[] = [\sprintf(
+                        '~%s::%s1()::$%s1',
+                        $parameter->getDeclaringClass()->getName(),
+                        $parameter->getDeclaringFunction()->getName(),
+                        $parameter->getName()
+                    )];
+                }
+            }
+        }
+
+        return $points;
     }
 
     public function provideInvalidMethodParameterDynamicTargetPointFqn(): array
     {
-        return [
-            [
-                \sprintf(
-                    '#%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::$%s',
-                    TestObjectA::class,
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()',
-                    TestObjectA::class,
-                    'getZ'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'a'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    'NonObject',
-                    'setZ',
-                    'z'
-                ),
-            ],
-            [
-                \sprintf(
-                    '%s::%s()::$%s',
-                    TestObjectA::class,
-                    'setA',
-                    'nonParameter'
-                ),
-            ],
-        ];
+        $invalidPointFqn = [];
+
+        foreach ($this->provideMethodParameterDynamicTargetPointFqn() as $pointFqn) {
+            $pointFqn = $pointFqn[0];
+
+            $invalidPointFqn[] = [\preg_replace(
+                '/^(#|~)[A-Za-z0-9\\\_]+/',
+                '$1Object',
+                $pointFqn
+            )];
+
+            $invalidPointFqn[] = [\str_replace('1', '', $pointFqn)];
+        }
+
+        return \array_merge(
+            $invalidPointFqn,
+            $this->providePropertyStaticSourcePointFqn(),
+            $this->providePropertyDynamicSourcePointFqn(),
+            $this->provideMethodStaticSourcePointFqn(),
+            $this->provideMethodDynamicSourcePointFqn(),
+            $this->providePropertyStaticTargetPointFqn(),
+            $this->providePropertyDynamicTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn()
+        );
+    }
+
+    private function createPointFactory(): PointFactory
+    {
+        return new PointFactory();
+    }
+
+    private function createCheckPointCollection(): CheckPointCollection
+    {
+        return new CheckPointCollection([
+            $this->getMockBuilder(CheckPointInterface::class)->getMock(),
+            $this->getMockBuilder(CheckPointInterface::class)->getMock(),
+            $this->getMockBuilder(CheckPointInterface::class)->getMock(),
+        ]);
+    }
+
+    private function createEmptyCheckPointCollection(): CheckPointCollection
+    {
+        return new CheckPointCollection();
     }
 }

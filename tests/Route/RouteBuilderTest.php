@@ -13,18 +13,15 @@ namespace Opportus\ObjectMapper\Tests\Route;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
-use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Point\CheckPointInterface;
 use Opportus\ObjectMapper\Point\IterableRecursionCheckPoint;
-use Opportus\ObjectMapper\Point\PointFactory;
 use Opportus\ObjectMapper\Point\RecursionCheckPoint;
 use Opportus\ObjectMapper\Route\Route;
 use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteBuilderInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The route builder test.
@@ -33,23 +30,20 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RouteBuilderTest extends TestCase
+class RouteBuilderTest extends Test
 {
-    use TestDataProviderTrait;
-
     public function testConstruct()
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         static::assertInstanceOf(RouteBuilderInterface::class, $routeBuilder);
     }
 
     public function testSetMapBuilder(): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setMapBuilder(
-            $this->buildMapBuilder()
+            $this->createMapBuilder()
         );
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -61,8 +55,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetStaticSourcePoint(string $pointFqn): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setStaticSourcePoint($pointFqn);
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -74,7 +67,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetStaticSourcePointException(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -86,8 +79,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetStaticTargetPoint(string $pointFqn): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setStaticTargetPoint($pointFqn);
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -99,7 +91,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetStaticTargetPointException(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -111,8 +103,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetDynamicSourcePoint(string $pointFqn): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setDynamicSourcePoint($pointFqn);
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -124,7 +115,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetDynamicSourcePointException(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -136,8 +127,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetDynamicTargetPoint(string $pointFqn): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setDynamicTargetPoint($pointFqn);
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -149,7 +139,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetDynamicTargetPointException(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -161,8 +151,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetSourcePoint(string $pointFqn): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setSourcePoint($pointFqn);
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -174,7 +163,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetSourcePointException(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -186,8 +175,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetTargetPoint(string $pointFqn): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->setTargetPoint($pointFqn);
 
         static::assertInstanceOf(RouteBuilder::class, $routeBuilder2);
@@ -199,7 +187,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testSetTargetPointException(string $pointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -208,8 +196,7 @@ class RouteBuilderTest extends TestCase
 
     public function testAddCheckPoint(): void
     {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->addCheckPoint(
             $this->getMockBuilder(CheckPointInterface::class)->getMock()
         );
@@ -224,8 +211,7 @@ class RouteBuilderTest extends TestCase
     public function testAddRecursionCheckPoint(
         string $targetSourcePointFqn
     ): void {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->addRecursionCheckPoint(
             TestObjectA::class,
             TestObjectB::class,
@@ -242,7 +228,7 @@ class RouteBuilderTest extends TestCase
     public function testAddRecursionCheckPointException(
         string $targetSourcePointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -259,8 +245,7 @@ class RouteBuilderTest extends TestCase
     public function testAddIterableRecursionCheckPoint(
         string $targetSourcePointFqn
     ): void {
-        $routeBuilder1 = $this->buildRouteBuilder();
-
+        $routeBuilder1 = $this->createRouteBuilder();
         $routeBuilder2 = $routeBuilder1->addIterableRecursionCheckPoint(
             TestObjectA::class,
             TestObjectB::class,
@@ -277,7 +262,7 @@ class RouteBuilderTest extends TestCase
     public function testAddIterableRecursionCheckPointException(
         string $targetIterableSourcePointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -300,7 +285,7 @@ class RouteBuilderTest extends TestCase
         string $sourcePointFqn,
         string $targetPointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $route = $routeBuilder
             ->setSourcePoint($sourcePointFqn)
@@ -427,7 +412,7 @@ class RouteBuilderTest extends TestCase
 
     public function testGetRouteException0(): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder->getRoute();
@@ -439,7 +424,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testGetRouteException1(string $sourcePointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -453,7 +438,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testGetRouteException2(string $targetPointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -466,7 +451,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testGetRouteException3(): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -483,7 +468,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testGetRouteException4(string $sourcePointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -501,7 +486,7 @@ class RouteBuilderTest extends TestCase
      */
     public function testGetRouteException5(string $targetPointFqn): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -525,8 +510,8 @@ class RouteBuilderTest extends TestCase
         string $sourcePointFqn,
         string $targetPointFqn
     ): void {
-        $routeBuilder1 = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder1 = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder2 = $routeBuilder1
             ->setMapBuilder($mapBuilder)
@@ -584,7 +569,7 @@ class RouteBuilderTest extends TestCase
         string $sourcePointFqn,
         string $targetPointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
+        $routeBuilder = $this->createRouteBuilder();
 
         $this->expectException(InvalidOperationException::class);
         $routeBuilder
@@ -598,8 +583,8 @@ class RouteBuilderTest extends TestCase
      */
     public function testAddRouteToMapBuilderSecondException0(): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
@@ -615,8 +600,8 @@ class RouteBuilderTest extends TestCase
     public function testAddRouteToMapBuilderSecondException1(
         string $sourcePointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
@@ -634,8 +619,8 @@ class RouteBuilderTest extends TestCase
     public function testAddRouteToMapBuilderSecondException2(
         string $targetPointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
@@ -652,8 +637,8 @@ class RouteBuilderTest extends TestCase
      */
     public function testAddRouteToMapBuilderSecondException3(): void
     {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
@@ -674,8 +659,8 @@ class RouteBuilderTest extends TestCase
     public function testAddRouteToMapBuilderSecondException4(
         string $sourcePointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
@@ -697,8 +682,8 @@ class RouteBuilderTest extends TestCase
     public function testAddRouteToMapBuilderSecondException5(
         string $targetPointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder = $this->createMapBuilder();
 
         $routeBuilder = $routeBuilder->setMapBuilder($mapBuilder);
 
@@ -725,8 +710,8 @@ class RouteBuilderTest extends TestCase
         string $sourcePointFqn,
         string $targetPointFqn
     ): void {
-        $routeBuilder = $this->buildRouteBuilder();
-        $mapBuilder1 = $this->buildMapBuilder();
+        $routeBuilder = $this->createRouteBuilder();
+        $mapBuilder1 = $this->createMapBuilder();
 
         $mapBuilder2 = $routeBuilder
             ->setMapBuilder($mapBuilder1)
@@ -805,15 +790,5 @@ class RouteBuilderTest extends TestCase
         }
 
         return $arguments;
-    }
-
-    private function buildRouteBuilder(): RouteBuilder
-    {
-        return new RouteBuilder(new PointFactory());
-    }
-
-    private function buildMapBuilder(): MapBuilder
-    {
-        return new MapBuilder($this->buildRouteBuilder());
     }
 }

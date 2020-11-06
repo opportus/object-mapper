@@ -20,7 +20,7 @@ use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\ImmutableCollection;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Route\RouteInterface;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 use stdClass;
 
 /**
@@ -30,14 +30,14 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class RouteCollectionTest extends TestCase
+class RouteCollectionTest extends Test
 {
     /**
      * @dataProvider provideConstructArguments
      */
     public function testConstruct(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         static::assertInstanceOf(
             RouteCollection::class,
@@ -87,7 +87,7 @@ class RouteCollectionTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new RouteCollection($routes);
+        $this->createRouteCollection($routes);
     }
 
     /**
@@ -95,7 +95,7 @@ class RouteCollectionTest extends TestCase
      */
     public function testToArray(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
             static::assertArrayHasKey(
@@ -115,7 +115,8 @@ class RouteCollectionTest extends TestCase
      */
     public function testGetIterator(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
+
         $iterator = $routeCollection->getIterator();
 
         static::assertInstanceOf(ArrayIterator::class, $iterator);
@@ -132,7 +133,7 @@ class RouteCollectionTest extends TestCase
      */
     public function testCount(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         static::assertSame(\count($routes), $routeCollection->count());
     }
@@ -142,7 +143,7 @@ class RouteCollectionTest extends TestCase
      */
     public function testOffsetExists(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
             static::assertTrue($routeCollection->offsetExists($routeFqn));
@@ -156,7 +157,7 @@ class RouteCollectionTest extends TestCase
      */
     public function testOffsetGet(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
             static::assertSame($route, $routeCollection->offsetGet($routeFqn));
@@ -168,7 +169,7 @@ class RouteCollectionTest extends TestCase
      */
     public function testOffsetSet(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
             $this->expectException(InvalidOperationException::class);
@@ -182,7 +183,7 @@ class RouteCollectionTest extends TestCase
      */
     public function testOffsetUnset(array $routes): void
     {
-        $routeCollection = new RouteCollection($routes);
+        $routeCollection = $this->createRouteCollection($routes);
 
         foreach ($routes as $routeFqn => $route) {
             $this->expectException(InvalidOperationException::class);
@@ -194,21 +195,25 @@ class RouteCollectionTest extends TestCase
     public function provideConstructArguments(): array
     {
         $routes = [];
+
         for ($i = 0; $i < 3; $i++) {
+            $routeFqn = \sprintf('route_%d', $i);
+
             $route = $this->getMockBuilder(RouteInterface::class)
                 ->disableOriginalConstructor()
                 ->getMock()
             ;
+
             $route->method('getFqn')
-                ->willReturn(\sprintf('route_%d', $i))
+                ->willReturn($routeFqn)
             ;
 
-            $routes[$route->getFqn()] = $route;
+            $routes[$routeFqn] = $route;
         }
 
         return [
             [
-                $routes
+                $routes,
             ]
         ];
     }
@@ -228,5 +233,10 @@ class RouteCollectionTest extends TestCase
                 ]
             ]
         ];
+    }
+
+    private function createRouteCollection(array $routes): RouteCollection
+    {
+        return new RouteCollection($routes);
     }
 }

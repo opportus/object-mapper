@@ -13,13 +13,13 @@ namespace Opportus\ObjectMapper\Tests;
 
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
+use Opportus\ObjectMapper\Point\MethodDynamicSourcePoint;
+use Opportus\ObjectMapper\Point\MethodStaticSourcePoint;
+use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\PropertyStaticSourcePoint;
 use Opportus\ObjectMapper\Point\SourcePoint;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\SourceInterface;
-use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\TargetInterface;
-use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionObject;
 
@@ -30,16 +30,14 @@ use ReflectionObject;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class SourceTest extends TestCase
+class SourceTest extends Test
 {
-    use TestDataProviderTrait;
-
     /**
      * @dataProvider provideSource
      */
     public function testConstruct(object $providedSource): void
     {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         static::assertInstanceOf(SourceInterface::class, $source);
     }
@@ -49,7 +47,7 @@ class SourceTest extends TestCase
      */
     public function testGetFqn(object $providedSource): void
     {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         static::assertSame(\get_class($providedSource), $source->getFqn());
     }
@@ -59,7 +57,7 @@ class SourceTest extends TestCase
      */
     public function testGetClassReflection(object $providedSource): void
     {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         $sourceClassReflection1 = $source->getClassReflection();
         $sourceClassReflection2 = $source->getClassReflection();
@@ -85,7 +83,7 @@ class SourceTest extends TestCase
      */
     public function testGetObjectReflection(object $providedSource): void
     {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         $sourceObjectReflection1 = $source->getObjectReflection();
         $sourceObjectReflection2 = $source->getObjectReflection();
@@ -111,7 +109,7 @@ class SourceTest extends TestCase
      */
     public function testGetInstance(object $providedSource): void
     {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         static::assertSame($providedSource, $source->getInstance());
     }
@@ -121,21 +119,7 @@ class SourceTest extends TestCase
      */
     public function testGetPointValue(object $providedSource): void
     {
-        $target = $this->buildTarget($providedSource);
-
-        foreach ($this->provideTargetPoint() as $point) {
-            $point = $point[0];
-
-            if ($target->getFqn() !== $point->getTargetFqn()) {
-                continue;
-            }
-
-            $target->setPointValue($point, 1);
-        }
-
-        $target->operate();
-
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         foreach ($this->provideSourcePoint() as $point) {
             $point = $point[0];
@@ -144,7 +128,34 @@ class SourceTest extends TestCase
                 continue;
             }
 
-            static::assertEquals(1, $source->getPointValue($point));
+            $classReflection = new ReflectionClass($providedSource);
+
+            if ($point instanceof PropertyStaticSourcePoint) {
+                $propertyReflection = $classReflection
+                    ->getProperty($point->getName());
+
+                $propertyReflection->setAccessible(true);
+
+                $expectedValue = $propertyReflection->getValue($providedSource);
+            } elseif ($point instanceof MethodStaticSourcePoint) {
+                $methodReflection = $classReflection
+                    ->getMethod($point->getName());
+
+                $methodReflection->setAccessible(true);
+
+                $expectedValue = $methodReflection->invoke($providedSource);
+            } elseif ($point instanceof PropertyDynamicSourcePoint) {
+                $expectedValue = $providedSource->{$point->getName()};
+            } elseif ($point instanceof MethodDynamicSourcePoint) {
+                $expectedValue = $providedSource->{$point->getName()}();
+            } else {
+                throw new TestInvalidArgumentException(1, __METHOD__, '');
+            }
+
+            static::assertEquals(
+                $expectedValue,
+                $source->getPointValue($point)
+            );
         }
     }
 
@@ -154,7 +165,7 @@ class SourceTest extends TestCase
     public function testGetPointValueFirstInvalidArgumentException(
         object $providedSource
     ): void {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         foreach ($this->provideSourcePoint() as $point) {
             $point = $point[0];
@@ -176,7 +187,7 @@ class SourceTest extends TestCase
     public function testGetPointValueSecondInvalidArgumentException(
         object $providedSource
     ): void {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         $point = $this->getMockForAbstractClass(
             SourcePoint::class,
@@ -201,7 +212,7 @@ class SourceTest extends TestCase
     public function testGetPointValueInvalidOperationException(
         object $providedSource
     ): void {
-        $source = $this->buildSource($providedSource);
+        $source = $this->createSource($providedSource);
 
         $point = $this->getMockBuilder(PropertyStaticSourcePoint::class)
             ->disableOriginalConstructor()
@@ -214,13 +225,8 @@ class SourceTest extends TestCase
         $source->getPointValue($point);
     }
 
-    private function buildSource(object $source): Source
+    private function createSource(object $source): Source
     {
         return new Source($source);
-    }
-
-    private function buildTarget($target): TargetInterface
-    {
-        return new Target($target);
     }
 }

@@ -20,16 +20,10 @@ use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
 use Opportus\ObjectMapper\PathFinder\PathFinderInterface;
 use Opportus\ObjectMapper\PathFinder\StaticPathFinder;
 use Opportus\ObjectMapper\PathFinder\StaticSourceToDynamicTargetPathFinder;
-use Opportus\ObjectMapper\Point\PointFactory;
-use Opportus\ObjectMapper\Route\Route;
-use Opportus\ObjectMapper\Route\RouteBuilder;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\Source;
 use Opportus\ObjectMapper\Target;
-use Opportus\ObjectMapper\Tests\TestObjectA;
-use Opportus\ObjectMapper\Tests\TestObjectB;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 use stdClass;
 
 /**
@@ -39,47 +33,34 @@ use stdClass;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MapTest extends TestCase
+class MapTest extends Test
 {
-    use TestDataProviderTrait;
-
     public function testConstruct(): void
     {
-        $map = new Map();
+        $map = $this->createMap();
 
         static::assertInstanceOf(MapInterface::class, $map);
     }
 
-    public function testGetRoutes(): void
+    /**
+     * @dataProvider provideObjects
+     */
+    public function testGetRoutes(object $providedSource, $providedTarget): void
     {
-        $pathFinders = new PathFinderCollection([
-            new StaticPathFinder(
-                new RouteBuilder(new PointFactory)
-            ),
-            new StaticSourceToDynamicTargetPathFinder(
-                new RouteBuilder(new PointFactory)
-            ),
-            new DynamicSourceToStaticTargetPathFinder(
-                new RouteBuilder(new PointFactory)
-            ),
-        ]);
+        $source = new Source($providedSource);
+        $target = new Target($providedTarget);
+
+        $pathFinders = $this->createPathFinders();
 
         $routes = [];
 
-        foreach ($this->provideRoutePoints() as $routePoints) {
-            $routes[] = new Route(
-                $routePoints[0],
-                $routePoints[1],
-                $routePoints[2]
-            );
+        foreach ($this->provideRoute() as $route) {
+            $routes[] = $route[0];
         }
 
         $routes = new RouteCollection($routes);
 
-        $map = new Map($pathFinders, $routes);
-
-        $source = new Source(new TestObjectA());
-        $target = new Target(new TestObjectB());
+        $map = $this->createMap($pathFinders, $routes);
 
         $expectedRoutes = [];
 
@@ -114,23 +95,50 @@ class MapTest extends TestCase
         static::assertEmpty($returnedRoutes);
     }
 
-    public function testGetRouteException(): void
-    {
+    /**
+     * @dataProvider provideObjects
+     */
+    public function testGetRoutesException(
+        object $providedSource,
+        $providedTarget
+    ): void {
         $pathFinder = $this->getMockBuilder(PathFinderInterface::class)
             ->getMock();
 
         $pathFinder->method('getRoutes')
             ->willThrowException(new Exception());
 
-        $pathFinderCollection = new PathFinderCollection([$pathFinder]);
+        $pathFinders = new PathFinderCollection([$pathFinder]);
 
-        $map = new Map($pathFinderCollection);
+        $map = $this->createMap($pathFinders);
 
-        $source = new Source(new TestObjectA());
-        $target = new Target(new TestObjectB());
+        $source = new Source($providedSource);
+        $target = new Target($providedTarget);
 
         $this->expectException(InvalidOperationException::class);
 
         $map->getRoutes($source, $target);
+    }
+
+    private function createPathFinders(): PathFinderCollection
+    {
+        return new PathFinderCollection([
+            new StaticPathFinder(
+                $this->createRouteBuilder()
+            ),
+            new StaticSourceToDynamicTargetPathFinder(
+                $this->createRouteBuilder()
+            ),
+            new DynamicSourceToStaticTargetPathFinder(
+                $this->createRouteBuilder()
+            ),
+        ]);
+    }
+
+    private function createMap(
+        ?PathFinderCollection $pathFinders = null,
+        ?RouteCollection $routes = null
+    ): Map {
+        return new Map($pathFinders, $routes);
     }
 }

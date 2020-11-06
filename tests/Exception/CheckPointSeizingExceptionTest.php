@@ -13,7 +13,7 @@ namespace Opportus\ObjectMapper\Tests\Exception;
 
 use Opportus\ObjectMapper\Exception\CheckPointSeizingException;
 use Opportus\ObjectMapper\Exception\Exception;
-use PHPUnit\Framework\TestCase;
+use Opportus\ObjectMapper\Tests\Test;
 
 /**
  * The check point seizing exception test.
@@ -22,12 +22,17 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class CheckPointSeizingExceptionTest extends TestCase
+class CheckPointSeizingExceptionTest extends Test
 {
     public function testConstruct(): void
     {
-        $exception = new CheckPointSeizingException();
+        $exception = $this->createCheckPointSeizingException();
 
         static::assertInstanceOf(Exception::class, $exception);
+    }
+
+    private function createCheckPointSeizingException(): CheckPointSeizingException
+    {
+        return new CheckPointSeizingException();
     }
 }

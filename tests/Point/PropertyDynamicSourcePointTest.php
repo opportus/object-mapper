@@ -16,9 +16,8 @@ use Opportus\ObjectMapper\Point\DynamicSourcePointInterface;
 use Opportus\ObjectMapper\Point\PropertyDynamicSourcePoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\SourcePointInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The property dynamic source point test.
@@ -27,10 +26,8 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class PropertyDynamicSourcePointTest extends TestCase
+class PropertyDynamicSourcePointTest extends Test
 {
-    use TestDataProviderTrait;
-
     private const FQN_REGEX_PATTERN = '/^~?([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)$/';
 
     /**
@@ -38,7 +35,7 @@ class PropertyDynamicSourcePointTest extends TestCase
      */
     public function testConstruct(string $fqn): void
     {
-        $point = new PropertyDynamicSourcePoint($fqn);
+        $point = $this->createPropertyDynamicSourcePoint($fqn);
 
         static::assertInstanceOf(PropertyDynamicSourcePoint::class, $point);
         static::assertInstanceOf(DynamicSourcePointInterface::class, $point);
@@ -53,7 +50,7 @@ class PropertyDynamicSourcePointTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new PropertyDynamicSourcePoint($fqn);
+        $this->createPropertyDynamicSourcePoint($fqn);
     }
 
     /**
@@ -61,7 +58,7 @@ class PropertyDynamicSourcePointTest extends TestCase
      */
     public function testGetFqn(string $fqn): void
     {
-        $point = new PropertyDynamicSourcePoint($fqn);
+        $point = $this->createPropertyDynamicSourcePoint($fqn);
 
         static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
 
@@ -80,7 +77,7 @@ class PropertyDynamicSourcePointTest extends TestCase
      */
     public function testGetTargetFqn(string $fqn): void
     {
-        $point = new PropertyDynamicSourcePoint($fqn);
+        $point = $this->createPropertyDynamicSourcePoint($fqn);
 
         static::assertSame(
             $point->getSourceFqn(),
@@ -93,7 +90,7 @@ class PropertyDynamicSourcePointTest extends TestCase
      */
     public function testGetName(string $fqn): void
     {
-        $point = new PropertyDynamicSourcePoint($fqn);
+        $point = $this->createPropertyDynamicSourcePoint($fqn);
 
         static::assertSame($point->getName(), $this->getPointName($fqn));
     }
@@ -126,5 +123,11 @@ class PropertyDynamicSourcePointTest extends TestCase
         }
 
         return $matches[2];
+    }
+
+    private function createPropertyDynamicSourcePoint(
+        string $fqn
+    ): PropertyDynamicSourcePoint {
+        return new PropertyDynamicSourcePoint($fqn);
     }
 }

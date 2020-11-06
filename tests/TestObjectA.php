@@ -22,34 +22,46 @@ class TestObjectA
 {
     use TestObjectTrait;
 
+    private $i;
     private $j;
-    private $k;
-    protected $l;
-    public $m;
-    public $n;
+    public $k;
+    public $l;
+    
+    public function __construct(
+        $a = null,
+        $b = null,
+        $c = null,
+        $d = null,
+        $e = null,
+        $f = null,
+        $g = null,
+        $h = null
+    ) {
+        $this->initialize($a, $b, $c, $d, $e, $f, $g, $h);
 
-    public function getJ(): int
-    {
-        return $this->j;
+        $this->m = 0;
+        $this->n = 0;
+        $this->o = 0;
+        $this->p = 0;
     }
 
-    public function setJ(int $j)
+    public function getI()
     {
-        $this->j = $j;
+        return $this->i;
     }
 
-    public function getM(): int
+    public function setI($i)
     {
-        return $this->m;
+        $this->i = $i;
     }
 
-    public function setM(int $m)
+    public function getK()
     {
-        $this->m = $m;
+        return $this->k;
     }
 
-    public function getO(int $o)
+    public function setK($k)
     {
-        return $o;
+        $this->k = $k;
     }
 }

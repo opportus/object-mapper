@@ -16,9 +16,8 @@ use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
 use Opportus\ObjectMapper\Point\ObjectPointInterface;
 use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Point\TargetPointInterface;
+use Opportus\ObjectMapper\Tests\Test;
 use Opportus\ObjectMapper\Tests\TestInvalidArgumentException;
-use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
-use PHPUnit\Framework\TestCase;
 
 /**
  * The method parameter static target point test.
@@ -27,10 +26,8 @@ use PHPUnit\Framework\TestCase;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class MethodParameterStaticTargetPointTest extends TestCase
+class MethodParameterStaticTargetPointTest extends Test
 {
-    use TestDataProviderTrait;
-
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)::\$([A-Za-z0-9_]+)$/';
 
     /**
@@ -38,7 +35,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
      */
     public function testConstruct(string $fqn): void
     {
-        $point = new MethodParameterStaticTargetPoint($fqn);
+        $point = $this->createMethodParameterStaticTargetPoint($fqn);
 
         static::assertInstanceOf(MethodParameterStaticTargetPoint::class, $point);
         static::assertInstanceOf(StaticTargetPointInterface::class, $point);
@@ -53,7 +50,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new MethodParameterStaticTargetPoint($fqn);
+        $this->createMethodParameterStaticTargetPoint($fqn);
     }
 
     /**
@@ -61,7 +58,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
      */
     public function testGetFqn(string $fqn): void
     {
-        $point = new MethodParameterStaticTargetPoint($fqn);
+        $point = $this->createMethodParameterStaticTargetPoint($fqn);
 
         static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
 
@@ -81,7 +78,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
      */
     public function testGetTargetFqn(string $fqn): void
     {
-        $point = new MethodParameterStaticTargetPoint($fqn);
+        $point = $this->createMethodParameterStaticTargetPoint($fqn);
 
         static::assertSame(
             $point->getTargetFqn(),
@@ -94,7 +91,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
      */
     public function testGetName(string $fqn): void
     {
-        $point = new MethodParameterStaticTargetPoint($fqn);
+        $point = $this->createMethodParameterStaticTargetPoint($fqn);
 
         static::assertSame($point->getName(), $this->getPointName($fqn));
     }
@@ -104,7 +101,7 @@ class MethodParameterStaticTargetPointTest extends TestCase
      */
     public function testGetMethodName(string $fqn): void
     {
-        $point = new MethodParameterStaticTargetPoint($fqn);
+        $point = $this->createMethodParameterStaticTargetPoint($fqn);
 
         static::assertSame(
             $point->getMethodName(),
@@ -155,5 +152,11 @@ class MethodParameterStaticTargetPointTest extends TestCase
         }
 
         return $matches[3];
+    }
+
+    private function createMethodParameterStaticTargetPoint(
+        string $fqn
+    ): MethodParameterStaticTargetPoint {
+        return new MethodParameterStaticTargetPoint($fqn);
     }
 }
