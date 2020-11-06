@@ -30,6 +30,7 @@ use Opportus\ObjectMapper\Tests\TestObjectA;
 use Opportus\ObjectMapper\Tests\TestObjectB;
 use Opportus\ObjectMapper\Tests\TestDataProviderTrait;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * The map test.
@@ -104,6 +105,13 @@ class MapTest extends TestCase
         $returnedRoutes = $map->getRoutes($source, $target);
 
         static::assertEquals($expectedRoutes, $returnedRoutes);
+
+        $returnedRoutes = $map->getRoutes(
+            new Source(new stdClass()),
+            new Target(stdClass::class)
+        );
+
+        static::assertEmpty($returnedRoutes);
     }
 
     public function testGetRouteException(): void
