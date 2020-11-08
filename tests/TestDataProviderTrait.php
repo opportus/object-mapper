@@ -114,9 +114,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideRoutePoints(): array
@@ -156,9 +156,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * SOURCE POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideSourcePoint(): array
@@ -199,9 +199,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * STATIC SOURCE POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideStaticSourcePoint(): array
@@ -350,9 +350,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * DYNAMIC SOURCE POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideDynamicSourcePoint(): array
@@ -507,9 +507,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * TARGET POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideTargetPoint(): array
@@ -550,9 +550,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * STATIC TARGET POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideStaticTargetPoint(): array
@@ -707,9 +707,9 @@ trait TestDataProviderTrait
     }
 
     /**************************************************************************
-     * 
+     *
      * DYNAMIC TARGET POINTS
-     * 
+     *
      *************************************************************************/
 
     public function provideDynamicTargetPoint(): array

@@ -287,8 +287,7 @@ class CheckPointCollectionTest extends Test
 
     private function createCheckPointCollection(
         array $checkPoints
-    ): CheckPointCollection
-    {
+    ): CheckPointCollection {
         return new CheckPointCollection($checkPoints);
     }
 }
