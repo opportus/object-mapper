@@ -27,7 +27,7 @@ use ReflectionProperty;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class DynamicSourceToStaticTargetPathFinderTest extends PathFinderTest
+class DynamicSourceToStaticTargetPathFinderTest extends StaticPathFinderTest
 {
     protected function createPathFinder(): PathFinder
     {
@@ -35,81 +35,6 @@ class DynamicSourceToStaticTargetPathFinderTest extends PathFinderTest
             $this->createRouteBuilder()
         );
     }
-
-    protected function getReferencePoints(
-        SourceInterface $source,
-        TargetInterface $target
-    ): array {
-        $targetClassReflection = $target->getClassReflection();
-
-        $methodBlackList = [];
-        $propertyBlackList = [];
-
-        if (
-            $target->getInstance() === null &&
-            $targetClassReflection->hasMethod('__construct')
-        ) {
-            $constructorReflection = $targetClassReflection
-                ->getMethod('__construct');
-
-            foreach (
-                $constructorReflection->getParameters() as
-                $parameterReflection
-            ) {
-                $methodBlackList[] = \sprintf(
-                    'set%s',
-                    \ucfirst($parameterReflection->getName())
-                );
-
-                $propertyBlackList[] = $parameterReflection->getName();
-            }
-        }
-
-        $targetPointReflections = [];
-
-        foreach (
-            $targetClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
-            $methodReflection
-        ) {
-            if (\in_array($methodReflection->getName(), $methodBlackList)) {
-                continue;
-            }
-
-            if (
-                \strpos($methodReflection->getName(), 'set') !== 0 &&
-                (
-                    $target->getInstance() ||
-                    $methodReflection->getName() !== '__construct'
-                )
-            ) {
-                continue;
-            }
-
-            foreach (
-                $methodReflection->getParameters() as
-                $parameterReflection
-            ) {
-                $propertyBlackList[] = $parameterReflection->getName();
-
-                $targetPointReflections[] = $parameterReflection;
-            }
-        }
-
-        foreach (
-            $targetClassReflection
-                ->getProperties(ReflectionProperty::IS_PUBLIC) as
-            $propertyReflection
-        ) {
-            if (\in_array($propertyReflection->getName(), $propertyBlackList)) {
-                continue;
-            }
-
-            $targetPointReflections[] = $propertyReflection;
-        }
-
-        return $targetPointReflections;
-    }
-
 
     protected function getReferencePointRoute(
         SourceInterface $source,
