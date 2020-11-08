@@ -312,6 +312,10 @@ trait TestDataProviderTrait
                     continue;
                 }
 
+                if (0 !== $method->getNumberOfRequiredParameters()) {
+                    continue;
+                }
+
                 $points[] = [\sprintf(
                     '#%s::%s()',
                     $method->getDeclaringClass()->getName(),
@@ -326,6 +330,29 @@ trait TestDataProviderTrait
     public function provideInvalidMethodStaticSourcePointFqn(): array
     {
         $invalidPointFqn = [];
+
+        $classes = [
+            new ReflectionClass(TestObjectA::class),
+            new ReflectionClass(TestObjectB::class),
+        ];
+
+        foreach ($classes as $class) {
+            foreach ($class->getMethods() as $method) {
+                if (0 !== \strpos($method->getName(), 'get')) {
+                    continue;
+                }
+
+                if (0 === $method->getNumberOfRequiredParameters()) {
+                    continue;
+                }
+
+                $invalidPointFqn[] = [\sprintf(
+                    '#%s::%s()',
+                    $method->getDeclaringClass()->getName(),
+                    $method->getName()
+                )];
+            }
+        }
 
         foreach ($this->provideMethodStaticSourcePointFqn() as $pointFqn) {
             $pointFqn = $pointFqn[0];
@@ -464,6 +491,10 @@ trait TestDataProviderTrait
         foreach ($classes as $class) {
             foreach ($class->getMethods() as $method) {
                 if (0 !== \strpos($method->getName(), 'get')) {
+                    continue;
+                }
+
+                if (0 !== $method->getNumberOfRequiredParameters()) {
                     continue;
                 }
 

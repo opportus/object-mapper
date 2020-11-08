@@ -47,12 +47,21 @@ class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointIn
         [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
 
         try {
-            new ReflectionMethod($matchedSourceFqn, $matchedName);
+            $reflection = new ReflectionMethod($matchedSourceFqn, $matchedName);
         } catch (ReflectionException $exception) {
             $message = \sprintf(
                 '%s is not a method static source point. %s.',
                 $fqn,
                 $exception->getMessage()
+            );
+
+            throw new InvalidArgumentException(1, $message);
+        }
+
+        if (0 !== $reflection->getNumberOfRequiredParameters()) {
+            $message = \sprintf(
+                '%s is not a method static source point because such cannot have required parameters.',
+                $fqn
             );
 
             throw new InvalidArgumentException(1, $message);

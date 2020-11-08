@@ -73,6 +73,10 @@ trait TestObjectTrait
         $this->d = $d;
     }
 
+    public function get($arg)
+    {
+    }
+
     public function __call(string $dynamicMethodName, array $arguments)
     {
         if (\preg_match('/^get([A-Z]1)$/', $dynamicMethodName, $matches)) {
