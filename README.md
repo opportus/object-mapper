@@ -278,9 +278,10 @@ a reference *source point* can be:
 
 The corresponding *target point* can be:
 
--   A statically undefined (not existing in class) but dynamically defined
-    (in object) property having for name the same as the property
-    *source point* or `lcfirst(substr($getterSourcePoint, 3))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
+-   A statically undefined (not existing in class) property having for name the
+    same as the property *source point* or
+    `lcfirst(substr($getterSourcePoint, 3))`
+    ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
 
 </details>
 
@@ -321,8 +322,9 @@ a reference *target point* can be:
 
 The corresponding *source point* can be:
 
--   A statically undefined (not existing in class) property having for name the
-    same as the *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
+-   A statically undefined (not existing in class) but dynamically defined
+    (existing in object) property having for name the same as the *target point*
+    ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
 
 </details>
 
