@@ -38,16 +38,15 @@ cases of this solution.
 
 API documentation is bound to code and complies to PHPDoc standards...
 
-Sections covering *optional* features are collapsed in order to keep this
-document as easy as possible to read by new users.
+Secondary sections are collapsed in order to not overflow the first reading.
 
 ## Introduction
 
 Use this solution for mapping generically data from source to target object via
 extensible strategies and controls.
 
-Delegate responsibility of all of your data mapping to a generic, extensible,
-optimized, and tested mapping system.
+Delegate responsibility of all of your data mapping to a generic - extensible -
+optimized - tested mapping system.
 
 Leverage that system to:
  
@@ -55,7 +54,7 @@ Leverage that system to:
 -   Dynamically define control flow over data being transferred from source to
     target
 -   Dynamically define target model based on source model and vice-versa
--   Easily genericize, centralize, optimize, test, and run data mapping
+-   Easily genericize - centralize - optimize - test - execute data mapping
 -   Design efficiently and simplify your system
 
 This project aims to provide a standard core system to higher level systems
@@ -71,7 +70,7 @@ such as:
 
 Indeed, many systems have in common the essential and fundamental task of
 mapping data. Yet, most of the time, this aspect is conceptually neglected.
-Consequently, this mapping gets badly designed, reducing ilities of the system
+Consequently, the mapping gets badly designed, reducing ilities of the system
 it is the essence of. At contrario, architecturing and developing that kind of
 system around a well designed mapper allows that system and its users to
 leverage it for the benefits presented above and described more in details
@@ -279,7 +278,8 @@ a reference *source point* can be:
 
 The corresponding *target point* can be:
 
--   A statically non-existing property having for name the same as the property
+-   A statically undefined (not existing in class) but dynamically defined
+    (in object) property having for name the same as the property
     *source point* or `lcfirst(substr($getterSourcePoint, 3))` ([`PropertyDynamicTargetPoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicTargetPoint.php))
 
 </details>
@@ -321,8 +321,8 @@ a reference *target point* can be:
 
 The corresponding *source point* can be:
 
--   A statically non-existing property (defined dynamically) having for name
-    the same as the *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
+-   A statically undefined (not existing in class) property having for name the
+    same as the *target point* ([`PropertyDynamicSourcePoint`](https://github.com/opportus/object-mapper/blob/master/src/Point/PropertyDynamicSourcePoint.php))
 
 </details>
 
