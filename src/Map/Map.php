@@ -14,8 +14,6 @@ namespace Opportus\ObjectMapper\Map;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\PathFinder\PathFinderCollection;
-use Opportus\ObjectMapper\Point\StaticSourcePointInterface;
-use Opportus\ObjectMapper\Point\StaticTargetPointInterface;
 use Opportus\ObjectMapper\Route\RouteCollection;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
