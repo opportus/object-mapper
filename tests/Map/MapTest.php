@@ -52,15 +52,15 @@ class MapTest extends Test
 
         $pathFinders = $this->createPathFinders();
 
-        $routes = [];
+        $mapRoutes = [];
 
         foreach ($this->provideRoute() as $route) {
-            $routes[] = $route[0];
+            $mapRoutes[] = $route[0];
         }
 
-        $routes = new RouteCollection($routes);
+        $mapRoutes = new RouteCollection($mapRoutes);
 
-        $map = $this->createMap($pathFinders, $routes);
+        $map = $this->createMap($pathFinders, $mapRoutes);
 
         $expectedRoutes = [];
 
@@ -70,15 +70,27 @@ class MapTest extends Test
             }
         }
 
-        foreach ($routes as $route) {
-            if (
-                $route->getSourcePoint()->getSourceFqn() !== $source->getFqn() ||
-                $route->getTargetPoint()->getTargetFqn() !== $target->getFqn()
-            ) {
+        foreach ($mapRoutes as $mapRoute) {
+            $sourceFqn = $mapRoute->getSourcePoint()->getSourceFqn();
+            $targetFqn = $mapRoute->getTargetPoint()->getTargetFqn();
+
+            if ($sourceFqn !== $source->getFqn() || $targetFqn !== $target->getFqn()) {
                 continue;
             }
 
-            $expectedRoutes[] = $route;
+            $expectedRoutes[] = $mapRoute;
+        }
+
+        $expectedRoutesToKeep = [];
+
+        foreach ($expectedRoutes as $key => $route) {
+            $expectedRoutesToKeep[$route->getTargetPoint()->getFqn()] = $key;
+        }
+
+        foreach ($expectedRoutes as $key => $route) {
+            if (false === \in_array($key, $expectedRoutesToKeep)) {
+                unset($expectedRoutes[$key]);
+            }
         }
 
         $expectedRoutes = new RouteCollection($expectedRoutes);

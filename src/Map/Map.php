@@ -52,11 +52,6 @@ class Map implements MapInterface
     }
 
     /**
-     * Combines manually/statically added routes with automatically/dynamically
-     * added routes. In case of duplicate between manually and automatically
-     * added routes, manually added routes take precedence over automatically
-     * added routes.
-     *
      * {@inheritdoc}
      */
     public function getRoutes(SourceInterface $source, TargetInterface $target): RouteCollection
@@ -65,23 +60,37 @@ class Map implements MapInterface
 
         foreach ($this->pathFinders as $pathFinder) {
             try {
-                foreach ($pathFinder->getRoutes($source, $target) as $route) {
-                    $routes[] = $route;
-                }
+                $pathFinderRoutes = $pathFinder->getRoutes($source, $target);
             } catch (Exception $exception) {
                 throw new InvalidOperationException('', 0, $exception);
             }
+
+            foreach ($pathFinderRoutes as $pathFinderRoute) {
+                $routes[] = $pathFinderRoute;
+            }
         }
 
-        foreach ($this->routes as $route) {
-            if (
-                $route->getSourcePoint()->getSourceFqn() !== $source->getFqn() ||
-                $route->getTargetPoint()->getTargetFqn() !== $target->getFqn()
-            ) {
+        foreach ($this->routes as $mapRoute) {
+            $sourceFqn = $mapRoute->getSourcePoint()->getSourceFqn();
+            $targetFqn = $mapRoute->getTargetPoint()->getTargetFqn();
+
+            if ($sourceFqn !== $source->getFqn() || $targetFqn !== $target->getFqn()) {
                 continue;
             }
 
-            $routes[] = $route;
+            $routes[] = $mapRoute;
+        }
+
+        $routesToKeep = [];
+
+        foreach ($routes as $key => $route) {
+            $routesToKeep[$route->getTargetPoint()->getFqn()] = $key;
+        }
+
+        foreach ($routes as $key => $route) {
+            if (false === \in_array($key, $routesToKeep)) {
+                unset($routes[$key]);
+            }
         }
 
         return new RouteCollection($routes);
