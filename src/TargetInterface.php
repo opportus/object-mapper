@@ -53,7 +53,7 @@ interface TargetInterface
      * @return null|object The target instance if it has been instantiated
      *                     or null otherwise
      */
-    public function getInstance(): ?object;
+    public function getInstance();
 
     /**
      * Sets the value of the passed target point.

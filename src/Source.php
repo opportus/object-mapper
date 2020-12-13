@@ -52,7 +52,7 @@ class Source implements SourceInterface
      *
      * @param object $source
      */
-    public function __construct(object $source)
+    public function __construct($source)
     {
         $this->classReflection = new ReflectionClass($source);
         $this->objectReflection = new ReflectionObject($source);
@@ -86,7 +86,7 @@ class Source implements SourceInterface
     /**
      * {@inheritdoc}
      */
-    public function getInstance(): object
+    public function getInstance()
     {
         return $this->instance;
     }

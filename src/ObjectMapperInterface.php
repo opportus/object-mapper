@@ -43,8 +43,8 @@ interface ObjectMapperInterface
      *                                           reason
      */
     public function map(
-        object $source,
+        $source,
         $target,
         ?MapInterface $map = null
-    ): ?object;
+    );
 }

@@ -121,7 +121,7 @@ class Target implements TargetInterface
     /**
      * {@inheritdoc}
      */
-    public function getInstance(): ?object
+    public function getInstance()
     {
         return $this->instance;
     }
@@ -194,7 +194,7 @@ class Target implements TargetInterface
      * @param  null|object $instance
      * @return object
      */
-    private function operateInstance(?object $instance = null): object
+    private function operateInstance($instance = null)
     {
         if (null === $instance) {
             if (isset($this->pointValues['static_method_parameters']['__construct'])) {
@@ -266,7 +266,7 @@ class Target implements TargetInterface
      * @param  object $instance
      * @return void
      */
-    private function update(object $instance)
+    private function update($instance)
     {
         $this->instance = $instance;
 

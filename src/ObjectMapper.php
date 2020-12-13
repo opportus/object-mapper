@@ -46,10 +46,10 @@ class ObjectMapper implements ObjectMapperInterface
      * {@inheritdoc}
      */
     public function map(
-        object $source,
+        $source,
         $target,
         ?MapInterface $map = null
-    ): ?object {
+    ) {
         if (!$source instanceof SourceInterface) {
             $source = new Source($source);
         }

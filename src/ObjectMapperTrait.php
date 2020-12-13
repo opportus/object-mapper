@@ -42,7 +42,7 @@ trait ObjectMapperTrait
         SourceInterface $source,
         TargetInterface $target,
         MapInterface $map
-    ): ?object {
+    ) {
         try {
             $routes = $map->getRoutes($source, $target);
         } catch (InvalidOperationException $exception) {

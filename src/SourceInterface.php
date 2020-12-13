@@ -52,7 +52,7 @@ interface SourceInterface
      *
      * @return object The source instance
      */
-    public function getInstance(): object;
+    public function getInstance();
 
     /**
      * Gets the value of the passed source point.
