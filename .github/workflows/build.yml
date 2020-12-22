@@ -15,15 +15,22 @@ jobs:
         php: [ 7.2, 7.3, 7.4 ]
     steps:
     - uses: actions/checkout@v2
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/cache@v2
       id: composer-cache
       with:
+        php-version: ${{ matrix.php}}
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
     - run: composer validate
+      with:
+        php-version: ${{ matrix.php}}
     - run: composer install --prefer-dist --no-progress --no-suggest
+      with:
+        php-version: ${{ matrix.php}}
       if: steps.composer-cache.outputs.cache-hit != 'true'
 
   test-suite:
@@ -34,19 +41,26 @@ jobs:
         php: [ 7.2, 7.3, 7.4 ]
     steps:
     - uses: actions/checkout@v2
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/cache@v2
       id: composer-cache
       with:
+        php-version: ${{ matrix.php}}
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
     - run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage-${{ matrix.php }}.clover.xml
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/upload-artifact@v2
       with:
+        php-version: ${{ matrix.php}}
         path: coverage-${{ matrix.php }}.clover.xml
     - uses: codacy/codacy-coverage-reporter-action@0.2.0
       with:
+        php-version: ${{ matrix.php}}
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: coverage-${{ matrix.php }}.clover.xml
 
@@ -58,17 +72,23 @@ jobs:
         php: [ 7.2, 7.3, 7.4 ]
     steps:
     - uses: actions/checkout@v2
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/cache@v2
       id: composer-cache
       with:
+        php-version: ${{ matrix.php}}
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
     - run: vendor/bin/phpbench run --retry-threshold=2 --report=aggregate --report=default --report=compare --report=memory --report=env | tee benchmark-${{ matrix.php }}.txt
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/upload-artifact@v2
       with:
         path: benchmark-${{ matrix.php }}.txt
+        php-version: ${{ matrix.php}}
 
   code-standards-check:
     needs: setup
@@ -78,14 +98,19 @@ jobs:
         php: [ 7.4 ]
     steps:
     - uses: actions/checkout@v2
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/cache@v2
       id: composer-cache
       with:
+        php-version: ${{ matrix.php}}
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
     - run: vendor/bin/php-cs-fixer fix --dry-run --diff --using-cache=no .
+      with:
+        php-version: ${{ matrix.php}}
 
   code-analysis:
     needs: setup
@@ -95,25 +120,31 @@ jobs:
         php: [ 7.4 ]
     steps:
     - uses: actions/checkout@v2
+      with:
+        php-version: ${{ matrix.php}}
     - uses: actions/cache@v2
       id: composer-cache
       with:
+        php-version: ${{ matrix.php}}
         path: vendor
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
     - uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
+        php-version: ${{ matrix.php}}
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         upload: true
         verbose: true
         max-allowed-issues: 2147483647
     - uses: codacy/codacy-analysis-cli-action@1.1.0
       with:
+        php-version: ${{ matrix.php}}
         output: results.sarif
         format: sarif
         gh-code-scanning-compat: true
         max-allowed-issues: 2147483647
     - uses: github/codeql-action/upload-sarif@v1
       with:
+        php-version: ${{ matrix.php}}
         sarif_file: results.sarif
