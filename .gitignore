@@ -1,5 +1,6 @@
 .idea
 .vscode
+*.code-workspace
 tags
 vendor
 composer.lock
