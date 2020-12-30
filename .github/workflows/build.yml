@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ 7.2, 7.3, 7.4, 8.0 ]
+        php: [ 7.2, 7.3, 7.4 ]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -22,6 +22,9 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
+    - use: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
     - run: composer validate
     - run: composer install --prefer-dist --no-progress --no-suggest
       if: steps.composer-cache.outputs.cache-hit != 'true'
@@ -31,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ 7.2, 7.3, 7.4, 8.0 ]
+        php: [ 7.2, 7.3, 7.4 ]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -55,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ 7.2, 7.3, 7.4, 8.0 ]
+        php: [ 7.2, 7.3, 7.4 ]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -75,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ 8.0 ]
+        php: [ 7.4 ]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
@@ -92,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ 8.0 ]
+        php: [ 7.4 ]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
