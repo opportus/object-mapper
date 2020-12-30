@@ -22,7 +22,7 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
-    - use: shivammathur/setup-php@v2
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
     - run: composer validate
