@@ -143,6 +143,19 @@ class StaticPathFinderTest extends PathFinderTest
             ) {
                 $sourcePointReflection = $methodReflection;
             }
+        } elseif ($sourceClassReflection->hasMethod(
+            \sprintf('is%s', \ucfirst($targetPointReflection->getName()))
+        )) {
+            $methodReflection = $sourceClassReflection->getMethod(
+                \sprintf('is%s', \ucfirst($targetPointReflection->getName()))
+            );
+
+            if (
+                $methodReflection->isPublic() === true &&
+                $methodReflection->getNumberOfRequiredParameters() === 0
+            ) {
+                $sourcePointReflection = $methodReflection;
+            }
         }
         
         if (false === isset($sourcePointReflection)) {

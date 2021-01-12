@@ -308,7 +308,9 @@ trait TestDataProviderTrait
 
         foreach ($classes as $class) {
             foreach ($class->getMethods() as $method) {
-                if (0 !== \strpos($method->getName(), 'get')) {
+                if (0 !== \strpos($method->getName(), 'get') &&
+                    0 !== \strpos($method->getName(), 'is')
+                ) {
                     continue;
                 }
 
@@ -338,7 +340,9 @@ trait TestDataProviderTrait
 
         foreach ($classes as $class) {
             foreach ($class->getMethods() as $method) {
-                if (0 !== \strpos($method->getName(), 'get')) {
+                if (0 !== \strpos($method->getName(), 'get') &&
+                    0 !== \strpos($method->getName(), 'is')
+                ) {
                     continue;
                 }
 
@@ -490,7 +494,9 @@ trait TestDataProviderTrait
 
         foreach ($classes as $class) {
             foreach ($class->getMethods() as $method) {
-                if (0 !== \strpos($method->getName(), 'get')) {
+                if (0 !== \strpos($method->getName(), 'get') &&
+                    0 !== \strpos($method->getName(), 'is')
+                ) {
                     continue;
                 }
 
@@ -604,7 +610,7 @@ trait TestDataProviderTrait
     {
         return \array_merge(
             $this->providePropertyStaticTargetPointFqn(),
-            $this->provideMethodParameterStaticTargetPointFqn(),
+            $this->provideMethodParameterStaticTargetPointFqn()
         );
     }
 

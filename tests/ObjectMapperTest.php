@@ -101,6 +101,8 @@ class ObjectMapperTest extends TestCase
         foreach ($target->getH() as $v) {
             static::assertEquals(1, $v->getA());
         }
+        static::assertIsBool($target->isI());
+        static::assertEquals(false, $target->isI());
 
         $map = $this->getMapBuilder()
             ->addStaticSourceToDynamicTargetPathFinder()
@@ -114,6 +116,8 @@ class ObjectMapperTest extends TestCase
 
         static::assertEquals(2, $target->e);
         static::assertEquals(3, $target->f);
+        static::assertIsBool($target->i);
+        static::assertEquals(false, $target->i);
 
         $map = $this->getMapBuilder()
             ->addDynamicSourceToStaticTargetPathFinder()
@@ -122,6 +126,7 @@ class ObjectMapperTest extends TestCase
         $dynamicSource = new DynamicObjectMapperTestObjectClass();
         $dynamicSource->b = 44;
         $dynamicSource->h = [];
+        $dynamicSource->i = true;
 
         $target = $this->getObjectMapper()->map(
             $dynamicSource,
@@ -131,6 +136,7 @@ class ObjectMapperTest extends TestCase
 
         static::assertEquals(44, $target->getB());
         static::assertIsArray($target->getH());
+        static::assertEquals(true, $target->isI());
     }
 
     /**
@@ -147,6 +153,7 @@ class ObjectMapperTest extends TestCase
             new ObjectMapperTestObjectAClass(),
             new ObjectMapperTestObjectAClass()
         ]);
+        $source->setI(false);
 
         return $source;
     }
@@ -181,6 +188,7 @@ class ObjectMapperTestObjectClass
     public $f;
     private $g;
     private $h;
+    private $i;
 
     public function __construct(int $a = 22)
     {
@@ -222,6 +230,10 @@ class ObjectMapperTestObjectClass
         return $this->g = $g;
     }
 
+    public function setI(bool $i) {
+        $this->i = $i;
+    }
+
     public function getH(): array
     {
         return $this->h;
@@ -230,6 +242,10 @@ class ObjectMapperTestObjectClass
     public function setH(array $h)
     {
         return $this->h = $h;
+    }
+
+    public function isI() {
+        return $this->i;
     }
 
     public function __get($propertyName)
