@@ -251,6 +251,8 @@ class TargetTest extends Test
 
                 if (0 === \strpos($propertyName, 'get')) {
                     $propertyName = \lcfirst(\substr($propertyName, 3));
+                } elseif (0 === \strpos($propertyName, 'is')) {
+                    $propertyName = \lcfirst(\substr($propertyName, 2));
                 }
 
                 if ($propertyName === $propertyReflection->getName()) {
