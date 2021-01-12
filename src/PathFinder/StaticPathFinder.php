@@ -50,7 +50,8 @@ class StaticPathFinder extends PathFinder
     protected function getReferencePoints(
         SourceInterface $source,
         TargetInterface $target
-    ): array {
+    ): array
+    {
         $targetClassReflection = $target->getClassReflection();
 
         $methodBlackList = [];
@@ -128,7 +129,8 @@ class StaticPathFinder extends PathFinder
         SourceInterface $source,
         TargetInterface $target,
         $referencePoint
-    ): ?RouteInterface {
+    ): ?RouteInterface
+    {
         if (false === \is_object($referencePoint)
             || (
                 !$referencePoint instanceof ReflectionProperty
@@ -160,10 +162,10 @@ class StaticPathFinder extends PathFinder
                 $sourcePointReflection = $propertyReflection;
             }
         }
-        
+
         if ($sourceClassReflection->hasMethod(
-            \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
-        )) {
+                \sprintf('get%s', \ucfirst($targetPointReflection->getName())))
+        ) {
             $methodReflection = $sourceClassReflection->getMethod(
                 \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
             );
@@ -174,8 +176,21 @@ class StaticPathFinder extends PathFinder
             ) {
                 $sourcePointReflection = $methodReflection;
             }
+        } elseif ($sourceClassReflection->hasMethod(
+            \sprintf('is%s', \ucfirst($targetPointReflection->getName()))
+        )) {
+            $methodReflection = $sourceClassReflection->getMethod(
+                \sprintf('is%s', \ucfirst($targetPointReflection->getName()))
+            );
+
+            if (
+                $methodReflection->isPublic() === true &&
+                $methodReflection->getNumberOfRequiredParameters() === 0
+            ) {
+                $sourcePointReflection = $methodReflection;
+            }
         }
-        
+
         if (false === isset($sourcePointReflection)) {
             return null;
         }

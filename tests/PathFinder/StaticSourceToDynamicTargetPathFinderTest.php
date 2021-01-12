@@ -48,7 +48,9 @@ class StaticSourceToDynamicTargetPathFinderTest extends PathFinderTest
             $sourceClassReflection->getMethods(ReflectionMethod::IS_PUBLIC) as
             $methodReflection
         ) {
-            if (\strpos($methodReflection->getName(), 'get') !== 0) {
+            if (\strpos($methodReflection->getName(), 'get') !== 0 &&
+                \strpos($methodReflection->getName(), 'is') !== 0
+            ) {
                 continue;
             }
 
@@ -56,7 +58,11 @@ class StaticSourceToDynamicTargetPathFinderTest extends PathFinderTest
                 continue;
             }
 
-            $propertyBlackList[] = \lcfirst(\substr($methodReflection->getName(), 3));
+            if (\strpos($methodReflection->getName(), 'get') === 0) {
+                $propertyBlackList[] = \lcfirst(\substr($methodReflection->getName(), 3));
+            } elseif (\strpos($methodReflection->getName(), 'is') === 0) {
+                $propertyBlackList[] = \lcfirst(\substr($methodReflection->getName(), 2));
+            }
 
             $sourcePointReflections[] = $methodReflection;
         }
@@ -90,6 +96,17 @@ class StaticSourceToDynamicTargetPathFinderTest extends PathFinderTest
                 $sourcePointReflection->getName(),
                 3
             ));
+            if (\strpos($sourcePointReflection->getName(), 'get') === 0) {
+                $targetPointName = \lcfirst(\substr(
+                    $sourcePointReflection->getName(),
+                    3
+                ));
+            } elseif (\strpos($sourcePointReflection->getName(), 'is') === 0) {
+                $targetPointName = \lcfirst(\substr(
+                    $sourcePointReflection->getName(),
+                    2
+                ));
+            }
         }
 
         if ($targetClassReflection->hasProperty($targetPointName)) {
