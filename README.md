@@ -86,7 +86,6 @@ To develop this solution faster, [contributions](https://github.com/opportus/obj
 ### v1.0.0 (stable)
 
 -   Implement last unit tests to reach 100% coverage
--   Update supported version of PHP and other dependencies
 -   Improve doc
 
 ### v1.1.0
