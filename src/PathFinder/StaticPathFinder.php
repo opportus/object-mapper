@@ -50,8 +50,7 @@ class StaticPathFinder extends PathFinder
     protected function getReferencePoints(
         SourceInterface $source,
         TargetInterface $target
-    ): array
-    {
+    ): array {
         $targetClassReflection = $target->getClassReflection();
 
         $methodBlackList = [];
@@ -129,8 +128,7 @@ class StaticPathFinder extends PathFinder
         SourceInterface $source,
         TargetInterface $target,
         $referencePoint
-    ): ?RouteInterface
-    {
+    ): ?RouteInterface {
         if (false === \is_object($referencePoint)
             || (
                 !$referencePoint instanceof ReflectionProperty
@@ -164,7 +162,8 @@ class StaticPathFinder extends PathFinder
         }
 
         if ($sourceClassReflection->hasMethod(
-                \sprintf('get%s', \ucfirst($targetPointReflection->getName())))
+            \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
+        )
         ) {
             $methodReflection = $sourceClassReflection->getMethod(
                 \sprintf('get%s', \ucfirst($targetPointReflection->getName()))

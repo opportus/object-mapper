@@ -230,7 +230,8 @@ class ObjectMapperTestObjectClass
         return $this->g = $g;
     }
 
-    public function setI(bool $i) {
+    public function setI(bool $i)
+    {
         $this->i = $i;
     }
 
@@ -244,7 +245,8 @@ class ObjectMapperTestObjectClass
         return $this->h = $h;
     }
 
-    public function isI() {
+    public function isI()
+    {
         return $this->i;
     }
 
