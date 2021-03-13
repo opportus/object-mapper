@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This file is part of the opportus/object-mapper package.
+ * This file is part of the opportus/object-mapper project.
  *
- * Copyright (c) 2018-2020 Clément Cazaud <clement.cazaud@gmail.com>
+ * Copyright (c) 2018-2021 Clément Cazaud <clement.cazaud@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
