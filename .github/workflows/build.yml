@@ -46,14 +46,14 @@ jobs:
         key: ${{ runner.os }}-php-${{ matrix.php }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
           ${{ runner.os }}-php-${{ matrix.php }}-
-    - run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage-${{ matrix.php }}.clover.xml
+    - run: vendor/bin/phpunit --coverage-text --coverage-clover=${{ github.workspace }}/coverage-${{ matrix.php }}.clover.xml
     - uses: actions/upload-artifact@v2
       with:
         path: coverage-${{ matrix.php }}.clover.xml
     - uses: codacy/codacy-coverage-reporter-action@0.2.0
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        coverage-reports: coverage-${{ matrix.php }}.clover.xml
+        coverage-reports: ${{ github.workspace }}/coverage-${{ matrix.php }}.clover.xml
 
   benchmark-suite:
     needs: setup
