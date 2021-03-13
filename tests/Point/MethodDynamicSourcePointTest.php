@@ -60,7 +60,7 @@ class MethodDynamicSourcePointTest extends Test
     {
         $point = $this->createMethodDynamicSourcePoint($fqn);
 
-        static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
+        static::assertMatchesRegularExpression(self::FQN_REGEX_PATTERN, $point->getFqn());
 
         static::assertSame(
             \sprintf(

@@ -60,7 +60,7 @@ class MethodParameterDynamicTargetPointTest extends Test
     {
         $point = $this->createMethodParameterDynamicTargetPoint($fqn);
 
-        static::assertRegExp(self::FQN_REGEX_PATTERN, $point->getFqn());
+        static::assertMatchesRegularExpression(self::FQN_REGEX_PATTERN, $point->getFqn());
 
         static::assertSame(
             \sprintf(
