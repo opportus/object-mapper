@@ -60,21 +60,12 @@ Leverage that system to:
 This project aims to provide a standard core system to higher level systems
 such as:
 
--   Data transformer
 -   ORM
 -   Form handler
 -   Serializer
 -   Data import
 -   Layers data representation mapper
 -   ...
-
-Indeed, many systems have in common the essential and fundamental task of
-mapping data. Yet, most of the time, this aspect is conceptually neglected.
-Consequently, the mapping gets badly designed, reducing ilities of the system
-it is the essence of. At contrario, architecturing and developing that kind of
-system around a well designed mapper allows that system and its users to
-leverage it for the benefits presented above and described more in details
-below.
 
 If you need to map from/to `array` data structure, simply cast it to/from
 `object` `stdClass`.
@@ -608,13 +599,13 @@ $map = $mapBuilder
     ->addPathFinder(new GenericPresentation($markdownTransformer))
     ->getMap();
 
-$objectMapper->map($contributor, ContributorView::class, $map);
+$contributorView = $objectMapper->map($contributor, ContributorView::class, $map);
 
 echo $contributorView->bio; // <b>Hello World!</b>
 ```
 
 In this example, based on the *Object Mapper*'s abilities, we code a whole
-application layer with no effort...
+application generic layer with no effort...
 
 But what is a layer? Accordingly to
 [Wikipedia](https://en.wikipedia.org/wiki/Abstraction_layer):
@@ -624,24 +615,24 @@ But what is a layer? Accordingly to
 The more the *root* system (say an application) has independent layers, the more
 it has
 [data representations](https://guides.library.ucla.edu/c.php?g=180580&p=1191498),
-the more it has to transform data from one representation to another.
+the more it has to map data from one representation to another.
 
-Think for exemple of the Clean Architecture:
+Think for example of the Clean Architecture:
 
-- Controller transforms its (POST) request representation to its corresponding
+- Controller maps its (POST) request representation to its corresponding
   interactor/usecase request representation
-- Interactor transforms its usecase request representation to its corresponding
+- Interactor maps its usecase request representation to its corresponding
   domain entity representation
-- Entity gateway transforms its domain entity representation to its
+- Entity gateway maps its domain entity representation to its
   corresponding persistence representation, and vice-versa
-- Presenter transforms its domain entity representation to its corresponding
+- Presenter maps its domain entity representation to its corresponding
   view representation
 
 Each of these layers' essence is to map data based on the logic they are
-composed of. This logic is what is called the *flow of control* (over data).
+composed of. This logic is what we can calle the *flow of control* over data.
 
-Reffering to our example... This flow of control is defined by the
-*path finder*. These flowed controls are our *check points*. The `ObjectMapper`
+Referring to our example... This flow of control is defined by the
+*path finder*. These controls are our *check points*. The `ObjectMapper`
 service is nothing but that concrete layered system. Such layered OOP system is
 an *object mapper*.
 
