@@ -146,6 +146,7 @@ class Target implements TargetInterface
         } elseif ($point instanceof MethodParameterStaticTargetPoint) {
             $this->pointValues['static_method_parameters'][$point->getMethodName()]
                 [$this->getMethodParameterStaticPointPosition($point)] = $pointValue;
+            \ksort($this->pointValues['static_method_parameters'][$point->getMethodName()]);
         } elseif ($point instanceof PropertyDynamicTargetPoint) {
             $this->pointValues['dynamic_properties']
                 [$point->getName()] = $pointValue;
