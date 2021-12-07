@@ -125,10 +125,11 @@ class MapBuilder implements MapBuilderInterface
      * {@inheritdoc}
      */
     public function addStaticPathFinder(
-        ?int $priority = null
+        ?int $priority = null,
+        bool $recursiveMode = true
     ): MapBuilderInterface {
         return $this->addPathFinder(
-            new StaticPathFinder($this->routeBuilder),
+            new StaticPathFinder($this->routeBuilder, $recursiveMode),
             $priority
         );
     }
@@ -137,10 +138,11 @@ class MapBuilder implements MapBuilderInterface
      * {@inheritdoc}
      */
     public function addStaticSourceToDynamicTargetPathFinder(
-        ?int $priority = null
+        ?int $priority = null,
+        bool $recursiveMode = true
     ): MapBuilderInterface {
         return $this->addPathFinder(
-            new StaticSourceToDynamicTargetPathFinder($this->routeBuilder),
+            new StaticSourceToDynamicTargetPathFinder($this->routeBuilder, $recursiveMode),
             $priority
         );
     }
@@ -149,10 +151,11 @@ class MapBuilder implements MapBuilderInterface
      * {@inheritdoc}
      */
     public function addDynamicSourceToStaticTargetPathFinder(
-        ?int $priority = null
+        ?int $priority = null,
+        bool $recursiveMode = true
     ): MapBuilderInterface {
         return $this->addPathFinder(
-            new DynamicSourceToStaticTargetPathFinder($this->routeBuilder),
+            new DynamicSourceToStaticTargetPathFinder($this->routeBuilder, $recursiveMode),
             $priority
         );
     }

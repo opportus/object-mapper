@@ -69,41 +69,48 @@ interface MapBuilderInterface
     /**
      * Adds a static path finder to the map being built.
      *
-     * @param  null|int            $priority The priority of the path finder
-     *                                       on the map being built
-     * @return MapBuilderInterface           A map builder
+     * @param  null|int            $priority      The priority of the path
+     *                                            finder on the map being built
+     * @param  bool                $recursiveMode Whether to recurse mapping on
+     *                                            aggregate's objects
+     * @return MapBuilderInterface                A map builder
      * @see    StaticPathFinder
      */
     public function addStaticPathFinder(
-        ?int $priority = null
+        ?int $priority = null,
+        bool $recursiveMode = true
     ): MapBuilderInterface;
 
     /**
      * Adds a static source to dynamic target path finder to the map being
      * built.
      *
-     * @param  null|int            $priority         The priority of the path
-     *                                               finder on the map being
-     *                                               built
-     * @return MapBuilderInterface                   A map builder
+     * @param  null|int            $priority      The priority of the path
+     *                                            finder on the map being built
+     * @param  bool                $recursiveMode Whether to recurse mapping on
+     *                                            aggregate's objects
+     * @return MapBuilderInterface                A map builder
      * @see    StaticSourceToDynamicTargetPathFinder
      */
     public function addStaticSourceToDynamicTargetPathFinder(
-        ?int $priority = null
+        ?int $priority = null,
+        bool $recursiveMode = true
     ): MapBuilderInterface;
 
     /**
      * Adds a dynamic source to static target path finder to the map being
      * built.
      *
-     * @param  null|int            $priority         The priority of the path
-     *                                               finder on the map being
-     *                                               built
-     * @return MapBuilderInterface                   A map builder
+     * @param  null|int            $priority      The priority of the path
+     *                                            finder on the map being built
+     * @param  bool                $recursiveMode Whether to recurse mapping on
+     *                                            aggregate's objects
+     * @return MapBuilderInterface                A map builder
      * @see    DynamicSourceToStaticTargetPathFinder
      */
     public function addDynamicSourceToStaticTargetPathFinder(
-        ?int $priority = null
+        ?int $priority = null,
+        bool $recursiveMode = true
     ): MapBuilderInterface;
 
     /**

@@ -62,24 +62,6 @@ class ObjectMapperTest extends TestCase
                 ->setDynamicTargetPoint(\sprintf('%s::setD()::$dp', ObjectMapperTestObjectClass::class))
                 ->addRouteToMapBuilder()
 
-                ->setStaticSourcePoint(\sprintf('%s::getG()', ObjectMapperTestObjectClass::class))
-                ->setStaticTargetPoint(\sprintf('%s::setG()::$g', ObjectMapperTestObjectClass::class))
-                ->addRecursionCheckPoint(
-                    ObjectMapperTestObjectAClass::class,
-                    ObjectMapperTestObjectBClass::class,
-                    \sprintf('%s::getG()', ObjectMapperTestObjectClass::class)
-                )
-                ->addRouteToMapBuilder()
-
-                ->setStaticSourcePoint(\sprintf('%s::getH()', ObjectMapperTestObjectClass::class))
-                ->setStaticTargetPoint(\sprintf('%s::setH()::$h', ObjectMapperTestObjectClass::class))
-                ->addIterableRecursionCheckPoint(
-                    ObjectMapperTestObjectAClass::class,
-                    ObjectMapperTestObjectBClass::class,
-                    \sprintf('%s::getG()', ObjectMapperTestObjectClass::class)
-                )
-                ->addRouteToMapBuilder()
-
                 ->getMapBuilder()
             ->addStaticPathFinder()
             ->getMap();
@@ -147,7 +129,6 @@ class ObjectMapperTest extends TestCase
         $source = new ObjectMapperTestObjectClass(1);
         $source->setB(11);
         $source->f = 3;
-        $source->setG(new ObjectMapperTestObjectAClass());
         $source->setH([
             new ObjectMapperTestObjectAClass(),
             new ObjectMapperTestObjectAClass(),
@@ -193,6 +174,7 @@ class ObjectMapperTestObjectClass
     public function __construct(int $a = 22)
     {
         $this->a = $a;
+        $this->g = new ObjectMapperTestObjectAClass();
     }
 
     public function getA(): int
@@ -220,19 +202,19 @@ class ObjectMapperTestObjectClass
         return 2;
     }
 
+    public function setI(bool $i)
+    {
+        $this->i = $i;
+    }
+
     public function getG()
     {
         return $this->g;
     }
 
-    public function setG(object $g)
+    public function setG(ObjectMapperTestObjectBClass $g)
     {
         return $this->g = $g;
-    }
-
-    public function setI(bool $i)
-    {
-        $this->i = $i;
     }
 
     public function getH(): array
@@ -240,6 +222,10 @@ class ObjectMapperTestObjectClass
         return $this->h;
     }
 
+    /**
+     * @param Opportus\ObjectMapper\Tests\ObjectMapperTestObjectBClass[] $h
+     * @return array
+     */
     public function setH(array $h)
     {
         return $this->h = $h;
