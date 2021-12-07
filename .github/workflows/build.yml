@@ -34,6 +34,8 @@ jobs:
   test-suite:
     needs: setup
     runs-on: ubuntu-latest
+    env:
+      XDEBUG_MODE: coverage
     strategy:
       matrix:
         php: [ 7.4, 8.0, 8.1 ]
