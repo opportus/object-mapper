@@ -12,12 +12,12 @@
 namespace Opportus\ObjectMapper\Point;
 
 /**
- * The dynamic source point interface.
+ * The dynamic point interface.
  *
  * @package Opportus\ObjectMapper\Point
  * @author Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-interface DynamicSourcePointInterface extends SourcePointInterface, DynamicPointInterface
+interface DynamicPointInterface extends ObjectPointInterface
 {
 }

@@ -32,6 +32,16 @@ class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTarg
     private $methodName;
 
     /**
+     * @var string[] $valuePhpTypes
+     */
+    private $valuePhpTypes;
+
+    /**
+     * @var string[] $valuePhpDocTypes
+     */
+    private $valuePhpDocTypes;
+
+    /**
      * Constructs the method parameter static target point.
      *
      * @param string $fqn
@@ -58,7 +68,7 @@ class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTarg
 
         try {
             /** @noinspection PhpParamsInspection */
-            new ReflectionParameter(
+            $reflection = new ReflectionParameter(
                 [$matchedTargetFqn, $matchedMethodName],
                 $matchedName
             );
@@ -76,6 +86,8 @@ class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTarg
         $this->targetFqn = $matchedTargetFqn;
         $this->name = $matchedName;
         $this->methodName = $matchedMethodName;
+        $this->valuePhpTypes = $this->resolveValuePhpTypes($reflection);
+        $this->valuePhpDocTypes = $this->resolveValuePhpDocTypes($reflection);
     }
 
     /**
@@ -94,5 +106,65 @@ class MethodParameterStaticTargetPoint extends TargetPoint implements StaticTarg
     public static function getFqnRegexPattern(): string
     {
         return self::FQN_REGEX_PATTERN;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuePhpTypes(): array
+    {
+        return $this->valuePhpTypes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuePhpDocTypes(): array
+    {
+        return $this->valuePhpDocTypes;
+    }
+
+    /**
+     * @param ReflectionParameter $reflection
+     * @return string[]
+     */
+    private function resolveValuePhpTypes(ReflectionParameter $reflection): array
+    {
+        if (null === $reflection->getType()) {
+            return [];
+        }
+
+        $types = [];
+        foreach (\explode('|', $reflection->getType()->getName()) as $type) {
+            if (0 === \strpos($type, '?')) {
+                $types['null'] = 'null';
+                $types[\ltrim($type, '?')] = \ltrim($type, '?');
+
+                continue;
+            }
+
+            $types[$type] = $type;
+        }
+
+        return \array_values($types);
+    }
+
+    /**
+     * @param ReflectionParameter $reflection
+     * @return string[]
+     */
+    private function resolveValuePhpDocTypes(ReflectionParameter $reflection): array
+    {
+        \preg_match_all(
+            '/@param ([^\r\n ]+)/s',
+            $reflection->getDeclaringFunction()->getDocComment(),
+            $matches
+        );
+
+        if (false === isset($matches[1][$reflection->getPosition()])) {
+            return [];
+        }
+
+        return \explode('|', $matches[1][$reflection->getPosition()]);
     }
 }

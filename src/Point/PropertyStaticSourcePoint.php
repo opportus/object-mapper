@@ -27,6 +27,16 @@ class PropertyStaticSourcePoint extends SourcePoint implements StaticSourcePoint
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::\$([A-Za-z0-9_]+)$/';
 
     /**
+     * @var string[] $valuePhpTypes
+     */
+    private $valuePhpTypes;
+
+    /**
+     * @var string[] $valuePhpDocTypes
+     */
+    private $valuePhpDocTypes;
+
+    /**
      * Constructs the property static source point.
      *
      * @param string $fqn
@@ -47,7 +57,7 @@ class PropertyStaticSourcePoint extends SourcePoint implements StaticSourcePoint
         [$matchedFqn, $matchedSourceFqn, $matchedName] = $matches;
 
         try {
-            new ReflectionProperty(
+            $reflection = new ReflectionProperty(
                 $matchedSourceFqn,
                 $matchedName
             );
@@ -64,6 +74,8 @@ class PropertyStaticSourcePoint extends SourcePoint implements StaticSourcePoint
         $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));
         $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
+        $this->valuePhpTypes = $this->resolveValuePhpTypes($reflection);
+        $this->valuePhpDocTypes = $this->resolveValuePhpDocTypes($reflection);
     }
 
     /**
@@ -72,5 +84,61 @@ class PropertyStaticSourcePoint extends SourcePoint implements StaticSourcePoint
     public static function getFqnRegexPattern(): string
     {
         return self::FQN_REGEX_PATTERN;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuePhpTypes(): array
+    {
+        return $this->valuePhpTypes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuePhpDocTypes(): array
+    {
+        return $this->valuePhpDocTypes;
+    }
+
+    /**
+     * @param ReflectionProperty $reflection
+     * @return string[]
+     */
+    private function resolveValuePhpTypes(ReflectionProperty $reflection): array
+    {
+        if (null === $reflection->getType()) {
+            return [];
+        }
+
+        $types = [];
+        foreach (\explode('|', $reflection->getType()->getName()) as $type) {
+            if (0 === \strpos($type, '?')) {
+                $types['null'] = 'null';
+                $types[\ltrim($type, '?')] = \ltrim($type, '?');
+
+                continue;
+            }
+
+            $types[$type] = $type;
+        }
+
+        return \array_values($types);
+    }
+
+    /**
+     * @param ReflectionProperty $reflection
+     * @return string[]
+     */
+    private function resolveValuePhpDocTypes(ReflectionProperty $reflection): array
+    {
+        \preg_match('/@type ([^\r\n]+)/s', $reflection->getDocComment(), $matches);
+
+        if (false === isset($matches[1])) {
+            return [];
+        }
+
+        return \explode('|', $matches[1]);
     }
 }

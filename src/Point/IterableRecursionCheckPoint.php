@@ -85,7 +85,6 @@ class IterableRecursionCheckPoint implements CheckPointInterface
         $this->targetIterableSourcePoint = $targetIterableSourcePoint;
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -102,9 +101,9 @@ class IterableRecursionCheckPoint implements CheckPointInterface
 
         $recursionSourceIterable = $subject;
 
-        if (false === $this->isIterable($recursionSourceIterable)) {
+        if (false === \is_array($recursionSourceIterable)) {
             $message = \sprintf(
-                'Recursion source iterable of type %s on route %s is not iterable.',
+                'Recursion source iterable of type %s on route %s must be an array.',
                 \is_object($recursionSourceIterable) ?
                     \get_class($recursionSourceIterable) :
                     \gettype($recursionSourceIterable),
@@ -114,6 +113,29 @@ class IterableRecursionCheckPoint implements CheckPointInterface
             throw new InvalidOperationException($message);
         }
 
+        foreach ($recursionSourceIterable as $recursionSource) {
+            if (false === \is_object($recursionSource)) {
+                $message = \sprintf(
+                    'Recursion source iterable element of type %s on route %s must be an object.',
+                    \gettype($recursionSource),
+                    $route->getFqn()
+                );
+
+                throw new InvalidOperationException($message);
+            }
+
+            if (\get_class($recursionSource) !== $this->sourceFqn) {
+                $message = \sprintf(
+                    'Recursion source iterable element object of type %s on route %s should be of type %s.',
+                    \get_class($recursionSource),
+                    $route->getFqn(),
+                    $this->sourceFqn
+                );
+
+                throw new InvalidOperationException($message);
+            }
+        }
+
         if (null === $target->getInstance()) {
             $recursionTargetIterable = [];
         } else {
@@ -121,9 +143,9 @@ class IterableRecursionCheckPoint implements CheckPointInterface
                 ->getPointValue($this->targetIterableSourcePoint);
         }
 
-        if (false === $this->isIterable($recursionTargetIterable)) {
+        if (false === \is_array($recursionTargetIterable)) {
             $message = \sprintf(
-                'Recursion target iterable of type %s on route %s is not iterable.',
+                'Recursion target iterable of type %s on route %s must be an array.',
                 \is_object($recursionTargetIterable) ?
                     \get_class($recursionTargetIterable) :
                     \gettype($recursionTargetIterable),
@@ -185,21 +207,5 @@ class IterableRecursionCheckPoint implements CheckPointInterface
         }
 
         return $recursionTargetIterable;
-    }
-
-    /**
-     * Checks whether the passed argument is iterable.
-     *
-     * @param $arg
-     * @return bool
-     */
-    private function isIterable($arg): bool
-    {
-        return
-            \is_array($arg) ||
-            (
-                $arg instanceof Traversable &&
-                $arg instanceof ArrayAccess
-            );
     }
 }

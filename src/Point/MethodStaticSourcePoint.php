@@ -27,6 +27,16 @@ class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointIn
     private const FQN_REGEX_PATTERN = '/^#?([A-Za-z0-9\\\_]+)::([A-Za-z0-9_]+)\(\)$/';
 
     /**
+     * @var string[] $valuePhpTypes
+     */
+    private $valuePhpTypes;
+
+    /**
+     * @var string[] $valuePhpDocTypes
+     */
+    private $valuePhpDocTypes;
+
+    /**
      * Constructs the method static source point.
      *
      * @param string $fqn
@@ -70,6 +80,8 @@ class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointIn
         $this->fqn = \sprintf('#%s', \ltrim($matchedFqn, '#'));
         $this->sourceFqn = $matchedSourceFqn;
         $this->name = $matchedName;
+        $this->valuePhpTypes = $this->resolveValuePhpTypes($reflection);
+        $this->valuePhpDocTypes = $this->resolveValuePhpDocTypes($reflection);
     }
 
     /**
@@ -78,5 +90,61 @@ class MethodStaticSourcePoint extends SourcePoint implements StaticSourcePointIn
     public static function getFqnRegexPattern(): string
     {
         return self::FQN_REGEX_PATTERN;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuePhpTypes(): array
+    {
+        return $this->valuePhpTypes;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValuePhpDocTypes(): array
+    {
+        return $this->valuePhpDocTypes;
+    }
+
+    /**
+     * @param ReflectionMethod $reflection
+     * @return string[]
+     */
+    private function resolveValuePhpTypes(ReflectionMethod $reflection): array
+    {
+        if (null === $reflection->getReturnType()) {
+            return [];
+        }
+
+        $types = [];
+        foreach (\explode('|', $reflection->getReturnType()->getName()) as $type) {
+            if (0 === \strpos($type, '?')) {
+                $types['null'] = 'null';
+                $types[\ltrim($type, '?')] = \ltrim($type, '?');
+
+                continue;
+            }
+
+            $types[$type] = $type;
+        }
+
+        return \array_values($types);
+    }
+
+    /**
+     * @param ReflectionMethod $reflection
+     * @return string[]
+     */
+    private function resolveValuePhpDocTypes(ReflectionMethod $reflection): array
+    {
+        \preg_match('/@return ([^\r\n]+)/s', $reflection->getDocComment(), $matches);
+
+        if (false === isset($matches[1])) {
+            return [];
+        }
+
+        return \explode('|', $matches[1]);
     }
 }

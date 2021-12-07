@@ -120,7 +120,7 @@ interface PointFactoryInterface
      *
      * @param  string                   $pointFqn The Fully Qualified Name of a
      *                                            target point to create
-     * @return SourcePointInterface               The target point created
+     * @return TargetPointInterface               The target point created
      * @throws InvalidArgumentException           If the first argument does
      *                                            not match the FQN regex
      *                                            pattern of any target point

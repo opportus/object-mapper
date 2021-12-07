@@ -18,6 +18,6 @@ namespace Opportus\ObjectMapper\Point;
  * @author Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-interface StaticTargetPointInterface extends TargetPointInterface
+interface StaticTargetPointInterface extends TargetPointInterface, StaticPointInterface
 {
 }
