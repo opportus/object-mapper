@@ -270,7 +270,7 @@ abstract class PathFinder implements PathFinderInterface
         }
 
         if (\is_object($sourcePointValue)) {
-            if($targetPointValueType === \get_class($sourcePointValue)) {
+            if ($targetPointValueType === \get_class($sourcePointValue)) {
                 return $recursionTargetFqn;
             }
 
