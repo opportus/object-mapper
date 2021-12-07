@@ -133,7 +133,7 @@ class PropertyStaticTargetPoint extends TargetPoint implements StaticTargetPoint
      */
     private function resolveValuePhpDocTypes(ReflectionProperty $reflection): array
     {
-        \preg_match('/@type ([^\r\n]+)/s', $reflection->getDocComment(), $matches);
+        \preg_match('/@var ([^\r\n]+)/s', $reflection->getDocComment(), $matches);
 
         if (false === isset($matches[1])) {
             return [];
