@@ -12,8 +12,8 @@
 namespace Opportus\ObjectMapper\Tests;
 
 use Exception;
-use \ReflectionClass;
-use \stdClass;
+use ReflectionClass;
+use stdClass;
 
 /**
  * The test object trait.

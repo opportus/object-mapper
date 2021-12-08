@@ -150,7 +150,7 @@ abstract class PathFinder implements PathFinderInterface
                 $reflection->getName()
             );
         }
-        
+
         if ($reflection instanceof ReflectionMethod) {
             return \sprintf(
                 '%s::%s()',
@@ -158,7 +158,7 @@ abstract class PathFinder implements PathFinderInterface
                 $reflection->getName()
             );
         }
-        
+
         if ($reflection instanceof ReflectionParameter) {
             return \sprintf(
                 '%s::%s()::$%s',

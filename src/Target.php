@@ -243,7 +243,7 @@ class Target implements TargetInterface
                 ->getProperty($propertyName);
 
             $propertyReflection->setAccessible(true);
-            
+
             $propertyReflection->setValue(
                 $instance,
                 $propertyValue

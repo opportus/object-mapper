@@ -26,7 +26,7 @@ class TestObjectA
     private $j;
     public $k;
     public $l;
-    
+
     public function __construct(
         $a = null,
         $b = null,

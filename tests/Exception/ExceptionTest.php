@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests\Exception;
 
-use \Exception as BaseException;
+use Exception as BaseException;
 use Opportus\ObjectMapper\Exception\Exception;
 use Opportus\ObjectMapper\Tests\Test;
 

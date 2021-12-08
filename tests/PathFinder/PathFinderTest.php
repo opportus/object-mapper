@@ -144,7 +144,7 @@ abstract class PathFinderTest extends Test
         $pathFinderReflection = new ReflectionClass($pathFinder);
         $pathFinderTestMethodReflection = $pathFinderReflection
             ->getMethod('getReferencePointRoute');
-        
+
         $pathFinderTestMethodReflection->setAccessible(true);
 
         $this->expectException(InvalidArgumentException::class);

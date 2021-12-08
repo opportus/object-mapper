@@ -129,7 +129,7 @@ class StaticPathFinderTest extends PathFinderTest
                 $sourcePointReflection = $propertyReflection;
             }
         }
-        
+
         if ($sourceClassReflection->hasMethod(
             \sprintf('get%s', \ucfirst($targetPointReflection->getName()))
         )) {
@@ -157,7 +157,7 @@ class StaticPathFinderTest extends PathFinderTest
                 $sourcePointReflection = $methodReflection;
             }
         }
-        
+
         if (false === isset($sourcePointReflection)) {
             return null;
         }
