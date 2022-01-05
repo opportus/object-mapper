@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests\Exception;
 
-use Opportus\ObjectMapper\Exception\InvalidObjectOperationException;
+use Opportus\ObjectMapper\Exception\InvalidTargetOperationException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Tests\Test;
 
@@ -31,8 +31,8 @@ class InvalidObjectOperationExceptionTest extends Test
         static::assertInstanceOf(InvalidOperationException::class, $exception);
     }
 
-    private function createInvalidObjectOperationException(): InvalidObjectOperationException
+    private function createInvalidObjectOperationException(): InvalidTargetOperationException
     {
-        return new InvalidObjectOperationException();
+        return new InvalidTargetOperationException();
     }
 }
