@@ -14,7 +14,7 @@ namespace Opportus\ObjectMapper;
 use Error;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
-use Opportus\ObjectMapper\Exception\InvalidObjectOperationException;
+use Opportus\ObjectMapper\Exception\InvalidTargetOperationException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
@@ -192,7 +192,7 @@ class Target implements TargetInterface
      *
      * @param null|object $instance
      * @return object
-     * @throws InvalidObjectOperationException
+     * @throws InvalidTargetOperationException
      * @throws InvalidOperationException
      */
     private function operateInstance(?object $instance = null): object
@@ -210,7 +210,7 @@ class Target implements TargetInterface
                         $exception
                     );
                 } catch (Exception $exception) {
-                    throw new InvalidObjectOperationException(
+                    throw new InvalidTargetOperationException(
                         $exception->getMessage(),
                         0,
                         $exception
@@ -259,7 +259,7 @@ class Target implements TargetInterface
                     $exception
                 );
             } catch (Exception $exception) {
-                throw new InvalidObjectOperationException(
+                throw new InvalidTargetOperationException(
                     $exception->getMessage(),
                     0,
                     $exception
@@ -281,7 +281,7 @@ class Target implements TargetInterface
                     $exception
                 );
             } catch (Exception $exception) {
-                throw new InvalidObjectOperationException(
+                throw new InvalidTargetOperationException(
                     $exception->getMessage(),
                     0,
                     $exception

@@ -20,7 +20,7 @@ use Throwable;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class InvalidObjectOperationException extends InvalidOperationException
+class InvalidTargetOperationException extends InvalidOperationException
 {
     /**
      * Constructs the invalid object operation exception.

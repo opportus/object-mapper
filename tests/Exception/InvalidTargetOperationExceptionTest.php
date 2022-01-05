@@ -22,7 +22,7 @@ use Opportus\ObjectMapper\Tests\Test;
  * @author  Clément Cazaud <clement.cazaud@gmail.com>
  * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
  */
-class InvalidObjectOperationExceptionTest extends Test
+class InvalidTargetOperationExceptionTest extends Test
 {
     public function testConstruct(): void
     {

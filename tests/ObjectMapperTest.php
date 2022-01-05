@@ -11,7 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests;
 
-use Opportus\ObjectMapper\Exception\InvalidObjectOperationException;
+use Opportus\ObjectMapper\Exception\InvalidTargetOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
@@ -120,7 +120,7 @@ class ObjectMapperTest extends TestCase
         static::assertIsArray($target->getH());
         static::assertEquals(true, $target->isI());
 
-        $this->expectException(InvalidObjectOperationException::class);
+        $this->expectException(InvalidTargetOperationException::class);
         $this->getObjectMapper()->map(new ObjectMapperTestObjectCClass(), ObjectMapperTestObjectCClass::class);
     }
 
