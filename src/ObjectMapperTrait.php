@@ -87,11 +87,7 @@ trait ObjectMapperTrait
             }
         }
 
-        try {
-            $target->operate();
-        } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException('', 0, $exception);
-        }
+        $target->operate();
 
         return $target->getInstance();
     }

@@ -11,6 +11,7 @@
 
 namespace Opportus\ObjectMapper\Tests;
 
+use Opportus\ObjectMapper\Exception\InvalidObjectOperationException;
 use Opportus\ObjectMapper\Map\MapInterface;
 use Opportus\ObjectMapper\Map\MapBuilder;
 use Opportus\ObjectMapper\Map\MapBuilderInterface;
@@ -24,7 +25,6 @@ use Opportus\ObjectMapper\Route\RouteInterface;
 use Opportus\ObjectMapper\SourceInterface;
 use Opportus\ObjectMapper\TargetInterface;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
  * The object mapper test.
@@ -119,6 +119,9 @@ class ObjectMapperTest extends TestCase
         static::assertEquals(44, $target->getB());
         static::assertIsArray($target->getH());
         static::assertEquals(true, $target->isI());
+
+        $this->expectException(InvalidObjectOperationException::class);
+        $this->getObjectMapper()->map(new ObjectMapperTestObjectCClass(), ObjectMapperTestObjectCClass::class);
     }
 
     /**
@@ -310,6 +313,28 @@ class ObjectMapperTestObjectBClass
     public function setA(int $a)
     {
         $this->a = $a;
+    }
+}
+
+/**
+ * The object mapper test object C class.
+ *
+ * @package Opportus\ObjectMapper\Tests
+ * @author  Clément Cazaud <clement.cazaud@gmail.com>
+ * @license https://github.com/opportus/object-mapper/blob/master/LICENSE MIT
+ */
+class ObjectMapperTestObjectCClass
+{
+    private $a = 3;
+
+    public function getA(): int
+    {
+        return $this->a;
+    }
+
+    public function setA(int $a)
+    {
+        throw new \Exception();
     }
 }
 

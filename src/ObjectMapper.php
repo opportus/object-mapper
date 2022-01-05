@@ -66,10 +66,6 @@ class ObjectMapper implements ObjectMapperInterface
             ->addStaticPathFinder()
             ->getMap();
 
-        try {
-            return $this->mapSourceToTarget($source, $target, $map);
-        } catch (InvalidOperationException $exception) {
-            throw new InvalidOperationException('', 0, $exception);
-        }
+        return $this->mapSourceToTarget($source, $target, $map);
     }
 }

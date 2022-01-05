@@ -14,6 +14,7 @@ namespace Opportus\ObjectMapper;
 use Error;
 use Exception;
 use Opportus\ObjectMapper\Exception\InvalidArgumentException;
+use Opportus\ObjectMapper\Exception\InvalidObjectOperationException;
 use Opportus\ObjectMapper\Exception\InvalidOperationException;
 use Opportus\ObjectMapper\Point\MethodParameterDynamicTargetPoint;
 use Opportus\ObjectMapper\Point\MethodParameterStaticTargetPoint;
@@ -23,6 +24,7 @@ use Opportus\ObjectMapper\Point\TargetPointInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionObject;
+use Throwable;
 
 /**
  * The target.
@@ -176,12 +178,8 @@ class Target implements TargetInterface
             }
 
             $instance = $this->operateInstance($instance);
-        } catch (Error|Exception $exception) {
-            throw new InvalidOperationException(
-                $exception->getMessage(),
-                0,
-                $exception
-            );
+        } catch (Throwable $exception) {
+            throw $exception;
         } finally {
             $this->pointValues = $this->initializePointValues();
         }
@@ -190,20 +188,44 @@ class Target implements TargetInterface
     }
 
     /**
-     * Operated an instance.
+     * Operates an instance.
      *
-     * @param  null|object $instance
+     * @param null|object $instance
      * @return object
+     * @throws InvalidObjectOperationException
+     * @throws InvalidOperationException
      */
     private function operateInstance(?object $instance = null): object
     {
         if (null === $instance) {
             if (isset($this->pointValues['static_method_parameters']['__construct'])) {
-                $instance = $this->classReflection->newInstanceArgs(
-                    $this->pointValues['static_method_parameters']['__construct']
-                );
+                try {
+                    $instance = $this->classReflection->newInstanceArgs(
+                        $this->pointValues['static_method_parameters']['__construct']
+                    );
+                } catch (ReflectionException $exception) {
+                    throw new InvalidOperationException(
+                        $exception->getMessage(),
+                        0,
+                        $exception
+                    );
+                } catch (Exception $exception) {
+                    throw new InvalidObjectOperationException(
+                        $exception->getMessage(),
+                        0,
+                        $exception
+                    );
+                }
             } else {
-                $instance = $this->classReflection->newInstance();
+                try {
+                    $instance = $this->classReflection->newInstance();
+                } catch (ReflectionException $exception) {
+                    throw new InvalidOperationException(
+                        $exception->getMessage(),
+                        0,
+                        $exception
+                    );
+                }
             }
         }
 
@@ -216,14 +238,33 @@ class Target implements TargetInterface
                 continue;
             }
 
-            $methodReflection = $this->classReflection->getMethod($methodName);
+            try {
+                $methodReflection = $this->classReflection->getMethod($methodName);
+            } catch (ReflectionException $exception) {
+                throw new InvalidOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            }
 
             $methodReflection->setAccessible(true);
 
-            $methodReflection->invokeArgs(
-                $instance,
-                $methodArguments
-            );
+            try {
+                $methodReflection->invokeArgs($instance, $methodArguments);
+            } catch (ReflectionException $exception) {
+                throw new InvalidOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            } catch (Exception $exception) {
+                throw new InvalidObjectOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            }
         }
 
         foreach (
@@ -231,7 +272,21 @@ class Target implements TargetInterface
             $methodName =>
             $methodArguments
         ) {
-            $instance->{$methodName}(...$methodArguments);
+            try {
+                $instance->{$methodName}(...$methodArguments);
+            } catch (Error $exception) {
+                throw new InvalidOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            } catch (Exception $exception) {
+                throw new InvalidObjectOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            }
         }
 
         foreach (
@@ -239,15 +294,19 @@ class Target implements TargetInterface
             $propertyName =>
             $propertyValue
         ) {
-            $propertyReflection = $this->classReflection
-                ->getProperty($propertyName);
+            try {
+                $propertyReflection = $this->classReflection->getProperty($propertyName);
+            } catch (ReflectionException $exception) {
+                throw new InvalidOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            }
 
             $propertyReflection->setAccessible(true);
 
-            $propertyReflection->setValue(
-                $instance,
-                $propertyValue
-            );
+            $propertyReflection->setValue($instance, $propertyValue);
         }
 
         foreach (
@@ -255,7 +314,15 @@ class Target implements TargetInterface
             $propertyName =>
             $propertyValue
         ) {
-            $instance->{$propertyName} = $propertyValue;
+            try {
+                $instance->{$propertyName} = $propertyValue;
+            } catch (Error $exception) {
+                throw new InvalidOperationException(
+                    $exception->getMessage(),
+                    0,
+                    $exception
+                );
+            }
         }
 
         return $instance;
