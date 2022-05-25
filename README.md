@@ -12,7 +12,6 @@
 - [Meta](#meta)
 - [Introduction](#introduction)
 - [Roadmap](#roadmap)
-  - [v1.0.0 (stable)](#v100-stable)
   - [v1.1.0](#v110)
 - [Integrations](#integrations)
 - [Setup](#setup)
@@ -74,16 +73,12 @@ If you need to map from/to `array` data structure, simply cast it to/from
 
 To develop this solution faster, [contributions](https://github.com/opportus/object-mapper/blob/master/.github/CONTRIBUTING.md) are welcome...
 
-### v1.0.0 (stable)
-
--   Implement last unit tests to reach 100% coverage
--   Improve doc
-
 ### v1.1.0
 
 -   Implement recursion path finder feature
 -   Implement callable check point feature
 -   Implement seizing check point feature
+-   Improve doc
 
 ## Integrations
 
